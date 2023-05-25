@@ -22,7 +22,8 @@ import org.jfree.chart.plot.*;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.ui.RectangleAnchor;
+//import org.jfree.ui.RectangleAnchor;
+import org.jfree.chart.ui.RectangleAnchor;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -3244,10 +3245,16 @@ public class MapOptics extends JFrame {
             double length = (Double) refContigTable.getValueAt(refContigTable.getSelectedRow(), 1);
             int selectedBar = lengths.indexOf(length);
             ((MyChartRenderer) plot.getRenderer()).setSelectedBar(selectedBar);
+            // Marker can be added to plots to highlight value / range of values
             Marker line = new ValueMarker(length / 1000);
             line.setPaint(new Color(97, 204, 10));
             line.setLabel(" ID: " + refId + " ");
             line.setLabelFont(new Font("Tahoma", Font.BOLD, 10));
+            /**
+             * Set the label anchor
+             * The anchore defines the position of the label anchor
+             * relative to the bounds of the marker
+            */
             line.setLabelAnchor(RectangleAnchor.CENTER);
             line.setLabelBackgroundColor(new Color(244, 244, 244));
             line.setLabelPaint(new Color(0, 153, 0));

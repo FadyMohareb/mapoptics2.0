@@ -80,7 +80,7 @@ public final class Alignment {
                 Integer id = xmap1.getID();
                 for (XmapData xmap2: this.xmap.getAllXmaps().values() ){
 //                    check not comparing to itself
-                    if (!Objects.equals(xmap2.getID(), Data)&Objects.equals(xmap1.getRefID(), xmap2.getRefID())){
+                    if (!Objects.equals(xmap2.getID(), id)&Objects.equals(xmap1.getRefID(), xmap2.getRefID())){
 //                        detect duplications
 //                        detectDuplications(xmap1,xmap2,duplicationMin);
                     }
