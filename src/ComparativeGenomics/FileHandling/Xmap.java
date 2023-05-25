@@ -142,7 +142,6 @@ public class Xmap {
                             list.add(map);
                             this.queryMapsToRef.put(qid, list);
                         }
-
                     }
                 }
                 if (sc.ioException() != null) {
