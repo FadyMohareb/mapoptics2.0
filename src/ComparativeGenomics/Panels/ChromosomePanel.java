@@ -28,6 +28,9 @@ import javax.imageio.ImageIO;
 /**
  *
  * @author franpeters
+ * Extends javax.swing.JPanel which draws all of the XmapData objects
+ * corresponding to a chosen Chromosome.
+ * Each alignment is drawn using an alternating colour.
  */
 public class ChromosomePanel extends javax.swing.JPanel implements MouseListener, MouseMotionListener{
 //  for saving required data to visualise
@@ -78,7 +81,8 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
         this.qryCmap=cmap;
     }
     /**
-     * 
+     * o Sets the chromosome of the reference genome which has been selected
+     * by the user.
      * @param chr set the Chromosome to view
      */
     public void setChr(Chromosome chr){
@@ -173,7 +177,7 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
         }
     }
     /**
-     * 
+     * Sets the colour of a rectangle to indicate presence of an alignment to the query genome.
      * @param Int Number of the alignment, to determine which colour is accessed from the array
      * @return Colour of the alignment at that index
      */

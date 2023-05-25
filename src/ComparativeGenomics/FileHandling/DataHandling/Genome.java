@@ -56,7 +56,7 @@ public class Genome {
             Double relSize = chrSize/this.genomeSize;
             CmapData map = this.cmap.getCmapBySize(chrSize);
             Sequence sequence = this.fasta.getSequence(chrSize);
-            ArrayList<Gene> chrGenes =this.annot.getFeatureByChr(chrName);
+            ArrayList<Gene> chrGenes = this.annot.getFeatureByChr(chrName);
 //            System.out.println(chrSize);
             if (map!=null){
                 Chromosome chr = new Chromosome(chrName,map,relSize,sequence,chrGenes);

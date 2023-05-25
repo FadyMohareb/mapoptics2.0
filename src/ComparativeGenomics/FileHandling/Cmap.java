@@ -21,7 +21,7 @@ import javax.swing.JOptionPane;
 /**
  *
  * @author franpeters
- * this class is to store all of the contiguous maps contained within the cmap file
+ * Stores all of the contiguous maps contained within the cmap file
  * the data are stored into hashmaps to allow for efficient access
  * The class constructor takes on only one argument, a string containing the filepath of the cmap file
  * to be loaded into mapoptics
@@ -50,7 +50,8 @@ public class Cmap {
        readCmap();
     }
     /**
-     * Method to return the data of a contig of a given size from the  Cmap, for use when assigning a chromosome name using the Karyotype file. 
+     * Returns the data of a contig of a given size from the Cmap, 
+     * for use when assigning a chromosome name using the Karyotype file. 
      * @param x size of cmap contig to access
      * @return the CmapData corresponding to that size
      */
@@ -58,7 +59,8 @@ public class Cmap {
         return this.cmapSize.get(x);
     }
     /**
-     *o	Method to return the data of a contig of a given ID from the  Cmap, for use when accessing CmapData for an Xmap file. 
+     *o	Returns the data of a contig of a given ID from the Cmap, 
+     * for use when accessing CmapData for an Xmap file. 
      * @param x ID of cmap contig to access
      * @return the CmapData corresponding to that ID
      */

@@ -146,7 +146,9 @@ public class Karyotype {
     }
      
     /**
-     * o	read the karyotype file using scanner to parse each line in the Karyotype file in a memory efficient manner. Each line is split and the data is saved into ArrayLists and a HashMap. The genome size is also calculated as the file is parsed.
+     * o	read the karyotype file using scanner to parse each line in the Karyotype file 
+     *          in a memory efficient manner. Each line is split and the data is saved 
+     *          into ArrayLists and a HashMap. The genome size is also calculated as the file is parsed.
      * @param filepath of the file to be parsed
      */
     private void readKaryotypeFile(String filepath){

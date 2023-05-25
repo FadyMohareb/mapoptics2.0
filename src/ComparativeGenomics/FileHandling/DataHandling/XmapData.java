@@ -15,6 +15,8 @@ import java.util.Objects;
 /**
  *
  * @author franpeters
+ * Stores the data for each individual alignment identified as the XMAP file.
+ * All of the aligned sites are stored as a Pair.
  */
 public class XmapData {
     private final Integer ID;
@@ -142,6 +144,13 @@ public class XmapData {
         return this.refEnd;
     }
    
+    /**
+     * 
+     * o    Gets data of each site to detect indel.
+     * @param ref   Data from Cmap reference
+     * @param qry   Data from Cmap query
+     * @param minIndelSize  Minimum size for indel
+     */
     public void setCmap(CmapData ref, CmapData qry, Integer minIndelSize){     
         for (Pair pair: align){
             Integer refSiteID = pair.getRef();
@@ -151,6 +160,7 @@ public class XmapData {
             } 
         }
     }
+    
     
     private ArrayList<Indel> detectIndel(Site refSite, Site qrySite, Integer minIndelSize, Integer refID, Integer qryID){
         ArrayList<Indel> foundIndels = new ArrayList();

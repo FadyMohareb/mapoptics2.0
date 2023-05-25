@@ -16,7 +16,8 @@ import java.util.Objects;
 
 /**
  *
- * @author franpeters Class to store the alignment files produced by the job
+ * @author franpeters 
+ * Stores the alignment files produced by the job
  */
 public final class Alignment {
 
@@ -42,14 +43,11 @@ public final class Alignment {
      */
     public Alignment(Genome refGenome, Cmap qryCmap, Xmap xmap) {
         this.refGenome = refGenome;
-
         this.refCmapIDs = this.refGenome.getCmapIDs();
         this.cmapRef = this.refGenome.getCmap();
         this.cmapQry = qryCmap;
         this.xmap = xmap;
-        
 
-        
         for (Map.Entry<Integer, ArrayList<XmapData>> entry : this.xmap.getXmap().entrySet()) {
             Integer chrID = entry.getKey();
             ArrayList<XmapData> value = entry.getValue();
@@ -82,7 +80,7 @@ public final class Alignment {
                 Integer id = xmap1.getID();
                 for (XmapData xmap2: this.xmap.getAllXmaps().values() ){
 //                    check not comparing to itself
-                    if (!Objects.equals(xmap2.getID(), id)&Objects.equals(xmap1.getRefID(), xmap2.getRefID())){
+                    if (!Objects.equals(xmap2.getID(), Data)&Objects.equals(xmap1.getRefID(), xmap2.getRefID())){
 //                        detect duplications
 //                        detectDuplications(xmap1,xmap2,duplicationMin);
                     }
@@ -109,8 +107,11 @@ public final class Alignment {
         return this.cmapRef;
     }
 
+    /**
+     * Assigns each chromosome in a genome a cmap file with all the
+     * digestion sites corresponding to that chromosome
+     */
     private void setAlignments() {
-
 //       where a refcmapid refers to a chromosome as each cmap refers to one chromosome
         for (int i = 0; i < this.refCmapIDs.size(); i++) {
 //            cmapID = chromosome

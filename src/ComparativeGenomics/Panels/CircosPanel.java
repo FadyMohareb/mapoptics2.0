@@ -21,14 +21,16 @@ import java.util.List;
 /**
  *
  * @author franpeters
+ * Draws the chromosome making up the genome in a circle.
+ * Indicates any detected translocation events using the MapOpticsArcs and Curve2D objects.
  */
 public class CircosPanel extends javax.swing.JPanel implements MouseListener, MouseMotionListener {
     Karyotype karyotype=null;
     boolean trans = false;
     Genome refGenome;
-    ArrayList<Double> chrSizes=new ArrayList();
-    ArrayList<String> chrNames=new ArrayList();
-    ArrayList<Translocation> translocations=new ArrayList();
+    ArrayList<Double> chrSizes = new ArrayList();
+    ArrayList<String> chrNames = new ArrayList();
+    ArrayList<Translocation> translocations = new ArrayList();
     HashMap<String,MapOpticsArc> arcs = new HashMap();
     
     /**
@@ -106,7 +108,7 @@ public class CircosPanel extends javax.swing.JPanel implements MouseListener, Mo
                     }else{
                         g2d.setColor(Color.LIGHT_GRAY);
                     }
-                    MapOpticsArc arc = new MapOpticsArc(x,y,size,size,start,-(sumAngles(listAngles,0,i+1)),names.get(i));
+                    MapOpticsArc arc = new MapOpticsArc(x, y,size,size, start, -(sumAngles(listAngles,0, i+1)),names.get(i));
                     Shape arcShape = arc;
                     //                    centre pount of arc
                     double cx = x + (size*0.5);

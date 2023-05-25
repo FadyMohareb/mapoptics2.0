@@ -3,7 +3,8 @@ package ComparativeGenomics.FileHandling.DataHandling;
 /**
  *
  * @author franpeters
- * To store the information on the match, so that only the matches related to the displayed reference cmap are drawn.
+ * To store the information on the match, so that only the matches 
+ * related to the displayed reference cmap are drawn.
  */
 public class Match {
     private boolean match = false;
@@ -11,7 +12,8 @@ public class Match {
     private Integer qryCmapID;
     private Site qrySite;
     private Integer cmapID;
-    public Match(Integer cmapId,boolean m, Site q){
+    
+    public Match(Integer cmapId, boolean m, Site q){
         this.cmapID=cmapId;
         this.match=m;
 //        this.refCmapID=r;

@@ -9,7 +9,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Read in the file generated from the calc_best_enz.sh script to determine the frequency of different digestion enzymes for a given fasta file. The file has been downloaded from the ExternalServer which is associated with a job chosen by the user. See the calc_best_enz.sh User Guide for information on the format of the file outputted by the script.
+ * Read in the file generated from the calc_best_enz.sh script 
+ * to determine the frequency of different digestion enzymes 
+ * for a given fasta file. The file has been downloaded from 
+ * the ExternalServer which is associated with a job chosen by the user. 
+ * See the calc_best_enz.sh User Guide for information on the format 
+ * of the file outputted by the script.
  * @author franpeters
  */
 public class BestEnzyme {
@@ -25,7 +30,9 @@ public class BestEnzyme {
         readFile();
     }
     /**
-     *  read the best enzyme file using Scanner to parse each line, saving each enzyme as the key in the result HashMap and the density as the value
+     * read the best enzyme file using Scanner to parse each line, 
+     * saving each enzyme as the key in the result HashMap and 
+     * the density as the value
      */
     private void readFile(){
         FileInputStream inputStream = null;

@@ -3,7 +3,8 @@ package ComparativeGenomics.FileHandling.DataHandling;
 /**
  *
  * @author franpeters
- * Contains a nucleotide sequence and calculates useful statistics such as number of Ns and GC content 
+ * Contains a nucleotide sequence and calculates useful statistics 
+ * such as number of Ns and GC content 
  */
 public class Sequence {
     private final String sequence;

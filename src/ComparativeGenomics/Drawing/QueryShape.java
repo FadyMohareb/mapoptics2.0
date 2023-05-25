@@ -123,8 +123,7 @@ public class QueryShape {
                     Shape ref = refSiteLine;
                     g2d.draw(ref);
             }
-        }
-        
+        } 
     }
     
     public MapOpticsRectangle getRect(){

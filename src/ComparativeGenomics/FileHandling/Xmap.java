@@ -22,6 +22,13 @@ import java.util.regex.Pattern;
 /**
  *
  * @author franpeters
+ * Verifies file format, parse and save the contents of an XMAP file. 
+ * Scanner is used to read through the contents of the file in a memory efficient manner. 
+ * The data is stored into HashMap data structures using XmapData 
+ * (see 3.2.10 for more information on this class) and Pair (see 3.2.7) objects. 
+ * XmapData stores information regarding each Xmap ID within the file.
+ * This class assumes the file follows the criteria laid out here 
+ * https://bionanogenomics.com/wp-content/uploads/2017/03/30040-XMAP-FileFormat-Specification-Sheet.pdf
  */
 public class Xmap {
     private HashMap<Integer,ArrayList<XmapData>> xmap = new HashMap(); //where key is ref cmap ID and value is the xmapmap
@@ -30,8 +37,10 @@ public class Xmap {
     private Integer numberConsensus;
     private String filepath;
 
-//   this is to check if there have been any translocation events. i.e. one query map mapping to more than one ref cmap i.e. chromosome!
-    private HashMap<Integer,ArrayList<XmapData>> queryMapsToRef = new HashMap(); //where key is the query map ID and values are the refmap IDs
+//   this is to check if there have been any translocation events. 
+    //i.e. one query map mapping to more than one ref cmap i.e. chromosome!
+    private HashMap<Integer,ArrayList<XmapData>> queryMapsToRef = new HashMap(); 
+    //where key is the query map ID and values are the refmap IDs
     private Cmap refCmap;
     private Cmap qryCmap;
     private Integer indelTotal = 0;
@@ -40,17 +49,17 @@ public class Xmap {
     private HashMap<Integer,XmapData> allXmaps = new HashMap();
    
     public Xmap(String filepath){
-       this.filepath = filepath;
-       readXmap();
-       Iterator<Map.Entry<Integer, ArrayList<XmapData>>> entries = this.xmap.entrySet().iterator();
+        this.filepath = filepath;
+        readXmap();
+        Iterator<Map.Entry<Integer, ArrayList<XmapData>>> entries = this.xmap.entrySet().iterator();
         while (entries.hasNext()) {
             Map.Entry<Integer, ArrayList<XmapData>> entry = entries.next();
             Integer chrSize = entry.getKey();
             ArrayList<XmapData> chrName = entry.getValue();
 //            System.out.println(chrSize + " ");
-            for(int i=0;i<chrName.size();i++){
+//            for(int i=0;i<chrName.size();i++){
 //                System.out.print(chrName.get(i).refStart +"   START    ");
-            }
+//            }
         }
     }
     
@@ -63,12 +72,17 @@ public class Xmap {
         return this.xmap.get(x);
     }
     /**
-     * o	parse the Xmap file using Scanner to read each line in a memory efficient manner. Each line that is not a header line is read into an XmapData object except the Alignment field of the file which is split into an ArrayList and each site ‘pair’ (i.e. (1,2) where the first integer is the reference cmap site id and the second integer is the query cmap site id) is read into a Pair object (see 3.2.7) which is also added to the XmapData object.
+     * o	parse the Xmap file using Scanner to read each line in a memory efficient manner. 
+     *          Each line that is not a header line is read into an XmapData object 
+     *          except the Alignment field of the file which is split into an ArrayList 
+     *          and each site ‘pair’ (i.e. (1,2) where the first integer is the reference 
+     *          cmap site id and the second integer is the query cmap site id) 
+     *          is read into a Pair object (see 3.2.7) which is also added to the XmapData object.
      */
     private void readXmap(){
         String[] directory = this.filepath.split("/");
         
-        boolean checkXmap = validateXmap(this.filepath);
+        boolean checkXmap = ValidateXMAP(this.filepath);
 //       Validate XMAP
         if (!checkXmap) {
 //            do not read file if it is not valid 
@@ -259,6 +273,9 @@ public class Xmap {
     
     /**
      * 
+     * o    Detect any potential insertion or deletions by comparing the size of the ref and 
+     *      query lengths for each XmapData and checking if the difference is above the 
+     *      minimum size of the indel SV
      * @param minIndelSize 
      */
     public void detectSVs(Integer minIndelSize){
@@ -275,7 +292,7 @@ public class Xmap {
             for (XmapData m1 : map1){
                 //            first detect indels
                 CmapData qryCmapMap = qryCmap.getCmapByID(m1.getQryID());
-                m1.setCmap(refCmapMap, qryCmapMap,minIndelSize);
+                m1.setCmap(refCmapMap, qryCmapMap, minIndelSize);
                 indelTotal += m1.numIndels();
                     }
                 }

@@ -18,6 +18,8 @@ import org.knowm.xchart.style.Styler;
 /**
  *
  * @author franpeters
+ * Plot the number of alignments per each chromosome within the reference genome using XChart.
+ * The chart style can be changed by the user.
  */
 public class AlignmentsPerChromosomeChartPanel extends JPanel {
  boolean drawChart = false;

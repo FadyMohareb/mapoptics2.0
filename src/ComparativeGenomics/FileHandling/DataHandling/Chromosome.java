@@ -155,7 +155,7 @@ public class Chromosome {
                                 indel.addFeature(feature);
                                 if(!genesOnIndels.contains(feature.getName())){
                                     genesOnIndels.add(feature.getName());
-                                     indel.addFeature(feature);
+                                    indel.addFeature(feature);
                                     
                                 }
                             }

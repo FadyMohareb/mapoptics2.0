@@ -37,6 +37,7 @@ import startScreen.startScreen;
 /**
  *
  * @author franpeters
+ * Provides the GUI and methods to start an alignment Job on an ExternalServer.
  */
 
 public class CompGenStart extends javax.swing.JFrame {
