@@ -187,7 +187,7 @@ public class Xmap {
      * @param filepath of file to be validated
      * @return true if valid and false if not
      */
-    private boolean validateXmap(String filepath){
+    private boolean ValidateXMAP(String filepath){
 //        need to add in code here to check the xmap file!
         return true;
     }
