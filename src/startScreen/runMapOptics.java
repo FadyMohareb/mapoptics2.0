@@ -8,7 +8,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  *
@@ -51,16 +52,20 @@ public class runMapOptics {
             UIManager.put("JButton.setBackground",Color.CYAN);
             startScreen screen = new startScreen();
             screen.setVisible(true);
+            
+            // Get the path where files are saved
+            Path path = Paths.get("");
+            String pathDirectory = path.toAbsolutePath().toString();
+            
 //            Make sure the json files for the josb and server objects to be saved between sessions still exist
-            File jobsJson = new File("/Users/franpeters/Documents/MSc Thesis/MapOptics/jobs.json");
+            File jobsJson = new File(pathDirectory + "\\jobs.json");
             if(!jobsJson.exists()){
               jobsJson.createNewFile();
             }
-            File servJson = new File("/Users/franpeters/Documents/MSc Thesis/MapOptics/servers.json");
+            File servJson = new File(pathDirectory + "\\servers.json");
             if(!servJson.exists()){
               servJson.createNewFile();
-            }
-             
+            }             
         } catch( UnsupportedLookAndFeelException ex ) {
             System.err.println( "Failed to initialize LaF" );
         } catch (IOException ex) {
