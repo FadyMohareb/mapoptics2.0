@@ -54,7 +54,7 @@ public class Gene{
         for (int i=0;i<size;i++){
             String str = infoSplit[i];
             Matcher checkChr = Pattern.compile("gene_name").matcher(str);
-                if (checkChr.find()==true){
+                if (checkChr.find()== true){
                     String[] geneNameArr = str.split("=");
                     this.name = geneNameArr[geneNameArr.length-1];
                 }else{
