@@ -131,8 +131,8 @@ public class CompGenStart extends javax.swing.JFrame {
         refalignerPipeline = new javax.swing.JRadioButton();
         fandomPipeline = new javax.swing.JRadioButton();
         runCalcBestEnzyme = new javax.swing.JButton();
-        jButton14 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        Btn_modifAlignParam = new javax.swing.JButton();
+        bnt_help = new javax.swing.JButton();
         startJobButton = new javax.swing.JButton();
         sendQueryMenu = new javax.swing.JMenuBar();
         jMenu2 = new javax.swing.JMenu();
@@ -522,7 +522,12 @@ public class CompGenStart extends javax.swing.JFrame {
             }
         });
 
-        jButton14.setText("Modify Alignment Parameters");
+        Btn_modifAlignParam.setText("Modify Alignment Parameters");
+        Btn_modifAlignParam.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Btn_modifAlignParamActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -550,7 +555,7 @@ public class CompGenStart extends javax.swing.JFrame {
                         .addContainerGap())))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton14)
+                .addComponent(Btn_modifAlignParam)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -568,13 +573,21 @@ public class CompGenStart extends javax.swing.JFrame {
                     .addComponent(refalignerPipeline)
                     .addComponent(fandomPipeline))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton14)
+                .addComponent(Btn_modifAlignParam)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         chooseEnzyme.setEnabled(false);
+        runCalcBestEnzyme.setEnabled(false);
+        // The button is only visible once server and files are chosen
+        Btn_modifAlignParam.setEnabled(false);
 
-        jButton3.setText("Help");
+        bnt_help.setText("Help");
+        bnt_help.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bnt_helpActionPerformed(evt);
+            }
+        });
 
         startJobButton.setText("Start Job");
         startJobButton.addActionListener(new java.awt.event.ActionListener() {
@@ -700,7 +713,7 @@ public class CompGenStart extends javax.swing.JFrame {
                             .addComponent(serverPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(makeCompGenJobLayout.createSequentialGroup()
                                 .addGap(6, 6, 6)
-                                .addComponent(jButton3)
+                                .addComponent(bnt_help)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(startJobButton)))
                         .addContainerGap())))
@@ -718,7 +731,7 @@ public class CompGenStart extends javax.swing.JFrame {
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(makeCompGenJobLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton3)
+                    .addComponent(bnt_help)
                     .addComponent(startJobButton))
                 .addContainerGap())
         );
@@ -726,6 +739,9 @@ public class CompGenStart extends javax.swing.JFrame {
         startJobButton.setEnabled(false);
 
         refURLDialog.setBounds(new java.awt.Rectangle(500, 500, 401, 35));
+        refURLDialog.setLocationByPlatform(true);
+        refURLDialog.setMinimumSize(new java.awt.Dimension(381, 51));
+        refURLDialog.setSize(new java.awt.Dimension(385, 51));
 
         jLabel21.setText("Reference URL:");
 
@@ -761,6 +777,9 @@ public class CompGenStart extends javax.swing.JFrame {
         );
 
         newServerDialog.setBounds(new java.awt.Rectangle(500, 500, 285, 268));
+        newServerDialog.setLocationByPlatform(true);
+        newServerDialog.setMinimumSize(new java.awt.Dimension(289, 270));
+        newServerDialog.setSize(new java.awt.Dimension(289, 270));
 
         jLabel8.setText("User Name:");
 
@@ -876,6 +895,9 @@ public class CompGenStart extends javax.swing.JFrame {
 
         currentServerDialog.setBounds(new java.awt.Rectangle(500, 500, 289, 266));
         currentServerDialog.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        currentServerDialog.setLocationByPlatform(true);
+        currentServerDialog.setMinimumSize(new java.awt.Dimension(293, 239));
+        currentServerDialog.setSize(new java.awt.Dimension(293, 239));
 
         jLabel25.setText("Server Host:");
 
@@ -960,6 +982,9 @@ public class CompGenStart extends javax.swing.JFrame {
 
         selectServerDialog.setTitle("Select Server");
         selectServerDialog.setBounds(new java.awt.Rectangle(500, 500, 397, 193));
+        selectServerDialog.setLocationByPlatform(true);
+        selectServerDialog.setMinimumSize(new java.awt.Dimension(409, 210));
+        selectServerDialog.setSize(new java.awt.Dimension(409, 230));
 
         chooseServerButton.setText("Select");
         chooseServerButton.addActionListener(new java.awt.event.ActionListener() {
@@ -1006,6 +1031,9 @@ public class CompGenStart extends javax.swing.JFrame {
         );
 
         browseEnzymesDialog.setBounds(new java.awt.Rectangle(500, 500, 400, 281));
+        browseEnzymesDialog.setLocationByPlatform(true);
+        browseEnzymesDialog.setMinimumSize(new java.awt.Dimension(412, 184));
+        browseEnzymesDialog.setSize(new java.awt.Dimension(412, 184));
 
         enzymeTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -1061,6 +1089,9 @@ public class CompGenStart extends javax.swing.JFrame {
 
         qryURLDialog.setTitle("Query File from URL");
         qryURLDialog.setBounds(new java.awt.Rectangle(500, 500, 397, 35));
+        qryURLDialog.setLocationByPlatform(true);
+        qryURLDialog.setMinimumSize(new java.awt.Dimension(401, 51));
+        qryURLDialog.setSize(new java.awt.Dimension(401, 51));
 
         jLabel10.setText("File URL:");
 
@@ -1099,6 +1130,9 @@ public class CompGenStart extends javax.swing.JFrame {
 
         uploadFiles.setTitle("Upload Alignment Files");
         uploadFiles.setBounds(new java.awt.Rectangle(300, 300, 397, 386));
+        uploadFiles.setLocationByPlatform(true);
+        uploadFiles.setMinimumSize(new java.awt.Dimension(414, 445));
+        uploadFiles.setSize(new java.awt.Dimension(414, 445));
 
         jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder("Reference Files"));
 
@@ -1191,7 +1225,7 @@ public class CompGenStart extends javax.swing.JFrame {
                     .addComponent(jLabel19)
                     .addComponent(chooseLocalRefKaryotype)
                     .addComponent(localRefKaryName))
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         loadLocalAlignment.setText("Load Data");
@@ -1331,6 +1365,9 @@ public class CompGenStart extends javax.swing.JFrame {
         filesDownloading.setTitle("Files Downloading");
         filesDownloading.setBounds(new java.awt.Rectangle(500, 500, 300, 150));
         filesDownloading.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+        filesDownloading.setLocationByPlatform(true);
+        filesDownloading.setMinimumSize(new java.awt.Dimension(283, 149));
+        filesDownloading.setSize(new java.awt.Dimension(283, 149));
 
         jLabel1.setText("Downloading files for job:");
 
@@ -1359,6 +1396,9 @@ public class CompGenStart extends javax.swing.JFrame {
 
         bestEnzymeDialog.setTitle("Best Enzyme");
         bestEnzymeDialog.setBackground(new java.awt.Color(255, 255, 255));
+        bestEnzymeDialog.setLocationByPlatform(true);
+        bestEnzymeDialog.setMinimumSize(new java.awt.Dimension(384, 309));
+        bestEnzymeDialog.setSize(new java.awt.Dimension(384, 309));
 
         jButton12.setText("Select");
 
@@ -1694,7 +1734,7 @@ public class CompGenStart extends javax.swing.JFrame {
             workingDirField.setText("mapoptics/jobs/");
             newJob.setServer(this.selectedServer);
 //            to delete
-            startJobButton.setEnabled(true);
+            //startJobButton.setEnabled(true);
         }else{
             //            do not set button as toggled if connection is not succesfully established
             connectServerToggle.setSelected(false);
@@ -1720,6 +1760,7 @@ public class CompGenStart extends javax.swing.JFrame {
             this.newJob.setRefFile(referenceFile);
             if (this.refAdded && this.qryAdded){
                 chooseEnzyme.setEnabled(true);
+                runCalcBestEnzyme.setEnabled(true);
             }
         }
     }//GEN-LAST:event_uploadFileRefActionPerformed
@@ -1742,6 +1783,7 @@ public class CompGenStart extends javax.swing.JFrame {
             this.newJob.setQryFile(queryFile);
             if (this.refAdded && this.qryAdded){
                 chooseEnzyme.setEnabled(true);
+                runCalcBestEnzyme.setEnabled(true);
             }
         }
     }//GEN-LAST:event_uploadQryGenomeActionPerformed
@@ -2132,6 +2174,14 @@ public class CompGenStart extends javax.swing.JFrame {
         this.localxmap = fileDialog.getDirectory() + fileDialog.getFile();
         this.localXmapName.setText(fileDialog.getFile());
     }//GEN-LAST:event_chooseLocalXmapActionPerformed
+
+    private void bnt_helpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bnt_helpActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_bnt_helpActionPerformed
+
+    private void Btn_modifAlignParamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_modifAlignParamActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Btn_modifAlignParamActionPerformed
     
     public String checkEnzymeName(JTextField field){
         String name = field.getText();
@@ -2508,10 +2558,12 @@ public class CompGenStart extends javax.swing.JFrame {
 }
         
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Btn_modifAlignParam;
     private javax.swing.JButton addNewServer;
     private javax.swing.JMenuItem addServerMenu;
     private javax.swing.JLabel bestEnz;
     private javax.swing.JDialog bestEnzymeDialog;
+    private javax.swing.JButton bnt_help;
     private javax.swing.JMenuItem browseEnzymes;
     private javax.swing.JDialog browseEnzymesDialog;
     private javax.swing.ButtonGroup buttonGroup1;
@@ -2544,8 +2596,6 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton13;
-    private javax.swing.JButton jButton14;
-    private javax.swing.JButton jButton3;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
