@@ -232,6 +232,8 @@ public class CompGenStart extends javax.swing.JFrame {
         jButton13 = new javax.swing.JButton();
         helpPane = new javax.swing.JDialog();
         exitBtn = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        helpHtmlPane = new javax.swing.JEditorPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jobsTable = new javax.swing.JTable();
@@ -1438,9 +1440,9 @@ public class CompGenStart extends javax.swing.JFrame {
         );
 
         helpPane.setLocationByPlatform(true);
-        helpPane.setMinimumSize(new java.awt.Dimension(420, 520));
-        helpPane.setPreferredSize(new java.awt.Dimension(420, 520));
-        helpPane.setSize(new java.awt.Dimension(420, 520));
+        helpPane.setMinimumSize(new java.awt.Dimension(497, 518));
+        helpPane.setPreferredSize(new java.awt.Dimension(500, 520));
+        helpPane.setSize(new java.awt.Dimension(500, 520));
 
         exitBtn.setText("Exit");
         exitBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -1449,19 +1451,80 @@ public class CompGenStart extends javax.swing.JFrame {
             }
         });
 
+        helpHtmlPane.setEditable(false);
+        helpHtmlPane.setContentType("text/html"); // NOI18N
+        helpHtmlPane.setText("<html>"+
+            "  <head>\n" +
+            "    <h1>" +
+            "      Perform alignment within MapOptics\n" +
+            "    </h1>\n" +
+            "    <h2>" +
+            "      Send new job to server\n" +
+            "    </h2>\n\n" +
+            " </head>" +
+            " <body>" +
+            "    <h3>" +
+            "      Select a server" +
+            "    </h3>\n" +
+            "    <p>\n" +
+            "      Select <b>Server</b> in the menu to either obtain information on a \n" +
+            "      server, add a new one or choose an existing one. The chosen server is \n" +
+            "      displayed on the main pane as <b>Selected server</b>. Once a server is \n" +
+            "      chosen, click the button <b>Connect</b> to establish the connexion. If \n" +
+            "      it is successful, other button <b>Set</b> will be available.\n\n" +
+            "    <br></p>\n" +
+            "    <h3>\n" +
+            "      Set a reference or a query file\n" +
+            "    </h3>" +
+            "    <p>\n" +
+            "      Write the name of the studied specie in the field <b>Species</b> for \n" +
+            "      either the reference or the query genome. Then, upload a fasta file by \n" +
+            "      selecting <b>File</b> in the menu, then <b>Reference genome</b> (or <b>Query \n" +
+            "      genome</b>), and choosing the method of your choice: either selection of \n" +
+            "      the file from URL: <b>Reference FASTA from URL</b> for from your local \n" +
+            "      file <b>Upload reference FASTA file</b>. Once a FASTA file is chosen, \n" +
+            "      the button <b>Upload</b> is available. The same goes for the selection \n" +
+            "      of an Annotation file (either gff3 or gtf), in <b>File, Reference \n" +
+            "      Genome, Reference annotation file</b>.\n\n" +
+            "    <br></p>\n" +
+            "    <h3>\n" +
+            "      Set alignment parameters\n" +
+            "    </h3>\n" +
+            "    <p>" +
+            "      The <b>Settings</b> section is available once the query and reference \n" +
+            "      genome are both selected. You can either <b>Choose</b> or <b>Calculate</b> \n" +
+            "      the optimise Nickase Enzymes to use for the <i>in silico</i> digestion \n" +
+            "      of your file. Then, choose your aligner: <b>RefAligner</b> or <bfandom>. \n" +
+            "      Click <b>Modify Alignment Parameters</b> to customise your alignmenet \n" +
+            "      parameters.\n" +
+            "    <br></p>\n" +
+            "    <h3>\n" +
+            "      Start the job" +
+            "    </h3>\n" +
+            "    <p>\n" +
+            "      Click the button <b>Start Job</b> to start the job. Please note that \n" +
+            "      this button is only available once a server is connected, and once \n" +
+            "      reference and query genome are choosen, as well as a restriction enzyme." +
+            "    <br></p>\n" +
+            "  </body>\n" +
+            "</html>");
+        jScrollPane1.setViewportView(helpHtmlPane);
+
         javax.swing.GroupLayout helpPaneLayout = new javax.swing.GroupLayout(helpPane.getContentPane());
         helpPane.getContentPane().setLayout(helpPaneLayout);
         helpPaneLayout.setHorizontalGroup(
             helpPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, helpPaneLayout.createSequentialGroup()
-                .addContainerGap(184, Short.MAX_VALUE)
+                .addContainerGap(223, Short.MAX_VALUE)
                 .addComponent(exitBtn)
-                .addContainerGap(184, Short.MAX_VALUE))
+                .addContainerGap(223, Short.MAX_VALUE))
+            .addComponent(jScrollPane1)
         );
         helpPaneLayout.setVerticalGroup(
             helpPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, helpPaneLayout.createSequentialGroup()
-                .addContainerGap(480, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 467, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(exitBtn)
                 .addContainerGap())
         );
@@ -2631,6 +2694,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JButton exitCompGenomics;
     private javax.swing.JRadioButton fandomPipeline;
     private javax.swing.JDialog filesDownloading;
+    private javax.swing.JEditorPane helpHtmlPane;
     private javax.swing.JDialog helpPane;
     private javax.swing.JTextField hostAddressField;
     private javax.swing.JButton jButton1;
@@ -2681,6 +2745,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextField jTextField1;

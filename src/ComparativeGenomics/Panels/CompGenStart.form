@@ -1829,13 +1829,13 @@
       <Properties>
         <Property name="locationByPlatform" type="boolean" value="true"/>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[420, 520]"/>
+          <Dimension value="[497, 518]"/>
         </Property>
         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[420, 520]"/>
+          <Dimension value="[500, 520]"/>
         </Property>
         <Property name="size" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[420, 520]"/>
+          <Dimension value="[500, 520]"/>
         </Property>
       </Properties>
 
@@ -1843,16 +1843,18 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace pref="184" max="32767" attributes="0"/>
+                  <EmptySpace pref="223" max="32767" attributes="0"/>
                   <Component id="exitBtn" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="184" max="32767" attributes="0"/>
+                  <EmptySpace pref="223" max="32767" attributes="0"/>
               </Group>
+              <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace pref="480" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="467" max="32767" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="exitBtn" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -1868,6 +1870,24 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exitBtnActionPerformed"/>
           </Events>
         </Component>
+        <Container class="javax.swing.JScrollPane" name="jScrollPane1">
+          <AuxValues>
+            <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+          </AuxValues>
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+          <SubComponents>
+            <Component class="javax.swing.JEditorPane" name="helpHtmlPane">
+              <Properties>
+                <Property name="editable" type="boolean" value="false"/>
+                <Property name="contentType" type="java.lang.String" value="text/html" noResource="true"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="helpHtmlPane.setText(&quot;&lt;html&gt;&quot;+&#xa;&quot;  &lt;head&gt;\n&quot; +&#xa;&quot;    &lt;h1&gt;&quot; +&#xa;&quot;      Perform alignment within MapOptics\n&quot; +&#xa;&quot;    &lt;/h1&gt;\n&quot; +&#xa;&quot;    &lt;h2&gt;&quot; +&#xa;&quot;      Send new job to server\n&quot; +&#xa;&quot;    &lt;/h2&gt;\n\n&quot; +&#xa;&quot; &lt;/head&gt;&quot; +&#xa;&quot; &lt;body&gt;&quot; +&#xa;&quot;    &lt;h3&gt;&quot; +&#xa;&quot;      Select a server&quot; +&#xa;&quot;    &lt;/h3&gt;\n&quot; +&#xa;&quot;    &lt;p&gt;\n&quot; +&#xa;&quot;      Select &lt;b&gt;Server&lt;/b&gt; in the menu to either obtain information on a \n&quot; +&#xa;&quot;      server, add a new one or choose an existing one. The chosen server is \n&quot; +&#xa;&quot;      displayed on the main pane as &lt;b&gt;Selected server&lt;/b&gt;. Once a server is \n&quot; +&#xa;&quot;      chosen, click the button &lt;b&gt;Connect&lt;/b&gt; to establish the connexion. If \n&quot; +&#xa;&quot;      it is successful, other button &lt;b&gt;Set&lt;/b&gt; will be available.\n\n&quot; +&#xa;&quot;    &lt;br&gt;&lt;/p&gt;\n&quot; +&#xa;&quot;    &lt;h3&gt;\n&quot; +&#xa;&quot;      Set a reference or a query file\n&quot; +&#xa;&quot;    &lt;/h3&gt;&quot; +&#xa;&quot;    &lt;p&gt;\n&quot; +&#xa;&quot;      Write the name of the studied specie in the field &lt;b&gt;Species&lt;/b&gt; for \n&quot; +&#xa;&quot;      either the reference or the query genome. Then, upload a fasta file by \n&quot; +&#xa;&quot;      selecting &lt;b&gt;File&lt;/b&gt; in the menu, then &lt;b&gt;Reference genome&lt;/b&gt; (or &lt;b&gt;Query \n&quot; +&#xa;&quot;      genome&lt;/b&gt;), and choosing the method of your choice: either selection of \n&quot; +&#xa;&quot;      the file from URL: &lt;b&gt;Reference FASTA from URL&lt;/b&gt; for from your local \n&quot; +&#xa;&quot;      file &lt;b&gt;Upload reference FASTA file&lt;/b&gt;. Once a FASTA file is chosen, \n&quot; +&#xa;&quot;      the button &lt;b&gt;Upload&lt;/b&gt; is available. The same goes for the selection \n&quot; +&#xa;&quot;      of an Annotation file (either gff3 or gtf), in &lt;b&gt;File, Reference \n&quot; +&#xa;&quot;      Genome, Reference annotation file&lt;/b&gt;.\n\n&quot; +&#xa;&quot;    &lt;br&gt;&lt;/p&gt;\n&quot; +&#xa;&quot;    &lt;h3&gt;\n&quot; +&#xa;&quot;      Set alignment parameters\n&quot; +&#xa;&quot;    &lt;/h3&gt;\n&quot; +&#xa;&quot;    &lt;p&gt;&quot; +&#xa;&quot;      The &lt;b&gt;Settings&lt;/b&gt; section is available once the query and reference \n&quot; +&#xa;&quot;      genome are both selected. You can either &lt;b&gt;Choose&lt;/b&gt; or &lt;b&gt;Calculate&lt;/b&gt; \n&quot; +&#xa;&quot;      the optimise Nickase Enzymes to use for the &lt;i&gt;in silico&lt;/i&gt; digestion \n&quot; +&#xa;&quot;      of your file. Then, choose your aligner: &lt;b&gt;RefAligner&lt;/b&gt; or &lt;bfandom&gt;. \n&quot; +&#xa;&quot;      Click &lt;b&gt;Modify Alignment Parameters&lt;/b&gt; to customise your alignmenet \n&quot; +&#xa;&quot;      parameters.\n&quot; +&#xa;&quot;    &lt;br&gt;&lt;/p&gt;\n&quot; +&#xa;&quot;    &lt;h3&gt;\n&quot; +&#xa;&quot;      Start the job&quot; +&#xa;&quot;    &lt;/h3&gt;\n&quot; +&#xa;&quot;    &lt;p&gt;\n&quot; +&#xa;&quot;      Click the button &lt;b&gt;Start Job&lt;/b&gt; to start the job. Please note that \n&quot; +&#xa;&quot;      this button is only available once a server is connected, and once \n&quot; +&#xa;&quot;      reference and query genome are choosen, as well as a restriction enzyme.&quot; +&#xa;&quot;    &lt;br&gt;&lt;/p&gt;\n&quot; +&#xa;&quot;  &lt;/body&gt;\n&quot; +&#xa;&quot;&lt;/html&gt;&quot;);"/>
+              </AuxValues>
+            </Component>
+          </SubComponents>
+        </Container>
       </SubComponents>
     </Container>
     <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
