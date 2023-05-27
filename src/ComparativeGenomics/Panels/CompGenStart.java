@@ -135,7 +135,7 @@ public class CompGenStart extends javax.swing.JFrame {
         bnt_help = new javax.swing.JButton();
         startJobButton = new javax.swing.JButton();
         sendQueryMenu = new javax.swing.JMenuBar();
-        jMenu2 = new javax.swing.JMenu();
+        textMenu = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
         refFromURL = new javax.swing.JMenuItem();
         uploadReference = new javax.swing.JMenuItem();
@@ -144,11 +144,11 @@ public class CompGenStart extends javax.swing.JFrame {
         downloadQueryURL = new javax.swing.JMenuItem();
         uploadQueryGenome = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
-        jMenu3 = new javax.swing.JMenu();
+        serverMenu = new javax.swing.JMenu();
         serverInfoButton = new javax.swing.JMenuItem();
         addServerMenu = new javax.swing.JMenuItem();
         chooseServerMenu = new javax.swing.JMenuItem();
-        jMenu7 = new javax.swing.JMenu();
+        enzymesMenu = new javax.swing.JMenu();
         browseEnzymes = new javax.swing.JMenuItem();
         refURLDialog = new javax.swing.JDialog();
         jLabel21 = new javax.swing.JLabel();
@@ -230,6 +230,8 @@ public class CompGenStart extends javax.swing.JFrame {
         bestEnz = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
         jButton13 = new javax.swing.JButton();
+        helpPane = new javax.swing.JDialog();
+        exitBtn = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jobsTable = new javax.swing.JTable();
@@ -596,7 +598,7 @@ public class CompGenStart extends javax.swing.JFrame {
             }
         });
 
-        jMenu2.setText("File");
+        textMenu.setText("File");
 
         jMenu4.setText("Reference Genome");
 
@@ -624,7 +626,7 @@ public class CompGenStart extends javax.swing.JFrame {
         });
         jMenu4.add(jMenuItem2);
 
-        jMenu2.add(jMenu4);
+        textMenu.add(jMenu4);
 
         jMenu5.setText("Query Genome");
 
@@ -652,11 +654,11 @@ public class CompGenStart extends javax.swing.JFrame {
         });
         jMenu5.add(jMenuItem4);
 
-        jMenu2.add(jMenu5);
+        textMenu.add(jMenu5);
 
-        sendQueryMenu.add(jMenu2);
+        sendQueryMenu.add(textMenu);
 
-        jMenu3.setText("Server");
+        serverMenu.setText("Server");
 
         serverInfoButton.setText("Server Info");
         serverInfoButton.addActionListener(new java.awt.event.ActionListener() {
@@ -664,7 +666,7 @@ public class CompGenStart extends javax.swing.JFrame {
                 serverInfoButtonActionPerformed(evt);
             }
         });
-        jMenu3.add(serverInfoButton);
+        serverMenu.add(serverInfoButton);
 
         addServerMenu.setText("Add Server");
         addServerMenu.addActionListener(new java.awt.event.ActionListener() {
@@ -672,7 +674,7 @@ public class CompGenStart extends javax.swing.JFrame {
                 addServerMenuActionPerformed(evt);
             }
         });
-        jMenu3.add(addServerMenu);
+        serverMenu.add(addServerMenu);
 
         chooseServerMenu.setText("Choose Server");
         chooseServerMenu.addActionListener(new java.awt.event.ActionListener() {
@@ -680,11 +682,11 @@ public class CompGenStart extends javax.swing.JFrame {
                 chooseServerMenuActionPerformed(evt);
             }
         });
-        jMenu3.add(chooseServerMenu);
+        serverMenu.add(chooseServerMenu);
 
-        sendQueryMenu.add(jMenu3);
+        sendQueryMenu.add(serverMenu);
 
-        jMenu7.setText("Nickase Enzymes");
+        enzymesMenu.setText("Nickase Enzymes");
 
         browseEnzymes.setText("Browse Enzymes");
         browseEnzymes.addActionListener(new java.awt.event.ActionListener() {
@@ -692,9 +694,9 @@ public class CompGenStart extends javax.swing.JFrame {
                 browseEnzymesActionPerformed(evt);
             }
         });
-        jMenu7.add(browseEnzymes);
+        enzymesMenu.add(browseEnzymes);
 
-        sendQueryMenu.add(jMenu7);
+        sendQueryMenu.add(enzymesMenu);
 
         makeCompGenJob.setJMenuBar(sendQueryMenu);
 
@@ -1432,6 +1434,35 @@ public class CompGenStart extends javax.swing.JFrame {
                     .addComponent(bestEnz)
                     .addComponent(jLabel20)
                     .addComponent(jButton13))
+                .addContainerGap())
+        );
+
+        helpPane.setLocationByPlatform(true);
+        helpPane.setMinimumSize(new java.awt.Dimension(420, 520));
+        helpPane.setPreferredSize(new java.awt.Dimension(420, 520));
+        helpPane.setSize(new java.awt.Dimension(420, 520));
+
+        exitBtn.setText("Exit");
+        exitBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout helpPaneLayout = new javax.swing.GroupLayout(helpPane.getContentPane());
+        helpPane.getContentPane().setLayout(helpPaneLayout);
+        helpPaneLayout.setHorizontalGroup(
+            helpPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, helpPaneLayout.createSequentialGroup()
+                .addContainerGap(184, Short.MAX_VALUE)
+                .addComponent(exitBtn)
+                .addContainerGap(184, Short.MAX_VALUE))
+        );
+        helpPaneLayout.setVerticalGroup(
+            helpPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, helpPaneLayout.createSequentialGroup()
+                .addContainerGap(480, Short.MAX_VALUE)
+                .addComponent(exitBtn)
                 .addContainerGap())
         );
 
@@ -2176,12 +2207,18 @@ public class CompGenStart extends javax.swing.JFrame {
     }//GEN-LAST:event_chooseLocalXmapActionPerformed
 
     private void bnt_helpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bnt_helpActionPerformed
-        // TODO add your handling code here:
+        // Display help pane
+        helpPane.setVisible(true);
     }//GEN-LAST:event_bnt_helpActionPerformed
 
     private void Btn_modifAlignParamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_modifAlignParamActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_Btn_modifAlignParamActionPerformed
+
+    private void exitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitBtnActionPerformed
+        // Close help panel
+        helpPane.setVisible(false);
+    }//GEN-LAST:event_exitBtnActionPerformed
     
     public String checkEnzymeName(JTextField field){
         String name = field.getText();
@@ -2589,9 +2626,12 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JMenuItem downloadQueryURL;
     private javax.swing.JScrollPane enzymeScroll;
     private javax.swing.JTable enzymeTable;
+    private javax.swing.JMenu enzymesMenu;
+    private javax.swing.JButton exitBtn;
     private javax.swing.JButton exitCompGenomics;
     private javax.swing.JRadioButton fandomPipeline;
     private javax.swing.JDialog filesDownloading;
+    private javax.swing.JDialog helpPane;
     private javax.swing.JTextField hostAddressField;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton12;
@@ -2628,11 +2668,8 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
-    private javax.swing.JMenu jMenu7;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem4;
@@ -2686,6 +2723,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JPanel sendRefGenomePanel;
     private javax.swing.JMenuItem serverInfoButton;
     private javax.swing.JLabel serverLabel;
+    private javax.swing.JMenu serverMenu;
     private javax.swing.JTextField serverNameField;
     private javax.swing.JPanel serverPanel;
     private javax.swing.JPasswordField serverPasswordField;
@@ -2695,6 +2733,7 @@ public class CompGenStart extends javax.swing.JFrame {
     public javax.swing.JCheckBox setNewAsServer;
     private javax.swing.JCheckBox showPass;
     private javax.swing.JButton startJobButton;
+    private javax.swing.JMenu textMenu;
     private javax.swing.JButton uploadFileRef;
     private javax.swing.JDialog uploadFiles;
     private javax.swing.JButton uploadPreAligned;
