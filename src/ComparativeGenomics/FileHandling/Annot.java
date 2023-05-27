@@ -43,19 +43,20 @@ public class Annot {
 //        first need to check the file version as it will change slightly what information is contained
         String[] directory = this.filepath.split("/");
         
-        
             FileInputStream inputStream = null;
             Scanner sc = null;
             try {
                 Integer count=0;
                 inputStream = new FileInputStream(this.filepath);
                 sc = new Scanner(inputStream, "UTF-8");
+                // Read the whole file and save lines corresponding to chromosomes as Gene objects
                 while (sc.hasNextLine()) {
                     String row = sc.nextLine();
                     String chrPattern = "#";
                     Pattern c = Pattern.compile(chrPattern);  
                     Matcher checkHeader = c.matcher(row);
                     if (checkHeader.find() == true){
+                        // Check the header to have the format of the file ()gff or gtf)
                         String gffPattern = "gff";
                         Pattern f = Pattern.compile(gffPattern);  
                         Matcher checkGff = f.matcher(row);
@@ -64,32 +65,37 @@ public class Annot {
                         Matcher checkGtf = t.matcher(row);
                         if (checkGff.find() == true){
                             gff3=true;
-                     
                         }
                         if (checkGtf.find() == true){
                             gtf=true;
                         }
-                    }else{
-                        if ((gtf=true) || (gff3=true)){
+                    }else{ // Not a header
+                        //if ((gtf=true) || (gff3=true)){
+                        if (gtf || gff3){
                             String[] rowData = row.split("\t"); 
+                            // First element of a gff line is the chromosome / scaffold id
                             String chr = rowData[0];
                             Matcher checkChr = Pattern.compile("chr").matcher(chr);
-                            if (checkChr.find()==true){
-                                String type = rowData[2];
+                            // The row corresponds to a chromosome
+                            if (checkChr.find()== true){
+                                String type = rowData[2]; // Type of feature (term / accession from SPFA sequence ontology)
                                 if ("gene".equals(type.replace(" ", ""))){    
-                                    Matcher checkM = Pattern.compile("M").matcher(chr);    
-                                    if (checkM.find()==false){
+                                    Matcher checkM = Pattern.compile("M").matcher(chr);   
+                                    if (checkM.find() == false){
+                                        // Create a new gene with source, start and end, attributes
                                         Gene newGene = new Gene(chr, type, rowData[1],
                                                                 Double.parseDouble(rowData[3]),
                                                                 Double.parseDouble(rowData[4]),
                                                                 rowData[8]);
-                                        genes.add(newGene); 
+                                        genes.add(newGene);
                                     }
                                 }
                             }  
                         }
 
-                        if (gff3 && gtf == false){
+                        //if (gff3 && gtf == false){
+                        // The file is neither a gff3 nor a gtf
+                        if (!gff3 && !gtf){
                             JOptionPane.showMessageDialog(null, "Error loading annotation file. Invalid file type!",
                             "Error",
                             JOptionPane.ERROR_MESSAGE);
