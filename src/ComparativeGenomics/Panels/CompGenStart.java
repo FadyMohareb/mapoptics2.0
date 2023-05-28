@@ -1729,6 +1729,8 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void uploadReferenceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadReferenceActionPerformed
         FileDialog refGenome = new FileDialog(this, "Choose Reference Genome", FileDialog.LOAD);
+        // Filter to accept only fasta format
+        refGenome.setFile("*.fasta;*.fa");
         refGenome.setVisible(true);
         this.referenceFile = refGenome.getFile();
         this.referenceFilePath = refGenome.getDirectory() + refGenome.getFile();
@@ -1742,6 +1744,8 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void uploadQueryGenomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadQueryGenomeActionPerformed
         FileDialog queryGenome = new FileDialog(this, "Choose Reference Genome", FileDialog.LOAD);
+        // Filter to accept only fasta format
+        queryGenome.setFile("*.fasta;*.fa");
         queryGenome.setVisible(true);
         this.queryFile = queryGenome.getFile();
         this.queryFilePath = queryGenome.getDirectory() + queryGenome.getFile();
@@ -2191,6 +2195,8 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         FileDialog refAnnotation = new FileDialog(this, "Choose Reference Annotation", FileDialog.LOAD);
+        // Filter to accept only gff or gtf format
+        refAnnotation.setFile("*.gff;*.gff3;*.gtf");
         refAnnotation.setVisible(true);
         this.referenceAnnot = refAnnotation.getFile();
         this.referenceAnnotFilePath = refAnnotation.getDirectory() + refAnnotation.getFile();
@@ -2222,6 +2228,8 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         FileDialog qryAnnotation = new FileDialog(this, "Choose Query Annotation", FileDialog.LOAD);
+        // Filter to accept only gff or gtf format
+        qryAnnotation.setFile("*.gff;*.gff3;*.gtf");
         qryAnnotation.setVisible(true);
         this.queryAnnot = qryAnnotation.getFile();
         this.queryAnnotFilePath = qryAnnotation.getDirectory() + qryAnnotation.getFile();
