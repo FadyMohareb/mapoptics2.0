@@ -235,7 +235,7 @@ public class CompGenStart extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         helpHtmlPane = new javax.swing.JEditorPane();
         jPanel1 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        submittedJobPane = new javax.swing.JScrollPane();
         jobsTable = new javax.swing.JTable();
         openResults = new javax.swing.JButton();
         refreshJobsTable = new javax.swing.JButton();
@@ -1541,7 +1541,7 @@ public class CompGenStart extends javax.swing.JFrame {
                 jobsTableMouseClicked(evt);
             }
         });
-        jScrollPane2.setViewportView(jobsTable);
+        submittedJobPane.setViewportView(jobsTable);
         jobsFromJson();
         JobTableModel newModel = new JobTableModel(this.jobsRunning);
         jobsTable.setModel(newModel);
@@ -1560,7 +1560,19 @@ public class CompGenStart extends javax.swing.JFrame {
             }
         });
 
-        selectedJobField.setText("");
+        //Display name of the selected job
+        String jobName;
+        if (this.selectedJob != null){
+            jobName = this.getName();
+        }else{
+            jobName = "";
+        }
+        selectedJobField.setText(jobName);
+        selectedJobField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectedJobFieldActionPerformed(evt);
+            }
+        });
 
         jLabel15.setText("Selected Job:");
 
@@ -1571,7 +1583,7 @@ public class CompGenStart extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2)
+                    .addComponent(submittedJobPane)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel15)
                         .addGap(18, 18, 18)
@@ -1586,7 +1598,7 @@ public class CompGenStart extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(submittedJobPane, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(openResults)
@@ -2081,7 +2093,8 @@ public class CompGenStart extends javax.swing.JFrame {
 //        need to query all the jobs in jobs running 
 //        then need to check the status of every job
         if (this.selectedJob == null){
-            
+            JOptionPane.showMessageDialog(null, "Please select the job you want to refresh.",
+                "No job selected", JOptionPane.ERROR_MESSAGE);
         }else{
             refreshJobStatus(this.selectedJob);
             JobTableModel newModel = new JobTableModel(this.jobsRunning);
@@ -2090,9 +2103,9 @@ public class CompGenStart extends javax.swing.JFrame {
     }//GEN-LAST:event_refreshJobsTableActionPerformed
 
     private void openResultsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openResultsActionPerformed
-
         if (this.selectedJob == null){
-            
+            JOptionPane.showMessageDialog(null, "Please select the job for which you want to see results.",
+                "No job selected", JOptionPane.ERROR_MESSAGE);
         }else{
 //            first check if the files have already been downloaded
                 System.getProperty("user.dir");
@@ -2290,6 +2303,10 @@ public class CompGenStart extends javax.swing.JFrame {
         // Close help panel
         helpPane.setVisible(false);
     }//GEN-LAST:event_exitBtnActionPerformed
+
+    private void selectedJobFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectedJobFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_selectedJobFieldActionPerformed
     
     public String checkEnzymeName(JTextField field){
         String name = field.getText();
@@ -2754,7 +2771,6 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel jobDownloadingName;
@@ -2806,6 +2822,7 @@ public class CompGenStart extends javax.swing.JFrame {
     public javax.swing.JCheckBox setNewAsServer;
     private javax.swing.JCheckBox showPass;
     private javax.swing.JButton startJobButton;
+    private javax.swing.JScrollPane submittedJobPane;
     private javax.swing.JMenu textMenu;
     private javax.swing.JButton uploadFileRef;
     private javax.swing.JDialog uploadFiles;
