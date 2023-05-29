@@ -196,12 +196,12 @@ public class CompGenStart extends javax.swing.JFrame {
         queryURL = new javax.swing.JTextField();
         uploadQryURLButton = new javax.swing.JButton();
         uploadFiles = new javax.swing.JDialog();
-        jPanel9 = new javax.swing.JPanel();
+        refFilesPanel = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        refSpeciesTxtField = new javax.swing.JTextField();
         chooseLocalRefCmap = new javax.swing.JButton();
         chooseLocalRefAnnot = new javax.swing.JButton();
         chooseLocalRefKaryotype = new javax.swing.JButton();
@@ -210,13 +210,13 @@ public class CompGenStart extends javax.swing.JFrame {
         localRefKaryName = new javax.swing.JLabel();
         loadLocalAlignment = new javax.swing.JButton();
         closeLocalWindow = new javax.swing.JButton();
-        jPanel10 = new javax.swing.JPanel();
+        queryFilesPanel = new javax.swing.JPanel();
         jLabel28 = new javax.swing.JLabel();
         jLabel29 = new javax.swing.JLabel();
         chooseLocalQryCmap = new javax.swing.JButton();
         localSpecies = new javax.swing.JTextField();
         localQryCmapName = new javax.swing.JLabel();
-        jPanel11 = new javax.swing.JPanel();
+        alignmentPanel = new javax.swing.JPanel();
         jLabel30 = new javax.swing.JLabel();
         chooseLocalXmap = new javax.swing.JButton();
         localXmapName = new javax.swing.JLabel();
@@ -1137,7 +1137,7 @@ public class CompGenStart extends javax.swing.JFrame {
         uploadFiles.setMinimumSize(new java.awt.Dimension(414, 445));
         uploadFiles.setSize(new java.awt.Dimension(414, 445));
 
-        jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder("Reference Files"));
+        refFilesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Reference Files"));
 
         jLabel16.setText("Species:");
 
@@ -1148,7 +1148,12 @@ public class CompGenStart extends javax.swing.JFrame {
 
         jLabel19.setText("Karyotype:");
 
-        jTextField1.setText("");
+        refSpeciesTxtField.setText("");
+        refSpeciesTxtField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refSpeciesTxtFieldActionPerformed(evt);
+            }
+        });
 
         chooseLocalRefCmap.setText("Upload");
         chooseLocalRefCmap.addActionListener(new java.awt.event.ActionListener() {
@@ -1177,54 +1182,54 @@ public class CompGenStart extends javax.swing.JFrame {
 
         localRefKaryName.setText("");
 
-        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
-        jPanel9.setLayout(jPanel9Layout);
-        jPanel9Layout.setHorizontalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
+        javax.swing.GroupLayout refFilesPanelLayout = new javax.swing.GroupLayout(refFilesPanel);
+        refFilesPanel.setLayout(refFilesPanelLayout);
+        refFilesPanelLayout.setHorizontalGroup(
+            refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(refFilesPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(jLabel17)
                         .addComponent(jLabel18)
                         .addComponent(jLabel16))
                     .addComponent(jLabel19))
                 .addGap(26, 26, 26)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel9Layout.createSequentialGroup()
+                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(refFilesPanelLayout.createSequentialGroup()
                         .addComponent(chooseLocalRefKaryotype)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(localRefKaryName))
-                    .addGroup(jPanel9Layout.createSequentialGroup()
+                    .addGroup(refFilesPanelLayout.createSequentialGroup()
                         .addComponent(chooseLocalRefCmap)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(localRefCmapName))
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel9Layout.createSequentialGroup()
+                    .addComponent(refSpeciesTxtField, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(refFilesPanelLayout.createSequentialGroup()
                         .addComponent(chooseLocalRefAnnot)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(localRefAnnotName)))
                 .addContainerGap(67, Short.MAX_VALUE))
         );
-        jPanel9Layout.setVerticalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
+        refFilesPanelLayout.setVerticalGroup(
+            refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(refFilesPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel16)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(refSpeciesTxtField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel17)
                     .addComponent(chooseLocalRefCmap)
                     .addComponent(localRefCmapName))
                 .addGap(12, 12, 12)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel18)
                     .addComponent(chooseLocalRefAnnot)
                     .addComponent(localRefAnnotName))
                 .addGap(9, 9, 9)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel19)
                     .addComponent(chooseLocalRefKaryotype)
                     .addComponent(localRefKaryName))
@@ -1245,7 +1250,7 @@ public class CompGenStart extends javax.swing.JFrame {
             }
         });
 
-        jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder("Query Files"));
+        queryFilesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Query Files"));
 
         jLabel28.setText("Species:");
 
@@ -1259,43 +1264,48 @@ public class CompGenStart extends javax.swing.JFrame {
         });
 
         localSpecies.setText("");
+        localSpecies.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                localSpeciesActionPerformed(evt);
+            }
+        });
 
         localQryCmapName.setText("");
 
-        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
-        jPanel10.setLayout(jPanel10Layout);
-        jPanel10Layout.setHorizontalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
+        javax.swing.GroupLayout queryFilesPanelLayout = new javax.swing.GroupLayout(queryFilesPanel);
+        queryFilesPanel.setLayout(queryFilesPanelLayout);
+        queryFilesPanelLayout.setHorizontalGroup(
+            queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(queryFilesPanelLayout.createSequentialGroup()
                 .addGap(16, 16, 16)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel29)
                     .addComponent(jLabel28))
                 .addGap(32, 32, 32)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel10Layout.createSequentialGroup()
+                .addGroup(queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(queryFilesPanelLayout.createSequentialGroup()
                         .addComponent(chooseLocalQryCmap)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(localQryCmapName))
                     .addComponent(localSpecies, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(67, Short.MAX_VALUE))
         );
-        jPanel10Layout.setVerticalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
+        queryFilesPanelLayout.setVerticalGroup(
+            queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(queryFilesPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel28)
                     .addComponent(localSpecies, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel29)
                     .addComponent(chooseLocalQryCmap)
                     .addComponent(localQryCmapName))
                 .addContainerGap())
         );
 
-        jPanel11.setBorder(javax.swing.BorderFactory.createTitledBorder("Alignment"));
+        alignmentPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Alignment"));
 
         jLabel30.setText("Xmap:");
 
@@ -1308,11 +1318,11 @@ public class CompGenStart extends javax.swing.JFrame {
 
         localXmapName.setText("");
 
-        javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
-        jPanel11.setLayout(jPanel11Layout);
-        jPanel11Layout.setHorizontalGroup(
-            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel11Layout.createSequentialGroup()
+        javax.swing.GroupLayout alignmentPanelLayout = new javax.swing.GroupLayout(alignmentPanel);
+        alignmentPanel.setLayout(alignmentPanelLayout);
+        alignmentPanelLayout.setHorizontalGroup(
+            alignmentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(alignmentPanelLayout.createSequentialGroup()
                 .addGap(23, 23, 23)
                 .addComponent(jLabel30)
                 .addGap(41, 41, 41)
@@ -1321,11 +1331,11 @@ public class CompGenStart extends javax.swing.JFrame {
                 .addComponent(localXmapName)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel11Layout.setVerticalGroup(
-            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel11Layout.createSequentialGroup()
+        alignmentPanelLayout.setVerticalGroup(
+            alignmentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(alignmentPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(alignmentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel30)
                     .addComponent(chooseLocalXmap)
                     .addComponent(localXmapName))
@@ -1339,24 +1349,24 @@ public class CompGenStart extends javax.swing.JFrame {
             .addGroup(uploadFilesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(uploadFilesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(refFilesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, uploadFilesLayout.createSequentialGroup()
                         .addComponent(closeLocalWindow)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(loadLocalAlignment))
-                    .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(queryFilesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(alignmentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         uploadFilesLayout.setVerticalGroup(
             uploadFilesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, uploadFilesLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(refFilesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(queryFilesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(alignmentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(uploadFilesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(loadLocalAlignment)
@@ -1844,7 +1854,7 @@ public class CompGenStart extends javax.swing.JFrame {
                     "No server selected", JOptionPane.ERROR_MESSAGE);
         } else {
             this.channel.setServer(this.selectedServer);
-            
+
             if (this.channel.connectServer()) {
                 connectServerToggle.setSelected(true);
                 setJobName.setEnabled(true);
@@ -2184,34 +2194,35 @@ public class CompGenStart extends javax.swing.JFrame {
     }//GEN-LAST:event_uploadPreAlignedActionPerformed
 
     private void loadLocalAlignmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadLocalAlignmentActionPerformed
-        if ("".equals(this.localSpecies.getText())) {
+        if ("".equals(this.refSpeciesTxtField.getText()) || this.refSpeciesTxtField.getText() == null) {
             JOptionPane.showMessageDialog(null, "Reference species cannot be empty",
-                    "Error!", JOptionPane.ERROR_MESSAGE);
-        }
-        if ("".equals(this.localrefcmap)) {
+                    "Missing specie!", JOptionPane.ERROR_MESSAGE);
+        } else if ("".equals(this.localrefcmap) || this.localRefCmapName.getText() == null) {
             JOptionPane.showMessageDialog(null, "Reference CMAP cannot be empty",
-                    "Error!", JOptionPane.ERROR_MESSAGE);
-        }
-        if ("".equals(this.localqrycmap)) {
+                    "Missing file!", JOptionPane.ERROR_MESSAGE);
+        } else if ("".equals(this.localrefannot) || this.localRefAnnotName.getText() == null) {
+            JOptionPane.showMessageDialog(null, "Reference annotation cannot be empty",
+                    "Missing file!", JOptionPane.ERROR_MESSAGE);
+        } else if ("".equals(this.localrefkary) || this.localRefKaryName.getText() == null) {
+            JOptionPane.showMessageDialog(null, "Reference karyotype file cannot be empty",
+                    "Missing file!", JOptionPane.ERROR_MESSAGE);
+        } else if ("".equals(this.localSpecies.getText()) || this.localSpecies.getText() == null) {
+            JOptionPane.showMessageDialog(null, "Query species cannot be empty",
+                    "Missing specie!", JOptionPane.ERROR_MESSAGE);
+        } else if ("".equals(this.localqrycmap) || this.localQryCmapName.getText() == null) {
             JOptionPane.showMessageDialog(null, "Query CMAP cannot be empty",
-                    "Error!", JOptionPane.ERROR_MESSAGE);
+                    "Missing file!", JOptionPane.ERROR_MESSAGE);
+        } else if ("".equals(this.localxmap) || this.localXmapName.getText() == null) {
+            JOptionPane.showMessageDialog(null, "XMAP file cannot be empty",
+                    "Missing file!", JOptionPane.ERROR_MESSAGE);
+        } 
+        /* 
+        else if ("".equals(this.localreffasta) || this.localreffasta == null) {
+            JOptionPane.showMessageDialog(null, "Reference fasta file cannot be empty",
+                    "Missing file!", JOptionPane.ERROR_MESSAGE);
         }
-        if ("".equals(this.localxmap)) {
-            JOptionPane.showMessageDialog(null, "Reference species cannot be empty",
-                    "Error!", JOptionPane.ERROR_MESSAGE);
-        }
-        if ("".equals(this.localrefannot)) {
-            JOptionPane.showMessageDialog(null, "Reference species cannot be empty",
-                    "Error!", JOptionPane.ERROR_MESSAGE);
-        }
-        if ("".equals(this.localreffasta)) {
-            JOptionPane.showMessageDialog(null, "Reference species cannot be empty",
-                    "Error!", JOptionPane.ERROR_MESSAGE);
-        }
-        if ("".equals(this.localrefkary)) {
-            JOptionPane.showMessageDialog(null, "Reference species cannot be empty",
-                    "Error!", JOptionPane.ERROR_MESSAGE);
-        } else {
+        */
+        else {
             CompGenView viewResults = new CompGenView();
             viewResults.setData(this.localSpecies.getText(), this.localrefcmap, this.localqrycmap,
                     this.localrefkary, this.localxmap, this.localreffasta, this.localrefannot);
@@ -2265,6 +2276,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void chooseLocalRefCmapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseLocalRefCmapActionPerformed
         FileDialog fileDialog = new FileDialog(this, "Choose Reference Cmap", FileDialog.LOAD);
+        fileDialog.setFile("*.cmap");
         fileDialog.setVisible(true);
         this.localrefcmap = fileDialog.getDirectory() + fileDialog.getFile();
         this.localRefCmapName.setText(fileDialog.getFile());
@@ -2277,6 +2289,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void chooseLocalRefAnnotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseLocalRefAnnotActionPerformed
         FileDialog fileDialog = new FileDialog(this, "Choose Reference GFF3/GTF", FileDialog.LOAD);
+        fileDialog.setFile("*.gff;*.gf33;*.gtf");
         fileDialog.setVisible(true);
         this.localrefannot = fileDialog.getDirectory() + fileDialog.getFile();
         this.localRefAnnotName.setText(fileDialog.getFile());
@@ -2291,6 +2304,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void chooseLocalQryCmapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseLocalQryCmapActionPerformed
         FileDialog fileDialog = new FileDialog(this, "Choose Query Cmap", FileDialog.LOAD);
+        fileDialog.setFile("*.cmap");
         fileDialog.setVisible(true);
         this.localqrycmap = fileDialog.getDirectory() + fileDialog.getFile();
         this.localQryCmapName.setText(fileDialog.getFile());
@@ -2298,6 +2312,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void chooseLocalXmapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseLocalXmapActionPerformed
         FileDialog fileDialog = new FileDialog(this, "Choose Xmap", FileDialog.LOAD);
+        fileDialog.setFile("*.xmap");
         fileDialog.setVisible(true);
         this.localxmap = fileDialog.getDirectory() + fileDialog.getFile();
         this.localXmapName.setText(fileDialog.getFile());
@@ -2320,6 +2335,15 @@ public class CompGenStart extends javax.swing.JFrame {
     private void selectedJobFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectedJobFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_selectedJobFieldActionPerformed
+
+    private void refSpeciesTxtFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refSpeciesTxtFieldActionPerformed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_refSpeciesTxtFieldActionPerformed
+
+    private void localSpeciesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_localSpeciesActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_localSpeciesActionPerformed
 
     public String checkEnzymeName(JTextField field) {
         String name = field.getText();
@@ -2720,6 +2744,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JButton Btn_modifAlignParam;
     private javax.swing.JButton addNewServer;
     private javax.swing.JMenuItem addServerMenu;
+    private javax.swing.JPanel alignmentPanel;
     private javax.swing.JLabel bestEnz;
     private javax.swing.JDialog bestEnzymeDialog;
     private javax.swing.JButton bnt_help;
@@ -2797,16 +2822,12 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel10;
-    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
-    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel jobDownloadingName;
     private javax.swing.JTable jobsTable;
     private javax.swing.JButton loadLocalAlignment;
@@ -2824,15 +2845,18 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JLabel qryGenomeLabel;
     private javax.swing.JTextField qrySpecies;
     private javax.swing.JDialog qryURLDialog;
+    private javax.swing.JPanel queryFilesPanel;
     private javax.swing.JTextField queryGenomeFileName;
     private javax.swing.JProgressBar queryProgressBar;
     private javax.swing.JTextField queryURL;
     private javax.swing.JTextField refAnnotFileName;
+    private javax.swing.JPanel refFilesPanel;
     private javax.swing.JMenuItem refFromURL;
     private javax.swing.JTextField refGenomeFile;
     private javax.swing.JLabel refGenomeLabel;
     private javax.swing.JProgressBar refProgressBar;
     private javax.swing.JTextField refSpecies;
+    private javax.swing.JTextField refSpeciesTxtField;
     private javax.swing.JDialog refURLDialog;
     private javax.swing.JRadioButton refalignerPipeline;
     private javax.swing.JTextField referenceURL;

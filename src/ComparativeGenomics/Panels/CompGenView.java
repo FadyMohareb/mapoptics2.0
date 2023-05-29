@@ -88,7 +88,7 @@ public class CompGenView extends javax.swing.JFrame {
 //       qryKary = new Karyotype(System.getProperty("user.dir")+"/download/"+job.getName()+File.separator+"qry_karyotype.txt");
         xmap = new Xmap(xmapfile);
 
-        refFasta=new Fasta();
+        refFasta = new Fasta();
 //        Fasta qryFasta=new Fasta();
         refAnnot = new Annot(refannot);
         populateData();
