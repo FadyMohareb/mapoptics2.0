@@ -25,13 +25,15 @@ import javax.swing.JProgressBar;
 /**
  *
  * @author franpeters
- * Class to allow SSH connection to an external server. SSH allows execution of commands, running of scripts run_job.sh and calc_best_enz.sh as well as file uploading and downloading using STFP. The externalJAR Jsch is used to add in external server connection.
+ * Class to allow SSH connection to an external server. 
+ * SSH allows execution of commands, running of scripts run_job.sh and calc_best_enz.sh 
+ * as well as file uploading and downloading using STFP. 
+ * The externalJAR Jsch is used to add in external server connection.
  */
 public class SSH {
-//    Need to add a constructor that accepts a server object!
     JSch jsch = new JSch();
     ExternalServer server;
-//    For conneciton to an ssh server
+//    For connection to an ssh server
     Session session;
 //    for remote command execution
     Channel channel;
@@ -116,15 +118,25 @@ public class SSH {
         }
     return this.connection;
     }  
+    
     /**
-     * 
+     * Get the sftp channel.
      * @return the ChannelSftp object
      */
     public ChannelSftp getChannel(){
        return this.sftpChannel;
     }
+    
     /**
-     * 
+     * Get the boolean indicating if the server is connected via SSH or not.
+     * @return the connection boolean
+     */
+    public Boolean getConnection(){
+       return this.connection;
+    }
+    
+    /**
+     * o 
      * @param user username of the ExternalServer
      */
     public void setUser(String user){

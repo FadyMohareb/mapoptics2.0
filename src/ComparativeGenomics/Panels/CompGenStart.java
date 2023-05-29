@@ -36,16 +36,17 @@ import startScreen.startScreen;
 
 /**
  *
- * @author franpeters
- * Provides the GUI and methods to start an alignment Job on an ExternalServer.
+ * @author franpeters Provides the GUI and methods to start an alignment Job on
+ * an ExternalServer.
  */
-
 public class CompGenStart extends javax.swing.JFrame {
+
     //        Start a new job object when the window is opened.
     private Job newJob = new Job();
     private Job selectedJob;
     private List<Job> jobsRunning = new ArrayList<>();
-    private List<ExternalServer> servers = new ArrayList<>();;
+    private List<ExternalServer> servers = new ArrayList<>();
+    ;
     private ExternalServer selectedServer;
     private ExternalServer tempSelectedServer;
     private String currentServer;
@@ -69,22 +70,20 @@ public class CompGenStart extends javax.swing.JFrame {
     private ServTableModel servTableModel = new ServTableModel();
     private Boolean ref1FromURL = false;
     private Boolean qryFromURL = false;
-    
-    
-    
+
     private String localrefcmap = "";
-    private String localqrycmap ="";
-    private String localxmap="";
-    private String localrefannot="";
-    private String localreffasta="";
-    private String localrefkary="";
-            
+    private String localqrycmap = "";
+    private String localxmap = "";
+    private String localrefannot = "";
+    private String localreffasta = "";
+    private String localrefkary = "";
+
     /**
      * Creates new form comparativeGenomics
      */
     public CompGenStart() {
-       
-            initComponents();
+
+        initComponents();
     }
 
     /**
@@ -1724,9 +1723,9 @@ public class CompGenStart extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-    
+
     private void newJobRefQueryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newJobRefQueryActionPerformed
-        makeCompGenJob.setVisible(true);   
+        makeCompGenJob.setVisible(true);
     }//GEN-LAST:event_newJobRefQueryActionPerformed
 
     private void exitCompGenomicsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitCompGenomicsActionPerformed
@@ -1766,10 +1765,9 @@ public class CompGenStart extends javax.swing.JFrame {
     }//GEN-LAST:event_uploadQueryGenomeActionPerformed
 
     private void serverInfoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverInfoButtonActionPerformed
-        if (this.selectedServer == null){
+        if (this.selectedServer == null) {
             JOptionPane.showMessageDialog(null, "No server has been selected! Please select a server",
-                "No Sever Selected", JOptionPane.ERROR_MESSAGE);
-
+                    "No Sever Selected", JOptionPane.ERROR_MESSAGE);
         }
         currentName.setText(selectedServer.name);
         currentHost.setText(selectedServer.getHost());
@@ -1787,23 +1785,37 @@ public class CompGenStart extends javax.swing.JFrame {
     }//GEN-LAST:event_chooseServerMenuActionPerformed
 
     private void browseEnzymesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseEnzymesActionPerformed
-        if (this.channel != null){
-
+        if (this.selectedServer == null) {
+            JOptionPane.showMessageDialog(null, "No server has been selected! Please select a server",
+                    "No Sever Selected", JOptionPane.ERROR_MESSAGE);
+        } else if (this.channel == null) {
+            // Error message if sftp channel does not exist
+            System.out.println("Channel is null!");
+            JOptionPane.showMessageDialog(null, "SSH channel does not exist. Please try to connect again.",
+                    "No SSH channel", JOptionPane.ERROR_MESSAGE);
+        } else if (!this.channel.getConnection()) {
+            // Error message if connection with sftp channel was not established
+            System.out.println("Channel is null!");
+            JOptionPane.showMessageDialog(null, "SSH channel does not exist. Please try to connect again.",
+                    "No SSH channel", JOptionPane.ERROR_MESSAGE);
+        } else if (this.channel != null) {
             //        need to get this to show in a jdialog
             // currently just want to get the command to work!
             Vector<String> columnNames = new Vector<String>();
             columnNames.add("Enzyme name");
             columnNames.add("Restriction Site");
             enzymeTableModel.setColumnIdentifiers(columnNames);
-            ArrayList<String> enzymes = this.channel.executeCmd("cd " +this.selectedServer.getWorkingDir()+"; awk -F ' ' '{print $0}' listEnzymes.txt");
+            ArrayList<String> enzymes = this.channel.executeCmd("cd " + this.selectedServer.getWorkingDir() + "; awk -F ' ' '{print $0}' listEnzymes.txt");
 
-            for (String enzymeLine:enzymes){
+            for (String enzymeLine : enzymes) {
                 String[] array = enzymeLine.split(" ");
                 enzymeTableModel.addRow(array);
             }
             browseEnzymesDialog.setVisible(true);
-        }else{
+        } else {
             System.out.println("Channel is null!");
+            JOptionPane.showMessageDialog(null, "SSH connection was not established. Please try to connect again.",
+                    "No SSH connection", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_browseEnzymesActionPerformed
 
@@ -1827,48 +1839,51 @@ public class CompGenStart extends javax.swing.JFrame {
     }//GEN-LAST:event_setJobNameActionPerformed
 
     private void connectServerToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectServerToggleActionPerformed
-
-        this.channel.setServer(this.selectedServer);
-        
-        if (this.channel.connectServer()){
-            connectServerToggle.setSelected(true);
-            setJobName.setEnabled(true);
-            connectServerToggle.setText("Connected");
-            connectServerToggle.setBackground(Color.green);
-            connectServerToggle.setForeground(Color.white);
-            //            Reset the new server panel (do this now in case server connection was unsuccessful post adding new server)
-            serverNameField.setText("");
-            userNameField.setText("");
-            hostAddressField.setText("");
-            serverPasswordField.setText("");
-            workingDirField.setText("mapoptics/jobs/");
-            newJob.setServer(this.selectedServer);
-//            to delete
-            //startJobButton.setEnabled(true);
-        }else{
-            //            do not set button as toggled if connection is not succesfully established
-            connectServerToggle.setSelected(false);
+        if (this.selectedServer == null) {
+            JOptionPane.showMessageDialog(null, "No server is selected. Please select a server to establish connection.",
+                    "No server selected", JOptionPane.ERROR_MESSAGE);
+        } else {
+            this.channel.setServer(this.selectedServer);
+            
+            if (this.channel.connectServer()) {
+                connectServerToggle.setSelected(true);
+                setJobName.setEnabled(true);
+                connectServerToggle.setText("Connected");
+                connectServerToggle.setBackground(Color.green);
+                connectServerToggle.setForeground(Color.white);
+                //            Reset the new server panel (do this now in case server connection was unsuccessful post adding new server)
+                serverNameField.setText("");
+                userNameField.setText("");
+                hostAddressField.setText("");
+                serverPasswordField.setText("");
+                workingDirField.setText("mapoptics/jobs/");
+                newJob.setServer(this.selectedServer);
+                //            to delete
+                //startJobButton.setEnabled(true);
+            } else {
+                //            do not set button as toggled if connection is not succesfully established
+                connectServerToggle.setSelected(false);
+            }
         }
-
     }//GEN-LAST:event_connectServerToggleActionPerformed
 
     private void uploadFileRefActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadFileRefActionPerformed
-          if ("".equals(jobName) | "Enter Job Name".equals(jobName)){
+        if ("".equals(jobName) | "Enter Job Name".equals(jobName)) {
             JOptionPane.showMessageDialog(null, "Enter a valid job name",
-                "Enter a valid job name", JOptionPane.PLAIN_MESSAGE);
+                    "Enter a valid job name", JOptionPane.PLAIN_MESSAGE);
         } //need to add in a check for current server connection!
-        else{
-            if (!ref1FromURL){
-                String dir = jobName+"/Files/Reference/"+this.referenceFile;
+        else {
+            if (!ref1FromURL) {
+                String dir = jobName + "/Files/Reference/" + this.referenceFile;
                 System.out.println("file transfer of reference file");
                 this.channel.uploadFile(referenceFilePath, dir, refProgressBar);
-            }else{
-                String cmd = "cd mapoptics/jobs/"+this.jobName+"/Files/Reference; wget " + this.referenceFilePath;
+            } else {
+                String cmd = "cd mapoptics/jobs/" + this.jobName + "/Files/Reference; wget " + this.referenceFilePath;
                 this.channel.executeCmd(cmd);
             }
-            this.refAdded=true;
+            this.refAdded = true;
             this.newJob.setRefFile(referenceFile);
-            if (this.refAdded && this.qryAdded){
+            if (this.refAdded && this.qryAdded) {
                 chooseEnzyme.setEnabled(true);
                 runCalcBestEnzyme.setEnabled(true);
             }
@@ -1876,22 +1891,22 @@ public class CompGenStart extends javax.swing.JFrame {
     }//GEN-LAST:event_uploadFileRefActionPerformed
 
     private void uploadQryGenomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadQryGenomeActionPerformed
-        if ("".equals(jobName) | "Enter Job Name".equals(jobName)){
+        if ("".equals(jobName) | "Enter Job Name".equals(jobName)) {
             JOptionPane.showMessageDialog(null, "Enter a valid job name",
-                "Enter a valid job name", JOptionPane.PLAIN_MESSAGE);
+                    "Enter a valid job name", JOptionPane.PLAIN_MESSAGE);
         } //need to add in a check for current server connection!
-        else{
-            if (!qryFromURL){
-                String dir = jobName+"/Files/Query/"+queryFile;
+        else {
+            if (!qryFromURL) {
+                String dir = jobName + "/Files/Query/" + queryFile;
                 System.out.println("file transfer of query file");
                 this.channel.uploadFile(queryFilePath, dir, queryProgressBar);
-            }else{
-                String cmd = "cd mapoptics/jobs/"+this.jobName+"/Files/Query; wget " + this.queryFilePath;
+            } else {
+                String cmd = "cd mapoptics/jobs/" + this.jobName + "/Files/Query; wget " + this.queryFilePath;
                 this.channel.executeCmd(cmd);
             }
-            this.qryAdded=true;
+            this.qryAdded = true;
             this.newJob.setQryFile(queryFile);
-            if (this.refAdded && this.qryAdded){
+            if (this.refAdded && this.qryAdded) {
                 chooseEnzyme.setEnabled(true);
                 runCalcBestEnzyme.setEnabled(true);
             }
@@ -1899,7 +1914,7 @@ public class CompGenStart extends javax.swing.JFrame {
     }//GEN-LAST:event_uploadQryGenomeActionPerformed
 
     private void chooseEnzymeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseEnzymeActionPerformed
-        if (this.channel != null){
+        if (this.channel != null) {
 //            Reset the table each time the window is launched
             enzymeTableModel.setColumnCount(0);
             enzymeTableModel.setRowCount(0);
@@ -1911,13 +1926,13 @@ public class CompGenStart extends javax.swing.JFrame {
             enzymeTableModel.setColumnIdentifiers(columnNames);
             ArrayList<String> enzymes = this.channel.executeCmd("cd mapoptics/Enzymes/; awk -F ' ' '{print $0}' listEnzymes.txt");
 
-            for (String enzymeLine:enzymes){
+            for (String enzymeLine : enzymes) {
                 String[] array = enzymeLine.split(" ");
                 enzymeTableModel.addRow(array);
             }
             browseEnzymesDialog.setVisible(true);
 
-        }else{
+        } else {
             System.out.println("Channel is null!");
         }
         this.newJob.setEnzyme(selectedEnzyme);
@@ -1928,16 +1943,16 @@ public class CompGenStart extends javax.swing.JFrame {
         this.newJob.setQryAnnot(this.queryAnnotFilePath);
         this.newJob.setRefOrg(this.refSpecies.getText());
         this.newJob.setQryOrg(this.qrySpecies.getText());
-        
-        if(fandomPipeline.isSelected()){
-            this.newJob.setPipeline("fandom"); 
+
+        if (fandomPipeline.isSelected()) {
+            this.newJob.setPipeline("fandom");
         }
-        if(refalignerPipeline.isSelected()){
-            this.newJob.setPipeline("refaligner"); 
+        if (refalignerPipeline.isSelected()) {
+            this.newJob.setPipeline("refaligner");
         }
 
 //        need to update this to query the log file!
-        this.newJob.setStatus("Started");        
+        this.newJob.setStatus("Started");
         this.jobsRunning.add(this.newJob);
 //        Update the jobs JSON file
         saveJobJson(this.jobsRunning);
@@ -1948,7 +1963,7 @@ public class CompGenStart extends javax.swing.JFrame {
         //will eventually add in user parameters here
         this.channel.runJob(this.newJob); //this sets the job as running on the server
         this.newJob = new Job();
-        
+
 //        show the correct JFrames
         makeCompGenJob.setVisible(false);
         this.setVisible(true);
@@ -1956,7 +1971,7 @@ public class CompGenStart extends javax.swing.JFrame {
         this.channel.disconnectServer();
 //        clean slate for the channel object
         this.channel = new SSH();
-        
+
     }//GEN-LAST:event_startJobButtonActionPerformed
 
     private void saveRefURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveRefURLActionPerformed
@@ -1981,70 +1996,70 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void addNewServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addNewServerActionPerformed
 
-            //    for adding a new server
-            String serverName;
-            String userName;
-            String hostName;
-            String serverPass;
-            String workDir;
-            //        Check server name is valid
-            
-            serverName = serverNameField.getText();
-            if (serverName != null){
-            } else {
-                JOptionPane.showMessageDialog(null, "Server name cannot be empty!",
-                        "Server Name Error", JOptionPane.ERROR_MESSAGE);
-            }
-            //        Check user name is valid
-            userName = userNameField.getText();
-            if (userName != null){
-            } else {
-                JOptionPane.showMessageDialog(null, "User name cannot be empty!",
-                        "User Name Error", JOptionPane.ERROR_MESSAGE);
-            }
-            //    Check the host name is valid
-            hostName = hostAddressField.getText();
-            if (checkIPAddress(hostName)!= true){
-                JOptionPane.showMessageDialog(null, "Host address is invalid",
-                        "Server Host Address Error", JOptionPane.ERROR_MESSAGE);
-            }else{
-            }
-            
-            //    Check the password is valid
-            serverPass = String.valueOf(serverPasswordField.getPassword());
-            if (serverPass == null){
-                JOptionPane.showMessageDialog(null, "Server password cannot be empty!",
-                        "Server Password Error", JOptionPane.ERROR_MESSAGE);
-            }else{
-            }
-            //    Check the working directory is valid if supplied
-            workDir = workingDirField.getText();
-            if (workDir != null){
-                
-            }
-            if (checkWorkDir(hostName)!= true){
-                JOptionPane.showMessageDialog(null, "Working directory supplied is invalid",
-                        "Working Directory Error", JOptionPane.ERROR_MESSAGE);
-            }else{
-            }
-            //     Once all these are checked the server can be added to the server hash map?
-            ExternalServer server = new ExternalServer(serverName, userName, hostName, serverPass, workDir);
-            addServer(server);
-            this.servers.add(server);
-            if (setNewAsServer.isSelected()){
-                this.selectedServer = server;
-                this.serverLabel.setText(server.getName());
-            }
-            saveServerJson(this.servers);
-            this.servTableModel.setData(this.servers);
-            newServerDialog.setVisible(false);
-        
+        //    for adding a new server
+        String serverName;
+        String userName;
+        String hostName;
+        String serverPass;
+        String workDir;
+        //        Check server name is valid
+
+        serverName = serverNameField.getText();
+        if (serverName != null) {
+        } else {
+            JOptionPane.showMessageDialog(null, "Server name cannot be empty!",
+                    "Server Name Error", JOptionPane.ERROR_MESSAGE);
+        }
+        //        Check user name is valid
+        userName = userNameField.getText();
+        if (userName != null) {
+        } else {
+            JOptionPane.showMessageDialog(null, "User name cannot be empty!",
+                    "User Name Error", JOptionPane.ERROR_MESSAGE);
+        }
+        //    Check the host name is valid
+        hostName = hostAddressField.getText();
+        if (checkIPAddress(hostName) != true) {
+            JOptionPane.showMessageDialog(null, "Host address is invalid",
+                    "Server Host Address Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+        }
+
+        //    Check the password is valid
+        serverPass = String.valueOf(serverPasswordField.getPassword());
+        if (serverPass == null) {
+            JOptionPane.showMessageDialog(null, "Server password cannot be empty!",
+                    "Server Password Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+        }
+        //    Check the working directory is valid if supplied
+        workDir = workingDirField.getText();
+        if (workDir != null) {
+
+        }
+        if (checkWorkDir(hostName) != true) {
+            JOptionPane.showMessageDialog(null, "Working directory supplied is invalid",
+                    "Working Directory Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+        }
+        //     Once all these are checked the server can be added to the server hash map?
+        ExternalServer server = new ExternalServer(serverName, userName, hostName, serverPass, workDir);
+        addServer(server);
+        this.servers.add(server);
+        if (setNewAsServer.isSelected()) {
+            this.selectedServer = server;
+            this.serverLabel.setText(server.getName());
+        }
+        saveServerJson(this.servers);
+        this.servTableModel.setData(this.servers);
+        newServerDialog.setVisible(false);
+
     }//GEN-LAST:event_addNewServerActionPerformed
-    
+
     private void showPassItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showPassItemStateChanged
-        if (evt.getStateChange() == 1){
+        if (evt.getStateChange() == 1) {
             serverPasswordField.setEchoChar('*');
-        } else{
+        } else {
             serverPasswordField.setEchoChar((char) 0);
         }
     }//GEN-LAST:event_showPassItemStateChanged
@@ -2073,29 +2088,29 @@ public class CompGenStart extends javax.swing.JFrame {
         String name = selectedRow.get(0);
         String site = selectedRow.get(1);
         chosenEnzymeLabel.setText(name);
-        tempSelectedEnzyme = new Enzyme(name,site);
+        tempSelectedEnzyme = new Enzyme(name, site);
     }//GEN-LAST:event_enzymeTableMouseClicked
 
     private void chooseEnzymeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseEnzymeButtonActionPerformed
-        if (this.tempSelectedEnzyme != null){
+        if (this.tempSelectedEnzyme != null) {
             this.selectedEnzyme = this.tempSelectedEnzyme;
             setEnzymeLabel.setText(this.selectedEnzyme.getName());
             this.newJob.setEnzyme(this.selectedEnzyme);
             this.browseEnzymesDialog.setVisible(false);
             this.startJobButton.setEnabled(true);
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, "You have not selected an enzyme, please select one from the table!",
-                "No enzyme selected", JOptionPane.ERROR_MESSAGE);
+                    "No enzyme selected", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_chooseEnzymeButtonActionPerformed
 
     private void refreshJobsTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshJobsTableActionPerformed
 //        need to query all the jobs in jobs running 
 //        then need to check the status of every job
-        if (this.selectedJob == null){
+        if (this.selectedJob == null) {
             JOptionPane.showMessageDialog(null, "Please select the job you want to refresh.",
-                "No job selected", JOptionPane.ERROR_MESSAGE);
-        }else{
+                    "No job selected", JOptionPane.ERROR_MESSAGE);
+        } else {
             refreshJobStatus(this.selectedJob);
             JobTableModel newModel = new JobTableModel(this.jobsRunning);
             jobsTable.setModel(newModel);
@@ -2103,42 +2118,40 @@ public class CompGenStart extends javax.swing.JFrame {
     }//GEN-LAST:event_refreshJobsTableActionPerformed
 
     private void openResultsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openResultsActionPerformed
-        if (this.selectedJob == null){
+        if (this.selectedJob == null) {
             JOptionPane.showMessageDialog(null, "Please select the job for which you want to see results.",
-                "No job selected", JOptionPane.ERROR_MESSAGE);
-        }else{
+                    "No job selected", JOptionPane.ERROR_MESSAGE);
+        } else {
 //            first check if the files have already been downloaded
-                System.getProperty("user.dir");
-                File dir = new File(System.getProperty("user.dir")+"/download/"+this.selectedJob.getName()+"/");
-                if (dir.exists() && dir.isDirectory()) {
-                    System.out.println("folder exists");
-                    this.setVisible(false);
-                    CompGenView viewResults = new CompGenView();
-                    viewResults.setJob(this.selectedJob);
-                }else{
+            System.getProperty("user.dir");
+            File dir = new File(System.getProperty("user.dir") + "/download/" + this.selectedJob.getName() + "/");
+            if (dir.exists() && dir.isDirectory()) {
+                System.out.println("folder exists");
+                this.setVisible(false);
+                CompGenView viewResults = new CompGenView();
+                viewResults.setJob(this.selectedJob);
+            } else {
 //            Then if not downloaded, check if the job has finished
-                    refreshJobStatus(this.selectedJob);
-                        Matcher checkStatus = Pattern.compile("Completed").matcher(this.selectedJob.getStatus());
-                        if (checkStatus.find() == false){
-                            JOptionPane.showMessageDialog(null, "The selected job has not finished. It is only at stage:" + this.selectedJob.getStatus(),
+                refreshJobStatus(this.selectedJob);
+                Matcher checkStatus = Pattern.compile("Completed").matcher(this.selectedJob.getStatus());
+                if (checkStatus.find() == false) {
+                    JOptionPane.showMessageDialog(null, "The selected job has not finished. It is only at stage:" + this.selectedJob.getStatus(),
                             "Results not ready!", JOptionPane.ERROR_MESSAGE);
-                    }
-    //                If the job has finished, download the results from the jobs' results folder.
-                    else{
-                        try {
-                            //            Connect to the server of the user selectedjob
-                            this.channel.setServer(this.selectedJob.getServer());
-                            this.channel.connectServer();
-                            this.filesDownloading.setVisible(true);
-                            this.jobDownloadingName.setText(this.selectedJob.getName());
-                            this.channel.downloadJobResults(this.selectedJob);
-                            this.filesDownloading.setVisible(false);
-                            this.setVisible(false);
-                            CompGenView viewResults = new CompGenView();
-                            viewResults.setJob(this.selectedJob);
-                        } 
-                        catch (SftpException ex) {
-                            Logger.getLogger(CompGenStart.class.getName()).log(Level.SEVERE, null, ex);
+                } //                If the job has finished, download the results from the jobs' results folder.
+                else {
+                    try {
+                        //            Connect to the server of the user selectedjob
+                        this.channel.setServer(this.selectedJob.getServer());
+                        this.channel.connectServer();
+                        this.filesDownloading.setVisible(true);
+                        this.jobDownloadingName.setText(this.selectedJob.getName());
+                        this.channel.downloadJobResults(this.selectedJob);
+                        this.filesDownloading.setVisible(false);
+                        this.setVisible(false);
+                        CompGenView viewResults = new CompGenView();
+                        viewResults.setJob(this.selectedJob);
+                    } catch (SftpException ex) {
+                        Logger.getLogger(CompGenStart.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -2146,8 +2159,8 @@ public class CompGenStart extends javax.swing.JFrame {
     }//GEN-LAST:event_openResultsActionPerformed
 
     private void jobsTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jobsTableMouseClicked
-        JTable source = (JTable)evt.getSource();
-        Integer index = source.rowAtPoint( evt.getPoint() );
+        JTable source = (JTable) evt.getSource();
+        Integer index = source.rowAtPoint(evt.getPoint());
         this.selectedJob = this.jobsRunning.get(index);
         this.selectedJobField.setText(this.selectedJob.getName());
     }//GEN-LAST:event_jobsTableMouseClicked
@@ -2167,42 +2180,42 @@ public class CompGenStart extends javax.swing.JFrame {
     }//GEN-LAST:event_uploadQryURLButtonActionPerformed
 
     private void uploadPreAlignedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadPreAlignedActionPerformed
-       this.uploadFiles.setVisible(true);
+        this.uploadFiles.setVisible(true);
     }//GEN-LAST:event_uploadPreAlignedActionPerformed
 
     private void loadLocalAlignmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadLocalAlignmentActionPerformed
-        if ("".equals(this.localSpecies.getText())){
+        if ("".equals(this.localSpecies.getText())) {
             JOptionPane.showMessageDialog(null, "Reference species cannot be empty",
-                "Error!", JOptionPane.ERROR_MESSAGE);
+                    "Error!", JOptionPane.ERROR_MESSAGE);
         }
-        if ("".equals(this.localrefcmap)){
+        if ("".equals(this.localrefcmap)) {
             JOptionPane.showMessageDialog(null, "Reference CMAP cannot be empty",
-                "Error!", JOptionPane.ERROR_MESSAGE);
+                    "Error!", JOptionPane.ERROR_MESSAGE);
         }
-        if ("".equals(this.localqrycmap)){
+        if ("".equals(this.localqrycmap)) {
             JOptionPane.showMessageDialog(null, "Query CMAP cannot be empty",
-                "Error!", JOptionPane.ERROR_MESSAGE);
+                    "Error!", JOptionPane.ERROR_MESSAGE);
         }
-        if ("".equals(this.localxmap)){
+        if ("".equals(this.localxmap)) {
             JOptionPane.showMessageDialog(null, "Reference species cannot be empty",
-                "Error!", JOptionPane.ERROR_MESSAGE);
+                    "Error!", JOptionPane.ERROR_MESSAGE);
         }
-        if ("".equals(this.localrefannot)){
+        if ("".equals(this.localrefannot)) {
             JOptionPane.showMessageDialog(null, "Reference species cannot be empty",
-                "Error!", JOptionPane.ERROR_MESSAGE);
+                    "Error!", JOptionPane.ERROR_MESSAGE);
         }
-        if ("".equals(this.localreffasta)){
+        if ("".equals(this.localreffasta)) {
             JOptionPane.showMessageDialog(null, "Reference species cannot be empty",
-                "Error!", JOptionPane.ERROR_MESSAGE);
+                    "Error!", JOptionPane.ERROR_MESSAGE);
         }
-        if ("".equals(this.localrefkary)){
+        if ("".equals(this.localrefkary)) {
             JOptionPane.showMessageDialog(null, "Reference species cannot be empty",
-                "Error!", JOptionPane.ERROR_MESSAGE);
-        }else{
-        CompGenView viewResults = new CompGenView();
-        viewResults.setData(this.localSpecies.getText(),this.localrefcmap,this.localqrycmap,
-                            this.localrefkary,this.localxmap,this.localreffasta,this.localrefannot);
-        viewResults.setVisible(true);
+                    "Error!", JOptionPane.ERROR_MESSAGE);
+        } else {
+            CompGenView viewResults = new CompGenView();
+            viewResults.setData(this.localSpecies.getText(), this.localrefcmap, this.localqrycmap,
+                    this.localrefkary, this.localxmap, this.localreffasta, this.localrefannot);
+            viewResults.setVisible(true);
         }
     }//GEN-LAST:event_loadLocalAlignmentActionPerformed
 
@@ -2229,14 +2242,14 @@ public class CompGenStart extends javax.swing.JFrame {
         try {
             this.channel.runCalcBestEnz(this.newJob);
             this.channel.downloadEnzResults(this.newJob);
-            BestEnzyme result = new BestEnzyme(System.getProperty("user.dir")+"/download/"+this.newJob.getName()+ File.separator + "compare_enzymes.txt");
+            BestEnzyme result = new BestEnzyme(System.getProperty("user.dir") + "/download/" + this.newJob.getName() + File.separator + "compare_enzymes.txt");
 //            this.enzymeChart1.setData(result.getResult());
             this.bestEnzymeDialog.setVisible(true);
 //            this.bestEnz.setText(this.enzymeChart1.getBestEnz());
         } catch (SftpException ex) {
             Logger.getLogger(CompGenStart.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }//GEN-LAST:event_runCalcBestEnzymeActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
@@ -2259,7 +2272,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void closeLocalWindowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeLocalWindowActionPerformed
         this.uploadFiles.setVisible(false);
-        
+
     }//GEN-LAST:event_closeLocalWindowActionPerformed
 
     private void chooseLocalRefAnnotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseLocalRefAnnotActionPerformed
@@ -2307,123 +2320,125 @@ public class CompGenStart extends javax.swing.JFrame {
     private void selectedJobFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectedJobFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_selectedJobFieldActionPerformed
-    
-    public String checkEnzymeName(JTextField field){
+
+    public String checkEnzymeName(JTextField field) {
         String name = field.getText();
-        if (name.equals("")){
+        if (name.equals("")) {
             JOptionPane.showMessageDialog(null, "New enzyme name cannot be empty!",
-                "New Enzyme Name Error", JOptionPane.ERROR_MESSAGE);
+                    "New Enzyme Name Error", JOptionPane.ERROR_MESSAGE);
             return "";
-        }else{
+        } else {
             return name;
-        }   
-    }
-    
-    public String checkEnzymeSite(JTextField field){
-        String site = field.getText();
-        if (site.length() == 1){
-             JOptionPane.showMessageDialog(null, "New enzyme site cannot be this short!",
-                "New Enzyme Site Error", JOptionPane.ERROR_MESSAGE);
-             return "";
         }
-     
+    }
+
+    public String checkEnzymeSite(JTextField field) {
+        String site = field.getText();
+        if (site.length() == 1) {
+            JOptionPane.showMessageDialog(null, "New enzyme site cannot be this short!",
+                    "New Enzyme Site Error", JOptionPane.ERROR_MESSAGE);
+            return "";
+        }
+
         return site;
     }
-    
-    public boolean checkSite(String dna){
-        for (int i=0; i<dna.length(); i++){
-          if (dna.charAt(i)!='A' && dna.charAt(i)!='T' && dna.charAt(i)!='C' && dna.charAt(i)!='G' && dna.charAt(i)!='^' ){
-              return false;
-          }
+
+    public boolean checkSite(String dna) {
+        for (int i = 0; i < dna.length(); i++) {
+            if (dna.charAt(i) != 'A' && dna.charAt(i) != 'T' && dna.charAt(i) != 'C' && dna.charAt(i) != 'G' && dna.charAt(i) != '^') {
+                return false;
+            }
         }
         return true;
     }
-    
-    String getDefault(){
+
+    String getDefault() {
         ExternalServer server = (ExternalServer) servers.get(0);
         String name = server.getName();
         return name;
     }
-    
-    String extractFileURL(String URL){
-      String filename = Paths.get(URL).getFileName().toString();
-      return filename;
+
+    String extractFileURL(String URL) {
+        String filename = Paths.get(URL).getFileName().toString();
+        return filename;
     }
-    private boolean checkIPAddress(String address){
+
+    private boolean checkIPAddress(String address) {
         //      check if the ip address provided is null
-        if (address == null){
+        if (address == null) {
             return false;
         }
-        String validNumbers = "(\\d{1,2}|(0|1)\\d{2}|2[0-4]\\d|25[0-5])";  
-        String regex = validNumbers + "\\."+ validNumbers + "\\." + validNumbers + "\\." + validNumbers;
+        String validNumbers = "(\\d{1,2}|(0|1)\\d{2}|2[0-4]\\d|25[0-5])";
+        String regex = validNumbers + "\\." + validNumbers + "\\." + validNumbers + "\\." + validNumbers;
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(address);
         return m.matches();
     }
-    
-    private boolean checkWorkDir(String dir){
+
+    private boolean checkWorkDir(String dir) {
 //        need to add in regex checking
         return true;
     }
-    
-    private void addServer(ExternalServer server){
+
+    private void addServer(ExternalServer server) {
         servers.add(server);
 //        serverList.setListData(Servers);
     }
-  
-    private void jobTableAdd(List<Job> data){
+
+    private void jobTableAdd(List<Job> data) {
         this.jobsTableModel = new JobTableModel(data);
 
     }
-    private void serversFromJson(){
-        try {
-    // create Gson instance
-    Gson gson = new Gson();
-    
-    // create a reader
-    Reader reader = Files.newBufferedReader(Paths.get(System.getProperty("user.dir")+"servers.json"));
 
-    // convert JSON file to map
-    Map<?, ?> map = gson.fromJson(reader, Map.class);
+    private void serversFromJson() {
+        try {
+            // create Gson instance
+            Gson gson = new Gson();
+
+            // create a reader
+            Reader reader = Files.newBufferedReader(Paths.get(System.getProperty("user.dir") + "servers.json"));
+
+            // convert JSON file to map
+            Map<?, ?> map = gson.fromJson(reader, Map.class);
 //    ArrayList array = new ArrayList();
-    // print map entries
-    if (map == null){}else{
-    for (Map.Entry<?, ?> entry : map.entrySet()) {
-        
-        String[] value;
-        value = entry.getValue().toString().split("=");
+            // print map entries
+            if (map == null) {
+            } else {
+                for (Map.Entry<?, ?> entry : map.entrySet()) {
+
+                    String[] value;
+                    value = entry.getValue().toString().split("=");
 
 //        Work out how many servers are present
-        int numServers = (value.length)/5;
+                    int numServers = (value.length) / 5;
 
-        for (int s=1;s<=numServers;s++){
+                    for (int s = 1; s <= numServers; s++) {
 
 //            messy but it works
-
 //            create server object
-            ExternalServer serv = new ExternalServer(value[1+ 5*(s-1)].split(",")[0],
-                                                        value[2+ 5*(s-1)].split(",")[0],
-                                                        value[3+ 5*(s-1)].split(",")[0],
-                                                        value[4+ 5*(s-1)].split(",")[0],
-                                                        value[5+ 5*(s-1)].split(",")[0].replace("}","").replaceAll("]", ""));
+                        ExternalServer serv = new ExternalServer(value[1 + 5 * (s - 1)].split(",")[0],
+                                value[2 + 5 * (s - 1)].split(",")[0],
+                                value[3 + 5 * (s - 1)].split(",")[0],
+                                value[4 + 5 * (s - 1)].split(",")[0],
+                                value[5 + 5 * (s - 1)].split(",")[0].replace("}", "").replaceAll("]", ""));
 
 //           Add job object to array
-            this.servers.add(serv);           
-            }
-        }
-        // close reader
-        reader.close();
+                        this.servers.add(serv);
+                    }
                 }
-            } catch (Exception ex) {
+                // close reader
+                reader.close();
+            }
+        } catch (Exception ex) {
             ex.getCause();
         }
     }
-    
-    private void jobsFromJson(){
+
+    private void jobsFromJson() {
         this.jobsRunning.clear();
         try {
-    // create Gson instance
-    Gson gson = new Gson();
+            // create Gson instance
+            Gson gson = new Gson();
             // convert JSON file to map
             try ( // create a reader
                     Reader reader = Files.newBufferedReader(Paths.get("/Users/franpeters/Documents/MSc Thesis/MapOptics/jobs.json"))) {
@@ -2434,179 +2449,197 @@ public class CompGenStart extends javax.swing.JFrame {
                 if (map == null) {
                 } else {
                     for (Map.Entry<?, ?> entry : map.entrySet()) {
-                       
+
                         String[] value = entry.getValue().toString().split("=");
                         //        Work out how many jobs are present
-                        int numJobs = (value.length - 1)/16;
-                        
-                        for (int j=1;j<=numJobs;j++){
-                        //            System.out.println(j);
-                        //            messy but it works
-                        //            create enyzme object
-                        
-                        Enzyme enz = new Enzyme(value[9 + 16*(j-1)].split(",")[0],
-                                value[10 + 16*(j-1)].split(",")[0]);
+                        int numJobs = (value.length - 1) / 16;
 
-                        //            create server object
-                        ExternalServer serv = new ExternalServer(value[2+ 16*(j-1)].split(",")[0],
-                                value[3+ 16*(j-1)].split(",")[0],
-                                value[4+ 16*(j-1)].split(",")[0],
-                                value[5+ 16*(j-1)].split(",")[0],
-                                value[6+ 16*(j-1)].split(",")[0]);
+                        for (int j = 1; j <= numJobs; j++) {
+                            //            System.out.println(j);
+                            //            messy but it works
+                            //            create enyzme object
 
-                        //            create job object
-                        Job job = new Job(serv,
-                                value[1+ 16*(j-1)].split(",")[0],
-                                value[8+ 16*(j-1)].split(",")[0],
-                                value[7+ 16*(j-1)].split(",")[0],
-                                enz,
-                                value[11+ 16*(j-1)].split(",")[0],
-                                value[12+ 16*(j-1)].split(",")[0],
-                                value[14+ 16*(j-1)].split(",")[0],
-                                value[13+ 16*(j-1)].split(",")[0],
-                                value[15+ 16*(j-1)].split(",")[0],
-                                value[16+ 16*(j-1)].split(",")[0].replace("}","").replaceAll("]", ""));
-                        //           Add job object to array
-                        this.jobsRunning.add(job);
+                            Enzyme enz = new Enzyme(value[9 + 16 * (j - 1)].split(",")[0],
+                                    value[10 + 16 * (j - 1)].split(",")[0]);
 
-                        }}      }
-                                        // close reader
-                                    }
-                        jobTableAdd(this.jobsRunning);
-                        } catch (JsonIOException | JsonSyntaxException | IOException ex) {
-                            ex.getCause();
+                            //            create server object
+                            ExternalServer serv = new ExternalServer(value[2 + 16 * (j - 1)].split(",")[0],
+                                    value[3 + 16 * (j - 1)].split(",")[0],
+                                    value[4 + 16 * (j - 1)].split(",")[0],
+                                    value[5 + 16 * (j - 1)].split(",")[0],
+                                    value[6 + 16 * (j - 1)].split(",")[0]);
+
+                            //            create job object
+                            Job job = new Job(serv,
+                                    value[1 + 16 * (j - 1)].split(",")[0],
+                                    value[8 + 16 * (j - 1)].split(",")[0],
+                                    value[7 + 16 * (j - 1)].split(",")[0],
+                                    enz,
+                                    value[11 + 16 * (j - 1)].split(",")[0],
+                                    value[12 + 16 * (j - 1)].split(",")[0],
+                                    value[14 + 16 * (j - 1)].split(",")[0],
+                                    value[13 + 16 * (j - 1)].split(",")[0],
+                                    value[15 + 16 * (j - 1)].split(",")[0],
+                                    value[16 + 16 * (j - 1)].split(",")[0].replace("}", "").replaceAll("]", ""));
+                            //           Add job object to array
+                            this.jobsRunning.add(job);
+
                         }
+                    }
+                }
+                // close reader
+            }
+            jobTableAdd(this.jobsRunning);
+        } catch (JsonIOException | JsonSyntaxException | IOException ex) {
+            ex.getCause();
+        }
 
-                            }
+    }
 
-    private static class ServTableModel extends DefaultTableModel{
+    private static class ServTableModel extends DefaultTableModel {
+
         private List<ExternalServer> list = new ArrayList();
-    private String[] columnNames = {"Name", "User", "Host", "Working Directory"};
+        private String[] columnNames = {"Name", "User", "Host", "Working Directory"};
+
         public ServTableModel(List<ExternalServer> list) {
             this.list = list;
         }
-        public ServTableModel(){};
-        public void setData(List<ExternalServer> list){this.list=list;}
-        @Override
-    
-        public String getColumnName(int columnIndex){
-         return columnNames[columnIndex];
-    }
 
-    @Override     
-    public int getRowCount() {
-        if (null == this.list){
-            return 0;
+        public ServTableModel() {
         }
-        return list.size();
-    }
 
-    @Override        
-    public int getColumnCount() {
-        return 4; 
-    }
+        ;
+        public void setData(List<ExternalServer> list) {
+            this.list = list;
+        }
 
-    @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
-        ExternalServer serv = list.get(rowIndex);
-        switch (columnIndex) {
-            case 0: 
-                return serv.name;
-            case 1:
-                return serv.getUser();
-            case 2:
-                return serv.getHost();
-            case 3:
-                return serv.getWorkingDir();
-            
-           }
-           return null;
-   }
+        @Override
 
-   @Override
-   public Class<?> getColumnClass(int columnIndex){
-          switch (columnIndex){
-             case 0:
-               return String.class;
-             case 1:
-               return String.class;
-             case 2:
-               return String.class;
-             case 3:
-               return String.class;
-             }
-             return null;
-      }
+        public String getColumnName(int columnIndex) {
+            return columnNames[columnIndex];
+        }
+
+        @Override
+        public int getRowCount() {
+            if (null == this.list) {
+                return 0;
+            }
+            return list.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 4;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            ExternalServer serv = list.get(rowIndex);
+            switch (columnIndex) {
+                case 0:
+                    return serv.name;
+                case 1:
+                    return serv.getUser();
+                case 2:
+                    return serv.getHost();
+                case 3:
+                    return serv.getWorkingDir();
+
+            }
+            return null;
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            switch (columnIndex) {
+                case 0:
+                    return String.class;
+                case 1:
+                    return String.class;
+                case 2:
+                    return String.class;
+                case 3:
+                    return String.class;
+            }
+            return null;
+        }
     }
 
     public class JobTableModel extends DefaultTableModel {
 
-    private List<Job> list = new ArrayList();
-    private String[] columnNames = {"Name", "Server", "Pipeline", "Status","Ref Species", "Qry Species"};
+        private List<Job> list = new ArrayList();
+        private String[] columnNames = {"Name", "Server", "Pipeline", "Status", "Ref Species", "Qry Species"};
 
-    public JobTableModel(List<Job> list){
-         this.list = list;
-    }
-    public JobTableModel(){}
-    public void setData(List<Job> list){this.list = list;}
-    @Override
-    public String getColumnName(int columnIndex){
-         return columnNames[columnIndex];
-    }
-
-    @Override     
-    public int getRowCount() {
-        if (null == this.list){
-            return 0;
+        public JobTableModel(List<Job> list) {
+            this.list = list;
         }
-        return list.size();
+
+        public JobTableModel() {
+        }
+
+        public void setData(List<Job> list) {
+            this.list = list;
+        }
+
+        @Override
+        public String getColumnName(int columnIndex) {
+            return columnNames[columnIndex];
+        }
+
+        @Override
+        public int getRowCount() {
+            if (null == this.list) {
+                return 0;
+            }
+            return list.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return 6;
+        }
+
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            Job jobs = list.get(rowIndex);
+            switch (columnIndex) {
+                case 0:
+                    return jobs.getName();
+                case 1:
+                    return jobs.getServer().name;
+                case 2:
+                    return jobs.getPipeline();
+                case 3:
+                    return jobs.getStatus();
+                case 4:
+                    return jobs.getRefOrg();
+                case 5:
+                    return jobs.getQryOrg();
+            }
+            return null;
+        }
+
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            switch (columnIndex) {
+                case 0:
+                    return String.class;
+                case 1:
+                    return String.class;
+                case 2:
+                    return String.class;
+                case 3:
+                    return String.class;
+                case 4:
+                    return String.class;
+                case 5:
+                    return String.class;
+            }
+            return null;
+        }
     }
 
-    @Override        
-    public int getColumnCount() {
-        return 6; 
-    }
-
-    @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
-        Job jobs = list.get(rowIndex);
-        switch (columnIndex) {
-            case 0: 
-                return jobs.getName();
-            case 1:
-                return jobs.getServer().name;
-            case 2:
-                return jobs.getPipeline();
-            case 3:
-                return jobs.getStatus();
-            case 4:
-                return jobs.getRefOrg();
-            case 5:
-                return jobs.getQryOrg();
-           }
-           return null;
-   }
-
-   @Override
-   public Class<?> getColumnClass(int columnIndex){
-          switch (columnIndex){
-             case 0:
-               return String.class;
-             case 1:
-               return String.class;
-             case 2:
-               return String.class;
-             case 3:
-               return String.class;
-             case 4:
-               return String.class;
-            case 5:
-               return String.class;
-             }
-             return null;
-      }
- }
-        private void saveServerJson(List<ExternalServer> servers){
+    private void saveServerJson(List<ExternalServer> servers) {
         try {
 //            need to update this to a relative folder
             JsonWriter writer = new JsonWriter(new FileWriter("/Users/franpeters/Documents/MSc Thesis/MapOptics/servers.json"));
@@ -2625,63 +2658,64 @@ public class CompGenStart extends javax.swing.JFrame {
             writer.endArray();
             writer.endObject();
             writer.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
-        
-        private void saveJobJson(List<Job> jobs){
+
+    private void saveJobJson(List<Job> jobs) {
         try {
- //            need to update this to a relative folder
-             JsonWriter writer = new JsonWriter(new FileWriter("/Users/franpeters/Documents/MSc Thesis/MapOptics/jobs.json"));
-             writer.beginObject();
-             writer.name("data");
-             writer.beginArray();
-             for (Job j : jobs) {
-                 ExternalServer s = j.getServer();
-                 Enzyme e = j.getEnz();
-                 writer.beginObject();
-                 writer.name("Job name").value(j.getName());
-                 writer.name("Server name").value(s.name);
-                 writer.name("Server user").value(s.getUser());
-                 writer.name("Server host").value(s.getHost());
-                 writer.name("Server pass").value(s.getPassword());
-                 writer.name("Server dir").value(s.getWorkingDir());
-                 writer.name("qry").value(j.getQry());
-                 writer.name("ref").value(j.getRef());
-                 writer.name("Enzyme name").value(e.getName());
-                 writer.name("Enzyme site").value(e.getSite());
-                 writer.name("pipeline").value(j.getPipeline());
-                 writer.name("Status").value(j.getStatus());
-                 writer.name("Ref Organism").value(j.getRefOrg());
-                 writer.name("Qry Organism").value(j.getQryOrg());
-                 writer.name("Ref Annotation").value(j.getRefAnnot());
-                 writer.name("Qry Annotation").value(j.getQryAnnot());
-                 writer.endObject();
-             }
-             writer.endArray();
-             writer.endObject();
-             writer.close();
-             } catch (IOException e) {
-                 e.printStackTrace();
-         }
-    }
-    private Boolean refreshJobStatus(Job job){
-//          Connect to the server of the user selectedjob
-            this.channel.setServer(job.getServer());
-            
-            this.channel.connectServer();
-            ArrayList<String> result = this.channel.queryLogFile(this.selectedJob);
-            for (String s: result){
-                System.out.println("result: " + s);
+            //            need to update this to a relative folder
+            JsonWriter writer = new JsonWriter(new FileWriter("/Users/franpeters/Documents/MSc Thesis/MapOptics/jobs.json"));
+            writer.beginObject();
+            writer.name("data");
+            writer.beginArray();
+            for (Job j : jobs) {
+                ExternalServer s = j.getServer();
+                Enzyme e = j.getEnz();
+                writer.beginObject();
+                writer.name("Job name").value(j.getName());
+                writer.name("Server name").value(s.name);
+                writer.name("Server user").value(s.getUser());
+                writer.name("Server host").value(s.getHost());
+                writer.name("Server pass").value(s.getPassword());
+                writer.name("Server dir").value(s.getWorkingDir());
+                writer.name("qry").value(j.getQry());
+                writer.name("ref").value(j.getRef());
+                writer.name("Enzyme name").value(e.getName());
+                writer.name("Enzyme site").value(e.getSite());
+                writer.name("pipeline").value(j.getPipeline());
+                writer.name("Status").value(j.getStatus());
+                writer.name("Ref Organism").value(j.getRefOrg());
+                writer.name("Qry Organism").value(j.getQryOrg());
+                writer.name("Ref Annotation").value(j.getRefAnnot());
+                writer.name("Qry Annotation").value(j.getQryAnnot());
+                writer.endObject();
             }
-            String latestStatus = result.get(result.size()-1).split(": ")[1]; //get the latest update from the file
-            System.out.println(latestStatus);
-            job.setStatus(latestStatus);
-            return true;
-    
-}
-        
+            writer.endArray();
+            writer.endObject();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Boolean refreshJobStatus(Job job) {
+//          Connect to the server of the user selectedjob
+        this.channel.setServer(job.getServer());
+
+        this.channel.connectServer();
+        ArrayList<String> result = this.channel.queryLogFile(this.selectedJob);
+        for (String s : result) {
+            System.out.println("result: " + s);
+        }
+        String latestStatus = result.get(result.size() - 1).split(": ")[1]; //get the latest update from the file
+        System.out.println(latestStatus);
+        job.setStatus(latestStatus);
+        return true;
+
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Btn_modifAlignParam;
     private javax.swing.JButton addNewServer;
