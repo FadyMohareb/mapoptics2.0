@@ -44,6 +44,7 @@ public class XmapShape {
     private boolean sites=false;
     private Integer xmapID;
     private Graphics2D g2d;
+    
     public XmapShape(XmapData xmap, CmapData cmap, Double relStart, Double relEnd){
         this.cmap=cmap;
         this.xmap=xmap;
@@ -56,13 +57,19 @@ public class XmapShape {
     public void drawAlignment(Graphics2D g2d){
         this.g2d=g2d;
         if(xmap.getOri()){
+            // Get site of the query of the first aligned site ID (?)
             cmap.getSite(xmap.returnAlignments().get(0).getQry()).getPosition();
+            /* 
+            Scale the positions of the sites depending of the 
+            real first and last sites, and the relative first and last sites
+            */
             Double firstSite = cmap.getSite(1).getPosition();
             Double lastSite = cmap.getSite(cmap.getSites().size()).getPosition();
             Double sitesDist = lastSite-firstSite;
             scale = (relRefEnd-relRefStart)/sitesDist;
             Double firstRelPos = scale*firstSite;
             Double queryWidth = cmap.getLength()*scale;
+            // Calculate X coord of the first position, related to the start of the drawn alignment
             startX = relRefStart - firstRelPos;
             l1 = new Line2D.Double(relRefStart, 95, relRefStart+deltaX, 230+deltaY);
             l2 = new Line2D.Double(relRefEnd, 95, relRefEnd+deltaX, 230+deltaY);
@@ -88,7 +95,7 @@ public class XmapShape {
             }
         
         }
-        
+        // Draw the rectangles and lines
         Shape rect = rectangle;
         Shape shape1 = l1;
         Shape shape2 = l2;

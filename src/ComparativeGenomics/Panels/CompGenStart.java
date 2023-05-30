@@ -2200,9 +2200,11 @@ public class CompGenStart extends javax.swing.JFrame {
         } else if ("".equals(this.localrefcmap) || this.localRefCmapName.getText() == null) {
             JOptionPane.showMessageDialog(null, "Reference CMAP cannot be empty",
                     "Missing file!", JOptionPane.ERROR_MESSAGE);
-        } else if ("".equals(this.localrefannot) || this.localRefAnnotName.getText() == null) {
+        // Check that annottaion file was provided
+        /*}else if ("".equals(this.localrefannot) || this.localRefAnnotName.getText() == null) {
             JOptionPane.showMessageDialog(null, "Reference annotation cannot be empty",
                     "Missing file!", JOptionPane.ERROR_MESSAGE);
+        */
         } else if ("".equals(this.localrefkary) || this.localRefKaryName.getText() == null) {
             JOptionPane.showMessageDialog(null, "Reference karyotype file cannot be empty",
                     "Missing file!", JOptionPane.ERROR_MESSAGE);
@@ -2223,6 +2225,7 @@ public class CompGenStart extends javax.swing.JFrame {
         }
         */
         else {
+            System.out.println(localqrycmap);
             CompGenView viewResults = new CompGenView();
             viewResults.setData(this.localSpecies.getText(), this.localrefcmap, this.localqrycmap,
                     this.localrefkary, this.localxmap, this.localreffasta, this.localrefannot);

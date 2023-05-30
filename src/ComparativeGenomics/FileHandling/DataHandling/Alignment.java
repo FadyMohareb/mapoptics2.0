@@ -50,8 +50,10 @@ public final class Alignment {
 
         for (Map.Entry<Integer, ArrayList<XmapData>> entry : this.xmap.getXmap().entrySet()) {
             Integer chrID = entry.getKey();
-            ArrayList<XmapData> value = entry.getValue();
+            ArrayList<XmapData> value = entry.getValue(); //Each line of the xmap file
             for (XmapData map : value) {
+                // Get the maps from the reference and query data
+                // that have the same ID as the considered xmap
                 CmapData r = this.cmapRef.getCmapByID(map.getRefID());
                 CmapData q = this.cmapQry.getCmapByID(map.getQryID());
 //              populate the Pair objects with Site objects

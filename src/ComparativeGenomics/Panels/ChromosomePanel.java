@@ -60,7 +60,7 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
     Double lastStart = Double.valueOf(startX);
     
 //    list of shapes to draw
-    private ArrayList<XmapShape> alignShapes =new ArrayList();
+    private ArrayList<XmapShape> alignShapes = new ArrayList();
     
     /**
      * Creates new ChromosomePanel
@@ -122,10 +122,14 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
 //                    determine the position on the panel to draw these sites
         Site firstSiteRef=this.chr.getRefSites().get(firstRefSiteID);
         Site lastSiteRef=this.chr.getRefSites().get(lastRefSiteID);
+        // Scaling of first and last chromosome positions
         Double relFirstPosRef=firstSiteRef.getPosition()*relSize;
         Double relLastPosRef=lastSiteRef.getPosition()*relSize;
+        // Get CMAP having the same ID as urrent xmap
         CmapData qryCmapMap = this.qryCmap.getCmapByID(map.getQryID());
+        // Draw lines of alignement of the maps
         XmapShape shape = new XmapShape(map,qryCmapMap,relFirstPosRef+10,relLastPosRef+10);
+        // Add to list of shapes to draw
         alignShapes.add(shape);            
         repaint();
     }
@@ -147,9 +151,9 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
         else{
             System.out.println("chr being drawn");
             g2d.setColor(Color.LIGHT_GRAY);
-            Integer y = startY+20+5;
+            Integer y = startY + 20 + 5;
             Double yPos = y.doubleValue();
-            MapOpticsRectangle rect =new MapOpticsRectangle(startX.doubleValue(), yPos, w.doubleValue(), 60);
+            MapOpticsRectangle rect = new MapOpticsRectangle(startX.doubleValue(), yPos, w.doubleValue(), 60);
             Shape refRect = rect;
             g2d.draw(refRect);
             g2d.fill(refRect);
@@ -163,7 +167,7 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
         }
         }
     /**
-     * 
+     * Draw all the alignements
      * @param g2d To set the Graphics2D device
      */
     private void drawAlignments(Graphics2D g2d){

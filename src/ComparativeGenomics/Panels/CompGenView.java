@@ -80,22 +80,29 @@ public class CompGenView extends javax.swing.JFrame {
         jobNameLabel.setText("Local Job");
         refGenomeName = refOrg;
 //        String qryGenomeName = job.getQryOrg();
-        cmapRef = new Cmap(cmapref);
 
+        // cmap files are parsed
+        cmapRef = new Cmap(cmapref);
         cmapQry = new Cmap(cmapqry);
 
+        // Karyotype file is parsed
         refKary = new Karyotype(refkary);
 //       qryKary = new Karyotype(System.getProperty("user.dir")+"/download/"+job.getName()+File.separator+"qry_karyotype.txt");
+        
+        // XMAP file is parsed
         xmap = new Xmap(xmapfile);
-
+        
+        // FASTA file is parsed
         refFasta = new Fasta();
 //        Fasta qryFasta=new Fasta();
+
+        // Annotation file is parsed
         refAnnot = new Annot(refannot);
         populateData();
     }
     
     public void setJob(Job j){
-        this.job=j;
+        this.job = j;
         this.parsingDialog.setVisible(true);
         
         jobNameLabel.setText(job.getName());
@@ -106,21 +113,27 @@ public class CompGenView extends javax.swing.JFrame {
         
         refGenomeName = job.getRefOrg();
 //        String qryGenomeName = job.getQryOrg();
+
+        // Cmap files are parsed
         cmapRef = new Cmap(System.getProperty("user.dir")+"/download/"+job.getName()+File.separator+job.getName()+"_ref.cmap");
 
         cmapQry = new Cmap(System.getProperty("user.dir")+"/download/"+job.getName()+File.separator+job.getName()+"_qry.cmap");
 
+        // Karyotype file is parsed
         refKary = new Karyotype(System.getProperty("user.dir")+"/download/"+job.getName()+File.separator+"ref_karyotype.txt");
 //        Karyotype qryKary = new Karyotype(System.getProperty("user.dir")+"/download/"+job.getName()+File.separator+"qry_karyotype.txt");
+        
+        // xmap file is parsed
         xmap = new Xmap(System.getProperty("user.dir")+"/download/"+job.getName()+File.separator+job.getName()+".xmap");
 
-        refFasta=new Fasta();
+        // Fasta and annotation files are parsed
+        refFasta = new Fasta();
 //        qryFasta=new Fasta();
         refAnnot = new Annot(this.job.getRefAnnot());
 
 //        qryAnnot = new Annot(this.job.getQryAnnot());
         
-        this.qryCmap=cmapQry;
+        this.qryCmap = cmapQry;
 
         populateData();
     }
@@ -128,13 +141,18 @@ public class CompGenView extends javax.swing.JFrame {
     private void populateData(){
         xmap.setRefCmap(cmapRef);
         xmap.setQryCmap(cmapQry);
+        // Set minimum InDel size for SV detection
         xmap.detectSVs(500);
+        
+        // STore reference genome
         this.refGenome = new Genome(refGenomeName,cmapRef,refKary,refFasta,refAnnot);
       
 //        this.qryGenome = new Genome(qryGenomeName,cmapQry,qryKary,qryFasta,qryAnnot);
         
-        this.alignment= new Alignment(this.refGenome,cmapQry,xmap);
+        // Store alignments files
+        this.alignment= new Alignment(this.refGenome,cmapQry, xmap);
         
+        // Pass information to chromosome panel
         this.chromosomePanel1.setQueryCmap(qryCmap);
         this.genomePanel1.setAlignment(this.alignment,"reference");
         this.genomePanel1.repaint();
@@ -165,8 +183,8 @@ public class CompGenView extends javax.swing.JFrame {
         DefaultTableModel transTableModel = (DefaultTableModel)this.translocationTable.getModel();
         this.translocationTable.setAutoCreateRowSorter(true);
 //         First clear the chromosomes JTable of any previous data
-        transTableModel .setRowCount(0);
-        transTableModel .setColumnCount(0);
+        transTableModel.setRowCount(0);
+        transTableModel.setColumnCount(0);
         
         String[] columnNamesTrans = {"Chromosome 1", "Chromosome 2"};
         transTableModel.setColumnIdentifiers(columnNamesTrans); //Set the column names of this table

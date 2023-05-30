@@ -91,7 +91,8 @@ public class Cmap {
     }
     /**
      * 
-     * @return Number of contigs contained within the cmap, should correspond with number of chromosomes
+     * @return Number of contigs contained within the cmap, 
+     * should correspond with number of chromosomes
      */
     public Integer getNumConsensus(){
         return this.numberConsensus;
@@ -150,7 +151,7 @@ public class Cmap {
                         Double occ = Double.parseDouble(rowData[8]);
                         Site site = new Site(cmapid,siteid,pos,lab,std,cov,occ);
                          if (cmapSize.containsKey(size)) {
-                            CmapData map= cmapSize.get(size);
+                            CmapData map = cmapSize.get(size);
                             map.addSite(siteid, site); 
                             cmapID.replace(cmapid, map);
                             cmapSize.replace(size, map);
@@ -194,7 +195,6 @@ public class Cmap {
      * @return 
      */
     private boolean validateCmap (String filePath) {
-
             if (filePath.endsWith(".cmap")) {
                 if (Files.exists(Paths.get(filePath))) {
                     try {
