@@ -16,7 +16,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 /**
- * To parse the karyotype file generated from the reference genome produced by the run_job.sh script using Samtools faidx into a space separated file with the first column being the chromosome. Size and the second column being the chromosome name, which has been extracted from the fasta file headers (see 3.1.4 for more information on the Fasta file).
+ * To parse the karyotype file generated from the reference genome produced 
+ * by the run_job.sh script using Samtools faidx into a space separated file 
+ * with the first column being the chromosome. 
+ * Size and the second column being the chromosome name, 
+ * which has been extracted from the fasta file headers 
+ * (see 3.1.4 for more information on the Fasta file).
  * @author franpeters
  */
 public class Karyotype {

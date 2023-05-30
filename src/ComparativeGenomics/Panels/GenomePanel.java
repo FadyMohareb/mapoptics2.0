@@ -12,53 +12,55 @@ import javax.imageio.ImageIO;
  * @author franpeters
  */
 public class GenomePanel extends javax.swing.JPanel {
+
     Alignment alignment = null;
     String type;
+
     /**
      * Creates new form GenomePanel
      */
-    public GenomePanel(){
-    initComponents();
+    public GenomePanel() {
+        initComponents();
     }
 
-    
-    public void setAlignment(Alignment align,String type){
-        this.alignment=align;
-        this.type=type;
+    public void setAlignment(Alignment align, String type) {
+        this.alignment = align;
+        this.type = type;
     }
 
     void drawRectangles(Graphics g) {
-        if (alignment ==null){
-        }else{
-        Graphics2D g2d = (Graphics2D) g;
-        Integer w = (this.getWidth()-10);
-        Integer h = (this.getHeight()-100);
-        if("reference".equals(this.type)){
-             this.alignment.getRefGenome().getKaryotype().drawChromosomes(g2d, w, h);
-        }
+        if (alignment == null) {
+        } else {
+            Graphics2D g2d = (Graphics2D) g;
+            Integer w = (this.getWidth() - 10);
+            Integer h = (this.getHeight() - 100);
+            if ("reference".equals(this.type)) {
+                this.alignment.getRefGenome().getKaryotype().drawChromosomes(g2d, w, h);
+            }
 //         if("query".equals(this.type)){
 //              this.alignment.getQryGenome().getKaryotype().drawChromosomes(g2d, w, h);
 //         }
-       
+
         }
     }
-    
+
     @Override
     public void paint(Graphics g) {
         super.paint(g);
         drawRectangles(g);
     }
 
-    public void saveImage(String name,String type, String location) {
-		BufferedImage image = new BufferedImage(getWidth(),getHeight(), BufferedImage.TYPE_INT_RGB);
-		Graphics2D g2d = image.createGraphics();
-		printAll(g2d);
-		try{
-			ImageIO.write(image, type, new File(location+name+"."+type));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    public void saveImage(String name, String type, String location) {
+        BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = image.createGraphics();
+        printAll(g2d);
+        try {
+            ImageIO.write(image, type, new File(location + name + "." + type));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
