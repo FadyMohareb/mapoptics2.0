@@ -33,6 +33,8 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import org.apache.commons.io.FileUtils;
 import startScreen.startScreen;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  *
@@ -742,7 +744,6 @@ public class CompGenStart extends javax.swing.JFrame {
         startJobButton.setEnabled(false);
 
         refURLDialog.setBounds(new java.awt.Rectangle(500, 500, 401, 35));
-        refURLDialog.setLocationByPlatform(true);
         refURLDialog.setMinimumSize(new java.awt.Dimension(381, 51));
         refURLDialog.setSize(new java.awt.Dimension(385, 51));
 
@@ -780,7 +781,6 @@ public class CompGenStart extends javax.swing.JFrame {
         );
 
         newServerDialog.setBounds(new java.awt.Rectangle(500, 500, 285, 268));
-        newServerDialog.setLocationByPlatform(true);
         newServerDialog.setMinimumSize(new java.awt.Dimension(289, 270));
         newServerDialog.setSize(new java.awt.Dimension(289, 270));
 
@@ -898,7 +898,6 @@ public class CompGenStart extends javax.swing.JFrame {
 
         currentServerDialog.setBounds(new java.awt.Rectangle(500, 500, 289, 266));
         currentServerDialog.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        currentServerDialog.setLocationByPlatform(true);
         currentServerDialog.setMinimumSize(new java.awt.Dimension(293, 239));
         currentServerDialog.setSize(new java.awt.Dimension(293, 239));
 
@@ -985,7 +984,6 @@ public class CompGenStart extends javax.swing.JFrame {
 
         selectServerDialog.setTitle("Select Server");
         selectServerDialog.setBounds(new java.awt.Rectangle(500, 500, 397, 193));
-        selectServerDialog.setLocationByPlatform(true);
         selectServerDialog.setMinimumSize(new java.awt.Dimension(409, 210));
         selectServerDialog.setSize(new java.awt.Dimension(409, 230));
 
@@ -1092,7 +1090,6 @@ public class CompGenStart extends javax.swing.JFrame {
 
         qryURLDialog.setTitle("Query File from URL");
         qryURLDialog.setBounds(new java.awt.Rectangle(500, 500, 397, 35));
-        qryURLDialog.setLocationByPlatform(true);
         qryURLDialog.setMinimumSize(new java.awt.Dimension(401, 51));
         qryURLDialog.setSize(new java.awt.Dimension(401, 51));
 
@@ -1133,7 +1130,6 @@ public class CompGenStart extends javax.swing.JFrame {
 
         uploadFiles.setTitle("Upload Alignment Files");
         uploadFiles.setBounds(new java.awt.Rectangle(300, 300, 397, 386));
-        uploadFiles.setLocationByPlatform(true);
         uploadFiles.setMinimumSize(new java.awt.Dimension(414, 445));
         uploadFiles.setSize(new java.awt.Dimension(414, 445));
 
@@ -1378,7 +1374,6 @@ public class CompGenStart extends javax.swing.JFrame {
         filesDownloading.setTitle("Files Downloading");
         filesDownloading.setBounds(new java.awt.Rectangle(500, 500, 300, 150));
         filesDownloading.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        filesDownloading.setLocationByPlatform(true);
         filesDownloading.setMinimumSize(new java.awt.Dimension(283, 149));
         filesDownloading.setSize(new java.awt.Dimension(283, 149));
 
@@ -1409,7 +1404,6 @@ public class CompGenStart extends javax.swing.JFrame {
 
         bestEnzymeDialog.setTitle("Best Enzyme");
         bestEnzymeDialog.setBackground(new java.awt.Color(255, 255, 255));
-        bestEnzymeDialog.setLocationByPlatform(true);
         bestEnzymeDialog.setMinimumSize(new java.awt.Dimension(384, 309));
         bestEnzymeDialog.setSize(new java.awt.Dimension(384, 309));
 
@@ -1448,7 +1442,6 @@ public class CompGenStart extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        helpPane.setLocationByPlatform(true);
         helpPane.setMinimumSize(new java.awt.Dimension(497, 518));
         helpPane.setPreferredSize(new java.awt.Dimension(500, 520));
         helpPane.setSize(new java.awt.Dimension(500, 520));
@@ -1778,12 +1771,13 @@ public class CompGenStart extends javax.swing.JFrame {
         if (this.selectedServer == null) {
             JOptionPane.showMessageDialog(null, "No server has been selected! Please select a server",
                     "No Sever Selected", JOptionPane.ERROR_MESSAGE);
+        } else {
+            currentName.setText(selectedServer.name);
+            currentHost.setText(selectedServer.getHost());
+            currentPass.setText(selectedServer.getPassword());
+            currentDir.setText(selectedServer.getWorkingDir());
+            currentServerDialog.setVisible(true);
         }
-        currentName.setText(selectedServer.name);
-        currentHost.setText(selectedServer.getHost());
-        currentPass.setText(selectedServer.getPassword());
-        currentDir.setText(selectedServer.getWorkingDir());
-        currentServerDialog.setVisible(true);
     }//GEN-LAST:event_serverInfoButtonActionPerformed
 
     private void addServerMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addServerMenuActionPerformed
@@ -1964,6 +1958,7 @@ public class CompGenStart extends javax.swing.JFrame {
 //        need to update this to query the log file!
         this.newJob.setStatus("Started");
         this.jobsRunning.add(this.newJob);
+        System.out.println("New job added");
 //        Update the jobs JSON file
         saveJobJson(this.jobsRunning);
 //        update the jobs table with the new job that has been created
@@ -2088,7 +2083,7 @@ public class CompGenStart extends javax.swing.JFrame {
         this.selectedServer = this.tempSelectedServer;
 //        Update the label
         serverLabel.setText(this.selectedServer.getName());
-//        Clear and closethe choose server dialog
+//        Clear and close the choose server dialog
         chosenServerLabel.setText("");
         selectServerDialog.setVisible(false);
     }//GEN-LAST:event_chooseServerButtonActionPerformed
@@ -2200,11 +2195,11 @@ public class CompGenStart extends javax.swing.JFrame {
         } else if ("".equals(this.localrefcmap) || this.localRefCmapName.getText() == null) {
             JOptionPane.showMessageDialog(null, "Reference CMAP cannot be empty",
                     "Missing file!", JOptionPane.ERROR_MESSAGE);
-        // Check that annottaion file was provided
-        /*}else if ("".equals(this.localrefannot) || this.localRefAnnotName.getText() == null) {
+            // Check that annottaion file was provided
+            /*}else if ("".equals(this.localrefannot) || this.localRefAnnotName.getText() == null) {
             JOptionPane.showMessageDialog(null, "Reference annotation cannot be empty",
                     "Missing file!", JOptionPane.ERROR_MESSAGE);
-        */
+             */
         } else if ("".equals(this.localrefkary) || this.localRefKaryName.getText() == null) {
             JOptionPane.showMessageDialog(null, "Reference karyotype file cannot be empty",
                     "Missing file!", JOptionPane.ERROR_MESSAGE);
@@ -2217,14 +2212,12 @@ public class CompGenStart extends javax.swing.JFrame {
         } else if ("".equals(this.localxmap) || this.localXmapName.getText() == null) {
             JOptionPane.showMessageDialog(null, "XMAP file cannot be empty",
                     "Missing file!", JOptionPane.ERROR_MESSAGE);
-        } 
-        /* 
+        } /* 
         else if ("".equals(this.localreffasta) || this.localreffasta == null) {
             JOptionPane.showMessageDialog(null, "Reference fasta file cannot be empty",
                     "Missing file!", JOptionPane.ERROR_MESSAGE);
         }
-        */
-        else {
+         */ else {
             System.out.println(localqrycmap);
             CompGenView viewResults = new CompGenView();
             viewResults.setData(this.localSpecies.getText(), this.localrefcmap, this.localqrycmap,
@@ -2466,9 +2459,13 @@ public class CompGenStart extends javax.swing.JFrame {
         try {
             // create Gson instance
             Gson gson = new Gson();
+            // Get path
+            Path path = Paths.get("");
+            String pathDirectory = path.toAbsolutePath().toString();
             // convert JSON file to map
-            try ( // create a reader
-                    Reader reader = Files.newBufferedReader(Paths.get("/Users/franpeters/Documents/MSc Thesis/MapOptics/jobs.json"))) {
+            try (
+                    // create a reader
+                    Reader reader = Files.newBufferedReader(Paths.get(pathDirectory + "\\serverInfo\\jobs.json"))) {
                 // convert JSON file to map
                 Map<?, ?> map = gson.fromJson(reader, Map.class);
 
@@ -2668,8 +2665,11 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void saveServerJson(List<ExternalServer> servers) {
         try {
+            // Get path where json is saved
+            Path path = Paths.get("");
+            String pathDirectory = path.toAbsolutePath().toString();
 //            need to update this to a relative folder
-            JsonWriter writer = new JsonWriter(new FileWriter("/Users/franpeters/Documents/MSc Thesis/MapOptics/servers.json"));
+            JsonWriter writer = new JsonWriter(new FileWriter(pathDirectory + "\\serverInfo\\servers.json"));
             writer.beginObject();
             writer.name("data");
             writer.beginArray();
@@ -2692,8 +2692,10 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void saveJobJson(List<Job> jobs) {
         try {
-            //            need to update this to a relative folder
-            JsonWriter writer = new JsonWriter(new FileWriter("/Users/franpeters/Documents/MSc Thesis/MapOptics/jobs.json"));
+            // Get current path
+            Path path = Paths.get("");
+            String pathDirectory = path.toAbsolutePath().toString();
+            JsonWriter writer = new JsonWriter(new FileWriter(pathDirectory + "\\serverInfo\\jobs.json"));
             writer.beginObject();
             writer.name("data");
             writer.beginArray();
