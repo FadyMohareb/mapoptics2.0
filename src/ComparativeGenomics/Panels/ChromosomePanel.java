@@ -23,45 +23,41 @@ import java.io.File;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
-
-
 /**
  *
- * @author franpeters
- * Extends javax.swing.JPanel which draws all of the XmapData objects
- * corresponding to a chosen Chromosome.
- * Each alignment is drawn using an alternating colour.
+ * @author franpeters Extends javax.swing.JPanel which draws all of the XmapData
+ * objects corresponding to a chosen Chromosome. Each alignment is drawn using
+ * an alternating colour.
  */
-public class ChromosomePanel extends javax.swing.JPanel implements MouseListener, MouseMotionListener{
+public class ChromosomePanel extends javax.swing.JPanel implements MouseListener, MouseMotionListener {
 //  for saving required data to visualise
 
     private Chromosome chr;
     private Cmap qryCmap;
-    private boolean chrAdded=false;
+    private boolean chrAdded = false;
 //    private Alignment comp = null;
-   
-    
+
 //    for saving mouse values
     int dx;
     int dy;
     private Point point;
     public boolean pressed = false;
-    
+
 //    for drawing
     XmapShape alignShape;
     private Integer w;
     private Integer h;
     private Double relSize;
-    private final Integer startX  = 10;
+    private final Integer startX = 10;
     private final Integer startY = 10;
     private boolean alignment = false;
     private boolean released = false;
-    private Font chrFont = new Font ("Arial", 1, 8);
+    private Font chrFont = new Font("Arial", 1, 8);
     Double lastStart = Double.valueOf(startX);
-    
+
 //    list of shapes to draw
     private ArrayList<XmapShape> alignShapes = new ArrayList();
-    
+
     /**
      * Creates new ChromosomePanel
      */
@@ -69,86 +65,90 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
         this.setBackground(Color.WHITE);
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
-        w = this.getWidth()-startX*2;
+        w = this.getWidth() - startX * 2;
         h = this.getHeight();
         initComponents();
     }
+
     /**
-     * 
+     *
      * @param cmap Set the query Cmap data
      */
-    public void setQueryCmap(Cmap cmap){
-        this.qryCmap=cmap;
+    public void setQueryCmap(Cmap cmap) {
+        this.qryCmap = cmap;
     }
+
     /**
-     * o Sets the chromosome of the reference genome which has been selected
-     * by the user.
+     * o Sets the chromosome of the reference genome which has been selected by
+     * the user.
+     *
      * @param chr set the Chromosome to view
      */
-    public void setChr(Chromosome chr){
-        
-        if (this.alignShapes!=null){
+    public void setChr(Chromosome chr) {
+
+        if (this.alignShapes != null) {
             this.alignShapes.clear();
         }
-        if (chr!=null){
+        if (chr != null) {
             System.out.println("chromosome panel chr set");
-            chrAdded=true;
-            w = this.getWidth()-startX*2;
+            chrAdded = true;
+            w = this.getWidth() - startX * 2;
             h = this.getHeight();
-            this.chr=chr;
-            this.relSize=w/this.chr.getSize();
+            this.chr = chr;
+            this.relSize = w / this.chr.getSize();
             for (XmapData map : this.chr.getAlignments()) {
                 System.out.println("map added");
-                addAlignment(map); 
+                addAlignment(map);
             }
             System.out.println("all alignments read");
             this.repaint();
             System.out.println("chromosome panel repainted");
-        }else{
+        } else {
             System.out.println("chromosome panel chr is NULL");
         }
     }
+
     /**
-     * 
+     *
      * @param map Add in alignment information
      */
-    public void addAlignment(XmapData map){
+    public void addAlignment(XmapData map) {
         alignment = true;
 //                    get all the matched sites
         ArrayList<Pair> matches = map.returnAlignments();
 //                    get the first and last matched sites on the reference for this query map
         Integer firstRefSiteID = matches.get(0).getRef();
-        Integer lastRefSiteID = matches.get(matches.size()-1).getRef();
+        Integer lastRefSiteID = matches.get(matches.size() - 1).getRef();
 //                    determine the position on the panel to draw these sites
-        Site firstSiteRef=this.chr.getRefSites().get(firstRefSiteID);
-        Site lastSiteRef=this.chr.getRefSites().get(lastRefSiteID);
+        Site firstSiteRef = this.chr.getRefSites().get(firstRefSiteID);
+        Site lastSiteRef = this.chr.getRefSites().get(lastRefSiteID);
         // Scaling of first and last chromosome positions
-        Double relFirstPosRef=firstSiteRef.getPosition()*relSize;
-        Double relLastPosRef=lastSiteRef.getPosition()*relSize;
-        // Get CMAP having the same ID as urrent xmap
+        Double relFirstPosRef = firstSiteRef.getPosition() * relSize;
+        Double relLastPosRef = lastSiteRef.getPosition() * relSize;
+        // Get CMAP having the same ID as current xmap
         CmapData qryCmapMap = this.qryCmap.getCmapByID(map.getQryID());
         // Draw lines of alignement of the maps
-        XmapShape shape = new XmapShape(map,qryCmapMap,relFirstPosRef+10,relLastPosRef+10);
+        XmapShape shape = new XmapShape(map, qryCmapMap, relFirstPosRef + 10, relLastPosRef + 10);
         // Add to list of shapes to draw
-        alignShapes.add(shape);            
+        alignShapes.add(shape);
         repaint();
     }
-    
+
     /**
      * Draw the chromosome
+     *
      * @param g To set the Graphics device
      */
-    private void drawChromosome(Graphics g){
-        
+    private void drawChromosome(Graphics g) {
+
         Graphics2D g2d = (Graphics2D) g;
         g2d.setFont(chrFont);
 //        draw with sub pixel precision
         g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-        
-        if (!chrAdded){
-            drawTextCentre(g2d,"No Chromosome has been selected, please select a chromosome.",w,h);
-        }
-        else{
+
+        if (!chrAdded) {
+            drawTextCentre(g2d, "No Chromosome has been selected, please select a chromosome.", w, h);
+        } else {
             System.out.println("chr being drawn");
             g2d.setColor(Color.LIGHT_GRAY);
             Integer y = startY + 20 + 5;
@@ -159,61 +159,67 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
             g2d.fill(refRect);
 
             g2d.setColor(Color.BLACK);
-            drawScaleBar(g2d,rect);
+            drawScaleBar(g2d, rect);
 
-            }
-        if (!alignShapes.isEmpty()){
-        drawAlignments(g2d);
         }
+        if (!alignShapes.isEmpty()) {
+            drawAlignments(g2d);
         }
+    }
+
     /**
      * Draw all the alignements
+     *
      * @param g2d To set the Graphics2D device
      */
-    private void drawAlignments(Graphics2D g2d){
+    private void drawAlignments(Graphics2D g2d) {
         Integer count = 0;
-        for(XmapShape s: alignShapes){
+        for (XmapShape s : alignShapes) {
 //          Set the colour
             Color colour = setAlignmentColour(count);
             s.setAlignColour(colour);
             s.drawAlignment(g2d);
-            count +=1;        
+            count += 1;
         }
     }
+
     /**
-     * Sets the colour of a rectangle to indicate presence of an alignment to the query genome.
-     * @param Int Number of the alignment, to determine which colour is accessed from the array
+     * Sets the colour of a rectangle to indicate presence of an alignment to
+     * the query genome.
+     *
+     * @param Int Number of the alignment, to determine which colour is accessed
+     * from the array
      * @return Colour of the alignment at that index
      */
-     private Color setAlignmentColour(Integer Int){
-        Color[] colours = {Color.decode("#3792ff"),Color.decode("#20cdf5"),Color.decode("#8ef2f4"),Color.decode("#f179a7"),Color.decode("#fcc5f1")};
+    private Color setAlignmentColour(Integer Int) {
+        Color[] colours = {Color.decode("#3792ff"), Color.decode("#20cdf5"), Color.decode("#8ef2f4"), Color.decode("#f179a7"), Color.decode("#fcc5f1")};
         Integer number = colours.length;
-        
-        if (Int > number){
-            if (Int%number==0&&((Int/number)<5)){
-                return colours[Int/number];
-            }
-            else{
-                Double newInt = (Int-5*Math.floor((Int/number)));
+
+        if (Int > number) {
+            if (Int % number == 0 && ((Int / number) < 5)) {
+                return colours[Int / number];
+            } else {
+                Double newInt = (Int - 5 * Math.floor((Int / number)));
                 return colours[newInt.intValue()];
             }
-        }if (Int < number){
-            return colours[Int];
         }
-        else{
+        if (Int < number) {
+            return colours[Int];
+        } else {
             System.out.println(Int);
             return Color.MAGENTA;
         }
     }
-     /**
-      * 
-      * @param g2d To set the Graphics2D device
-      * @param string String to draw in the centre
-      * @param width Width of area to draw in the centre of
-      * @param height Height of area to draw in the centre of
-      */
+
+    /**
+     *
+     * @param g2d To set the Graphics2D device
+     * @param string String to draw in the centre
+     * @param width Width of area to draw in the centre of
+     * @param height Height of area to draw in the centre of
+     */
     private static void drawTextCentre(Graphics2D g2d, String string,
-                                        Integer width, Integer height) {
+            Integer width, Integer height) {
         int stringWidth = (int) g2d.getFontMetrics().getStringBounds(string, g2d).getWidth();
         int stringHeight = (int) g2d.getFontMetrics().getStringBounds(string, g2d).getHeight();
 
@@ -221,7 +227,7 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
         int verticalCenter = height / 2 - stringHeight / 2;
         g2d.drawString(string, horizontalCenter, verticalCenter);
     }
-    
+
     private void drawScaleBar(Graphics2D g2d, MapOpticsRectangle refRect) {
 
         g2d.drawLine((int) refRect.getMinX(), startY, (int) (refRect.getMinX() + refRect.getWidth()), startY);
@@ -231,21 +237,21 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
         g2d.setFont(chrFont);
         if (numScales != 0) {
             for (int i = 0; i < numScales + 1; i++) {
-                g2d.drawLine((int) (refRect.getMinX() + (refRect.getWidth() / numScales) * i), startY, (int) (refRect.getMinX() + (refRect.getWidth() / numScales) * i), startY+5);
-                g2d.drawString(String.format("%.2f", ((double) count) / 100000) + " Mb", (int) (refRect.getMinX() + ((refRect.getWidth() / numScales) * i) - g2d.getFontMetrics().stringWidth(String.format("%.2f", ((double) count) / 100000) + " Mb") / 2), startY+15);
+                g2d.drawLine((int) (refRect.getMinX() + (refRect.getWidth() / numScales) * i), startY, (int) (refRect.getMinX() + (refRect.getWidth() / numScales) * i), startY + 5);
+                g2d.drawString(String.format("%.2f", ((double) count) / 100000) + " Mb", (int) (refRect.getMinX() + ((refRect.getWidth() / numScales) * i) - g2d.getFontMetrics().stringWidth(String.format("%.2f", ((double) count) / 100000) + " Mb") / 2), startY + 15);
                 count = (int) (count + (length / numScales));
             }
         } else {
-            g2d.drawLine((int) (refRect.getMinX()), startY, (int) (refRect.getMinX()), startY+5);
-            g2d.drawString(String.format("%.2f", 0.0) + " Mb", (int) (refRect.getMinX() - g2d.getFontMetrics().stringWidth(String.format("%.2f", 0.0) + " kb") / 2), startY+15);
-            g2d.drawLine((int) (refRect.getMinX() + refRect.getWidth()), startY, (int) (refRect.getMinX() + refRect.getWidth()), startY+5);
+            g2d.drawLine((int) (refRect.getMinX()), startY, (int) (refRect.getMinX()), startY + 5);
+            g2d.drawString(String.format("%.2f", 0.0) + " Mb", (int) (refRect.getMinX() - g2d.getFontMetrics().stringWidth(String.format("%.2f", 0.0) + " kb") / 2), startY + 15);
+            g2d.drawLine((int) (refRect.getMinX() + refRect.getWidth()), startY, (int) (refRect.getMinX() + refRect.getWidth()), startY + 5);
             g2d.drawString(String.format("%.2f", length / 100000) + " Mb", (int) (refRect.getMinX() + refRect.getWidth() - g2d.getFontMetrics().stringWidth(String.format("%.2f", length / 100000) + " Mb") / 2), startY + 15);
 
         }
     }
-    
+
     /**
-     * 
+     *
      * @param g To access the Graphics device
      */
     @Override
@@ -253,26 +259,25 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
         super.paint(g);
         drawChromosome(g);
     }
-    
-    public void drawScaleBar(Graphics g){
-        
+
+    public void drawScaleBar(Graphics g) {
+
     }
-    
-    public void selectAlignment(Integer xmapID){
-        for (XmapShape shape:alignShapes){
-            if (shape.getXmapID()== xmapID){
+
+    public void selectAlignment(Integer xmapID) {
+        for (XmapShape shape : alignShapes) {
+            if (shape.getXmapID() == xmapID) {
                 shape.setSelected(true);
             }
         }
         repaint();
     }
-    
-    public void clearSelection(){
-        for (XmapShape shape:alignShapes){
+
+    public void clearSelection() {
+        for (XmapShape shape : alignShapes) {
             shape.setSelected(false);
         }
     }
-   
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -337,7 +342,6 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
     private javax.swing.JDialog jDialog1;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
- 
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -396,7 +400,6 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
 //        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     }
 
-
     @Override
     public void mouseEntered(MouseEvent e) {
 
@@ -425,21 +428,23 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
     public void mouseMoved(MouseEvent e) {
 
     }
+
     /**
-     * To allow the user to export the JPanel image as a file 
+     * To allow the user to export the JPanel image as a file
+     *
      * @param name File name to save the image as
      * @param type Format to save the image
      * @param location Location to save the image to
      */
-    public void saveImage(String name,String type, String location) {
-		BufferedImage image = new BufferedImage(getWidth(),getHeight(), BufferedImage.TYPE_INT_RGB);
-		Graphics2D g2d = image.createGraphics();
-		printAll(g2d);
-		try{
-			ImageIO.write(image, type, new File(location+name+"."+type));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    public void saveImage(String name, String type, String location) {
+        BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = image.createGraphics();
+        printAll(g2d);
+        try {
+            ImageIO.write(image, type, new File(location + name + "." + type));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

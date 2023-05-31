@@ -1954,11 +1954,9 @@ public class CompGenStart extends javax.swing.JFrame {
         
         if (fandomPipeline.isSelected()) {
             this.newJob.setPipeline("fandom");
-            System.out.println("fandom selected");
         }
         if (refalignerPipeline.isSelected()) {
             this.newJob.setPipeline("refaligner");
-            System.out.println("refaligner selected");
         }
 
 //        need to update this to query the log file!
@@ -1977,12 +1975,11 @@ public class CompGenStart extends javax.swing.JFrame {
 
 //        show the correct JFrames
         makeCompGenJob.setVisible(false);
-        //this.setVisible(true);
+        this.setVisible(true);
 //        finally disconnect from the server
         this.channel.disconnectServer();
 //        clean slate for the channel object
         this.channel = new SSH();
-        this.setVisible(true);
     }//GEN-LAST:event_startJobButtonActionPerformed
 
     private void saveRefURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveRefURLActionPerformed
@@ -2205,7 +2202,7 @@ public class CompGenStart extends javax.swing.JFrame {
         } else if ("".equals(this.localrefcmap) || this.localRefCmapName.getText() == null) {
             JOptionPane.showMessageDialog(null, "Reference CMAP cannot be empty",
                     "Missing file!", JOptionPane.ERROR_MESSAGE);
-            // Check that annottaion file was provided
+            // Check that annotation file was provided
             /*}else if ("".equals(this.localrefannot) || this.localRefAnnotName.getText() == null) {
             JOptionPane.showMessageDialog(null, "Reference annotation cannot be empty",
                     "Missing file!", JOptionPane.ERROR_MESSAGE);
