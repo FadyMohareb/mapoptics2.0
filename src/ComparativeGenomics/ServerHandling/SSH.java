@@ -245,7 +245,7 @@ public class SSH {
                 }
             }
             else{
-                JOptionPane.showMessageDialog(null, "Connecion to server has not been established!",
+                JOptionPane.showMessageDialog(null, "Connection to server has not been established!",
                         "Connection error!", JOptionPane.ERROR_MESSAGE);
                 return false;
             }
@@ -266,7 +266,6 @@ public class SSH {
         String cmd = "cd " + directory + jobname + "; cat log.txt";
 //        also uses the queryCmd method
         ArrayList result = executeCmd(cmd);
-
         return result;
     }
     

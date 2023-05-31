@@ -144,7 +144,7 @@ public class CompGenView extends javax.swing.JFrame {
         // Set minimum InDel size for SV detection
         xmap.detectSVs(500);
         
-        // STore reference genome
+        // Store reference genome
         this.refGenome = new Genome(refGenomeName,cmapRef,refKary,refFasta,refAnnot);
       
 //        this.qryGenome = new Genome(qryGenomeName,cmapQry,qryKary,qryFasta,qryAnnot);
