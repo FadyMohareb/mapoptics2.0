@@ -519,6 +519,11 @@ public class CompGenStart extends javax.swing.JFrame {
 
         buttonGroup1.add(fandomPipeline);
         fandomPipeline.setText("FaNDOM");
+        fandomPipeline.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fandomPipelineActionPerformed(evt);
+            }
+        });
 
         runCalcBestEnzyme.setText("Calculate");
         runCalcBestEnzyme.addActionListener(new java.awt.event.ActionListener() {
@@ -1516,15 +1521,15 @@ public class CompGenStart extends javax.swing.JFrame {
         helpPaneLayout.setHorizontalGroup(
             helpPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, helpPaneLayout.createSequentialGroup()
-                .addContainerGap(223, Short.MAX_VALUE)
+                .addContainerGap(224, Short.MAX_VALUE)
                 .addComponent(exitBtn)
-                .addContainerGap(223, Short.MAX_VALUE))
+                .addContainerGap(225, Short.MAX_VALUE))
             .addComponent(jScrollPane1)
         );
         helpPaneLayout.setVerticalGroup(
             helpPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, helpPaneLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 467, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(exitBtn)
                 .addContainerGap())
@@ -1946,7 +1951,7 @@ public class CompGenStart extends javax.swing.JFrame {
         this.newJob.setQryAnnot(this.queryAnnotFilePath);
         this.newJob.setRefOrg(this.refSpecies.getText());
         this.newJob.setQryOrg(this.qrySpecies.getText());
-
+        
         if (fandomPipeline.isSelected()) {
             this.newJob.setPipeline("fandom");
             System.out.println("fandom selected");
@@ -2345,6 +2350,10 @@ public class CompGenStart extends javax.swing.JFrame {
     private void localSpeciesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_localSpeciesActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_localSpeciesActionPerformed
+
+    private void fandomPipelineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fandomPipelineActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_fandomPipelineActionPerformed
 
     public String checkEnzymeName(JTextField field) {
         String name = field.getText();

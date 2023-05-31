@@ -57,20 +57,20 @@ public class ChromosomeChartPanel extends JPanel {
             JOptionPane.showMessageDialog(null, "A problem occured while plotting indels. The plot will not be complete",
                     "Indels display problem!", JOptionPane.ERROR_MESSAGE);
         }
-        try{
-        chart.addSeries("Translocations", chrNames, numTrans);
+        try {
+            chart.addSeries("Translocations", chrNames, numTrans);
         } catch (java.lang.IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(null, "A problem occured while plotting translocations. The plot will not be complete",
                     "Translocations display problem!", JOptionPane.ERROR_MESSAGE);
         }
-        try{
-        chart.addSeries("Duplications", chrNames, numDups);
+        try {
+            chart.addSeries("Duplications", chrNames, numDups);
         } catch (java.lang.IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(null, "A problem occured while plotting duplications. The plot will not be complete",
                     "Duplications display problem!", JOptionPane.ERROR_MESSAGE);
         }
-        try{
-        chart.addSeries("Inversions", chrNames, numInvs);
+        try {
+            chart.addSeries("Inversions", chrNames, numInvs);
         } catch (java.lang.IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(null, "A problem occured while plotting inversions. The plot will not be complete",
                     "Inversions display problem!", JOptionPane.ERROR_MESSAGE);
