@@ -1032,7 +1032,6 @@ public class CompGenStart extends javax.swing.JFrame {
         );
 
         browseEnzymesDialog.setBounds(new java.awt.Rectangle(500, 500, 400, 281));
-        browseEnzymesDialog.setLocationByPlatform(true);
         browseEnzymesDialog.setMinimumSize(new java.awt.Dimension(412, 184));
         browseEnzymesDialog.setSize(new java.awt.Dimension(412, 184));
 
@@ -1950,9 +1949,11 @@ public class CompGenStart extends javax.swing.JFrame {
 
         if (fandomPipeline.isSelected()) {
             this.newJob.setPipeline("fandom");
+            System.out.println("fandom selected");
         }
         if (refalignerPipeline.isSelected()) {
             this.newJob.setPipeline("refaligner");
+            System.out.println("refaligner selected");
         }
 
 //        need to update this to query the log file!
@@ -1971,12 +1972,12 @@ public class CompGenStart extends javax.swing.JFrame {
 
 //        show the correct JFrames
         makeCompGenJob.setVisible(false);
-        this.setVisible(true);
+        //this.setVisible(true);
 //        finally disconnect from the server
         this.channel.disconnectServer();
 //        clean slate for the channel object
         this.channel = new SSH();
-
+        this.setVisible(true);
     }//GEN-LAST:event_startJobButtonActionPerformed
 
     private void saveRefURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveRefURLActionPerformed
@@ -2117,6 +2118,10 @@ public class CompGenStart extends javax.swing.JFrame {
                     "No job selected", JOptionPane.ERROR_MESSAGE);
         } else {
             refreshJobStatus(this.selectedJob);
+            if (!refreshJobStatus(this.selectedJob)){
+                JOptionPane.showMessageDialog(null, "Job was not executed properly. Please launch job again.",
+                    "Job not executed", JOptionPane.ERROR_MESSAGE);
+            }
             JobTableModel newModel = new JobTableModel(this.jobsRunning);
             jobsTable.setModel(newModel);
         }
@@ -2416,7 +2421,7 @@ public class CompGenStart extends javax.swing.JFrame {
             Gson gson = new Gson();
 
             // create a reader
-            Reader reader = Files.newBufferedReader(Paths.get(System.getProperty("user.dir") + "servers.json"));
+            Reader reader = Files.newBufferedReader(Paths.get(System.getProperty("user.dir") + "\\serverInfo\\servers.json"));
 
             // convert JSON file to map
             Map<?, ?> map = gson.fromJson(reader, Map.class);
@@ -2454,6 +2459,9 @@ public class CompGenStart extends javax.swing.JFrame {
         }
     }
 
+    /*
+    * Read the jobs from the jobs.json file
+     */
     private void jobsFromJson() {
         this.jobsRunning.clear();
         try {
@@ -2468,25 +2476,25 @@ public class CompGenStart extends javax.swing.JFrame {
                     Reader reader = Files.newBufferedReader(Paths.get(pathDirectory + "\\serverInfo\\jobs.json"))) {
                 // convert JSON file to map
                 Map<?, ?> map = gson.fromJson(reader, Map.class);
-
                 // print map entries
                 if (map == null) {
                 } else {
                     for (Map.Entry<?, ?> entry : map.entrySet()) {
-
+                        System.out.println(entry.getValue().toString());
                         String[] value = entry.getValue().toString().split("=");
                         //        Work out how many jobs are present
                         int numJobs = (value.length - 1) / 16;
 
                         for (int j = 1; j <= numJobs; j++) {
-                            //            System.out.println(j);
                             //            messy but it works
                             //            create enyzme object
 
+                            // Create enzyme, get site and name from json file
                             Enzyme enz = new Enzyme(value[9 + 16 * (j - 1)].split(",")[0],
                                     value[10 + 16 * (j - 1)].split(",")[0]);
 
                             //            create server object
+                            // Populate with name, user, host, pass, dir
                             ExternalServer serv = new ExternalServer(value[2 + 16 * (j - 1)].split(",")[0],
                                     value[3 + 16 * (j - 1)].split(",")[0],
                                     value[4 + 16 * (j - 1)].split(",")[0],
@@ -2494,6 +2502,8 @@ public class CompGenStart extends javax.swing.JFrame {
                                     value[6 + 16 * (j - 1)].split(",")[0]);
 
                             //            create job object
+                            // Populate with name, query and reference fasta, status, ref and qry organism
+                            // Ref and query annotations
                             Job job = new Job(serv,
                                     value[1 + 16 * (j - 1)].split(",")[0],
                                     value[8 + 16 * (j - 1)].split(",")[0],
@@ -2738,9 +2748,14 @@ public class CompGenStart extends javax.swing.JFrame {
         for (String s : result) {
             System.out.println("result: " + s);
         }
-        String latestStatus = result.get(result.size() - 1).split(": ")[1]; //get the latest update from the file
-        System.out.println(latestStatus);
-        job.setStatus(latestStatus);
+        if (result.size() == 0) {
+            System.out.println("Log file was not found or empty.");
+            return false;
+        } else {
+            String latestStatus = result.get(result.size() - 1).split(": ")[1]; //get the latest update from the file
+            System.out.println(latestStatus);
+            job.setStatus(latestStatus);
+        }
         return true;
 
     }
