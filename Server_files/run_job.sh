@@ -99,7 +99,7 @@ while test $# -gt 0;
                         then
                         aligner=$1
                         
-                      elif [[ $1 != *"refaligner"* ]]
+                      elif [[ $1 == *"refaligner"* ]]
                         then
                         aligner=$1
                       else
