@@ -342,6 +342,8 @@ public class CompGenView extends javax.swing.JFrame {
         );
 
         changePlotStyleDialog.setTitle("Choose Plot Style");
+        changePlotStyleDialog.setLocationByPlatform(true);
+        changePlotStyleDialog.setSize(new java.awt.Dimension(213, 75));
 
         buttonGroup1.add(ggplotButton);
         ggplotButton.setSelected(true);
@@ -365,10 +367,10 @@ public class CompGenView extends javax.swing.JFrame {
         changePlotStyleDialogLayout.setHorizontalGroup(
             changePlotStyleDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(changePlotStyleDialogLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(changePlotStyleDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(setChartStyle)
                     .addGroup(changePlotStyleDialogLayout.createSequentialGroup()
-                        .addContainerGap()
                         .addComponent(ggplotButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(matlabButton)
@@ -689,7 +691,7 @@ public class CompGenView extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 711, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         genomeViewTabPane.addTab("Genome View", jPanel1);
@@ -790,7 +792,7 @@ public class CompGenView extends javax.swing.JFrame {
                 .addGroup(jLayeredPane4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jLayeredPane4Layout.createSequentialGroup()
                         .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 397, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 11, Short.MAX_VALUE))
+                        .addGap(0, 13, Short.MAX_VALUE))
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -936,7 +938,7 @@ public class CompGenView extends javax.swing.JFrame {
                     .addComponent(incrementSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(increaseRange)
                     .addComponent(jLabel15))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(queryStart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)

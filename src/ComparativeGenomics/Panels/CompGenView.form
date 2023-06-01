@@ -55,6 +55,10 @@
     <Container class="javax.swing.JDialog" name="changePlotStyleDialog">
       <Properties>
         <Property name="title" type="java.lang.String" value="Choose Plot Style"/>
+        <Property name="locationByPlatform" type="boolean" value="true"/>
+        <Property name="size" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[213, 75]"/>
+        </Property>
       </Properties>
 
       <Layout>
