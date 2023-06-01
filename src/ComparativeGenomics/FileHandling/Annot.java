@@ -54,17 +54,23 @@ public class Annot {
             Integer count = 0;
             inputStream = new FileInputStream(this.filepath);
             sc = new Scanner(inputStream, "UTF-8");
+            
             // Read the whole file and save lines corresponding to chromosomes as Gene objects
             while (sc.hasNextLine()) {
                 String row = sc.nextLine();
+                
+                // Headers are the lines starting by "#"
                 String chrPattern = "#";
                 Pattern c = Pattern.compile(chrPattern);
                 Matcher checkHeader = c.matcher(row);
                 if (checkHeader.find() == true) {
-                    // Check the header to have the format of the file ()gff or gtf)
+                    // Check the header to have the format of the file (gff or gtf)
+                    // gff matcher
                     String gffPattern = "gff";
                     Pattern f = Pattern.compile(gffPattern);
                     Matcher checkGff = f.matcher(row);
+                    
+                    // gtf matcher
                     String gtfPattern = "gtf";
                     Pattern t = Pattern.compile(gtfPattern);
                     Matcher checkGtf = t.matcher(row);
@@ -84,7 +90,9 @@ public class Annot {
                         // The row corresponds to a chromosome
                         if (checkChr.find() == true) {
                             String type = rowData[2]; // Type of feature (term / accession from SPFA sequence ontology)
+                            // Feature is a gene
                             if ("gene".equals(type.replace(" ", ""))) {
+                                // Check that the chr is nuclear and not mitochondrial
                                 Matcher checkM = Pattern.compile("M").matcher(chr);
                                 if (checkM.find() == false) {
                                     // Create a new gene with source, start and end, attributes
@@ -123,12 +131,16 @@ public class Annot {
 
 //            Save the identified gene objects to arraylist to be accessed via chr name in the hashmap.
         for (Gene g : genes) {
+            // Get the chromosome of each gene
             String c = g.getChr();
-
+            // Check if hashmap of chromosomes (key = chr name, value = list of genes for the chr)
+            // contains the chr
             if (chrAnnotations.containsKey(c)) {
+                // Add the chromosome to the hasmap
                 chrAnnotations.get(c).add(g);
 
             } else {
+                // Create a new entry for the chromosome in the hashmap
                 ArrayList<Gene> newChrArray = new ArrayList();
                 newChrArray.add(g);
                 chrAnnotations.put(c, newChrArray);
