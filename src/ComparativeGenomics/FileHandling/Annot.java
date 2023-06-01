@@ -1,9 +1,13 @@
 package ComparativeGenomics.FileHandling;
 
 import ComparativeGenomics.FileHandling.DataHandling.Gene;
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -154,7 +158,25 @@ public class Annot {
      * @param filepath the filepath of the file to be validated
      * @return true if file is valid and false if not
      */
-    private boolean validateFile(String filepath) {
+    private boolean validateFile(String filePath) {
+        // Extension corresponds to gff or gtf
+        if (filePath.endsWith(".gff;.gff3;.gtf")) {
+                if (!Files.exists(Paths.get(filePath))) {
+                    //Show error message if no file found
+                    JOptionPane.showMessageDialog(null,
+                            "Error loading gff or gtf file." +
+                                    "\n\nFile does not exist!",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                //Show error message if wrong file type
+                JOptionPane.showMessageDialog(null,
+                        "Error loading gtf or gff file." +
+                                "\n\nInvalid file type!",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         return true;
     }
 
