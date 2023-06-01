@@ -294,6 +294,11 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
         jLabel1 = new javax.swing.JLabel();
 
         jButton1.setText("Set Colour");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("jLabel1");
 
@@ -334,6 +339,10 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
             .addGap(0, 345, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

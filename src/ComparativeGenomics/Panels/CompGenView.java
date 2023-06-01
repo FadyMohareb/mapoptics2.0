@@ -135,7 +135,7 @@ public class CompGenView extends javax.swing.JFrame {
         refAnnot = new Annot(this.job.getRefAnnot());
 
 //        qryAnnot = new Annot(this.job.getQryAnnot());
-        this.qryCmap = cmapQry;
+        //this.qryCmap = cmapQry;
 
         populateData();
     }
@@ -154,7 +154,8 @@ public class CompGenView extends javax.swing.JFrame {
         this.alignment = new Alignment(this.refGenome, cmapQry, xmap);
 
         // Pass information to chromosome panel
-        this.chromosomePanel1.setQueryCmap(qryCmap);
+        //this.chromosomePanel1.setQueryCmap(qryCmap);
+        this.chromosomePanel1.setQueryCmap(cmapQry);
         this.genomePanel1.setAlignment(this.alignment, "reference");
         this.genomePanel1.repaint();
         this.chromosomeChartPanel1.plotGenome(refGenome);
@@ -1506,6 +1507,8 @@ public class CompGenView extends javax.swing.JFrame {
                 }
                 count += 1;
                 String n = map.getQryID().toString();
+                
+                System.out.println("Map get query ID: " + map.getQryID());
 
                 String[] chrData = {String.valueOf(count), n, String.valueOf(map.returnAlignments().size()), String.valueOf(map.getRefStart()), String.valueOf(map.getRefEnd()), String.valueOf(map.getRefEnd() - map.getRefStart()), sv};
                 sitesTableModel.addRow(chrData);
@@ -1527,7 +1530,7 @@ public class CompGenView extends javax.swing.JFrame {
 
             Integer start = this.queryPanel1.getStart();
             Integer end = this.queryPanel1.getEnd();
-
+            // Returns the features from gff / gtf file
             for (Gene gene : this.currentChr.getAnnotations()) {
                 Double genStrt = gene.getStart();
                 Double genEnd = gene.getEnd();

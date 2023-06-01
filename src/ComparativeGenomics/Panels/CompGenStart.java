@@ -2300,6 +2300,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void chooseLocalRefKaryotypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseLocalRefKaryotypeActionPerformed
         FileDialog fileDialog = new FileDialog(this, "Choose Reference Karyotype", FileDialog.LOAD);
+        fileDialog.setFile("*.txt");
         fileDialog.setVisible(true);
         this.localrefkary = fileDialog.getDirectory() + fileDialog.getFile();
         this.localRefKaryName.setText(fileDialog.getFile());
