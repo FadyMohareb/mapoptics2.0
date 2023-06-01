@@ -343,6 +343,7 @@ public class CompGenView extends javax.swing.JFrame {
 
         changePlotStyleDialog.setTitle("Choose Plot Style");
         changePlotStyleDialog.setLocationByPlatform(true);
+        changePlotStyleDialog.setPreferredSize(new java.awt.Dimension(220, 80));
         changePlotStyleDialog.setSize(new java.awt.Dimension(213, 75));
 
         buttonGroup1.add(ggplotButton);

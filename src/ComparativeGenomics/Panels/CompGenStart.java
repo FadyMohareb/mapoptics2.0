@@ -1188,13 +1188,12 @@ public class CompGenStart extends javax.swing.JFrame {
             refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(refFilesPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jLabel17)
-                        .addComponent(jLabel18)
-                        .addComponent(jLabel16))
+                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel17)
+                    .addComponent(jLabel18)
+                    .addComponent(jLabel16)
                     .addComponent(jLabel19))
-                .addGap(26, 26, 26)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                 .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(refFilesPanelLayout.createSequentialGroup()
                         .addComponent(chooseLocalRefKaryotype)
@@ -1209,7 +1208,7 @@ public class CompGenStart extends javax.swing.JFrame {
                         .addComponent(chooseLocalRefAnnot)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(localRefAnnotName)))
-                .addContainerGap(67, Short.MAX_VALUE))
+                .addContainerGap(71, Short.MAX_VALUE))
         );
         refFilesPanelLayout.setVerticalGroup(
             refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1277,18 +1276,18 @@ public class CompGenStart extends javax.swing.JFrame {
         queryFilesPanelLayout.setHorizontalGroup(
             queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(queryFilesPanelLayout.createSequentialGroup()
-                .addGap(16, 16, 16)
+                .addGap(33, 33, 33)
                 .addGroup(queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel29)
-                    .addComponent(jLabel28))
-                .addGap(32, 32, 32)
+                    .addComponent(jLabel28)
+                    .addComponent(jLabel29))
+                .addGap(26, 26, 26)
                 .addGroup(queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(queryFilesPanelLayout.createSequentialGroup()
                         .addComponent(chooseLocalQryCmap)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(localQryCmapName))
                     .addComponent(localSpecies, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(67, Short.MAX_VALUE))
+                .addContainerGap(77, Short.MAX_VALUE))
         );
         queryFilesPanelLayout.setVerticalGroup(
             queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1323,13 +1322,13 @@ public class CompGenStart extends javax.swing.JFrame {
         alignmentPanelLayout.setHorizontalGroup(
             alignmentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(alignmentPanelLayout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addGap(43, 43, 43)
                 .addComponent(jLabel30)
-                .addGap(41, 41, 41)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addComponent(chooseLocalXmap)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(localXmapName)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(130, 130, 130))
         );
         alignmentPanelLayout.setVerticalGroup(
             alignmentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1748,7 +1747,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private void uploadReferenceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadReferenceActionPerformed
         FileDialog refGenome = new FileDialog(this, "Choose Reference Genome", FileDialog.LOAD);
         // Filter to accept only fasta format
-        refGenome.setFile("*.fasta;*.fa");
+        refGenome.setFile("*.fasta;*.fa;*.fna");
         refGenome.setVisible(true);
         this.referenceFile = refGenome.getFile();
         this.referenceFilePath = refGenome.getDirectory() + refGenome.getFile();
@@ -1763,7 +1762,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private void uploadQueryGenomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadQueryGenomeActionPerformed
         FileDialog queryGenome = new FileDialog(this, "Choose Reference Genome", FileDialog.LOAD);
         // Filter to accept only fasta format
-        queryGenome.setFile("*.fasta;*.fa");
+        queryGenome.setFile("*.fasta;*.fa;*.fna");
         queryGenome.setVisible(true);
         this.queryFile = queryGenome.getFile();
         this.queryFilePath = queryGenome.getDirectory() + queryGenome.getFile();
@@ -2306,14 +2305,6 @@ public class CompGenStart extends javax.swing.JFrame {
         this.localRefKaryName.setText(fileDialog.getFile());
     }//GEN-LAST:event_chooseLocalRefKaryotypeActionPerformed
 
-    private void chooseLocalQryCmapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseLocalQryCmapActionPerformed
-        FileDialog fileDialog = new FileDialog(this, "Choose Query Cmap", FileDialog.LOAD);
-        fileDialog.setFile("*.cmap");
-        fileDialog.setVisible(true);
-        this.localqrycmap = fileDialog.getDirectory() + fileDialog.getFile();
-        this.localQryCmapName.setText(fileDialog.getFile());
-    }//GEN-LAST:event_chooseLocalQryCmapActionPerformed
-
     private void chooseLocalXmapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseLocalXmapActionPerformed
         FileDialog fileDialog = new FileDialog(this, "Choose Xmap", FileDialog.LOAD);
         fileDialog.setFile("*.xmap");
@@ -2345,13 +2336,21 @@ public class CompGenStart extends javax.swing.JFrame {
 
     }//GEN-LAST:event_refSpeciesTxtFieldActionPerformed
 
+    private void fandomPipelineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fandomPipelineActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_fandomPipelineActionPerformed
+
     private void localSpeciesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_localSpeciesActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_localSpeciesActionPerformed
 
-    private void fandomPipelineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fandomPipelineActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_fandomPipelineActionPerformed
+    private void chooseLocalQryCmapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseLocalQryCmapActionPerformed
+        FileDialog fileDialog = new FileDialog(this, "Choose Query Cmap", FileDialog.LOAD);
+        fileDialog.setFile("*.cmap");
+        fileDialog.setVisible(true);
+        this.localqrycmap = fileDialog.getDirectory() + fileDialog.getFile();
+        this.localQryCmapName.setText(fileDialog.getFile());
+    }//GEN-LAST:event_chooseLocalQryCmapActionPerformed
 
     public String checkEnzymeName(JTextField field) {
         String name = field.getText();
