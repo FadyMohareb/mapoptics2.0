@@ -136,7 +136,6 @@ public class CompGenView extends javax.swing.JFrame {
 
 //        qryAnnot = new Annot(this.job.getQryAnnot());
         //this.qryCmap = cmapQry;
-
         populateData();
     }
 
@@ -1510,7 +1509,7 @@ public class CompGenView extends javax.swing.JFrame {
                 }
                 count += 1;
                 String n = map.getQryID().toString();
-                
+
                 System.out.println("Map get query ID: " + map.getQryID());
 
                 String[] chrData = {String.valueOf(count), n, String.valueOf(map.returnAlignments().size()), String.valueOf(map.getRefStart()), String.valueOf(map.getRefEnd()), String.valueOf(map.getRefEnd() - map.getRefStart()), sv};
@@ -1534,19 +1533,23 @@ public class CompGenView extends javax.swing.JFrame {
             Integer start = this.queryPanel1.getStart();
             Integer end = this.queryPanel1.getEnd();
             // Returns the features from gff / gtf file
-            for (Gene gene : this.currentChr.getAnnotations()) {
-                Double genStrt = gene.getStart();
-                Double genEnd = gene.getEnd();
-                if (((genStrt.intValue() >= start) && (genStrt.intValue() <= end)) | (genEnd <= end && genEnd >= start)) {
-                    Matcher checkGene = Pattern.compile("gene").matcher(gene.getType());
-                    if (checkGene.find() == true) {
-                        Double size = (gene.getEnd() - gene.getStart());
-                        String[] geneData = {gene.getName(), gene.getSource(), gene.getStart().toString(), gene.getEnd().toString(), size.toString()};
-                        geneTableModel.addRow(geneData);
+            try {
+                for (Gene gene : this.currentChr.getAnnotations()) {
+                    Double genStrt = gene.getStart();
+                    Double genEnd = gene.getEnd();
+                    if (((genStrt.intValue() >= start) && (genStrt.intValue() <= end)) | (genEnd <= end && genEnd >= start)) {
+                        Matcher checkGene = Pattern.compile("gene").matcher(gene.getType());
+                        if (checkGene.find() == true) {
+                            Double size = (gene.getEnd() - gene.getStart());
+                            String[] geneData = {gene.getName(), gene.getSource(), gene.getStart().toString(), gene.getEnd().toString(), size.toString()};
+                            geneTableModel.addRow(geneData);
 
-                        genes.add(gene);
+                            genes.add(gene);
+                        }
                     }
                 }
+            } catch (NullPointerException e) {
+                System.out.println("Chromosome " + this.currentChr.getName() + " is not annotated.");
             }
 
 //        

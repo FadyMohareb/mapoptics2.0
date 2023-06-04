@@ -103,31 +103,34 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
     }
 
     public void setChr(Chromosome chr) {
+        System.out.println("Chromosome to set: " + chr.getName());
         if (chr != null) {
             this.chr = chr;
             findSites();
 
         } else {
-            System.out.println("query panel chr is null");
+            System.out.println("Query panel chr is null");
         }
         w = this.getWidth();
         h = this.getHeight();
         qryWidth = w.doubleValue() - (2 * startX);
-        System.out.println("AHHH " + qryWidth);
+        System.out.println("Query Width " + qryWidth);
     }
 
     public void findSites() {
         relSize = qryWidth / this.size;
-//        get the sites within the range and record where they should be drawn on the panel in relsitesrelpos hashmap
+//        get the sites within the range and record where they should be drawn on the panel in relsites relpos hashmap
         for (HashMap.Entry<Integer, Site> entry : this.chr.getRefSites().entrySet()) {
-            Site site = entry.getValue();
+            Site site = entry.getValue(); // Digestion site
             Double position = site.getPosition();
+            // Position of site is within the range
             if (position.intValue() > this.start && position.intValue() < this.end) {
+                // Calculate relative position of the reference
                 Double relPosRef = ((site.getPosition() - start) * relSize) + startX.doubleValue();
-                this.refSitesRelPos.put(site.getSiteID(), relPosRef);
+                this.refSitesRelPos.put(site.getSiteID(), relPosRef); // Save relative position into a hashmap, the key is the site ID
 //                    System.out.println("REF "+ site.getSiteID()+ " "+ relPosRef +" "+ chr.getCmapID());
 //                    System.out.println(site.getSiteID()+" "+ site.getPosition()+ " " + relPosRef);
-                if (site.isMatch()) {
+                if (site.isMatch()) { // Other sites matche ie have the same ID in XMAP file
                     for (HashMap.Entry<Integer, ArrayList<Match>> matches : site.getMatches().entrySet()) {
                         if (matches.getValue().size() == 1) {
 //                                only add sites that have been matched to this xmapID once
@@ -141,21 +144,19 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
                 }
             }
         }
+        // For every XMAP position
         for (HashMap.Entry<Integer, Site> entry : this.xmapPositions.entrySet()) {
             Integer xmapID = entry.getKey();
             Site site = entry.getValue();
 
             Integer siteID = site.getSiteID();
 
-            System.out.println("xmap id " + xmapID);
-
             XmapData map = this.xmap.getXmapByXmapID(xmapID);
-            System.out.println("Is this null ? " + this.refSitesRelPos.get(siteID) + " " + siteID);
+            System.out.println("Are reference sites relative positions null? " + this.refSitesRelPos.get(siteID) + " Site ID: " + siteID);
             Double sitePosPx = this.refSitesRelPos.get(siteID);
 
             Double relFirstPosRef = 0.0;
             if (map.getOri()) {
-
                 Double mapFirstSite = map.returnAlignments()
                         .get(0)
                         .getRefSite().getPosition();
@@ -169,8 +170,9 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
                         .getRefSite().getPosition();
                 Double sizeDiffPx = (site.getPosition() - mapLastSite) * relSize;
                 relFirstPosRef = sitePosPx - sizeDiffPx;
-
             }
+
+            System.out.println("get query cmaps: " + this.chr.getQryCmaps());
 
             QueryShape shape = new QueryShape(refSitesRelPos, relFirstPosRef,
                     220.0,
@@ -180,11 +182,17 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
                     this.start * relSize);
             alignShapes.add(shape);
 
-            System.out.println("Shape coords:" + map.getID() + " " + this.chr.getQryCmapsByID(map.getQryID()).getID() + " "
-                    + relFirstPosRef + " "
-                    + relSize + " "
-                    + start + " "
-                    + end);
+            // Check that the query ID exists in the list of cmaps of the chromosome
+            // The query ID is the cmap ID saved in the XMAP file for this chr
+            if (this.chr.getQryCmapsByID(map.getQryID()) != null) {
+                System.out.println("Shape coords:" + map.getID() + " " + this.chr.getQryCmapsByID(map.getQryID()).getID() + " "
+                        + relFirstPosRef + " "
+                        + relSize + " "
+                        + start + " "
+                        + end);
+            } else {
+                System.out.println("Query CMAP does not exist for the following ID from XMAP file: " + map.getQryID());
+            }
 
         }
         for (Indel indel : this.chr.getIndels()) {

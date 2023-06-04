@@ -17,7 +17,10 @@ public class Chromosome {
     private String name = "";
     private final CmapData refCmapMap; //this contains all of the site information related to that chromosome
     private ArrayList<XmapData> xmapMaps = new ArrayList(); //this contains all of the alignments that have been matched to this CmapData
-    private LinkedHashMap<Integer, CmapData> qryCmapMaps = new LinkedHashMap(); //to link the XmapData obj to its corresponding CmapData obj. 
+    
+    //to link the XmapData obj to its corresponding CmapData obj.
+    // The key is the cmap ID, the value is the corresponding cmap object
+    private LinkedHashMap<Integer, CmapData> qryCmapMaps = new LinkedHashMap(); 
     private Sequence sequence;
     private ArrayList<Indel> indels = new ArrayList();
     private Double size;
@@ -32,6 +35,7 @@ public class Chromosome {
     public Chromosome(String name, CmapData cmap, Double relsize, Sequence seq, ArrayList<Gene> genes) {
         this.name = name;
         this.refCmapMap = cmap;
+        System.out.println("CMAP chromosome " + name + " chosen: " + cmap);
         this.size = this.refCmapMap.getLength();
         this.refSites = this.refCmapMap.getSites();
         this.sequence = seq;
