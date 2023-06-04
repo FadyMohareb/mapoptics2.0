@@ -38,7 +38,6 @@ import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.swing.table.DefaultTableModel;
 
-
 /**
  *
  * @author franpeters
@@ -46,223 +45,215 @@ import javax.swing.table.DefaultTableModel;
 public class QueryPanel extends javax.swing.JPanel implements MouseListener, MouseMotionListener {
 
     /**
-     * Creates new form QueryPanel
-     * this panel will view the alignments of a query for a chromosome.
-     * will need to show the chr
-     * with the bands
-     * then the sites on the chr with matching sites the same colour
-     * then the gene annotation as well
-     * 
+     * Creates new form QueryPanel this panel will view the alignments of a
+     * query for a chromosome. will need to show the chr with the bands then the
+     * sites on the chr with matching sites the same colour then the gene
+     * annotation as well
+     *
      */
     private Xmap xmap;
-    private Chromosome chr=null;
+    private Chromosome chr = null;
     private String refOrganism;
-    
-    
-    private final Font chrFont = new Font ("Arial", 1, 8);
-    private Integer start=0;
-    private Integer end=9000000;
-    private Integer size=end-start;
 
-     private final Integer startX  = 25;
+    private final Font chrFont = new Font("Arial", 1, 8);
+    private Integer start = 0;
+    private Integer end = 9000000;
+    private Integer size = end - start;
+
+    private final Integer startX = 25;
     private final Integer startY = 10;
     private boolean alignment = false;
-    
 
-    private HashMap<Integer,Double> refSitesRelPos = new HashMap(); //key ref Site ID
-    private HashMap<Integer,Site> xmapPositions = new HashMap(); //key xmapID
-    
+    private HashMap<Integer, Double> refSitesRelPos = new HashMap(); //key ref Site ID
+    private HashMap<Integer, Site> xmapPositions = new HashMap(); //key xmapID
+
     private ArrayList<Indel> indels = new ArrayList();
     private ArrayList<Gene> genesInRange = new ArrayList();
 
-    
     private ArrayList<MapOpticsRectangle> geneRects = new ArrayList();
     private ArrayList<QueryShape> alignShapes = new ArrayList();
-    
+
     private Integer w;
     private Integer h;
     private Point point;
-    private boolean pressed=false;
-    private Integer dx=0;
-    private Integer dy=0;
+    private boolean pressed = false;
+    private Integer dx = 0;
+    private Integer dy = 0;
     private Integer y = 0;
     private Double yPos = y.doubleValue();
-    private Double relSize=0.0;
-    private Double qryWidth=0.0;
-    
+    private Double relSize = 0.0;
+    private Double qryWidth = 0.0;
+
     private Integer draggedShape = null;
     private Gene selectedGene;
-    
+
     public QueryPanel() {
         this.setBackground(Color.white);
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
         initComponents();
     }
-    
-    public void setRefOrg(String org){
-        this.refOrganism=org;
+
+    public void setRefOrg(String org) {
+        this.refOrganism = org;
     }
-    
-    public void setXmap(Xmap xmap){
-        this.xmap=xmap;
+
+    public void setXmap(Xmap xmap) {
+        this.xmap = xmap;
     }
-    
-    public void setChr(Chromosome chr){
-        if(chr!=null){
-            this.chr=chr;
+
+    public void setChr(Chromosome chr) {
+        if (chr != null) {
+            this.chr = chr;
             findSites();
-            
-        }else{
+
+        } else {
             System.out.println("query panel chr is null");
         }
         w = this.getWidth();
         h = this.getHeight();
-        qryWidth = w.doubleValue()-(2*startX);
-        System.out.println("AHHH "+ qryWidth);
+        qryWidth = w.doubleValue() - (2 * startX);
+        System.out.println("AHHH " + qryWidth);
     }
-    
-    public void findSites(){
-        relSize = qryWidth/this.size;
+
+    public void findSites() {
+        relSize = qryWidth / this.size;
 //        get the sites within the range and record where they should be drawn on the panel in relsitesrelpos hashmap
-        for (HashMap.Entry<Integer,Site> entry : this.chr.getRefSites().entrySet()) {
-                Site site = entry.getValue();
-                Double position=site.getPosition();
-                if (position.intValue()>this.start&&position.intValue()<this.end){
-                    Double relPosRef = ((site.getPosition()-start)*relSize)+startX.doubleValue();
-                    this.refSitesRelPos.put(site.getSiteID(), relPosRef);
+        for (HashMap.Entry<Integer, Site> entry : this.chr.getRefSites().entrySet()) {
+            Site site = entry.getValue();
+            Double position = site.getPosition();
+            if (position.intValue() > this.start && position.intValue() < this.end) {
+                Double relPosRef = ((site.getPosition() - start) * relSize) + startX.doubleValue();
+                this.refSitesRelPos.put(site.getSiteID(), relPosRef);
 //                    System.out.println("REF "+ site.getSiteID()+ " "+ relPosRef +" "+ chr.getCmapID());
 //                    System.out.println(site.getSiteID()+" "+ site.getPosition()+ " " + relPosRef);
-                    if (site.isMatch()){
-                        for (HashMap.Entry<Integer, ArrayList<Match>> matches :site.getMatches().entrySet() ){
-                            if (matches.getValue().size()==1){
+                if (site.isMatch()) {
+                    for (HashMap.Entry<Integer, ArrayList<Match>> matches : site.getMatches().entrySet()) {
+                        if (matches.getValue().size() == 1) {
 //                                only add sites that have been matched to this xmapID once
-                                if (!this.xmapPositions.containsKey(matches.getKey())){  
-                                this.xmapPositions.put(matches.getKey(),site);
+                            if (!this.xmapPositions.containsKey(matches.getKey())) {
+                                this.xmapPositions.put(matches.getKey(), site);
 //                                System.out.println(matches.getKey()+ " xmap iD " + site.getSiteID()+ " site id");
                             }
-                            
+
                         }
                     }
                 }
-        }
+            }
         }
         for (HashMap.Entry<Integer, Site> entry : this.xmapPositions.entrySet()) {
-            Integer xmapID =  entry.getKey();
+            Integer xmapID = entry.getKey();
             Site site = entry.getValue();
-           
+
             Integer siteID = site.getSiteID();
-            
+
             System.out.println("xmap id " + xmapID);
-            
+
             XmapData map = this.xmap.getXmapByXmapID(xmapID);
-            System.out.println("Is this null ? "+this.refSitesRelPos.get(siteID)+" " + siteID);
+            System.out.println("Is this null ? " + this.refSitesRelPos.get(siteID) + " " + siteID);
             Double sitePosPx = this.refSitesRelPos.get(siteID);
 
             Double relFirstPosRef = 0.0;
-            if(map.getOri()){
-            
-            Double mapFirstSite = map.returnAlignments()
-                                             .get(0)
-                                             .getRefSite().getPosition();
-            Double sizeDiffPx = (site.getPosition()-mapFirstSite)*relSize;
-            relFirstPosRef = sitePosPx-sizeDiffPx;
+            if (map.getOri()) {
+
+                Double mapFirstSite = map.returnAlignments()
+                        .get(0)
+                        .getRefSite().getPosition();
+                Double sizeDiffPx = (site.getPosition() - mapFirstSite) * relSize;
+                relFirstPosRef = sitePosPx - sizeDiffPx;
 
             }
-            if(!map.getOri()){
-                 Double mapLastSite = map.returnAlignments()
-                                             .get(map.returnAlignments().size()-1)
-                                             .getRefSite().getPosition();
-                Double sizeDiffPx = (site.getPosition()-mapLastSite)*relSize;
-                relFirstPosRef = sitePosPx-sizeDiffPx;
+            if (!map.getOri()) {
+                Double mapLastSite = map.returnAlignments()
+                        .get(map.returnAlignments().size() - 1)
+                        .getRefSite().getPosition();
+                Double sizeDiffPx = (site.getPosition() - mapLastSite) * relSize;
+                relFirstPosRef = sitePosPx - sizeDiffPx;
 
             }
 
-            QueryShape shape = new QueryShape(refSitesRelPos,relFirstPosRef, 
-                                                220.0,
-                                                relSize, 
-                                                map,
-                                                this.chr.getQryCmapsByID(map.getQryID()),
-                                                this.start*relSize);
-            alignShapes.add(shape);   
-            
-            System.out.println("Shape coords:"+map.getID()+" "+this.chr.getQryCmapsByID(map.getQryID()).getID()+" "+
-                                                    relFirstPosRef+" "+
-                                                    relSize+" "+
-                                                    start+" "+
-                                                    end);
-            
-            
+            QueryShape shape = new QueryShape(refSitesRelPos, relFirstPosRef,
+                    220.0,
+                    relSize,
+                    map,
+                    this.chr.getQryCmapsByID(map.getQryID()),
+                    this.start * relSize);
+            alignShapes.add(shape);
+
+            System.out.println("Shape coords:" + map.getID() + " " + this.chr.getQryCmapsByID(map.getQryID()).getID() + " "
+                    + relFirstPosRef + " "
+                    + relSize + " "
+                    + start + " "
+                    + end);
+
         }
-        for (Indel indel:this.chr.getIndels()){
-            if ((indel.getStart()>start | indel.getStart()<end) &(indel.getEnd()>start|indel.getEnd()>end) ){
+        for (Indel indel : this.chr.getIndels()) {
+            if ((indel.getStart() > start | indel.getStart() < end) & (indel.getEnd() > start | indel.getEnd() > end)) {
                 indels.add(indel);
             }
         }
         this.repaint();
     }
-    
-    public void setRange(Integer start,Integer end){
+
+    public void setRange(Integer start, Integer end) {
 //        reset the arraylists
         reset();
-        if (start<end){
-            if (start>=0 && start<this.chr.getSize()){
-                this.start=start;
+        if (start < end) {
+            if (start >= 0 && start < this.chr.getSize()) {
+                this.start = start;
             }
-            if (end>0 && end <= this.chr.getSize() && end>start){
-                this.end=end;  
+            if (end > 0 && end <= this.chr.getSize() && end > start) {
+                this.end = end;
             }
-            this.size=this.end-this.start;
+            this.size = this.end - this.start;
 
-        
-        }else{
+        } else {
             System.out.println("Start cannot be more than end");
         }
-        
+
         findSites();
     }
 
-    private void drawQuery(Graphics g){
-        System.out.println("relSize: " + relSize+ "start: "+ start + "end " + end+ "size: "+ size);
+    private void drawQuery(Graphics g) {
+        System.out.println("relSize: " + relSize + "start: " + start + "end " + end + "size: " + size);
         Graphics2D g2d = (Graphics2D) g;
         g2d.setFont(chrFont);
-        if(chr==null){
-            drawTextCentre(g2d,"No Chromosome selected, please select a chromosome", this.getWidth(),this.getHeight());
-        }else{
+        if (chr == null) {
+            drawTextCentre(g2d, "No Chromosome selected, please select a chromosome", this.getWidth(), this.getHeight());
+        } else {
             g2d.setColor(Color.LIGHT_GRAY);
-            MapOpticsRectangle ref = new MapOpticsRectangle(startX, 70, qryWidth,50);
+            MapOpticsRectangle ref = new MapOpticsRectangle(startX, 70, qryWidth, 50);
             g2d.draw(ref);
             g2d.fill(ref);
-            for (HashMap.Entry<Integer,Double> entry : this.refSitesRelPos.entrySet()){
+            for (HashMap.Entry<Integer, Double> entry : this.refSitesRelPos.entrySet()) {
                 Integer siteID = entry.getKey();
                 Double relPosRef = entry.getValue();
                 Site site = this.chr.getRefSites().get(siteID);
 //                if(!site.isMatch()){
-                    g2d.setColor(Color.black);
+                g2d.setColor(Color.black);
 //                }  
 //                if (site.isMatch()){
 //                    g2d.setColor(Color.blue);
 //                }
-                    Shape r = new Line2D.Double(relPosRef, 70, relPosRef, 120);
-                    g2d.draw(r);
-                }
-        
-           
-           drawScaleBar(g2d,ref);
-           drawGenes(this.chr.getAnnotations(),g2d);
-           drawAlignments(g2d);
-           drawIndels(g2d);
+                Shape r = new Line2D.Double(relPosRef, 70, relPosRef, 120);
+                g2d.draw(r);
+            }
+
+            drawScaleBar(g2d, ref);
+            drawGenes(this.chr.getAnnotations(), g2d);
+            drawAlignments(g2d);
+            drawIndels(g2d);
         }
     }
-    
-    private void drawAlignments(Graphics2D g2d){
+
+    private void drawAlignments(Graphics2D g2d) {
         Integer count = 0;
-        for(QueryShape s: alignShapes){
+        for (QueryShape s : alignShapes) {
 //          Set the colour
             Color colour = setAlignmentColour(count);
             s.setRectColour(Color.LIGHT_GRAY);
             s.drawRect(g2d);
-            count +=1;        
+            count += 1;
         }
 //        try{QueryShape s = alignShapes.get(0);
 //        s.setRectColour(Color.LIGHT_GRAY);
@@ -272,67 +263,66 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
 //            System.out.println("no alignments");
 //        }
     }
-    
-    private void drawGenes(ArrayList<Gene> genes,Graphics2D g2d){
-        if (genes!=null){
-        for (Gene gene: genes){
+
+    private void drawGenes(ArrayList<Gene> genes, Graphics2D g2d) {
+        if (genes != null) {
+            for (Gene gene : genes) {
                 Double genStrt = gene.getStart();
                 Double genEnd = gene.getEnd();
 
-                if(((genStrt.intValue()>=this.start)&&(genStrt.intValue()<=this.end))|(genEnd<=this.end&&genEnd>=this.start)){
+                if (((genStrt.intValue() >= this.start) && (genStrt.intValue() <= this.end)) | (genEnd <= this.end && genEnd >= this.start)) {
                     Matcher checkGene = Pattern.compile("gene").matcher(gene.getType());
-                    if (checkGene.find() == true){
-                    this.genesInRange.add(gene);
-                } 
+                    if (checkGene.find() == true) {
+                        this.genesInRange.add(gene);
                     }
                 }
-        int count=1;
-            for (Gene gene: this.genesInRange){
-               Double relStart = (gene.getStart()-start+ startX)*relSize;
-               if (relStart>25.0){
-               Double relEnd = gene.getEnd()*relSize;
-               Double gSize = relEnd-relStart;
-               MapOpticsRectangle geneRect = new MapOpticsRectangle(relStart,35, gSize,25);
-               geneRect.setGene(gene);
-               geneRects.add(geneRect);
-               Shape geneShape = geneRect;
-               if (gene.getSelected()){
-                   g2d.setStroke(new BasicStroke(2));
-                   g2d.setColor(Color.red);
-                   g2d.draw(geneShape);
-                   g2d.setStroke(new BasicStroke(1));
-               }
-               
-               if (!gene.getSelected()){
-                   g2d.setColor(Color.DARK_GRAY);
-                   g2d.draw(geneShape);
-               }
-               
-
-               count++;
             }
+            int count = 1;
+            for (Gene gene : this.genesInRange) {
+                Double relStart = (gene.getStart() - start + startX) * relSize;
+                if (relStart > 25.0) {
+                    Double relEnd = gene.getEnd() * relSize;
+                    Double gSize = relEnd - relStart;
+                    MapOpticsRectangle geneRect = new MapOpticsRectangle(relStart, 35, gSize, 25);
+                    geneRect.setGene(gene);
+                    geneRects.add(geneRect);
+                    Shape geneShape = geneRect;
+                    if (gene.getSelected()) {
+                        g2d.setStroke(new BasicStroke(2));
+                        g2d.setColor(Color.red);
+                        g2d.draw(geneShape);
+                        g2d.setStroke(new BasicStroke(1));
+                    }
+
+                    if (!gene.getSelected()) {
+                        g2d.setColor(Color.DARK_GRAY);
+                        g2d.draw(geneShape);
+                    }
+
+                    count++;
+                }
             }
         }
     }
-   
-    private void drawIndels(Graphics2D g2d){
-        for (Indel indel: indels){
-            Double indelStart = (indel.getStart()-start)*relSize + startX;
+
+    private void drawIndels(Graphics2D g2d) {
+        for (Indel indel : indels) {
+            Double indelStart = (indel.getStart() - start) * relSize + startX;
 //            System.out.println("indel start: " + indel.getStart()+ " x pos" + indelStart + " relSize "+ relSize);
-            Double indelSize = indel.getSize()*relSize;
-            if(indel.getType().equals("Insertion")){
+            Double indelSize = indel.getSize() * relSize;
+            if (indel.getType().equals("Insertion")) {
                 g2d.setColor(Color.green);
             }
-            if(indel.getType().equals("Deletion")){
-                 g2d.setColor(Color.red);
-            }  
-            MapOpticsRectangle rect = new MapOpticsRectangle(indelStart, 280, indelSize,20);
+            if (indel.getType().equals("Deletion")) {
+                g2d.setColor(Color.red);
+            }
+            MapOpticsRectangle rect = new MapOpticsRectangle(indelStart, 280, indelSize, 20);
             g2d.draw(rect);
             g2d.fill(rect);
         }
     }
-    
-        private void drawScaleBar(Graphics2D g2d, MapOpticsRectangle refRect) {
+
+    private void drawScaleBar(Graphics2D g2d, MapOpticsRectangle refRect) {
         g2d.setColor(Color.black);
         g2d.drawLine((int) refRect.getMinX(), startY, (int) (refRect.getMinX() + refRect.getWidth()), startY);
 
@@ -342,49 +332,47 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
         g2d.setFont(chrFont);
         String s;
         String e;
-        if (start==0){
+        if (start == 0) {
             s = "0";
-        }
-        else{
-            s = String.format("%.2f",(double)start/1000);
+        } else {
+            s = String.format("%.2f", (double) start / 1000);
 
         }
-        e = String.format("%.2f",(double)end/1000);
-        g2d.drawString(s + " kb", (int) (refRect.getMinX() - g2d.getFontMetrics().stringWidth(s + " kb") / 2), startY+15);
-        g2d.drawLine((int) (refRect.getMinX() + (refRect.getWidth() / numScales) * 0), startY, (int) (refRect.getMinX() + (refRect.getWidth() / numScales) * 0), startY+5);
+        e = String.format("%.2f", (double) end / 1000);
+        g2d.drawString(s + " kb", (int) (refRect.getMinX() - g2d.getFontMetrics().stringWidth(s + " kb") / 2), startY + 15);
+        g2d.drawLine((int) (refRect.getMinX() + (refRect.getWidth() / numScales) * 0), startY, (int) (refRect.getMinX() + (refRect.getWidth() / numScales) * 0), startY + 5);
         g2d.drawString(e + " kb", (int) (refRect.getMinX() + refRect.getWidth() - g2d.getFontMetrics().stringWidth(e + " kb") / 2), startY + 15);
-        g2d.drawLine((int) (refRect.getMinX() + (refRect.getWidth() / numScales) * 0), startY, (int) (refRect.getMinX() + (refRect.getWidth() / numScales) * 100), startY+5);
-         if (numScales != 0) {
+        g2d.drawLine((int) (refRect.getMinX() + (refRect.getWidth() / numScales) * 0), startY, (int) (refRect.getMinX() + (refRect.getWidth() / numScales) * 100), startY + 5);
+        if (numScales != 0) {
             for (int i = 1; i < numScales; i++) {
-                g2d.drawLine((int) (refRect.getMinX() + (refRect.getWidth() / numScales) * i), startY, (int) (refRect.getMinX() + (refRect.getWidth() / numScales) * i), startY+5);
-                g2d.drawString(String.format("%.2f", ((double) (start+(scaleIncrement*i))/1000)) + " kb", (int) (refRect.getMinX() + ((refRect.getWidth() / numScales) * i) - g2d.getFontMetrics().stringWidth(String.format("%.2f", ((double) (start+(scaleIncrement*i))/1000)) + " kb") / 2), startY+15);  
+                g2d.drawLine((int) (refRect.getMinX() + (refRect.getWidth() / numScales) * i), startY, (int) (refRect.getMinX() + (refRect.getWidth() / numScales) * i), startY + 5);
+                g2d.drawString(String.format("%.2f", ((double) (start + (scaleIncrement * i)) / 1000)) + " kb", (int) (refRect.getMinX() + ((refRect.getWidth() / numScales) * i) - g2d.getFontMetrics().stringWidth(String.format("%.2f", ((double) (start + (scaleIncrement * i)) / 1000)) + " kb") / 2), startY + 15);
             }
-        } 
+        }
     }
-    
-    private Color setAlignmentColour(Integer Int){
-        Color[] colours = {Color.decode("#3792ff"),Color.decode("#20cdf5"),Color.decode("#8ef2f4"),Color.decode("#f179a7"),Color.decode("#fcc5f1")};
+
+    private Color setAlignmentColour(Integer Int) {
+        Color[] colours = {Color.decode("#3792ff"), Color.decode("#20cdf5"), Color.decode("#8ef2f4"), Color.decode("#f179a7"), Color.decode("#fcc5f1")};
         Integer number = colours.length;
-        
-        if (Int > number){
-            if (Int%number==0&&((Int/number)<5)){
-                return colours[Int/number];
-            }
-            else{
-                Double newInt = (Int-5*Math.floor((Int/number)));
+
+        if (Int > number) {
+            if (Int % number == 0 && ((Int / number) < 5)) {
+                return colours[Int / number];
+            } else {
+                Double newInt = (Int - 5 * Math.floor((Int / number)));
                 return colours[newInt.intValue()];
             }
-        }if (Int < number){
-            return colours[Int];
         }
-        else{
+        if (Int < number) {
+            return colours[Int];
+        } else {
             System.out.println(Int);
             return Color.MAGENTA;
         }
     }
-        
+
     private void drawTextCentre(Graphics2D g2d, String string,
-                                        Integer width, Integer height) {
+            Integer width, Integer height) {
         int stringWidth = (int) g2d.getFontMetrics().getStringBounds(string, g2d).getWidth();
         int stringHeight = (int) g2d.getFontMetrics().getStringBounds(string, g2d).getHeight();
 
@@ -392,34 +380,35 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
         int verticalCenter = height / 2 - stringHeight / 2;
         g2d.drawString(string, horizontalCenter, verticalCenter);
     }
-    public Integer getStart(){
+
+    public Integer getStart() {
         return this.start;
     }
-    
-    public Integer getEnd(){
+
+    public Integer getEnd() {
         return this.end;
     }
-    
-    public Integer getRange(){
+
+    public Integer getRange() {
         return this.size;
     }
-    
-    public ArrayList<Gene> getGenes(){
+
+    public ArrayList<Gene> getGenes() {
         return this.genesInRange;
     }
-    
-    public void highlightGene(Gene gene){
-        System.out.println(gene.getName()+" highlighted");
-       for (Gene g:this.genesInRange){
-           if (g.getName().equals(gene.getName())){
-               g.setSelected(true);
-           }
-       }
-       repaint();
+
+    public void highlightGene(Gene gene) {
+        System.out.println(gene.getName() + " highlighted");
+        for (Gene g : this.genesInRange) {
+            if (g.getName().equals(gene.getName())) {
+                g.setSelected(true);
+            }
+        }
+        repaint();
     }
-    
-    public void clearHighlightedGenes(){
-        for (Gene g:this.genesInRange){
+
+    public void clearHighlightedGenes() {
+        for (Gene g : this.genesInRange) {
             g.setSelected(false);
         }
         repaint();
@@ -430,6 +419,7 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
         super.paintComponent(g);
         drawQuery(g);
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -593,73 +583,71 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
 
     private void queryDBButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_queryDBButtonActionPerformed
         ArrayList<ArrayList<String>> result = new ArrayList();
-        if (this.clinVarButton.isSelected()){
+        if (this.clinVarButton.isSelected()) {
             result = this.selectedGene.queryDB("clinvar", this.refOrganism);
         }
-        if(this.dbVarButton.isSelected()){
+        if (this.dbVarButton.isSelected()) {
             result = this.selectedGene.queryDB("dbvar", this.refOrganism);
         }
-         DefaultTableModel dbTableModel = (DefaultTableModel)this.databaseTable.getModel();
+        DefaultTableModel dbTableModel = (DefaultTableModel) this.databaseTable.getModel();
         this.databaseTable.setAutoCreateRowSorter(true);
 //         First clear the chromosomes JTable of any previous data
         dbTableModel.setRowCount(0);
         dbTableModel.setColumnCount(0);
-        
+
         String[] columnNames = {"ID", "SV ID", "Clinical Significance"};
         dbTableModel.setColumnIdentifiers(columnNames); //Set the column names of this table
-        
-        for (ArrayList<String> res: result){
+
+        for (ArrayList<String> res : result) {
             String[] array = res.toArray(new String[res.size()]);
             System.out.println(array.toString());
             dbTableModel.addRow(array);
         }
-        if (this.clinVarButton.isSelected()){
-            databaseResult.setTitle("Results for "+ this.selectedGene.getName()+ " ClinVar");
+        if (this.clinVarButton.isSelected()) {
+            databaseResult.setTitle("Results for " + this.selectedGene.getName() + " ClinVar");
         }
-        if (this.dbVarButton.isSelected()){
-            databaseResult.setTitle("Results for "+ this.selectedGene.getName()+ " dbVar");
+        if (this.dbVarButton.isSelected()) {
+            databaseResult.setTitle("Results for " + this.selectedGene.getName() + " dbVar");
         }
-        
+
         databaseResult.setVisible(true);
 
     }//GEN-LAST:event_queryDBButtonActionPerformed
-    private void reset(){
+    private void reset() {
 
-        this.alignShapes= new ArrayList();
+        this.alignShapes = new ArrayList();
         this.xmapPositions = new HashMap();
-        this.refSitesRelPos= new HashMap();
-        this.geneRects= new ArrayList();
+        this.refSitesRelPos = new HashMap();
+        this.geneRects = new ArrayList();
         this.indels = new ArrayList();
         this.genesInRange = new ArrayList();
 
-        this.pressed=false;
-        this.relSize=0.0;
+        this.pressed = false;
+        this.relSize = 0.0;
         this.draggedShape = null;
         this.selectedGene = null;
     }
-
-
 
     @Override
     public void mouseClicked(MouseEvent e) {
         pressed = true;
         this.point = e.getPoint();
         for (MapOpticsRectangle r : geneRects) {
-                if(r.contains(point)&&pressed){
-                     if(r.contains(point)&&pressed){
-                    this.selectedGene=r.getGene();
+            if (r.contains(point) && pressed) {
+                if (r.contains(point) && pressed) {
+                    this.selectedGene = r.getGene();
                     geneName.setText(selectedGene.getName());
                     geneSource.setText(selectedGene.getSource());
-                    geneSize.setText(String.valueOf(selectedGene.getEnd()-selectedGene.getStart()));
+                    geneSize.setText(String.valueOf(selectedGene.getEnd() - selectedGene.getStart()));
                     geneDialog.setVisible(true);
                 }
-                }
+            }
         }
         for (QueryShape s : alignShapes) {
-            if (s.getRect().contains(point)&&pressed){
-                
+            if (s.getRect().contains(point) && pressed) {
+
             }
-            
+
         }
     }
 
@@ -668,29 +656,29 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
 // depending on where the mouse is in the screen search for the shape
         pressed = true;
         this.point = e.getPoint();
-        if (this.point.getY()>= 35 && this.point.getY() <= 60 ){
+        if (this.point.getY() >= 35 && this.point.getY() <= 60) {
             for (MapOpticsRectangle r : geneRects) {
-                if(r.contains(point)&&pressed){
-                    this.selectedGene=r.getGene();
+                if (r.contains(point) && pressed) {
+                    this.selectedGene = r.getGene();
                     geneName.setText(selectedGene.getName());
                     geneSource.setText(selectedGene.getSource());
-                    geneSize.setText(String.valueOf(selectedGene.getEnd()-selectedGene.getStart()));
+                    geneSize.setText(String.valueOf(selectedGene.getEnd() - selectedGene.getStart()));
                     repaint();
                     geneDialog.setVisible(true);
-                   
+
                 }
+            }
+
         }
-        
-        }
-          if (alignment) {
+        if (alignment) {
             draggedShape = null;
             pressed = true;
             this.point = e.getPoint();
-            Integer i=0;
+            Integer i = 0;
             for (QueryShape s : alignShapes) {
-                if(s.getRect().contains(point)){
-      
-                    draggedShape=i;
+                if (s.getRect().contains(point)) {
+
+                    draggedShape = i;
                     this.alignShapes.get(this.draggedShape).setSelected(true);
                     setCursor(new Cursor(Cursor.HAND_CURSOR));
                     i++;
@@ -706,7 +694,6 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
         repaint();
     }
 
-
     @Override
     public void mouseEntered(MouseEvent e) {
 
@@ -719,20 +706,20 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        
-        if (point != null && pressed ) {
+
+        if (point != null && pressed) {
             this.dx = (e.getX() - point.x);
-            this.start+=this.dx;
-            this.end+=this.dx;
+            this.start += this.dx;
+            this.end += this.dx;
 //            refSitesInRange = new ArrayList();
             genesInRange = new ArrayList();
             geneRects = new ArrayList();
             alignShapes = new ArrayList();
             findSites();
-            
+
         }
-        
-         if (point != null && pressed && this.draggedShape!=null) {
+
+        if (point != null && pressed && this.draggedShape != null) {
             this.dx = (e.getX() - point.x);
             this.dy = (e.getY() - point.y);
             this.alignShapes.get(this.draggedShape).setDeltaX(Double.valueOf(this.dx));
@@ -744,19 +731,19 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
 
     @Override
     public void mouseMoved(MouseEvent e) {
-         
+
     }
-    
-    public void saveImage(String name,String type, String location) {
-		BufferedImage image = new BufferedImage(getWidth(),getHeight(), BufferedImage.TYPE_INT_RGB);
-		Graphics2D g2d = image.createGraphics();
-		printAll(g2d);
-		try{
-			ImageIO.write(image, type, new File(location+name+"."+type));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+
+    public void saveImage(String name, String type, String location) {
+        BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = image.createGraphics();
+        printAll(g2d);
+        try {
+            ImageIO.write(image, type, new File(location + name + "." + type));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JRadioButton clinVarButton;
@@ -776,5 +763,3 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
     private javax.swing.JButton queryDBButton;
     // End of variables declaration//GEN-END:variables
 }
-
-

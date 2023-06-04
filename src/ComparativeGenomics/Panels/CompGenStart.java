@@ -426,6 +426,11 @@ public class CompGenStart extends javax.swing.JFrame {
         jLabel33.setText("Annotation File:");
 
         qryAnnotFileName.setText("jTextField3");
+        qryAnnotFileName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                qryAnnotFileNameActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout sendQueryGenomePanelLayout = new javax.swing.GroupLayout(sendQueryGenomePanel);
         sendQueryGenomePanel.setLayout(sendQueryGenomePanelLayout);
@@ -1882,7 +1887,7 @@ public class CompGenStart extends javax.swing.JFrame {
         else {
             if (!ref1FromURL) {
                 String dir = jobName + "/Files/Reference/" + this.referenceFile;
-                System.out.println("file transfer of reference file");
+                System.out.println("File transfer of reference file");
                 this.channel.uploadFile(referenceFilePath, dir, refProgressBar);
             } else {
                 String cmd = "cd mapoptics/jobs/" + this.jobName + "/Files/Reference; wget " + this.referenceFilePath;
@@ -2351,6 +2356,10 @@ public class CompGenStart extends javax.swing.JFrame {
         this.localqrycmap = fileDialog.getDirectory() + fileDialog.getFile();
         this.localQryCmapName.setText(fileDialog.getFile());
     }//GEN-LAST:event_chooseLocalQryCmapActionPerformed
+
+    private void qryAnnotFileNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_qryAnnotFileNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_qryAnnotFileNameActionPerformed
 
     public String checkEnzymeName(JTextField field) {
         String name = field.getText();
