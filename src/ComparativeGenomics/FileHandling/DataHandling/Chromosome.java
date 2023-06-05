@@ -35,7 +35,6 @@ public class Chromosome {
     public Chromosome(String name, CmapData cmap, Double relsize, Sequence seq, ArrayList<Gene> genes) {
         this.name = name;
         this.refCmapMap = cmap;
-        System.out.println("CMAP chromosome " + name + " chosen: " + cmap);
         this.size = this.refCmapMap.getLength();
         this.refSites = this.refCmapMap.getSites();
         this.sequence = seq;

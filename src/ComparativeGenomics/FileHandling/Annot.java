@@ -136,7 +136,7 @@ public class Annot {
 //            Save the identified gene objects to arraylist to be accessed via chr name in the hashmap.
         for (Gene g : genes) {
             // Get the chromosome of each gene
-            String c = g.getChr();
+            String c = g.getChr().toLowerCase();
             // Check if hashmap of chromosomes (key = chr name, value = list of genes for the chr)
             // contains the chr
             if (chrAnnotations.containsKey(c)) {
@@ -196,7 +196,7 @@ public class Annot {
      * from the chrAnnotations HashMap
      */
     public ArrayList<Gene> getFeatureByChr(String chr) {
-        return chrAnnotations.get(chr);
+        return chrAnnotations.get(chr.toLowerCase());
     }
 
     /**

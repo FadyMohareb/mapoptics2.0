@@ -90,21 +90,20 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
             this.alignShapes.clear();
         }
         if (chr != null) {
-            System.out.println("chromosome panel chr set");
+            System.out.println("Chromosome panel chr set");
             chrAdded = true;
             w = this.getWidth() - startX * 2;
             h = this.getHeight();
             this.chr = chr;
             this.relSize = w / this.chr.getSize();
             for (XmapData map : this.chr.getAlignments()) {
-                System.out.println("map added");
                 addAlignment(map);
             }
-            System.out.println("all alignments read");
+            System.out.println("All alignments read");
             this.repaint();
-            System.out.println("chromosome panel repainted");
+            System.out.println("Chromosome panel repainted");
         } else {
-            System.out.println("chromosome panel chr is NULL");
+            System.out.println("Chromosome panel chr is NULL");
         }
     }
 

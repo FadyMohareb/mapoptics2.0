@@ -1549,6 +1549,7 @@ public class CompGenView extends javax.swing.JFrame {
                     }
                 }
             } catch (NullPointerException e) {
+                System.out.println(this.currentChr.getAnnotations());
                 System.out.println("Chromosome " + this.currentChr.getName() + " is not annotated.");
             }
 
