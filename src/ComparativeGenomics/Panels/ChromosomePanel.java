@@ -205,7 +205,6 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
         if (Int < number) {
             return colours[Int];
         } else {
-            System.out.println(Int);
             return Color.MAGENTA;
         }
     }
