@@ -263,10 +263,18 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
 
     }
 
+    /**
+     * o Select alignment
+     *
+     * @param xmapID Identifier of the xmap corresponding to the selected
+     * chromosome
+     */
     public void selectAlignment(Integer xmapID) {
         for (XmapShape shape : alignShapes) {
-            if (shape.getXmapID() == xmapID) {
+            if (shape.getXmapID().equals(xmapID)) {
                 shape.setSelected(true);
+            } else {
+                shape.setSelected(false);
             }
         }
         repaint();
@@ -276,6 +284,7 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
         for (XmapShape shape : alignShapes) {
             shape.setSelected(false);
         }
+        repaint();
     }
 
     /**
