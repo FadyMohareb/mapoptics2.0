@@ -35,6 +35,7 @@ import org.apache.commons.io.FileUtils;
 import startScreen.startScreen;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 /**
  *
@@ -1955,7 +1956,7 @@ public class CompGenStart extends javax.swing.JFrame {
         this.newJob.setQryAnnot(this.queryAnnotFilePath);
         this.newJob.setRefOrg(this.refSpecies.getText());
         this.newJob.setQryOrg(this.qrySpecies.getText());
-        
+
         if (fandomPipeline.isSelected()) {
             this.newJob.setPipeline("fandom");
         }
@@ -2124,12 +2125,14 @@ public class CompGenStart extends javax.swing.JFrame {
                     "No job selected", JOptionPane.ERROR_MESSAGE);
         } else {
             refreshJobStatus(this.selectedJob);
-            if (!refreshJobStatus(this.selectedJob)){
+            if (!refreshJobStatus(this.selectedJob)) {
                 JOptionPane.showMessageDialog(null, "Job was not executed properly. Please launch job again.",
-                    "Job not executed", JOptionPane.ERROR_MESSAGE);
+                        "Job not executed", JOptionPane.ERROR_MESSAGE);
             }
             JobTableModel newModel = new JobTableModel(this.jobsRunning);
             jobsTable.setModel(newModel);
+            // Save updated job in json file
+            saveJobJson(this.jobsRunning);
         }
     }//GEN-LAST:event_refreshJobsTableActionPerformed
 
@@ -2763,16 +2766,17 @@ public class CompGenStart extends javax.swing.JFrame {
         for (String s : result) {
             System.out.println("result: " + s);
         }
-        if (result.size() == 0) {
+        if (result.isEmpty()) {
             System.out.println("Log file was not found or empty.");
+            job.setStatus("Failed");
             return false;
         } else {
-            String latestStatus = result.get(result.size() - 1).split(": ")[1]; //get the latest update from the file
+            // get the latest update from the log file
+            String latestStatus = result.get(result.size() - 1).split(": ")[1];
             System.out.println(latestStatus);
             job.setStatus(latestStatus);
+            return true;
         }
-        return true;
-
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
