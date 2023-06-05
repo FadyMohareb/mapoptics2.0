@@ -8,6 +8,7 @@ import ComparativeGenomics.FileHandling.DataHandling.CmapData;
 import ComparativeGenomics.FileHandling.DataHandling.Pair;
 import ComparativeGenomics.FileHandling.DataHandling.Site;
 import ComparativeGenomics.FileHandling.Cmap;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -148,7 +149,7 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
         if (!chrAdded) {
             drawTextCentre(g2d, "No Chromosome has been selected, please select a chromosome.", w, h);
         } else {
-            System.out.println("chr being drawn");
+            System.out.println("Chromosome being drawn");
             g2d.setColor(Color.LIGHT_GRAY);
             Integer y = startY + 20 + 5;
             Double yPos = y.doubleValue();
@@ -173,13 +174,25 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
      */
     private void drawAlignments(Graphics2D g2d) {
         Integer count = 0;
+        ArrayList<XmapShape> selectedShapes = new ArrayList();
         for (XmapShape s : alignShapes) {
-//          Set the colour
-            Color colour = setAlignmentColour(count);
-            s.setAlignColour(colour);
-            s.drawAlignment(g2d);
+            if (s.getSelected()) {
+                selectedShapes.add(s);
+            } else {
+                //          Set the colour
+                Color colour = setAlignmentColour(count);
+                s.setAlignColour(colour);
+                s.drawAlignment(g2d);
+            }
             count += 1;
         }
+        // If a shape is selected, its border needs to be drawn 
+        // after all rectangles to appear entirely
+        for (XmapShape selectedShape : selectedShapes) {
+
+            selectedShape.drawSelection(g2d);
+        }
+
     }
 
     /**
@@ -205,7 +218,6 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
         if (Int < number) {
             return colours[Int];
         } else {
-            System.out.println(Int);
             return Color.MAGENTA;
         }
     }
