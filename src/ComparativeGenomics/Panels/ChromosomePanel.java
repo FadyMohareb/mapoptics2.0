@@ -90,7 +90,7 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
             this.alignShapes.clear();
         }
         if (chr != null) {
-            System.out.println("Chromosome panel chr set");
+            //System.out.println("Chromosome panel chr set");
             chrAdded = true;
             w = this.getWidth() - startX * 2;
             h = this.getHeight();
@@ -100,7 +100,7 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
                 addAlignment(map);
             }
             this.repaint();
-            System.out.println("Chromosome panel repainted");
+            //System.out.println("Chromosome panel repainted");
         } else {
             System.out.println("Chromosome panel chr is NULL");
         }

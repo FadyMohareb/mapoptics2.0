@@ -60,7 +60,6 @@ public class Gene {
             String str = infoSplit[i];
             Matcher checkChr = Pattern.compile("gene_name|gene_id|ID").matcher(str);
             if (checkChr.find()) {
-                //System.out.println("Gene line 63: " + str);
                 // gff information are separated by "="
                 if (Pattern.compile("=").matcher(str).find()){
                     String[] geneNameArr = str.split("=");
@@ -73,20 +72,7 @@ public class Gene {
                     // gff files are separated by "=" but gtf by "   "
                     this.name = geneNameArr[geneNameArr.length - 1];
                 }
-                else{
-                    System.out.println("Chromosome ID is not found.");
-                }
-            } else {
-                /*
-                Matcher checkID = Pattern.compile("gene_id").matcher(str);
-                if (checkID.find() == true) {
-                    String[] geneNameArr = str.split("=");
-                    this.name = geneNameArr[geneNameArr.length - 1];
-                 */
-                System.out.println("No gene ID found. "
-                        + "\n Name is neither indicated by gene_name, gene_id nor ID in the input annotation file.");
             }
-
         }
     }
 
@@ -166,7 +152,6 @@ public class Gene {
                 queryURL2 = queryURL2.replace(" ", "");
                 response2 = sendRequest(queryURL2);
                 if (!response2.isEmpty()) {
-//                    System.out.println(jsonObject2.get("result"));
                     if ("dbvar".equals(database)) {
                         results.add(parseDBVarResult(response2));
                     }

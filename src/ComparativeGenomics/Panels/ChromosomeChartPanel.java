@@ -54,7 +54,8 @@ public class ChromosomeChartPanel extends JPanel {
         try {
             chart.addSeries("Indels", chrNames, numIndels);
         } catch (java.lang.IllegalArgumentException ex) {
-            JOptionPane.showMessageDialog(null, "A problem occured while plotting indels. The plot will not be complete",
+            JOptionPane.showMessageDialog(null, "A problem occured while plotting indels. The plot will not be complete. \n"
+                    + ex,
                     "Indels display problem!", JOptionPane.ERROR_MESSAGE);
         }
         try {

@@ -123,9 +123,10 @@ public final class Alignment {
 //                these are all the qry cmap matches to the ref cmap
                 ArrayList<XmapData> chrAlignments = this.xmap.getXmap().get(cmapID);
 
+                System.out.println("Alignment l126 cmapID " + cmapID + " " + this.refGenome.getChromosomes().get(cmapID));
                 if (this.refGenome.getChromosomes().get(cmapID) != null) {
                     this.refGenome.getChromosomes().get(cmapID).setAlignment(chrAlignments, cmapQry);
-
+                    System.out.println("Alignment l129 OK TEST OK");
                 }
             } 
         }

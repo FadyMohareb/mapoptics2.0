@@ -178,6 +178,7 @@ public class XmapData {
                     if (refDiff - qryDiff < 0) {
                         Indel i = new Indel("Deletion", lastRefPos, refPos, refID, qryID);
                         foundIndels.add(i);
+                        // System.out.println("Indel added XmapData 181");
                     } else {
                         Indel i = new Indel("Insertion", lastRefPos, refPos, refID, qryID);
                         foundIndels.add(i);

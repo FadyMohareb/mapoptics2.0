@@ -169,7 +169,7 @@ public class Xmap {
                                 if (value.size()>1){
                                     boolean allEqual = value.stream().distinct().count() <= 1;
                                     if (!allEqual){
-                                        System.out.println("possible translocation found");
+                                        // Possible translocation found
                                         this.potentialTranslocations.put(key, value);
                                     }
                                 }

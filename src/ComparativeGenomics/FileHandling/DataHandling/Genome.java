@@ -49,7 +49,7 @@ public class Genome {
 //       iterate through every chr in the karyotype
         Iterator<Map.Entry<Double, String>> entries = chrs.entrySet().iterator();
 
-        while (entries.hasNext()) {
+        while(entries.hasNext()) {
             Map.Entry<Double, String> entry = entries.next();
 //            this accesses each chr size and value. the chrSize can be used to access the map in cmap
             Double chrSize = entry.getKey();
@@ -59,7 +59,7 @@ public class Genome {
             CmapData map = this.cmap.getCmapBySize(chrSize);
             Sequence sequence = this.fasta.getSequence(chrSize);
             ArrayList<Gene> chrGenes = this.annot.getFeatureByChr(chrName.toLowerCase());
-            System.out.println("Genome line 62, chrGenes: " + chrName.toLowerCase() + " " + chrName.toLowerCase());
+            System.out.println("Genome line 62, chrGenes: " + chrName.toLowerCase());
             if (map != null) {
                 Chromosome chr = new Chromosome(chrName, map, relSize, sequence, chrGenes);
                 chromosomes.put(map.getID(), chr);

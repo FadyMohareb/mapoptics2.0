@@ -92,7 +92,6 @@ public class Annot {
                         Matcher checkChr = Pattern.compile("chr|ch").matcher(chr);
                         // The row corresponds to a chromosome
                         if (checkChr.find()) {
-                            //System.out.println("Annot line 95: line in gff for ch" + row);
                             String type = rowData[2]; // Type of feature (term / accession from SPFA sequence ontology)
                             // Feature is a gene
                             if ("gene".equals(type.replace(" ", ""))) {
@@ -105,7 +104,6 @@ public class Annot {
                                             Double.parseDouble(rowData[4]),
                                             rowData[8]);
                                     genes.add(newGene);
-                                    //System.out.println("Annot line 107: genes added " + newGene.getName());
                                 }
                             }
                         }

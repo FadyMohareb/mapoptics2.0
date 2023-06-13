@@ -103,7 +103,7 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
     }
 
     public void setChr(Chromosome chr) {
-        System.out.println("Chromosome to set: " + chr.getName());
+        //System.out.println("Chromosome to set: " + chr.getName());
         if (chr != null) {
             this.chr = chr;
             findSites();
@@ -114,7 +114,7 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
         w = this.getWidth();
         h = this.getHeight();
         qryWidth = w.doubleValue() - (2 * startX);
-        System.out.println("Query Width " + qryWidth);
+        //System.out.println("Query Width " + qryWidth);
     }
 
     public void findSites() {
@@ -152,7 +152,7 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
             Integer siteID = site.getSiteID();
 
             XmapData map = this.xmap.getXmapByXmapID(xmapID);
-            System.out.println("Are reference sites relative positions null? " + this.refSitesRelPos.get(siteID) + " Site ID: " + siteID);
+            //System.out.println("Are reference sites relative positions null? " + this.refSitesRelPos.get(siteID) + " Site ID: " + siteID);
             Double sitePosPx = this.refSitesRelPos.get(siteID);
 
             Double relFirstPosRef = 0.0;
@@ -172,7 +172,7 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
                 relFirstPosRef = sitePosPx - sizeDiffPx;
             }
 
-            System.out.println("get query cmaps: " + this.chr.getQryCmaps());
+            //System.out.println("get query cmaps: " + this.chr.getQryCmaps());
 
             QueryShape shape = new QueryShape(refSitesRelPos, relFirstPosRef,
                     220.0,
@@ -223,7 +223,7 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
     }
 
     private void drawQuery(Graphics g) {
-        System.out.println("relSize: " + relSize + "start: " + start + "end " + end + "size: " + size);
+        //System.out.println("relSize: " + relSize + "start: " + start + "end " + end + "size: " + size);
         Graphics2D g2d = (Graphics2D) g;
         g2d.setFont(chrFont);
         if (chr == null) {
