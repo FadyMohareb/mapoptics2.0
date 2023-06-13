@@ -45,6 +45,8 @@ public class AlignmentsPerChromosomeChartPanel extends JPanel {
         for (Chromosome chr: genome.getChromosomes().values()){
             numAlignments.add(chr.getAlignments().size());
             chrNames.add(chr.getName());
+            System.out.println(chr.getName());
+            System.out.println(chr.getAlignments().size());
         }
         chart.addSeries("Alignments", chrNames, numAlignments);
         chart.getStyler().setXAxisLabelRotation(45);

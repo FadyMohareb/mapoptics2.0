@@ -132,6 +132,7 @@ public class CompGenView extends javax.swing.JFrame {
         // Fasta and annotation files are parsed
         refFasta = new Fasta();
 //        qryFasta=new Fasta();
+        //System.out.println(this.job.getRefAnnot());
         refAnnot = new Annot(this.job.getRefAnnot());
 
 //        qryAnnot = new Annot(this.job.getQryAnnot());
@@ -1416,7 +1417,7 @@ public class CompGenView extends javax.swing.JFrame {
                         JOptionPane.ERROR_MESSAGE);
             }
         } catch (NullPointerException e) {
-            System.out.println("map for row " + row + " is null :(");
+            System.out.println("Map for row " + row + " is null :(");
         }
     }//GEN-LAST:event_chrAlignTableMousePressed
 
@@ -1510,8 +1511,6 @@ public class CompGenView extends javax.swing.JFrame {
                 count += 1;
                 String n = map.getQryID().toString();
 
-                System.out.println("Map get query ID: " + map.getQryID());
-
                 String[] chrData = {String.valueOf(count), n, String.valueOf(map.returnAlignments().size()), String.valueOf(map.getRefStart()), String.valueOf(map.getRefEnd()), String.valueOf(map.getRefEnd() - map.getRefStart()), sv};
                 sitesTableModel.addRow(chrData);
             }
@@ -1519,7 +1518,7 @@ public class CompGenView extends javax.swing.JFrame {
             this.queryChrSize.setText(chrSize.toPlainString());
             this.queryStart.setText(this.queryPanel1.getStart().toString());
             this.queryEnd.setText(this.queryPanel1.getEnd().toString());
-            System.out.println("query start and end set" + this.queryPanel1.getStart() + " " + this.queryPanel1.getEnd());
+            //System.out.println("query start and end set " + this.queryPanel1.getStart() + " " + this.queryPanel1.getEnd());
 ////         First clear the chromosomes JTable of any previous data
             this.geneTable.setAutoCreateRowSorter(true);
             DefaultTableModel geneTableModel = (DefaultTableModel) this.geneTable.getModel();
@@ -1535,11 +1534,13 @@ public class CompGenView extends javax.swing.JFrame {
             // Returns the features from gff / gtf file
             try {
                 for (Gene gene : this.currentChr.getAnnotations()) {
+                    System.out.println("Gene in CompGenView l539: " + gene.getName() + " " + gene);
                     Double genStrt = gene.getStart();
                     Double genEnd = gene.getEnd();
                     if (((genStrt.intValue() >= start) && (genStrt.intValue() <= end)) | (genEnd <= end && genEnd >= start)) {
                         Matcher checkGene = Pattern.compile("gene").matcher(gene.getType());
                         if (checkGene.find() == true) {
+                            System.out.println("Check gene type in CompGenView l545: " + checkGene.find());
                             Double size = (gene.getEnd() - gene.getStart());
                             String[] geneData = {gene.getName(), gene.getSource(), gene.getStart().toString(), gene.getEnd().toString(), size.toString()};
                             geneTableModel.addRow(geneData);
@@ -1548,8 +1549,9 @@ public class CompGenView extends javax.swing.JFrame {
                         }
                     }
                 }
-            } catch (NullPointerException e) {
-                System.out.println(this.currentChr.getAnnotations());
+            }
+            catch (NullPointerException e) {
+                //System.out.println(this.currentChr.getAnnotations());
                 System.out.println("Chromosome " + this.currentChr.getName() + " is not annotated.");
             }
 

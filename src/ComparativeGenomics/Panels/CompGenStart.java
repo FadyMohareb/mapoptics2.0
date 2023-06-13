@@ -2160,6 +2160,7 @@ public class CompGenStart extends javax.swing.JFrame {
                 else {
                     try {
                         //            Connect to the server of the user selectedjob
+                        System.out.println("Connection to server " + this.selectedJob.getServer().getName());
                         this.channel.setServer(this.selectedJob.getServer());
                         this.channel.connectServer();
                         this.filesDownloading.setVisible(true);

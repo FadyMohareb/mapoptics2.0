@@ -70,12 +70,12 @@ public class Annot {
                 if (checkHeader.find() == true) {
                     // Check the header to have the format of the file (gff or gtf)
                     // gff matcher
-                    String gffPattern = "gff";
+                    String gffPattern = ".gff|.gff3";
                     Pattern f = Pattern.compile(gffPattern);
                     Matcher checkGff = f.matcher(row);
                     
                     // gtf matcher
-                    String gtfPattern = "gtf";
+                    String gtfPattern = ".gtf";
                     Pattern t = Pattern.compile(gtfPattern);
                     Matcher checkGtf = t.matcher(row);
                     if (checkGff.find() == true) {
@@ -85,14 +85,14 @@ public class Annot {
                         gtf = true;
                     }
                 } else { // Not a header
-                    //if ((gtf=true) || (gff3=true)){
                     if (gtf || gff3) {
                         String[] rowData = row.split("\t");
                         // First element of a gff line is the chromosome / scaffold id
                         String chr = rowData[0];
-                        Matcher checkChr = Pattern.compile("chr").matcher(chr);
+                        Matcher checkChr = Pattern.compile("chr|ch").matcher(chr);
                         // The row corresponds to a chromosome
                         if (checkChr.find() == true) {
+                            System.out.println("Annot line 95: line in gff for ch" + row);
                             String type = rowData[2]; // Type of feature (term / accession from SPFA sequence ontology)
                             // Feature is a gene
                             if ("gene".equals(type.replace(" ", ""))) {
@@ -105,19 +105,10 @@ public class Annot {
                                             Double.parseDouble(rowData[4]),
                                             rowData[8]);
                                     genes.add(newGene);
+                                    System.out.println("Annot line 107: genes added " + newGene.getName());
                                 }
                             }
                         }
-                    }
-
-                    //if (gff3 && gtf == false){
-                    // The file is neither a gff3 nor a gtf
-                    if (!gff3 && !gtf) {
-                        JOptionPane.showMessageDialog(null, "Error loading annotation file. Invalid file type!",
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                    } else {
-
                     }
                 }
             }

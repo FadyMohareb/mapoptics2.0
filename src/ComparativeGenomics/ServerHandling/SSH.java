@@ -319,6 +319,7 @@ public class SSH {
     public void runCalcBestEnz(Job job) {
         connectServer();
         String jobname = job.getName();
+        System.out.println(job.getName());
         String ref = job.getRef();
         String qry = job.getQry();
         String dir = job.getServer().getWorkingDir();

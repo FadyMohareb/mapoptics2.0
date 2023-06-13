@@ -25,7 +25,7 @@ while test $# -gt 0;
                     echo "                | |            | |                        "
                     echo "                |_|            |_|                        "
                     echo ""
-                    echo "Welcome to MapOptics fasta to xmap alignment sript"
+                    echo "Welcome to MapOptics fasta to xmap alignment script"
                     echo "Command line argumnents:"
                     echo "-h,--help"
                     echo "Brings up this help message and exits program"
@@ -150,7 +150,6 @@ elif [[ $ref == *.fasta ]]
     echo "Status: Reference Digested"  >> /home/fran/mapoptics/jobs/"$job"/log.txt;
 elif [[ $ref == *.fna ]]
   then
-    
     #generate the karyotype file
     samtools faidx "$ref"
     awk -F "\t" 'OFS=" " {print $2, $1 }' "$ref".fai > "$out"/karyotype.txt
@@ -214,6 +213,8 @@ elif [[ "${aligner}" == *"refaligner"* ]]
     cd $runBNG || exit
     
     ./runBNG compare -R $refaligner -r "$ref_folder""$ref_basename""_GCAATG_0kb_0labels.cmap" -q "$qry_folder""$qry_basename""_GCAATG_0kb_0labels.cmap" -z "$genomesize" -t 10 -m 100 -p "$job" -o "$ref_folder"
+    echo
+    echo "$genomesize"
     cd "$ref_folder || exit" || exit
     mv  "$job"".xmap" "$out"
 else
