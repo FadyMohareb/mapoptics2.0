@@ -99,7 +99,6 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
             for (XmapData map : this.chr.getAlignments()) {
                 addAlignment(map);
             }
-            System.out.println("All alignments read");
             this.repaint();
             System.out.println("Chromosome panel repainted");
         } else {
@@ -148,7 +147,7 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
         if (!chrAdded) {
             drawTextCentre(g2d, "No Chromosome has been selected, please select a chromosome.", w, h);
         } else {
-            System.out.println("chr being drawn");
+            System.out.println("chr being drawn in ChromosomePanel");
             g2d.setColor(Color.LIGHT_GRAY);
             Integer y = startY + 20 + 5;
             Double yPos = y.doubleValue();

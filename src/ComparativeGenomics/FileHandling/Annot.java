@@ -67,7 +67,7 @@ public class Annot {
                 String chrPattern = "#";
                 Pattern c = Pattern.compile(chrPattern);
                 Matcher checkHeader = c.matcher(row);
-                if (checkHeader.find() == true) {
+                if (checkHeader.find()) {
                     // Check the header to have the format of the file (gff or gtf)
                     // gff matcher
                     String gffPattern = ".gff|.gff3";
@@ -78,10 +78,10 @@ public class Annot {
                     String gtfPattern = ".gtf";
                     Pattern t = Pattern.compile(gtfPattern);
                     Matcher checkGtf = t.matcher(row);
-                    if (checkGff.find() == true) {
+                    if (checkGff.find()) {
                         gff3 = true;
                     }
-                    if (checkGtf.find() == true) {
+                    if (checkGtf.find()) {
                         gtf = true;
                     }
                 } else { // Not a header
@@ -91,21 +91,21 @@ public class Annot {
                         String chr = rowData[0];
                         Matcher checkChr = Pattern.compile("chr|ch").matcher(chr);
                         // The row corresponds to a chromosome
-                        if (checkChr.find() == true) {
-                            System.out.println("Annot line 95: line in gff for ch" + row);
+                        if (checkChr.find()) {
+                            //System.out.println("Annot line 95: line in gff for ch" + row);
                             String type = rowData[2]; // Type of feature (term / accession from SPFA sequence ontology)
                             // Feature is a gene
                             if ("gene".equals(type.replace(" ", ""))) {
                                 // Check that the chr is nuclear and not mitochondrial
                                 Matcher checkM = Pattern.compile("M").matcher(chr);
-                                if (checkM.find() == false) {
+                                if (!checkM.find()) {
                                     // Create a new gene with source, start and end, attributes
                                     Gene newGene = new Gene(chr, type, rowData[1],
                                             Double.parseDouble(rowData[3]),
                                             Double.parseDouble(rowData[4]),
                                             rowData[8]);
                                     genes.add(newGene);
-                                    System.out.println("Annot line 107: genes added " + newGene.getName());
+                                    //System.out.println("Annot line 107: genes added " + newGene.getName());
                                 }
                             }
                         }

@@ -2145,7 +2145,7 @@ public class CompGenStart extends javax.swing.JFrame {
             System.getProperty("user.dir");
             File dir = new File(System.getProperty("user.dir") + "/download/" + this.selectedJob.getName() + "/");
             if (dir.exists() && dir.isDirectory()) {
-                System.out.println("folder exists");
+                System.out.println("Download folder exists");
                 this.setVisible(false);
                 CompGenView viewResults = new CompGenView();
                 viewResults.setJob(this.selectedJob);
@@ -2233,7 +2233,7 @@ public class CompGenStart extends javax.swing.JFrame {
                     "Missing file!", JOptionPane.ERROR_MESSAGE);
         }
          */ else {
-            System.out.println(localqrycmap);
+            //System.out.println(localqrycmap);
             CompGenView viewResults = new CompGenView();
             viewResults.setData(this.localSpecies.getText(), this.localrefcmap, this.localqrycmap,
                     this.localrefkary, this.localxmap, this.localreffasta, this.localrefannot);
@@ -2499,7 +2499,7 @@ public class CompGenStart extends javax.swing.JFrame {
                 if (map == null) {
                 } else {
                     for (Map.Entry<?, ?> entry : map.entrySet()) {
-                        System.out.println(entry.getValue().toString());
+                        //System.out.println(entry.getValue().toString());
                         String[] value = entry.getValue().toString().split("=");
                         //        Work out how many jobs are present
                         int numJobs = (value.length - 1) / 16;
@@ -2765,7 +2765,7 @@ public class CompGenStart extends javax.swing.JFrame {
         this.channel.connectServer();
         ArrayList<String> result = this.channel.queryLogFile(this.selectedJob);
         for (String s : result) {
-            System.out.println("result: " + s);
+            System.out.println("Refresh status result (CompGenStart): " + s);
         }
         if (result.isEmpty()) {
             System.out.println("Log file was not found or empty.");
@@ -2774,7 +2774,7 @@ public class CompGenStart extends javax.swing.JFrame {
         } else {
             // get the latest update from the log file
             String latestStatus = result.get(result.size() - 1).split(": ")[1];
-            System.out.println(latestStatus);
+            //System.out.println(latestStatus);
             job.setStatus(latestStatus);
             return true;
         }

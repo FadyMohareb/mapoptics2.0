@@ -517,7 +517,7 @@
                               <Layout>
                                 <DimensionLayout dim="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <EmptySpace min="0" pref="887" max="32767" attributes="0"/>
+                                      <EmptySpace min="0" pref="898" max="32767" attributes="0"/>
                                   </Group>
                                 </DimensionLayout>
                                 <DimensionLayout dim="1">
@@ -539,7 +539,7 @@
                               <Layout>
                                 <DimensionLayout dim="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <EmptySpace min="0" pref="887" max="32767" attributes="0"/>
+                                      <EmptySpace min="0" pref="898" max="32767" attributes="0"/>
                                   </Group>
                                 </DimensionLayout>
                                 <DimensionLayout dim="1">
@@ -565,7 +565,7 @@
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="circosPanel1" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="jScrollPane1" pref="410" max="32767" attributes="0"/>
+                                          <Component id="jScrollPane1" pref="408" max="32767" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
@@ -683,7 +683,7 @@
                                       <Component id="qrySpeciesLabel" min="-2" max="-2" attributes="0"/>
                                       <Component id="alignerLabel" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace pref="106" max="32767" attributes="0"/>
+                                  <EmptySpace pref="115" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -880,7 +880,7 @@
                                       <Component id="jLabel13" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="chrLabel" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace pref="940" max="32767" attributes="0"/>
+                                      <EmptySpace pref="943" max="32767" attributes="0"/>
                                       <Component id="clearChrAlignmentHighlighted" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Component id="chromosomePanel1" alignment="0" max="32767" attributes="0"/>
@@ -969,7 +969,7 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" attributes="0">
                                       <Component id="jTabbedPane1" min="-2" pref="397" max="-2" attributes="0"/>
-                                      <EmptySpace min="0" pref="13" max="32767" attributes="0"/>
+                                      <EmptySpace min="0" pref="101" max="32767" attributes="0"/>
                                   </Group>
                                   <Component id="jScrollPane4" pref="0" max="32767" attributes="0"/>
                               </Group>
@@ -1088,7 +1088,7 @@
                                       <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="chrLabel2" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="0" pref="1037" max="32767" attributes="0"/>
+                                      <EmptySpace min="0" pref="1068" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>

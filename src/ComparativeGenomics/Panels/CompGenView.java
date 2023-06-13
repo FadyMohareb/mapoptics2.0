@@ -1534,23 +1534,25 @@ public class CompGenView extends javax.swing.JFrame {
             // Returns the features from gff / gtf file
             try {
                 for (Gene gene : this.currentChr.getAnnotations()) {
-                    System.out.println("Gene in CompGenView l539: " + gene.getName() + " " + gene);
+                    //System.out.println("Gene in CompGenView l539: " + gene.getName() + " " + gene);
                     Double genStrt = gene.getStart();
                     Double genEnd = gene.getEnd();
                     if (((genStrt.intValue() >= start) && (genStrt.intValue() <= end)) | (genEnd <= end && genEnd >= start)) {
                         Matcher checkGene = Pattern.compile("gene").matcher(gene.getType());
-                        if (checkGene.find() == true) {
-                            System.out.println("Check gene type in CompGenView l545: " + checkGene.find());
+                        if (Pattern.compile("gene").matcher(gene.getType()).find()) {
+                            System.out.println("GENE FOUND");
                             Double size = (gene.getEnd() - gene.getStart());
                             String[] geneData = {gene.getName(), gene.getSource(), gene.getStart().toString(), gene.getEnd().toString(), size.toString()};
                             geneTableModel.addRow(geneData);
 
                             genes.add(gene);
                         }
+                        else{
+                            System.out.println("Gene type not found (CompGenView)");
+                        }
                     }
                 }
-            }
-            catch (NullPointerException e) {
+            } catch (NullPointerException e) {
                 //System.out.println(this.currentChr.getAnnotations());
                 System.out.println("Chromosome " + this.currentChr.getName() + " is not annotated.");
             }
