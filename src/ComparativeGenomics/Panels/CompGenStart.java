@@ -229,16 +229,19 @@ public class CompGenStart extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jobDownloadingName = new javax.swing.JLabel();
         bestEnzymeDialog = new javax.swing.JDialog();
-        jButton12 = new javax.swing.JButton();
+        selectBestEnz = new javax.swing.JButton();
         bestEnz = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
         jButton13 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         bestEnzymesTable = new javax.swing.JTable();
+        LblEnzyme = new javax.swing.JLabel();
         helpPane = new javax.swing.JDialog();
         exitBtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         helpHtmlPane = new javax.swing.JEditorPane();
+        waitPanel = new javax.swing.JDialog();
+        messageLabel = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         submittedJobPane = new javax.swing.JScrollPane();
         jobsTable = new javax.swing.JTable();
@@ -1296,7 +1299,7 @@ public class CompGenStart extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(localQryCmapName))
                     .addComponent(localSpecies, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(78, Short.MAX_VALUE))
+                .addContainerGap(79, Short.MAX_VALUE))
         );
         queryFilesPanelLayout.setVerticalGroup(
             queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1333,7 +1336,7 @@ public class CompGenStart extends javax.swing.JFrame {
             .addGroup(alignmentPanelLayout.createSequentialGroup()
                 .addGap(43, 43, 43)
                 .addComponent(jLabel30)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                 .addComponent(chooseLocalXmap)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(localXmapName)
@@ -1419,10 +1422,10 @@ public class CompGenStart extends javax.swing.JFrame {
         bestEnzymeDialog.setMinimumSize(new java.awt.Dimension(384, 309));
         bestEnzymeDialog.setSize(new java.awt.Dimension(384, 309));
 
-        jButton12.setText("Select");
-        jButton12.addActionListener(new java.awt.event.ActionListener() {
+        selectBestEnz.setText("Select enzyme");
+        selectBestEnz.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton12ActionPerformed(evt);
+                selectBestEnzActionPerformed(evt);
             }
         });
 
@@ -1436,17 +1439,19 @@ public class CompGenStart extends javax.swing.JFrame {
         });
 
         bestEnzymesTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+            new Object [][][] {
             },
             new String [] {
-                "Enzyme name", "Density"
+                "Enzyme name", "Enzyme site", "Density"
             }
         ));
+        bestEnzymesTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                bestEnzymesTableMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(bestEnzymesTable);
+        this.bestEnzymesTableModel = (DefaultTableModel)bestEnzymesTable.getModel();
 
         javax.swing.GroupLayout bestEnzymeDialogLayout = new javax.swing.GroupLayout(bestEnzymeDialog.getContentPane());
         bestEnzymeDialog.getContentPane().setLayout(bestEnzymeDialogLayout);
@@ -1457,14 +1462,16 @@ public class CompGenStart extends javax.swing.JFrame {
                 .addGroup(bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
                         .addComponent(jButton13)
-                        .addGap(34, 34, 34)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel20)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(LblEnzyme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(bestEnz)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 130, Short.MAX_VALUE)
-                        .addComponent(jButton12))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(selectBestEnz))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bestEnzymeDialogLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(0, 1, Short.MAX_VALUE)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -1472,13 +1479,18 @@ public class CompGenStart extends javax.swing.JFrame {
             bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton12)
-                    .addComponent(bestEnz)
-                    .addComponent(jLabel20)
-                    .addComponent(jButton13))
+                    .addComponent(selectBestEnz)
+                    .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
+                        .addComponent(bestEnz)
+                        .addGap(0, 0, 0)
+                        .addComponent(LblEnzyme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton13)
+                    .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
+                        .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
+                        .addGap(2, 2, 2)))
                 .addContainerGap())
         );
 
@@ -1569,6 +1581,31 @@ public class CompGenStart extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(exitBtn)
                 .addContainerGap())
+        );
+
+        waitPanel.setLocationByPlatform(true);
+        waitPanel.setMinimumSize(new java.awt.Dimension(320, 190));
+        waitPanel.setSize(new java.awt.Dimension(320, 190));
+        waitPanel.setType(java.awt.Window.Type.POPUP);
+
+        messageLabel.setText("Please wait for the process execution");
+        messageLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.GroupLayout waitPanelLayout = new javax.swing.GroupLayout(waitPanel.getContentPane());
+        waitPanel.getContentPane().setLayout(waitPanelLayout);
+        waitPanelLayout.setHorizontalGroup(
+            waitPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(waitPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(messageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        waitPanelLayout.setVerticalGroup(
+            waitPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, waitPanelLayout.createSequentialGroup()
+                .addContainerGap(74, Short.MAX_VALUE)
+                .addComponent(messageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(68, 68, 68))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -2008,14 +2045,17 @@ public class CompGenStart extends javax.swing.JFrame {
         //will eventually add in user parameters here
         this.channel.runJob(this.newJob); //this sets the job as running on the server
         this.newJob = new Job();
-
-//        show the correct JFrames
-        makeCompGenJob.setVisible(false);
-        this.setVisible(true);
+        
 //        finally disconnect from the server
         this.channel.disconnectServer();
+        System.out.println("Disconnected");
 //        clean slate for the channel object
         this.channel = new SSH();
+        System.out.println("Channel cleaned");
+        
+        //Show the correct JFrames
+        makeCompGenJob.setVisible(false);
+        this.setVisible(true);
     }//GEN-LAST:event_startJobButtonActionPerformed
 
     private void saveRefURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveRefURLActionPerformed
@@ -2253,12 +2293,7 @@ public class CompGenStart extends javax.swing.JFrame {
         } else if ("".equals(this.localxmap) || this.localXmapName.getText() == null) {
             JOptionPane.showMessageDialog(null, "XMAP file cannot be empty",
                     "Missing file!", JOptionPane.ERROR_MESSAGE);
-        } /* 
-        else if ("".equals(this.localreffasta) || this.localreffasta == null) {
-            JOptionPane.showMessageDialog(null, "Reference fasta file cannot be empty",
-                    "Missing file!", JOptionPane.ERROR_MESSAGE);
-        }
-         */ else {
+        } else {
             //System.out.println(localqrycmap);
             CompGenView viewResults = new CompGenView();
             viewResults.setData(this.localSpecies.getText(), this.localrefcmap, this.localqrycmap,
@@ -2284,14 +2319,34 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void runCalcBestEnzymeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runCalcBestEnzymeActionPerformed
         try {
+            messageLabel.setText("Running best enzyme caculation...");
+            waitPanel.setVisible(true);
+            messageLabel.setVisible(true);
             //Run the calc_best_enz.sh script on the ExternalServer
             this.channel.runCalcBestEnz(this.newJob);
+            messageLabel.setText("Downloading calculation results...");
+            messageLabel.setVisible(true);
             this.channel.downloadEnzResults(this.newJob);
             
+            messageLabel.setText("Reading results and selecting best enzyme...");
+            messageLabel.setVisible(true);
+            // Array list of best enzymes
             BestEnzyme result = new BestEnzyme(System.getProperty("user.dir") + File.separator + "download" + File.separator + this.newJob.getName() + File.separator + "compare_enzymes.txt");
+            // Ad enzymes and their density to table
+            for (int i = 0; i < result.getResult().size(); i++) {
+                bestEnzymesTableModel.addRow(result.getResult().get(i));
+            }
             
+            waitPanel.setVisible(false);
+            
+            // Select enzyme with best density by default
+            tempSelectedEnzyme = result.getBestEnzyme();
+            LblEnzyme.setText(result.getBestEnzyme().getName());
             this.bestEnzymeDialog.setVisible(true);
+
         } catch (SftpException ex) {
+            waitPanel.setVisible(true);
+            messageLabel.setText("Connexion to server has failed");
             Logger.getLogger(CompGenStart.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_runCalcBestEnzymeActionPerformed
@@ -2387,13 +2442,31 @@ public class CompGenStart extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_qryAnnotFileNameActionPerformed
 
+    private void bestEnzymesTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bestEnzymesTableMouseClicked
+        Vector<String> selectedRow = this.bestEnzymesTableModel.getDataVector().elementAt(bestEnzymesTable.convertRowIndexToModel(bestEnzymesTable.getSelectedRow()));
+        String name = selectedRow.get(0);
+        String site = selectedRow.get(1);
+        LblEnzyme.setText(name);
+        tempSelectedEnzyme = new Enzyme(name, site);
+    }//GEN-LAST:event_bestEnzymesTableMouseClicked
+
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton13ActionPerformed
 
-    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton12ActionPerformed
+    private void selectBestEnzActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectBestEnzActionPerformed
+        if (this.tempSelectedEnzyme != null) {
+            this.selectedEnzyme = this.tempSelectedEnzyme;
+            setEnzymeLabel.setText(this.selectedEnzyme.getName());
+            this.newJob.setEnzyme(this.selectedEnzyme);
+            this.browseEnzymesDialog.setVisible(false);
+            this.startJobButton.setEnabled(true);
+            bestEnzymeDialog.setVisible(false);
+        } else {
+            JOptionPane.showMessageDialog(null, "You have not selected an enzyme, please select one from the table!",
+                "No enzyme selected", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_selectBestEnzActionPerformed
 
     public String checkEnzymeName(JTextField field) {
         String name = field.getText();
@@ -2812,6 +2885,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Btn_modifAlignParam;
+    private javax.swing.JLabel LblEnzyme;
     private javax.swing.JButton addNewServer;
     private javax.swing.JMenuItem addServerMenu;
     private javax.swing.JPanel alignmentPanel;
@@ -2853,7 +2927,6 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JDialog helpPane;
     private javax.swing.JTextField hostAddressField;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton13;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
@@ -2910,6 +2983,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JTextField localSpecies;
     private javax.swing.JLabel localXmapName;
     private javax.swing.JFrame makeCompGenJob;
+    private javax.swing.JLabel messageLabel;
     private javax.swing.JButton newJobRefQuery;
     private javax.swing.JDialog newServerDialog;
     private javax.swing.JButton openResults;
@@ -2935,6 +3009,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JButton refreshJobsTable;
     private javax.swing.JButton runCalcBestEnzyme;
     private javax.swing.JButton saveRefURL;
+    private javax.swing.JButton selectBestEnz;
     private javax.swing.JDialog selectServerDialog;
     private javax.swing.JTextField selectedJobField;
     private javax.swing.JPanel sendQueryGenomePanel;
@@ -2963,6 +3038,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JMenuItem uploadReference;
     private javax.swing.JTextField userJobName;
     private javax.swing.JTextField userNameField;
+    private javax.swing.JDialog waitPanel;
     private javax.swing.JTextField workingDirField;
     // End of variables declaration//GEN-END:variables
 }

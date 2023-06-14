@@ -1,8 +1,10 @@
 package ComparativeGenomics.FileHandling;
 
+import ComparativeGenomics.ServerHandling.Enzyme;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -20,7 +22,9 @@ import java.util.logging.Logger;
 public class BestEnzyme {
 
     String filepath;
-    HashMap<String, Double> result = new HashMap();
+    Enzyme bestDensity;
+    ArrayList<String[]> result = new ArrayList();
+    HashMap<String, String> listEnzymes = new HashMap();
 
     /**
      *
@@ -28,7 +32,19 @@ public class BestEnzyme {
      */
     public BestEnzyme(String filepath) {
         this.filepath = filepath;
+        // Populate HashMap
+        listEnzymes.put("GCTCTTC", "BspQI");
+        listEnzymes.put("CCTCAGC", "BbvCI");
+        listEnzymes.put("ATCGAT", "bseCI");
+        listEnzymes.put("CACGAG", "BssSI");
+        listEnzymes.put("GCAATG", "BsrDI");
+        listEnzymes.put("CCTCAGC", "BbvCI");
+        listEnzymes.put("CTTAAG", "DLE1");
+        listEnzymes.put("GAATGC", "BsmI");
+        listEnzymes.put("ATCGAT", "bseCI");
+        
         readFile();
+        calculateBest();
     }
 
     /**
@@ -44,7 +60,14 @@ public class BestEnzyme {
             while (sc.hasNextLine()) {
                 String row = sc.nextLine();
                 String[] rowData = row.split(":");
-                result.put(rowData[0], Double.valueOf(rowData[1].replaceAll(" ", "")));
+                // Density value
+                rowData[1] = rowData[1].replaceAll(" ", "");
+                String[] rowEnzyme = {"", rowData[0], rowData[1]};
+                //Add enzyme names
+                if (listEnzymes.get(rowData[0]) != null){
+                    rowEnzyme[0] = listEnzymes.get(rowData[0]);
+                }
+                result.add(rowEnzyme);
             }
             // note that Scanner suppresses exceptions
             if (sc.ioException() != null) {
@@ -68,12 +91,37 @@ public class BestEnzyme {
             }
         }
     }
+    
+    /**
+    * Calculate the best enzyme which corresponds to the higher density
+    */
+    private void calculateBest(){
+        double max = 0;
+        String bestName = "";
+        String bestSite = "";
+        // Get the maximal density enzyme among all calculated ones
+        for (String[] enz : result){
+            if (max < Double.parseDouble(enz[2])){
+                bestName = enz[0];
+                bestSite = enz[1];
+                max = Double.parseDouble(enz[2]);
+            }
+        }
+        bestDensity = new Enzyme(bestName, bestSite);
+    }
 
     /**
      *
      * @return result HashMap
      */
-    public HashMap<String, Double> getResult() {
+    public ArrayList<String[]> getResult() {
         return this.result;
+    }
+    
+    /**
+     * @return Enzyme with highest density
+     */
+    public Enzyme getBestEnzyme(){
+        return this.bestDensity;
     }
 }
