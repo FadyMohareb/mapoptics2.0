@@ -1,6 +1,5 @@
 package ComparativeGenomics.Panels;
 
-
 import ComparativeGenomics.FileHandling.DataHandling.XmapData;
 import ComparativeGenomics.FileHandling.DataHandling.Alignment;
 import ComparativeGenomics.FileHandling.DataHandling.Gene;
@@ -37,6 +36,7 @@ import org.knowm.xchart.style.Styler;
  * @author franpeters
  */
 public class CompGenView extends javax.swing.JFrame {
+
     private Alignment alignment;
     private Genome refGenome;
 //     private Genome qryGenome;
@@ -56,124 +56,139 @@ public class CompGenView extends javax.swing.JFrame {
 //    private Fasta qryFasta;
     private Annot refAnnot;
 //    private Annot qryAnnot;
+
     /**
      * Creates new form GenomeView
      */
     public CompGenView() {
         initComponents();
-        
+
     }
+
     /**
      * Method for loading a local alignment jobs' results
+     *
      * @param refOrg
      * @param cmapref
      * @param cmapqry
      * @param refkary
      * @param xmapfile
      * @param reffasta
-     * @param refannot 
+     * @param refannot
      */
-    public void setData(String refOrg,String cmapref, String cmapqry, 
-                        String refkary, String xmapfile, String reffasta, 
-                        String refannot){
+    public void setData(String refOrg, String cmapref, String cmapqry,
+            String refkary, String xmapfile, String reffasta,
+            String refannot) {
         this.parsingDialog.setVisible(true);
         jobNameLabel.setText("Local Job");
         refGenomeName = refOrg;
-//        String qryGenomeName = job.getQryOrg();
-        cmapRef = new Cmap(cmapref);
 
+        // cmap files are parsed
+        cmapRef = new Cmap(cmapref);
         cmapQry = new Cmap(cmapqry);
 
+        // Karyotype file is parsed
         refKary = new Karyotype(refkary);
-//       qryKary = new Karyotype(System.getProperty("user.dir")+"/download/"+job.getName()+File.separator+"qry_karyotype.txt");
+
+        // XMAP file is parsed
         xmap = new Xmap(xmapfile);
 
-        refFasta=new Fasta();
-//        Fasta qryFasta=new Fasta();
+        // FASTA file is parsed
+        refFasta = new Fasta();
+
+        // Annotation file is parsed
         refAnnot = new Annot(refannot);
+        
         populateData();
     }
-    
-    public void setJob(Job j){
-        this.job=j;
+
+    public void setJob(Job j) {
+        this.job = j;
         this.parsingDialog.setVisible(true);
-        
+
         jobNameLabel.setText(job.getName());
         enzymeLabel.setText(job.getEnz().getName());
         refSpeciesLabel.setText(job.getRefOrg());
         qrySpeciesLabel.setText(job.getQryOrg());
         alignerLabel.setText(job.getPipeline());
-        
+
         refGenomeName = job.getRefOrg();
-//        String qryGenomeName = job.getQryOrg();
-        cmapRef = new Cmap(System.getProperty("user.dir")+"/download/"+job.getName()+File.separator+job.getName()+"_ref.cmap");
 
-        cmapQry = new Cmap(System.getProperty("user.dir")+"/download/"+job.getName()+File.separator+job.getName()+"_qry.cmap");
+        String refCmapPath = System.getProperty("user.dir") + File.separator + "download" + File.separator + job.getName() + File.separator + job.getName() + "_ref.cmap";
+        String qryCmapPath = System.getProperty("user.dir") + File.separator + "download" + File.separator + job.getName() + File.separator + job.getName() + "_qry.cmap";
+        String karyPath = System.getProperty("user.dir") + File.separator + "download" + File.separator + job.getName() + File.separator + "karyotype.txt";
+        String xmapPath = System.getProperty("user.dir") + File.separator + "download" + File.separator + job.getName() + File.separator + job.getName() + ".xmap";
 
-        refKary = new Karyotype(System.getProperty("user.dir")+"/download/"+job.getName()+File.separator+"ref_karyotype.txt");
-//        Karyotype qryKary = new Karyotype(System.getProperty("user.dir")+"/download/"+job.getName()+File.separator+"qry_karyotype.txt");
-        xmap = new Xmap(System.getProperty("user.dir")+"/download/"+job.getName()+File.separator+job.getName()+".xmap");
-
-        refFasta=new Fasta();
-//        qryFasta=new Fasta();
-        refAnnot = new Annot(this.job.getRefAnnot());
-
-//        qryAnnot = new Annot(this.job.getQryAnnot());
+        // Cmap files are parsed
+        cmapRef = new Cmap(refCmapPath);
+        cmapQry = new Cmap(qryCmapPath);
         
-        this.qryCmap=cmapQry;
-
+        // Karyotype file is parsed
+        refKary = new Karyotype(karyPath);
+        
+        // Xmap file is parsed
+        xmap = new Xmap(xmapPath);
+        
+        // Fasta and annotation files are parsed
+        refFasta = new Fasta();
+        
+        refAnnot = new Annot(this.job.getRefAnnot());
         populateData();
     }
-    
-    private void populateData(){
+
+    private void populateData() {
         xmap.setRefCmap(cmapRef);
         xmap.setQryCmap(cmapQry);
+
+        // Set minimum InDel size for SV detection
         xmap.detectSVs(500);
-        this.refGenome = new Genome(refGenomeName,cmapRef,refKary,refFasta,refAnnot);
-      
-//        this.qryGenome = new Genome(qryGenomeName,cmapQry,qryKary,qryFasta,qryAnnot);
-        
-        this.alignment= new Alignment(this.refGenome,cmapQry,xmap);
-        
-        this.chromosomePanel1.setQueryCmap(qryCmap);
-        this.genomePanel1.setAlignment(this.alignment,"reference");
+
+        // Store reference genome
+        this.refGenome = new Genome(refGenomeName, cmapRef, refKary, refFasta, refAnnot);
+
+        // Store alignments files
+        this.alignment = new Alignment(this.refGenome, cmapQry, xmap);
+
+        // Pass information to chromosome panel
+        this.chromosomePanel1.setQueryCmap(cmapQry);
+        this.genomePanel1.setAlignment(this.alignment, "reference");
         this.genomePanel1.repaint();
         this.chromosomeChartPanel1.plotGenome(refGenome);
         this.alignmentsPerChromosomeChartPanel1.plotGenome(refGenome);
         this.queryPanel1.setRefOrg(this.refGenome.getName());
         this.queryPanel1.setXmap(this.alignment.getXmap());
-        this.circosPanel1.setKaryotype(refKary,this.alignment);
+        this.circosPanel1.setKaryotype(refKary, this.alignment);
 
-        DefaultTableModel chrTable = (DefaultTableModel)this.chromosomeTable.getModel();
+        DefaultTableModel chrTable = (DefaultTableModel) this.chromosomeTable.getModel();
         this.chromosomeTable.setAutoCreateRowSorter(true);
 //         First clear the chromosomes JTable of any previous data
         chrTable.setRowCount(0);
         chrTable.setColumnCount(0);
-        
+
         String[] columnNames = {"Chromosome", "Size"};
         chrTable.setColumnIdentifiers(columnNames); //Set the column names of this table
-        
-        for (Map.Entry<Integer, Chromosome> entry :  this.alignment.getRefGenome().getChromosomes().entrySet()) {
+
+        for (Map.Entry<Integer, Chromosome> entry : this.alignment.getRefGenome().getChromosomes().entrySet()) {
             Chromosome chr = entry.getValue();
-            String[] chrData ={chr.getName(), String.valueOf(BigInteger.valueOf(chr.getSize().intValue()))};
+            String[] chrData = {chr.getName(), String.valueOf(BigInteger.valueOf(chr.getSize().intValue()))};
             chrTable.addRow(chrData);
         }
 
         this.parsingDialog.setVisible(false);
         this.setVisible(true);
-        
-        DefaultTableModel transTableModel = (DefaultTableModel)this.translocationTable.getModel();
+
+        DefaultTableModel transTableModel = (DefaultTableModel) this.translocationTable.getModel();
         this.translocationTable.setAutoCreateRowSorter(true);
 //         First clear the chromosomes JTable of any previous data
-        transTableModel .setRowCount(0);
-        transTableModel .setColumnCount(0);
-        
+        transTableModel.setRowCount(0);
+        transTableModel.setColumnCount(0);
+
         String[] columnNamesTrans = {"Chromosome 1", "Chromosome 2"};
         transTableModel.setColumnIdentifiers(columnNamesTrans); //Set the column names of this table
-        
-        for (Translocation t :  this.alignment.getTranslocations()) {
-            
-            String[] tData ={t.getRefChr1Name(),t.getRefChr2Name()};
+
+        for (Translocation t : this.alignment.getTranslocations()) {
+
+            String[] tData = {t.getRefChr1Name(), t.getRefChr2Name()};
             transTableModel.addRow(tData);
         }
         this.parsingDialog.setVisible(false);
@@ -322,6 +337,9 @@ public class CompGenView extends javax.swing.JFrame {
         );
 
         changePlotStyleDialog.setTitle("Choose Plot Style");
+        changePlotStyleDialog.setLocationByPlatform(true);
+        changePlotStyleDialog.setPreferredSize(new java.awt.Dimension(220, 80));
+        changePlotStyleDialog.setSize(new java.awt.Dimension(213, 75));
 
         buttonGroup1.add(ggplotButton);
         ggplotButton.setSelected(true);
@@ -345,10 +363,10 @@ public class CompGenView extends javax.swing.JFrame {
         changePlotStyleDialogLayout.setHorizontalGroup(
             changePlotStyleDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(changePlotStyleDialogLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(changePlotStyleDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(setChartStyle)
                     .addGroup(changePlotStyleDialogLayout.createSequentialGroup()
-                        .addContainerGap()
                         .addComponent(ggplotButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(matlabButton)
@@ -669,7 +687,7 @@ public class CompGenView extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 711, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         genomeViewTabPane.addTab("Genome View", jPanel1);
@@ -770,7 +788,7 @@ public class CompGenView extends javax.swing.JFrame {
                 .addGroup(jLayeredPane4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jLayeredPane4Layout.createSequentialGroup()
                         .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 397, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 11, Short.MAX_VALUE))
+                        .addGap(0, 13, Short.MAX_VALUE))
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -916,7 +934,7 @@ public class CompGenView extends javax.swing.JFrame {
                     .addComponent(incrementSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(increaseRange)
                     .addComponent(jLabel15))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(queryStart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1255,13 +1273,13 @@ public class CompGenView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void exitProgramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitProgramActionPerformed
-      this.setVisible(false);
-      CompGenStart view = new CompGenStart();
-      view.setVisible(true);
+        this.setVisible(false);
+        CompGenStart view = new CompGenStart();
+        view.setVisible(true);
     }//GEN-LAST:event_exitProgramActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-     System.exit(0);
+        System.exit(0);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void exportChrViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportChrViewActionPerformed
@@ -1273,15 +1291,15 @@ public class CompGenView extends javax.swing.JFrame {
     }//GEN-LAST:event_exportQryViewActionPerformed
 
     private void changePlotStyleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changePlotStyleActionPerformed
-       this.changePlotStyleDialog.setVisible(true);
+        this.changePlotStyleDialog.setVisible(true);
     }//GEN-LAST:event_changePlotStyleActionPerformed
 
     private void exportAlignmentsTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportAlignmentsTableActionPerformed
-       exportTables(this.chrAlignTable);
+        exportTables(this.chrAlignTable);
     }//GEN-LAST:event_exportAlignmentsTableActionPerformed
 
     private void exportIndelsTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportIndelsTableActionPerformed
-       exportTables(this.variantTable);
+        exportTables(this.variantTable);
     }//GEN-LAST:event_exportIndelsTableActionPerformed
 
     private void exportGenesTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportGenesTableActionPerformed
@@ -1293,11 +1311,11 @@ public class CompGenView extends javax.swing.JFrame {
     }//GEN-LAST:event_exportTranslocationsTableActionPerformed
 
     private void exportCircosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportCircosActionPerformed
-       exportImage(this.circosPanel1);
+        exportImage(this.circosPanel1);
     }//GEN-LAST:event_exportCircosActionPerformed
 
     private void exportGraphAlignmentsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportGraphAlignmentsActionPerformed
-       exportImage(this.alignmentsPerChromosomeChartPanel1);
+        exportImage(this.alignmentsPerChromosomeChartPanel1);
     }//GEN-LAST:event_exportGraphAlignmentsActionPerformed
 
     private void exportGraphSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportGraphSVActionPerformed
@@ -1309,15 +1327,15 @@ public class CompGenView extends javax.swing.JFrame {
     }//GEN-LAST:event_genomeViewTabPaneStateChanged
 
     private void geneTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_geneTableMousePressed
-        JTable source = (JTable)evt.getSource();
-        int row = source.rowAtPoint( evt.getPoint() );
+        JTable source = (JTable) evt.getSource();
+        int row = source.rowAtPoint(evt.getPoint());
         this.queryPanel1.highlightGene(genes.get(row));
         this.queryPanel1.repaint();
     }//GEN-LAST:event_geneTableMousePressed
 
     private void variantTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_variantTableMousePressed
-        JTable source = (JTable)evt.getSource();
-        int row = source.rowAtPoint( evt.getPoint() );
+        JTable source = (JTable) evt.getSource();
+        int row = source.rowAtPoint(evt.getPoint());
         Indel indel = this.indels.get(row);
 
         String s = indel.getStart().toString();
@@ -1339,7 +1357,7 @@ public class CompGenView extends javax.swing.JFrame {
         this.queryPanel1.setRange(Integer.valueOf(this.queryStart.getText()), Integer.valueOf(this.queryEnd.getText()));
 
         this.geneTable.setAutoCreateRowSorter(true);
-        DefaultTableModel geneTableModel = (DefaultTableModel)this.geneTable.getModel();
+        DefaultTableModel geneTableModel = (DefaultTableModel) this.geneTable.getModel();
 
         geneTableModel.setRowCount(0);
         geneTableModel.setColumnCount(0);
@@ -1350,14 +1368,14 @@ public class CompGenView extends javax.swing.JFrame {
         Integer start = this.queryPanel1.getStart();
         Integer end = this.queryPanel1.getEnd();
 
-        for (Gene gene: this.currentChr.getAnnotations()){
+        for (Gene gene : this.currentChr.getAnnotations()) {
             Double genStrt = gene.getStart();
             Double genEnd = gene.getEnd();
-            if(((genStrt.intValue()>=start)&&(genStrt.intValue()<=end))|(genEnd<=end&&genEnd>=start)){
+            if (((genStrt.intValue() >= start) && (genStrt.intValue() <= end)) | (genEnd <= end && genEnd >= start)) {
                 Matcher checkGene = Pattern.compile("gene").matcher(gene.getType());
-                if (checkGene.find() == true){
-                    Double size = (gene.getEnd()-gene.getStart());
-                    String[] geneData ={gene.getName(),gene.getSource(),gene.getStart().toString(),gene.getEnd().toString(),size.toString()};
+                if (checkGene.find() == true) {
+                    Double size = (gene.getEnd() - gene.getStart());
+                    String[] geneData = {gene.getName(), gene.getSource(), gene.getStart().toString(), gene.getEnd().toString(), size.toString()};
                     geneTableModel.addRow(geneData);
                     genes.add(gene);
                 }
@@ -1367,35 +1385,34 @@ public class CompGenView extends javax.swing.JFrame {
 
     private void increaseRangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_increaseRangeActionPerformed
         String increment = this.incrementSize.getText();
-        if (Integer.valueOf(this.queryEnd.getText())+Integer.valueOf(increment)<this.currentChr.getSize()){
-            this.queryStart.setText(String.valueOf(Integer.valueOf(this.queryStart.getText())+Integer.valueOf(increment)));
-            this.queryEnd.setText(String.valueOf(Integer.valueOf(this.queryEnd.getText())+Integer.valueOf(increment)));
+        if (Integer.valueOf(this.queryEnd.getText()) + Integer.valueOf(increment) < this.currentChr.getSize()) {
+            this.queryStart.setText(String.valueOf(Integer.valueOf(this.queryStart.getText()) + Integer.valueOf(increment)));
+            this.queryEnd.setText(String.valueOf(Integer.valueOf(this.queryEnd.getText()) + Integer.valueOf(increment)));
         }
     }//GEN-LAST:event_increaseRangeActionPerformed
 
     private void decreaseRangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_decreaseRangeActionPerformed
         String increment = this.incrementSize.getText();
-        if (Integer.valueOf(this.queryStart.getText())>Integer.valueOf(increment)){
-            this.queryStart.setText(String.valueOf(Integer.valueOf(this.queryStart.getText())-Integer.valueOf(increment)));
+        if (Integer.valueOf(this.queryStart.getText()) > Integer.valueOf(increment)) {
+            this.queryStart.setText(String.valueOf(Integer.valueOf(this.queryStart.getText()) - Integer.valueOf(increment)));
         }
     }//GEN-LAST:event_decreaseRangeActionPerformed
 
     private void chrAlignTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chrAlignTableMousePressed
-        JTable source = (JTable)evt.getSource();
-        int row = source.rowAtPoint( evt.getPoint() );
-        try{
+        JTable source = (JTable) evt.getSource();
+        int row = source.rowAtPoint(evt.getPoint());
+        try {
             XmapData map = currentChr.getAlignments().get(row);
-            if (map != null){
+            if (map != null) {
                 this.chromosomePanel1.selectAlignment(map.getID());
-            }
-            else{
+            } else {
                 JOptionPane.showMessageDialog(null,
-                    "There are no alignments to this chromosome",
-                    "No alignments",
-                    JOptionPane.ERROR_MESSAGE);
+                        "There are no alignments to this chromosome",
+                        "No alignments",
+                        JOptionPane.ERROR_MESSAGE);
             }
-        }catch(NullPointerException e){
-            System.out.println("map for row " + row + " is null :(");
+        } catch (NullPointerException e) {
+            System.out.println("Map for row " + row + " is null :(");
         }
     }//GEN-LAST:event_chrAlignTableMousePressed
 
@@ -1405,25 +1422,26 @@ public class CompGenView extends javax.swing.JFrame {
 
     private void chromosomeTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chromosomeTableMouseClicked
 
-        JTable source = (JTable)evt.getSource();
-        int row = source.rowAtPoint(evt.getPoint())+1;
+        JTable source = (JTable) evt.getSource();
+        // Get the number of the selected chromosome
+        int row = source.rowAtPoint(evt.getPoint()) + 1;
         chooseChromosome(row);
         this.genomeViewTabPane.setSelectedIndex(1);
     }//GEN-LAST:event_chromosomeTableMouseClicked
 
     private void setChartStyleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setChartStyleActionPerformed
-        if(this.ggplotButton.isSelected()){
+        if (this.ggplotButton.isSelected()) {
             changePlotStyles("ggplot");
         }
-        if(this.matlabButton.isSelected()){
+        if (this.matlabButton.isSelected()) {
             changePlotStyles("matlab");
         }
-        if(this.xchartButton.isSelected()){
+        if (this.xchartButton.isSelected()) {
             changePlotStyles("xchart");
         }
     }//GEN-LAST:event_setChartStyleActionPerformed
-    private void changePlotStyles(String style){
-        if ("ggplot".equals(style)){
+    private void changePlotStyles(String style) {
+        if ("ggplot".equals(style)) {
             this.alignmentsOnChromosomeChartPanel1.setStyle(Styler.ChartTheme.GGPlot2);
             this.alignmentsOnChromosomeChartPanel1.repaint();
             this.alignmentsPerChromosomeChartPanel1.setStyle(Styler.ChartTheme.GGPlot2);
@@ -1431,7 +1449,7 @@ public class CompGenView extends javax.swing.JFrame {
             this.chromosomeChartPanel1.setStyle(Styler.ChartTheme.GGPlot2);
             this.chromosomeChartPanel1.repaint();
         }
-        if ("matlab".equals(style)){
+        if ("matlab".equals(style)) {
             this.alignmentsOnChromosomeChartPanel1.setStyle(Styler.ChartTheme.Matlab);
             this.alignmentsOnChromosomeChartPanel1.repaint();
             this.alignmentsPerChromosomeChartPanel1.setStyle(Styler.ChartTheme.Matlab);
@@ -1439,7 +1457,7 @@ public class CompGenView extends javax.swing.JFrame {
             this.chromosomeChartPanel1.setStyle(Styler.ChartTheme.Matlab);
             this.chromosomeChartPanel1.repaint();
         }
-        if ("xchart".equals(style)){
+        if ("xchart".equals(style)) {
             this.alignmentsOnChromosomeChartPanel1.setStyle(Styler.ChartTheme.XChart);
             this.alignmentsOnChromosomeChartPanel1.repaint();
             this.alignmentsPerChromosomeChartPanel1.setStyle(Styler.ChartTheme.XChart);
@@ -1448,112 +1466,114 @@ public class CompGenView extends javax.swing.JFrame {
             this.chromosomeChartPanel1.repaint();
         }
     }
-    
-    private void chooseChromosome(Integer x){
+
+    private void chooseChromosome(Integer x) {
         genes.clear();
 //       this.alignmentsOnChromosomeChartPanel1 = new AlignmentsOnChromosomeChartPanel();
 //       this.alignmentsPerChromosomeChartPanel1 = new AlignmentsPerChromosomeChartPanel();
-       this.chromosomeChartPanel1 = new ChromosomeChartPanel();
-       
-        currentChr= this.alignment.getRefGenome().getChromosomes().get(x);
-        
-        if (currentChr!=null){
-            
+        this.chromosomeChartPanel1 = new ChromosomeChartPanel();
+
+        currentChr = this.alignment.getRefGenome().getChromosomes().get(x);
+
+        if (currentChr != null) {
 //            this.alignmentsOnChromosomeChartPanel1.plotCounts(currentChr);
             chrLabel.setText(currentChr.getName());
             chrLabel2.setText(currentChr.getName());
-            this.queryPanel1.setChr(currentChr);  
+            this.queryPanel1.setChr(currentChr);
             this.queryStart.setText(this.queryPanel1.getStart().toString());
             this.queryEnd.setText(this.queryPanel1.getEnd().toString());
             this.chromosomePanel1.setChr(currentChr);
-            
-//        next need to update the sites table
-        DefaultTableModel sitesTableModel = (DefaultTableModel)this.chrAlignTable.getModel();
-        this.chrAlignTable.setAutoCreateRowSorter(true);
-//         First clear the chromosomes JTable of any previous data
-        sitesTableModel.setRowCount(0);
-        sitesTableModel.setColumnCount(0);
-        
-        String[] columnNames = {"Alignment #","Query Chr", "Number matched Sites","Start","End","Size", "SV detected"};
-        //the data is within the third line and beyond for gff files
-        sitesTableModel.setColumnIdentifiers(columnNames); //Set the column names of this table
 
-        Integer count = 0;
-        for (XmapData map : currentChr.getAlignments()) {
-           String sv;
-            if (map.numIndels()>0){
-                sv = "true";
-            }
-            else{
-                sv = "false";
-            }
-            count += 1;
-            String n = map.getQryID().toString();
+//          next need to update the sites table
+            DefaultTableModel sitesTableModel = (DefaultTableModel) this.chrAlignTable.getModel();
+            this.chrAlignTable.setAutoCreateRowSorter(true);
+//          First clear the chromosomes JTable of any previous data
+            sitesTableModel.setRowCount(0);
+            sitesTableModel.setColumnCount(0);
 
-            String[] chrData ={String.valueOf(count),n,String.valueOf(map.returnAlignments().size()),String.valueOf(map.getRefStart()),String.valueOf(map.getRefEnd()),String.valueOf(map.getRefEnd()-map.getRefStart()),sv};
-            sitesTableModel.addRow(chrData);
-            }       
-        BigDecimal chrSize = new BigDecimal(currentChr.getSize());
-        this.queryChrSize.setText(chrSize.toPlainString());
-        this.queryStart.setText(this.queryPanel1.getStart().toString());
-        this.queryEnd.setText(this.queryPanel1.getEnd().toString());
-       System.out.println("query start and end set" + this.queryPanel1.getStart()+" "+this.queryPanel1.getEnd());
+            String[] columnNames = {"Alignment #", "Query Chr", "Number matched Sites", "Start", "End", "Size", "SV detected"};
+            //the data is within the third line and beyond for gff files
+            sitesTableModel.setColumnIdentifiers(columnNames); //Set the column names of this table
+
+            Integer count = 0;
+            for (XmapData map : currentChr.getAlignments()) {
+                String sv;
+                if (map.numIndels() > 0) {
+                    sv = "true";
+                } else {
+                    sv = "false";
+                }
+                count += 1;
+                String n = map.getQryID().toString();
+
+                String[] chrData = {String.valueOf(count), n, String.valueOf(map.returnAlignments().size()), String.valueOf(map.getRefStart()), String.valueOf(map.getRefEnd()), String.valueOf(map.getRefEnd() - map.getRefStart()), sv};
+                sitesTableModel.addRow(chrData);
+            }
+            BigDecimal chrSize = new BigDecimal(currentChr.getSize());
+            this.queryChrSize.setText(chrSize.toPlainString());
+            this.queryStart.setText(this.queryPanel1.getStart().toString());
+            this.queryEnd.setText(this.queryPanel1.getEnd().toString());
 ////         First clear the chromosomes JTable of any previous data
-        this.geneTable.setAutoCreateRowSorter(true);
-        DefaultTableModel geneTableModel = (DefaultTableModel)this.geneTable.getModel();
-        
-        geneTableModel.setRowCount(0);
-        geneTableModel.setColumnCount(0);
-        
-        String[] geneColumnNames = {"Name", "Source", "Start", "End", "Size"};
-        geneTableModel.setColumnIdentifiers(geneColumnNames); //Set the column names of this table
-        
-        Integer start = this.queryPanel1.getStart();
-        Integer end = this.queryPanel1.getEnd();
+            this.geneTable.setAutoCreateRowSorter(true);
+            DefaultTableModel geneTableModel = (DefaultTableModel) this.geneTable.getModel();
 
-        for (Gene gene: this.currentChr.getAnnotations()){
-                Double genStrt = gene.getStart();
-                Double genEnd = gene.getEnd();
-                if(((genStrt.intValue()>=start)&&(genStrt.intValue()<=end))|(genEnd<=end&&genEnd>=start)){
-                    Matcher checkGene = Pattern.compile("gene").matcher(gene.getType());
-                    if (checkGene.find() == true){
-                        Double size = (gene.getEnd()-gene.getStart());
-                        String[] geneData ={gene.getName(),gene.getSource(),gene.getStart().toString(),gene.getEnd().toString(),size.toString()};
-                        geneTableModel.addRow(geneData);
-                        
-                        genes.add(gene);
+            geneTableModel.setRowCount(0);
+            geneTableModel.setColumnCount(0);
+
+            String[] geneColumnNames = {"Name", "Source", "Start", "End", "Size"};
+            geneTableModel.setColumnIdentifiers(geneColumnNames); //Set the column names of this table
+
+            Integer start = this.queryPanel1.getStart();
+            Integer end = this.queryPanel1.getEnd();
+            // Returns the features from gff / gtf file
+            try {
+                for (Gene gene : this.currentChr.getAnnotations()) {
+                    Double genStrt = gene.getStart();
+                    Double genEnd = gene.getEnd();
+                    if (((genStrt.intValue() >= start) && (genStrt.intValue() <= end)) | (genEnd <= end && genEnd >= start)) {
+                        Matcher checkGene = Pattern.compile("gene").matcher(gene.getType());
+                        if (Pattern.compile("gene").matcher(gene.getType()).find()) {
+                            Double size = (gene.getEnd() - gene.getStart());
+                            String[] geneData = {gene.getName(), gene.getSource(), gene.getStart().toString(), gene.getEnd().toString(), size.toString()};
+                            geneTableModel.addRow(geneData);
+
+                            genes.add(gene);
+                        } else {
+                            System.out.println("Gene type not found (CompGenView)");
+                        }
                     }
                 }
+            } catch (NullPointerException e) {
+                System.out.println("Chromosome " + this.currentChr.getName() + " is not annotated.");
             }
-
 
 //        
-        DefaultTableModel variantTableModel = (DefaultTableModel)this.variantTable.getModel();
-        variantTableModel.setRowCount(0);
-        variantTableModel.setColumnCount(0);
-        this.variantTable.setAutoCreateRowSorter(true);
-        String[] columnNames2 = {"Chr", "Variant Type", "Query ID", "Size", "Number Genes"};
-        variantTableModel.setColumnIdentifiers(columnNames2); //Set the column names of this table
+            DefaultTableModel variantTableModel = (DefaultTableModel) this.variantTable.getModel();
+            variantTableModel.setRowCount(0);
+            variantTableModel.setColumnCount(0);
+            this.variantTable.setAutoCreateRowSorter(true);
+            String[] columnNames2 = {"Chr", "Variant Type", "Query ID", "Size", "Number Genes"};
+            variantTableModel.setColumnIdentifiers(columnNames2); //Set the column names of this table
 
-        int c =0;
-        
-                for (Indel indel:currentChr.getIndels()){
-                     indels.add(indel);
-                     String[] chrData ={currentChr.getName(),indel.getType(),
-                                        indel.getQryID().toString(),indel.getSize().toString(),
-                                        indel.numberGenes().toString()};
-                     variantTableModel.addRow(chrData);
-                }
-                c++;
+            int c = 0;
+
+            for (Indel indel : currentChr.getIndels()) {
+                indels.add(indel);
+                String[] chrData = {currentChr.getName(), indel.getType(),
+                    indel.getQryID().toString(), indel.getSize().toString(),
+                    indel.numberGenes().toString()};
+                variantTableModel.addRow(chrData);
             }
+            c++;
+        }
 
     }
 
     /**
      * @author Josephine Burgin
-     * @param saveTable 
+     * @param saveTable
      */
-    private void exportTables (JTable saveTable) {
+    private void exportTables(JTable saveTable) {
         // Table to be exported to CSV
         if (saveTable.getRowCount() != 0) {
             // Saves Query Contig table from Reference View to CSV output
@@ -1604,16 +1624,17 @@ public class CompGenView extends javax.swing.JFrame {
                     e.printStackTrace();
                 }
             }
-        }else {
-            JOptionPane.showMessageDialog(this, "Table is not populated please select " +
-                    "a reference", "Error in Export Table", JOptionPane.ERROR_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Table is not populated please select "
+                    + "a reference", "Error in Export Table", JOptionPane.ERROR_MESSAGE);
         }
     }
+
     /**
      * @author Joesphine Burgin
-     * @param panel 
+     * @param panel
      */
-    private void exportImage(JPanel panel){
+    private void exportImage(JPanel panel) {
         FileDialog fileBox;
         fileBox = new FileDialog(this, "Save PDF of reference alignment view", FileDialog.SAVE);
         fileBox.setVisible(true);
@@ -1623,13 +1644,13 @@ public class CompGenView extends javax.swing.JFrame {
             String chosenFile = fileBox.getFile();
 
             try {
-                PDFDocument doc = new PDFDocument ();
+                PDFDocument doc = new PDFDocument();
 
                 // Use a Paper instance to change page dimensions, some plots can be long
                 Paper p = new Paper();
                 p.setSize(panel.getWidth(), panel.getHeight());
                 p.setImageableArea(0, 0, panel.getWidth(), panel.getHeight());
-                PageFormat pf = new PageFormat ();
+                PageFormat pf = new PageFormat();
                 pf.setPaper(p);
                 PDFPage page = doc.createPage(pf);
                 doc.addPage(page);

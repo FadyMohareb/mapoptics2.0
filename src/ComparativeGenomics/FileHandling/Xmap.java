@@ -95,6 +95,7 @@ public class Xmap {
                 while (sc.hasNextLine()) {
                     ArrayList<Pair> align = new ArrayList();
                     String row = sc.nextLine();
+                    // Parse only rows that are not headers
                     String chrPattern = "#";
                     Pattern c = Pattern.compile(chrPattern);  
                     Matcher checkHeader = c.matcher(row);
@@ -109,14 +110,15 @@ public class Xmap {
                         Double qen = Double.parseDouble(rowData[4]);
                         Double rst = Double.parseDouble(rowData[5]);
                         Double ren = Double.parseDouble(rowData[6]);
+                        // Orientation: + is true, - is false
                         Boolean ori = true;
                         if ("-".equals(rowData[7])){
                             ori = false;
                         }
-                        Double con = Double.parseDouble(rowData[8]);
-                        String hit = rowData[9];
-                        Double qle = Double.parseDouble(rowData[10]);
-                        Double rle = Double.parseDouble(rowData[11]);
+                        Double con = Double.parseDouble(rowData[8]); // Confidence
+                        String hit = rowData[9]; //Pseudo cigar string
+                        Double qle = Double.parseDouble(rowData[10]); //Length of query map
+                        Double rle = Double.parseDouble(rowData[11]); //Length of ref map
                         String alignment = rowData[13].replace(")(",";").replace("(","").replace(")","");
                         String[] alin = alignment.split(";");
                         for (String a : alin) {
@@ -124,10 +126,13 @@ public class Xmap {
                             Pair pair = new Pair(Integer.valueOf(s[0]), Integer.valueOf(s[1]));
                             align.add(pair);
                         }
+                        // Save parsed information into a XmapData object
                         XmapData map = new XmapData(xmapID,qid,rid,qst,qen,
                                           rst,ren,ori,con,
                                           hit,qle,rle,align);
+                        // Save all maps (ie line of xmap file) into and ArrayList object
                         this.allXmaps.put(xmapID, map);
+                        // Reference / query id and their values (list of map) are saved into a HashMap
                         if (this.xmap.containsKey(rid)) {
                                 this.xmap.get(rid).add(map);
                         }else{
@@ -164,7 +169,7 @@ public class Xmap {
                                 if (value.size()>1){
                                     boolean allEqual = value.stream().distinct().count() <= 1;
                                     if (!allEqual){
-                                        System.out.println("possible translocation found");
+                                        // Possible translocation found
                                         this.potentialTranslocations.put(key, value);
                                     }
                                 }

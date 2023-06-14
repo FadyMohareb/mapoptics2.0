@@ -22,7 +22,8 @@ import org.jfree.chart.plot.*;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.ui.RectangleAnchor;
+//import org.jfree.ui.RectangleAnchor;
+import org.jfree.chart.ui.RectangleAnchor;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -71,14 +72,15 @@ public class MapOptics extends JFrame {
     private static final String EMPTY_STRING = "";
     private static final int DEFAULT = 0;
     private static final int LAST_SAVED = 1;
+    
+    //Exit button
+    private javax.swing.JButton exitVerifyAssembly;
 
     public MapOptics() {
         System.setProperty("sun.java2d.opengl", "true");
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setName("MapOptics");
         // this.setDefaultCloseOperation(closeWindow());
-
-        
 
         model = new MapOpticsModel();
         detectSV = new DetectSV(model);
@@ -362,6 +364,15 @@ public class MapOptics extends JFrame {
         JMenuItem confidenceSet = new JMenuItem();
         JMenuItem coverageSet = new JMenuItem();
         JMenuItem chimqualSet = new JMenuItem();
+        exitVerifyAssembly = new javax.swing.JButton();
+        
+        // Button to exit the view verify genome assembly and go back to start screen
+        exitVerifyAssembly.setText("Exit");
+        exitVerifyAssembly.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitVerifyAssemblyActionPerformed(evt);
+            }
+        });
 
         fileLoader.setTitle("Load Maps");
         fileLoader.setLocation(new java.awt.Point(100, 100));
@@ -1004,7 +1015,7 @@ public class MapOptics extends JFrame {
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, referenceGraphPanelLayout.createSequentialGroup()
                                 .addComponent(jLabel16)
                                 .addGap(0, 1344, Short.MAX_VALUE))
-                        .addGroup(referenceGraphPanelLayout.createSequentialGroup()
+                         .addGroup(referenceGraphPanelLayout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(labelDensityGraph, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addComponent(referencesGraph, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1013,6 +1024,7 @@ public class MapOptics extends JFrame {
                 referenceGraphPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(referenceGraphPanelLayout.createSequentialGroup()
                                 .addComponent(jLabel16)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(referencesGraph, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -1027,6 +1039,9 @@ public class MapOptics extends JFrame {
                         .addComponent(summaryView, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(referenceGraphPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(alignmentNamePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1453, Short.MAX_VALUE)
+                        .addGroup(rightPanelLayout.createSequentialGroup()
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(exitVerifyAssembly, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         rightPanelLayout.setVerticalGroup(
                 rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1036,7 +1051,11 @@ public class MapOptics extends JFrame {
                                 .addComponent(summaryView, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGap(12, 12, 12)
                                 .addComponent(referenceGraphPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addContainerGap())
+                                .addContainerGap()
+                                .addGroup(rightPanelLayout.createParallelGroup()
+                                    .addComponent(exitVerifyAssembly))
+                                    
+                                )
         );
 
         jSplitPane3.setRightComponent(rightPanel);
@@ -2081,6 +2100,12 @@ public class MapOptics extends JFrame {
             JOptionPane.showMessageDialog(null, "Not all files have been declared", "Invalid Input", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
+    private void exitVerifyAssemblyActionPerformed(java.awt.event.ActionEvent evt) {                                                 
+        this.setVisible(false);
+        startScreen screen = new startScreen();
+        screen.setVisible(true);
+    } 
 
     private void loadMapsActionPerformed(java.awt.event.ActionEvent evt) {
         // displays menu
@@ -3244,10 +3269,16 @@ public class MapOptics extends JFrame {
             double length = (Double) refContigTable.getValueAt(refContigTable.getSelectedRow(), 1);
             int selectedBar = lengths.indexOf(length);
             ((MyChartRenderer) plot.getRenderer()).setSelectedBar(selectedBar);
+            // Marker can be added to plots to highlight value / range of values
             Marker line = new ValueMarker(length / 1000);
             line.setPaint(new Color(97, 204, 10));
             line.setLabel(" ID: " + refId + " ");
             line.setLabelFont(new Font("Tahoma", Font.BOLD, 10));
+            /**
+             * Set the label anchor
+             * The anchore defines the position of the label anchor
+             * relative to the bounds of the marker
+            */
             line.setLabelAnchor(RectangleAnchor.CENTER);
             line.setLabelBackgroundColor(new Color(244, 244, 244));
             line.setLabelPaint(new Color(0, 153, 0));

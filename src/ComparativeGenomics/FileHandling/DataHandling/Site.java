@@ -6,6 +6,9 @@ import java.util.HashMap;
 
 /**
  *
+ * Store the information of a digestion site on a cmap contig
+ * Any match event associated with this site is stored in a HashMap
+ * The key is the xmap id, the value is an ArrayList of match objects
  * @author franpeters
  */
 public class Site {

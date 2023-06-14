@@ -50,8 +50,10 @@ public final class Alignment {
 
         for (Map.Entry<Integer, ArrayList<XmapData>> entry : this.xmap.getXmap().entrySet()) {
             Integer chrID = entry.getKey();
-            ArrayList<XmapData> value = entry.getValue();
+            ArrayList<XmapData> value = entry.getValue(); //Each line of the xmap file
             for (XmapData map : value) {
+                // Get the maps from the reference and query data
+                // that have the same ID as the considered xmap
                 CmapData r = this.cmapRef.getCmapByID(map.getRefID());
                 CmapData q = this.cmapQry.getCmapByID(map.getQryID());
 //              populate the Pair objects with Site objects
@@ -80,7 +82,7 @@ public final class Alignment {
                 Integer id = xmap1.getID();
                 for (XmapData xmap2: this.xmap.getAllXmaps().values() ){
 //                    check not comparing to itself
-                    if (!Objects.equals(xmap2.getID(), Data)&Objects.equals(xmap1.getRefID(), xmap2.getRefID())){
+                    if (!Objects.equals(xmap2.getID(), id)&Objects.equals(xmap1.getRefID(), xmap2.getRefID())){
 //                        detect duplications
 //                        detectDuplications(xmap1,xmap2,duplicationMin);
                     }
@@ -121,9 +123,10 @@ public final class Alignment {
 //                these are all the qry cmap matches to the ref cmap
                 ArrayList<XmapData> chrAlignments = this.xmap.getXmap().get(cmapID);
 
+                System.out.println("Alignment l126 cmapID " + cmapID + " " + this.refGenome.getChromosomes().get(cmapID));
                 if (this.refGenome.getChromosomes().get(cmapID) != null) {
                     this.refGenome.getChromosomes().get(cmapID).setAlignment(chrAlignments, cmapQry);
-
+                    System.out.println("Alignment l129 OK TEST OK");
                 }
             } 
         }

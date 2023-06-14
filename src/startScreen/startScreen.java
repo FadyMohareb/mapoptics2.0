@@ -10,7 +10,8 @@ import javax.swing.ImageIcon;
 import org.icepdf.ri.common.ComponentKeyBinding;
 import org.icepdf.ri.common.SwingController;
 import org.icepdf.ri.common.SwingViewBuilder;
-
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 
@@ -26,7 +27,9 @@ public class startScreen extends javax.swing.JFrame {
     public startScreen() { 
 
         initComponents();  
-        ImageIcon iconLogo = new ImageIcon("/Users/franpeters/Documents/MSc Thesis/MapOptics/src/Resources/logo.png");
+        Path path = Paths.get("");
+        String pathDirectory = path.toAbsolutePath().toString();
+        ImageIcon iconLogo = new ImageIcon(pathDirectory + "\\src\\Resources\\logo.png");
         logo.setIcon(iconLogo);
     }
 
