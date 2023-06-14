@@ -179,8 +179,19 @@ public class SSH {
      * this has been successful and false if not
      */
     public Boolean disconnectServer() {
-        this.sftpChannel.disconnect();
-        this.session.disconnect();
+        if (!this.execChannel.isClosed() && !this.execChannel.isConnected()) {
+            this.execChannel.disconnect();
+        }
+        if (!this.sftpChannel.isClosed() && !this.sftpChannel.isConnected()) {
+            this.sftpChannel.exit();
+            this.sftpChannel.disconnect();
+        }
+        if (!this.channel.isClosed() && !this.channel.isConnected()) {
+            this.channel.disconnect();
+        }
+        if (!this.session.isConnected()) {
+            this.session.disconnect();
+        }
         return true;
     }
 
@@ -322,11 +333,9 @@ public class SSH {
         String ref = job.getRef();
         String qry = job.getQry();
         String dir = job.getServer().getWorkingDir();
-                
+
         String align = job.getPipeline();
-        
-        System.out.println("SSH 327 " + "cd " + dir + "; ./calc_best_enz.sh " + jobname + "/Files/Query/" + job.getQry());
-        
+
         String cmd = "cd " + dir + "; ./calc_best_enz.sh " + jobname + "/Files/Query/" + job.getQry();
         executeCmd(cmd);
     }
@@ -342,9 +351,9 @@ public class SSH {
         try {
             this.sftpChannel = (ChannelSftp) session.openChannel("sftp");
             this.sftpChannel.connect();
-           
+
             Vector<ChannelSftp.LsEntry> entries = this.sftpChannel.ls(job.getServer().getWorkingDir() + jobName + "/Files/Results/");
-            
+
             new File("download" + File.separator + jobName).mkdir();
 //            download all files (except the ., .. and folders) from the jobs's Results folder
 
@@ -370,12 +379,9 @@ public class SSH {
         try {
             this.sftpChannel = (ChannelSftp) session.openChannel("sftp");
             this.sftpChannel.connect();
-            
-            System.out.println("SSH 379 - " + job.getServer().getWorkingDir() + jobName 
-                    + File.separator + "Files" + File.separator + "Results" + File.separator);
 
             Vector<ChannelSftp.LsEntry> entries = this.sftpChannel.ls(job.getServer().getWorkingDir() + jobName + "/Files/Results/");
-            
+
             new File("download" + File.separator + jobName).mkdir();
 //            download the results from the run_calc_best_enz.sh script
             for (ChannelSftp.LsEntry en : entries) {
@@ -389,5 +395,23 @@ public class SSH {
         } catch (JSchException ex) {
             Logger.getLogger(SSH.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    /**
+     * Indicates if the chanel is still connected
+     *
+     * @return boolean
+     */
+    public boolean isChannelConnected() {
+        return this.channel.isConnected();
+    }
+
+    /**
+     * Indicates if the sftp chanel is still connected
+     *
+     * @return boolean
+     */
+    public boolean isSftpChannelConnected() {
+        return this.sftpChannel.isConnected();
     }
 }

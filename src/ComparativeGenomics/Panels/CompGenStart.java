@@ -2045,10 +2045,11 @@ public class CompGenStart extends javax.swing.JFrame {
         //will eventually add in user parameters here
         this.channel.runJob(this.newJob); //this sets the job as running on the server
         this.newJob = new Job();
-        
+        System.out.println("CompGenStart 2047 - Script was properly executed.");
 //        finally disconnect from the server
         this.channel.disconnectServer();
-        System.out.println("Disconnected");
+        System.out.println("Chanel disconnected: " + this.channel.isChannelConnected());
+        System.out.println("Sftp channel disconnected: " + this.channel.isSftpChannelConnected());
 //        clean slate for the channel object
         this.channel = new SSH();
         System.out.println("Channel cleaned");
