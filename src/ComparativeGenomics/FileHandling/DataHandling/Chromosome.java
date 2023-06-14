@@ -51,10 +51,9 @@ public class Chromosome {
 //            add the XmapData to the arrayList
             this.xmapMaps.add(align);
             CmapData qryCmapMap = qryCmap.getCmapByID(align.getQryID());
-////            save to hashmap
+//            save to hashmap
             qryCmapMaps.put(align.getQryID(), qryCmapMap);
-        }
-//        
+        }  
     }
 
     public Integer getNumIndels() {

@@ -39,7 +39,8 @@ public class Job {
      * @param qAnnot file path to the GTF or GFF3 annotation file for query
      * genome
      */
-    public Job(ExternalServer server, String name, String ref, String qry, Enzyme enzyme, String pipeline, String status, String qOrg, String rOrg, String rAnnot, String qAnnot) {
+    public Job(ExternalServer server, String name, String ref, String qry, Enzyme enzyme, 
+            String pipeline, String status, String qOrg, String rOrg, String rAnnot, String qAnnot) {
         this.server = server;
         this.name = name;
         this.refFile = ref;

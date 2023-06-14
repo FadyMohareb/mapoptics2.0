@@ -244,7 +244,7 @@ public class SSH {
      */
     public Boolean uploadFile(String file, String dir, JProgressBar bar) {
         this.monitor.setBar(bar); // Set progress bar
-                    
+
         try {
             connectServer();
 
@@ -319,15 +319,16 @@ public class SSH {
     public void runCalcBestEnz(Job job) {
         connectServer();
         String jobname = job.getName();
-        System.out.println(job.getName());
         String ref = job.getRef();
         String qry = job.getQry();
         String dir = job.getServer().getWorkingDir();
-        String enz = job.getEnz().getSite();
+                
         String align = job.getPipeline();
-        String cmd = "cd " + dir + "; ./run_calc_best_enz.sh" + jobname;
+        
+        System.out.println("SSH 327 " + "cd " + dir + "; ./calc_best_enz.sh " + jobname + "/Files/Query/" + job.getQry());
+        
+        String cmd = "cd " + dir + "; ./calc_best_enz.sh " + jobname + "/Files/Query/" + job.getQry();
         executeCmd(cmd);
-
     }
 
     /**
@@ -341,8 +342,9 @@ public class SSH {
         try {
             this.sftpChannel = (ChannelSftp) session.openChannel("sftp");
             this.sftpChannel.connect();
-
+           
             Vector<ChannelSftp.LsEntry> entries = this.sftpChannel.ls(job.getServer().getWorkingDir() + jobName + "/Files/Results/");
+            
             new File("download" + File.separator + jobName).mkdir();
 //            download all files (except the ., .. and folders) from the jobs's Results folder
 
@@ -368,8 +370,12 @@ public class SSH {
         try {
             this.sftpChannel = (ChannelSftp) session.openChannel("sftp");
             this.sftpChannel.connect();
+            
+            System.out.println("SSH 379 - " + job.getServer().getWorkingDir() + jobName 
+                    + File.separator + "Files" + File.separator + "Results" + File.separator);
 
             Vector<ChannelSftp.LsEntry> entries = this.sftpChannel.ls(job.getServer().getWorkingDir() + jobName + "/Files/Results/");
+            
             new File("download" + File.separator + jobName).mkdir();
 //            download the results from the run_calc_best_enz.sh script
             for (ChannelSftp.LsEntry en : entries) {
@@ -379,7 +385,6 @@ public class SSH {
                 if (en.getFilename().equals("compare_enzymes.txt")) {
                     this.sftpChannel.get(job.getServer().getWorkingDir() + jobName + "/Files/Results/" + en.getFilename(), "download" + File.separator + jobName + File.separator + en.getFilename());
                 }
-
             }
         } catch (JSchException ex) {
             Logger.getLogger(SSH.class.getName()).log(Level.SEVERE, null, ex);

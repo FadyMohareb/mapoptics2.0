@@ -67,6 +67,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private Boolean refAdded = false;
     private Boolean qryAdded = false;
     private DefaultTableModel enzymeTableModel;
+    private DefaultTableModel bestEnzymesTableModel;
     private Enzyme selectedEnzyme;
     private Enzyme tempSelectedEnzyme;
     private JobTableModel jobsTableModel = new JobTableModel();
@@ -232,6 +233,8 @@ public class CompGenStart extends javax.swing.JFrame {
         bestEnz = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
         jButton13 = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        bestEnzymesTable = new javax.swing.JTable();
         helpPane = new javax.swing.JDialog();
         exitBtn = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -1199,7 +1202,7 @@ public class CompGenStart extends javax.swing.JFrame {
                     .addComponent(jLabel18)
                     .addComponent(jLabel16)
                     .addComponent(jLabel19))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                 .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(refFilesPanelLayout.createSequentialGroup()
                         .addComponent(chooseLocalRefKaryotype)
@@ -1214,7 +1217,7 @@ public class CompGenStart extends javax.swing.JFrame {
                         .addComponent(chooseLocalRefAnnot)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(localRefAnnotName)))
-                .addContainerGap(71, Short.MAX_VALUE))
+                .addContainerGap(72, Short.MAX_VALUE))
         );
         refFilesPanelLayout.setVerticalGroup(
             refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1293,7 +1296,7 @@ public class CompGenStart extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(localQryCmapName))
                     .addComponent(localSpecies, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(77, Short.MAX_VALUE))
+                .addContainerGap(78, Short.MAX_VALUE))
         );
         queryFilesPanelLayout.setVerticalGroup(
             queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1417,12 +1420,33 @@ public class CompGenStart extends javax.swing.JFrame {
         bestEnzymeDialog.setSize(new java.awt.Dimension(384, 309));
 
         jButton12.setText("Select");
-
-        bestEnz.setText("jLabel6");
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
 
         jLabel20.setText("Best Enzyme:");
 
         jButton13.setText("Save");
+        jButton13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton13ActionPerformed(evt);
+            }
+        });
+
+        bestEnzymesTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
+            new String [] {
+                "Enzyme name", "Density"
+            }
+        ));
+        jScrollPane2.setViewportView(bestEnzymesTable);
 
         javax.swing.GroupLayout bestEnzymeDialogLayout = new javax.swing.GroupLayout(bestEnzymeDialog.getContentPane());
         bestEnzymeDialog.getContentPane().setLayout(bestEnzymeDialogLayout);
@@ -1430,19 +1454,26 @@ public class CompGenStart extends javax.swing.JFrame {
             bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton13)
-                .addGap(34, 34, 34)
-                .addComponent(jLabel20)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bestEnz)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 93, Short.MAX_VALUE)
-                .addComponent(jButton12)
+                .addGroup(bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
+                        .addComponent(jButton13)
+                        .addGap(34, 34, 34)
+                        .addComponent(jLabel20)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bestEnz)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 130, Short.MAX_VALUE)
+                        .addComponent(jButton12))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bestEnzymeDialogLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         bestEnzymeDialogLayout.setVerticalGroup(
             bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
-                .addContainerGap(271, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton12)
                     .addComponent(bestEnz)
@@ -2210,11 +2241,6 @@ public class CompGenStart extends javax.swing.JFrame {
         } else if ("".equals(this.localrefcmap) || this.localRefCmapName.getText() == null) {
             JOptionPane.showMessageDialog(null, "Reference CMAP cannot be empty",
                     "Missing file!", JOptionPane.ERROR_MESSAGE);
-            // Check that annotation file was provided
-            /*}else if ("".equals(this.localrefannot) || this.localRefAnnotName.getText() == null) {
-            JOptionPane.showMessageDialog(null, "Reference annotation cannot be empty",
-                    "Missing file!", JOptionPane.ERROR_MESSAGE);
-             */
         } else if ("".equals(this.localrefkary) || this.localRefKaryName.getText() == null) {
             JOptionPane.showMessageDialog(null, "Reference karyotype file cannot be empty",
                     "Missing file!", JOptionPane.ERROR_MESSAGE);
@@ -2257,21 +2283,17 @@ public class CompGenStart extends javax.swing.JFrame {
     }//GEN-LAST:event_refalignerPipelineActionPerformed
 
     private void runCalcBestEnzymeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runCalcBestEnzymeActionPerformed
-//            BestEnzyme result = new BestEnzyme("/Users/franpeters/Documents/MSc Thesis/MapOptics/download/Test2/compare_enzymes.txt");
-//            this.enzymeChart1.setData(result.getResult());
-//            this.bestEnzymeDialog.setVisible(true);
-//            this.bestEnz.setText(this.enzymeChart1.getBestEnz());
         try {
+            //Run the calc_best_enz.sh script on the ExternalServer
             this.channel.runCalcBestEnz(this.newJob);
             this.channel.downloadEnzResults(this.newJob);
-            BestEnzyme result = new BestEnzyme(System.getProperty("user.dir") + "/download/" + this.newJob.getName() + File.separator + "compare_enzymes.txt");
-//            this.enzymeChart1.setData(result.getResult());
+            
+            BestEnzyme result = new BestEnzyme(System.getProperty("user.dir") + File.separator + "download" + File.separator + this.newJob.getName() + File.separator + "compare_enzymes.txt");
+            
             this.bestEnzymeDialog.setVisible(true);
-//            this.bestEnz.setText(this.enzymeChart1.getBestEnz());
         } catch (SftpException ex) {
             Logger.getLogger(CompGenStart.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }//GEN-LAST:event_runCalcBestEnzymeActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
@@ -2364,6 +2386,14 @@ public class CompGenStart extends javax.swing.JFrame {
     private void qryAnnotFileNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_qryAnnotFileNameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_qryAnnotFileNameActionPerformed
+
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton13ActionPerformed
+
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton12ActionPerformed
 
     public String checkEnzymeName(JTextField field) {
         String name = field.getText();
@@ -2787,6 +2817,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JPanel alignmentPanel;
     private javax.swing.JLabel bestEnz;
     private javax.swing.JDialog bestEnzymeDialog;
+    private javax.swing.JTable bestEnzymesTable;
     private javax.swing.JButton bnt_help;
     private javax.swing.JMenuItem browseEnzymes;
     private javax.swing.JDialog browseEnzymesDialog;
@@ -2867,6 +2898,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel jobDownloadingName;
     private javax.swing.JTable jobsTable;

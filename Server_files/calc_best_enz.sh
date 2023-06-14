@@ -1,7 +1,9 @@
 #!/bin/bash
 fasta=$1
 fasta_path="$(dirname "${fasta}")"
+echo "$fasta_path"
 fasta_name="$(basename "${fasta}")"
+echo "$fasta_name"
 fasta_name=${fasta_name%.*}
 script="fa2cmap_multi_color.pl"
 enzymes=("GCTCTTC" "CCTCAGC" "GAATGC" "GCAATG" "ATCGAT" "CTTAAG" "CACGAG")
