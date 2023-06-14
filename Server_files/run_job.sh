@@ -9,7 +9,7 @@
 digest="/home/fran/mapoptics/solve/tools/pipeline/Solve3.7_03302022_283/HybridScaffold/03302022/scripts/fa2cmap_multi_color.pl"
 fandom="/home/fran/mapoptics/FaNDOM/"
 refaligner="/home/fran/mapoptics/solve/tools/pipeline/Solve3.7_03302022_283/RefAligner/12432.12542rel/RefAligner"
-runBNG="/home/fran/mapoptics/runBNG/runBNG"
+runBNG="/home/fran/mapoptics/runBNG/"
 
 while test $# -gt 0; 
     do
@@ -25,7 +25,7 @@ while test $# -gt 0;
                     echo "                | |            | |                        "
                     echo "                |_|            |_|                        "
                     echo ""
-                    echo "Welcome to MapOptics fasta to xmap alignment script"
+                    echo "Welcome to MapOptics fasta to xmap alignment sript"
                     echo "Command line argumnents:"
                     echo "-h,--help"
                     echo "Brings up this help message and exits program"
@@ -63,6 +63,7 @@ while test $# -gt 0;
                     ref_path="$(dirname "${ref}")"
                     ref_basename="$(basename "${ref}")"
                     ref_basename=${ref_basename%.*}
+		    echo "BASENAME: $ref_basename" >> /home/fran/mapoptics/jobs/"$job"/log.txt;
                     if [[ ! -f "$ref" ]]
                     then
                           echo "The reference file $1 has not been found"
@@ -150,6 +151,7 @@ elif [[ $ref == *.fasta ]]
     echo "Status: Reference Digested"  >> /home/fran/mapoptics/jobs/"$job"/log.txt;
 elif [[ $ref == *.fna ]]
   then
+    
     #generate the karyotype file
     samtools faidx "$ref"
     awk -F "\t" 'OFS=" " {print $2, $1 }' "$ref".fai > "$out"/karyotype.txt
@@ -202,20 +204,22 @@ echo "Status: Aligning data using $aligner" >> /home/fran/mapoptics/jobs/"$job"/
 
 if [[ "${aligner}" == *"fandom"* ]]
   then
-
+  echo "$ref_folder  $ref_basename_ $enzyme _0kn_0labels.cmap" >> /home/fran/mapoptics/jobs/"$job"/log.txt;
   cd $fandom || exit
-  python PythonScript/wrapper_contigs.py -f "$PWD" -t 10 -r "$ref_folder""$ref_basename""_GCAATG_0kb_0labels.cmap" -q "$qry_folder""$qry_basename""_GCAATG_0kb_0labels.cmap" -n "$job" -o "$ref_folder" -c nh -m 1 
+  #python PythonScript/wrapper_contigs.py -f "$PWD" -t 10 -r "$ref_folder""$ref_basename""_GCAATG_0kb_0labels.cmap" -q "$qry_folder""$qry_basename""_GCAATG_0kb_0labels.cmap" -n "$job" -o "$ref_folder" -c nh -m 1 
+  python PythonScript/wrapper_contigs.py -f "$PWD" -t 10 -r "$ref_folder""$ref_basename""_""$enzyme""_0kb_0labels.cmap" -q "$qry_folder""$qry_basename""_""$enzyme""_0kb_0labels.cmap" -n "$job" -o "$ref_folder" -c nh -m 1
+  echo "$PWD $ref_folder $ref_basename $qry $qry_folder $qry_basename"
   cd "$ref_folder" || exit
   mv  "$job""_final_alignment.xmap" "$job"".xmap"
   mv  "$job"".xmap" "$out"
+
 elif [[ "${aligner}" == *"refaligner"* ]]
   then
     cd $runBNG || exit
     
-    ./runBNG compare -R $refaligner -r "$ref_folder""$ref_basename""_GCAATG_0kb_0labels.cmap" -q "$qry_folder""$qry_basename""_GCAATG_0kb_0labels.cmap" -z "$genomesize" -t 10 -m 100 -p "$job" -o "$ref_folder"
-    echo
-    echo "$genomesize"
-    cd "$ref_folder || exit" || exit
+    #./runBNG compare -R $refaligner -r "$ref_folder""$ref_basename""_GCAATG_0kb_0labels.cmap" -q "$qry_folder""$qry_basename""_GCAATG_0kb_0labels.cmap" -z "$genomesize" -t 10 -m 100 -p "$job" -o "$ref_folder"
+    ./runBNG compare -R "$refaligner" -r "$ref_folder""$ref_basename""_""$enzyme""_0kb_0labels.cmap" -q "$qry_folder""$qry_basename""_""$enzyme""_0kb_0labels.cmap" -z "$genomesize" -t 10 -m 100 -p "$job" -o "$ref_folder"
+    cd "$ref_folder" || exit
     mv  "$job"".xmap" "$out"
 else
   echo "somethings gone wrong"
