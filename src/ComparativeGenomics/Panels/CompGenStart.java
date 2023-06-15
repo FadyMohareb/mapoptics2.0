@@ -1481,21 +1481,21 @@ public class CompGenStart extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addGroup(bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(selectBestEnz)
+                .addGroup(bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
                         .addComponent(bestEnz)
                         .addGap(0, 0, 0)
                         .addComponent(LblEnzyme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jButton13)
                     .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
                         .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
-                        .addGap(2, 2, 2)))
+                        .addGap(2, 2, 2))
+                    .addGroup(bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(selectBestEnz)
+                        .addComponent(jButton13)))
                 .addContainerGap())
         );
 
         helpPane.setMinimumSize(new java.awt.Dimension(497, 518));
-        helpPane.setPreferredSize(new java.awt.Dimension(500, 520));
         helpPane.setSize(new java.awt.Dimension(500, 520));
 
         exitBtn.setText("Exit");
@@ -1583,7 +1583,6 @@ public class CompGenStart extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        waitPanel.setLocationByPlatform(true);
         waitPanel.setMinimumSize(new java.awt.Dimension(320, 190));
         waitPanel.setSize(new java.awt.Dimension(320, 190));
         waitPanel.setType(java.awt.Window.Type.POPUP);
