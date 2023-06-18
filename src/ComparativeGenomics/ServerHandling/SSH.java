@@ -121,11 +121,12 @@ public class SSH {
             this.channel = session.openChannel("shell");
             this.channel.setInputStream(System.in);
             this.channel.setOutputStream(System.out); // print the output of the connection to the terminal
-            this.channel.connect(3 * 1000); //need to confirm this number is correct
+            this.channel.connect(3 * 10000); //need to confirm this number is correct
             this.connection = true;
         } catch (JSchException ex) {
-            JOptionPane.showMessageDialog(null, "Connecion to server has not been established!",
+            JOptionPane.showMessageDialog(null, "Connection to server has not been established!",
                     "Connection error!", JOptionPane.ERROR_MESSAGE);
+            System.out.println(ex);
         }
         return this.connection;
     }
@@ -236,11 +237,15 @@ public class SSH {
             connectServer();
             this.sftpChannel = (ChannelSftp) this.session.openChannel("sftp");
             this.sftpChannel.connect();
+            System.out.println("Server working directory SSH 239 " + this.server.getWorkingDir());
+            System.out.println("SSH 240 dir: " + dir);
             this.sftpChannel.mkdir(this.server.getWorkingDir() + dir);
 
             return true;
         } catch (JSchException | SftpException ex) {
             System.out.println(ex);
+            JOptionPane.showMessageDialog(null, "Could not create job folder.",
+                        "Creation failed!", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
@@ -274,7 +279,8 @@ public class SSH {
                 } catch (SftpException ex) {
                     System.out.println(ex.getCause());
                     ex.printStackTrace();
-
+                    JOptionPane.showMessageDialog(null, "File transfert failed",
+                        "Transfert failed!", JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
             } else {

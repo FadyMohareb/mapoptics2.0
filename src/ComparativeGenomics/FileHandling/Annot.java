@@ -92,6 +92,7 @@ public class Annot {
                         Matcher checkChr = Pattern.compile("chr|ch").matcher(chr);
                         // The row corresponds to a chromosome
                         if (checkChr.find()) {
+                        //if (true){
                             String type = rowData[2]; // Type of feature (term / accession from SPFA sequence ontology)
                             // Feature is a gene
                             if ("gene".equals(type.replace(" ", ""))) {

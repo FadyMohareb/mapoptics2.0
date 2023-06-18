@@ -4,6 +4,7 @@ import ComparativeGenomics.ServerHandling.Enzyme;
 import ComparativeGenomics.ServerHandling.ExternalServer;
 import ComparativeGenomics.ServerHandling.Job;
 import ComparativeGenomics.ServerHandling.SSH;
+import ComparativeGenomics.FileHandling.JsonFiles;
 import ComparativeGenomics.FileHandling.BestEnzyme;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -74,6 +75,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private ServTableModel servTableModel = new ServTableModel();
     private Boolean ref1FromURL = false;
     private Boolean qryFromURL = false;
+    private JsonFiles manageJson;
 
     private String localrefcmap = "";
     private String localqrycmap = "";
@@ -1205,7 +1207,7 @@ public class CompGenStart extends javax.swing.JFrame {
                     .addComponent(jLabel18)
                     .addComponent(jLabel16)
                     .addComponent(jLabel19))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
                 .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(refFilesPanelLayout.createSequentialGroup()
                         .addComponent(chooseLocalRefKaryotype)
@@ -1220,7 +1222,7 @@ public class CompGenStart extends javax.swing.JFrame {
                         .addComponent(chooseLocalRefAnnot)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(localRefAnnotName)))
-                .addContainerGap(72, Short.MAX_VALUE))
+                .addContainerGap(245, Short.MAX_VALUE))
         );
         refFilesPanelLayout.setVerticalGroup(
             refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1299,7 +1301,7 @@ public class CompGenStart extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(localQryCmapName))
                     .addComponent(localSpecies, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(79, Short.MAX_VALUE))
+                .addContainerGap(248, Short.MAX_VALUE))
         );
         queryFilesPanelLayout.setVerticalGroup(
             queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1336,11 +1338,11 @@ public class CompGenStart extends javax.swing.JFrame {
             .addGroup(alignmentPanelLayout.createSequentialGroup()
                 .addGap(43, 43, 43)
                 .addComponent(jLabel30)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(chooseLocalXmap)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(localXmapName)
-                .addGap(130, 130, 130))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         alignmentPanelLayout.setVerticalGroup(
             alignmentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2320,6 +2322,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private void runCalcBestEnzymeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runCalcBestEnzymeActionPerformed
         try {
             messageLabel.setText("Running best enzyme caculation...");
+            messageLabel.setVisible(true);
             waitPanel.setVisible(true);
             messageLabel.setVisible(true);
             //Run the calc_best_enz.sh script on the ExternalServer
