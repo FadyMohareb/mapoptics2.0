@@ -18,12 +18,20 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.crypto.BadPaddingException;
 import startScreen.runMapOptics;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  *
@@ -37,6 +45,7 @@ public class JsonFiles {
     private String serverPath;
     private List<Job> jobsRunning = new ArrayList();
     private List<ExternalServer> servers = new ArrayList();
+    private byte[] PUBLIC_KEY = "nVqQMdZYHsiBwKxm".getBytes();
 
     public JsonFiles() {
         // Get current job json path
@@ -46,7 +55,7 @@ public class JsonFiles {
         // Get current server json path
         this.serverPath = pathDirectory + "\\serverInfo\\servers.json";
 
-        try{
+        try {
 //            Make sure the json files for the josb and server objects to be saved between sessions still exist
             File jobsJson = new File(this.jobsPath);
             if (!jobsJson.exists()) {
@@ -60,8 +69,7 @@ public class JsonFiles {
                 servJson.createNewFile();
                 System.out.println("New file created: " + this.serverPath);
             }
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(runMapOptics.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -126,18 +134,32 @@ public class JsonFiles {
             writer.name("data");
             writer.beginArray();
             for (ExternalServer s : serversList) {
+
                 writer.beginObject();
                 writer.name("name").value(s.name);
-                writer.name("user").value(s.getUser());
-                writer.name("host").value(s.getHost());
-                writer.name("password").value(s.getPassword());
-                writer.name("dir").value(s.getWorkingDir());
+                writer.name("user").value(encrypt(s.getUser(), PUBLIC_KEY));
+                writer.name("host").value(encrypt(s.getHost(), PUBLIC_KEY));
+                writer.name("password").value(encrypt(s.getPassword(), PUBLIC_KEY));
+                writer.name("dir").value(encrypt(s.getWorkingDir(), PUBLIC_KEY));
                 writer.endObject();
+
             }
             writer.endArray();
             writer.endObject();
             writer.close();
+
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            System.out.println("Invalid key for encryption)");
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
             e.printStackTrace();
         }
     }
@@ -171,18 +193,32 @@ public class JsonFiles {
 //        Work out how many servers are present
                     int numServers = (value.length) / 5;
 
-                    for (int s = 1; s <= numServers; s++) {
+                    try {
+                        for (int s = 1; s <= numServers; s++) {
 
 //            messy but it works
 //            create server object
-                        ExternalServer serv = new ExternalServer(value[1 + 5 * (s - 1)].split(",")[0],
-                                value[2 + 5 * (s - 1)].split(",")[0],
-                                value[3 + 5 * (s - 1)].split(",")[0],
-                                value[4 + 5 * (s - 1)].split(",")[0],
-                                value[5 + 5 * (s - 1)].split(",")[0].replace("}", "").replaceAll("]", ""));
+                            ExternalServer serv = new ExternalServer(
+                                    value[1 + 5 * (s - 1)].split(",")[0],
+                                    decrypt(value[2 + 5 * (s - 1)].split(",")[0], PUBLIC_KEY),
+                                    decrypt(value[3 + 5 * (s - 1)].split(",")[0], PUBLIC_KEY),
+                                    decrypt(value[4 + 5 * (s - 1)].split(",")[0], PUBLIC_KEY),
+                                    decrypt(value[5 + 5 * (s - 1)].split(",")[0], PUBLIC_KEY).replace("}", "").replaceAll("]", ""));
 
 //           Add job object to array
-                        servers.add(serv);
+                            servers.add(serv);
+                        }
+                    } catch (InvalidKeyException e) {
+                        System.out.println("Invalid key for encryption)");
+                        e.printStackTrace();
+                    } catch (NoSuchPaddingException e) {
+                        e.printStackTrace();
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    } catch (BadPaddingException e) {
+                        e.printStackTrace();
+                    } catch (IllegalBlockSizeException e) {
+                        e.printStackTrace();
                     }
                 }
                 // close reader
@@ -192,7 +228,7 @@ public class JsonFiles {
             ex.getCause();
         }
     }
-    
+
     /**
      * @param serversList list of servers
      * @return List of servers saved in the json file
@@ -201,7 +237,7 @@ public class JsonFiles {
         serversFromJson(serversList);
         return this.servers;
     }
-    
+
     /**
      * @param jobsRunningList List of Job object, jobs that are running
      * @return List of servers saved in the json file
@@ -210,9 +246,11 @@ public class JsonFiles {
         jobsFromJson(jobsRunningList);
         return this.jobsRunning;
     }
-    
-    /*
-    * Read the jobs from the jobs.json file
+
+    /**
+     * Read the jobs from the jobs.json file
+     *
+     * @param jobsRunningList
      */
     private void jobsFromJson(List<Job> jobsRunningList) {
         this.jobsRunning = jobsRunningList;
@@ -279,6 +317,54 @@ public class JsonFiles {
         } catch (JsonIOException | JsonSyntaxException | IOException ex) {
             ex.getCause();
         }
+    }
 
+    /**
+     * Encrypt a message.
+     *
+     * @param message
+     * @param keyBytes
+     * @return encryptedMessage
+     * @throws InvalidKeyException
+     * @throws NoSuchPaddingException
+     * @throws NoSuchAlgorithmException
+     * @throws BadPaddingException
+     * @throws IllegalBlockSizeException
+     */
+    private String encrypt(String message, byte[] publicKey)
+            throws InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException,
+            BadPaddingException, IllegalBlockSizeException {
+
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        SecretKey secretKey = new SecretKeySpec(publicKey, "AES");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        byte[] byteMessage = message.getBytes();
+        String encryptedMessage = new String(cipher.doFinal(byteMessage));
+        System.out.println("JsonFiles 343 input message " + message + " crypted output " + encryptedMessage);
+        return encryptedMessage;
+
+    }
+
+    /**
+     * Decrypt a crypted message.
+     *
+     * @param cryptedMessage
+     * @param publicKey
+     * @return
+     * @throws NoSuchPaddingException
+     * @throws NoSuchAligorithmException
+     * @throws InvalidKeyException
+     * @throws BadPaddingException
+     * @throws IllegalBlockSizeException
+     */
+    private String decrypt(String cryptedMessage, byte[] publicKey)
+            throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
+            BadPaddingException, IllegalBlockSizeException {
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        SecretKey secretKey = new SecretKeySpec(publicKey, "AES");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey);
+        byte[] byteMessage = cryptedMessage.getBytes();
+        String message = new String(cipher.doFinal(byteMessage));
+        return message;
     }
 }
