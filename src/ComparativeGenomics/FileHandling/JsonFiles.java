@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
@@ -20,6 +21,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import startScreen.runMapOptics;
 
 /**
  *
@@ -41,6 +45,25 @@ public class JsonFiles {
         this.jobsPath = pathDirectory + "\\serverInfo\\jobs.json";
         // Get current server json path
         this.serverPath = pathDirectory + "\\serverInfo\\servers.json";
+
+        try{
+//            Make sure the json files for the josb and server objects to be saved between sessions still exist
+            File jobsJson = new File(this.jobsPath);
+            if (!jobsJson.exists()) {
+                Files.createDirectories(Paths.get(pathDirectory + "\\serverInfo"));
+                jobsJson.createNewFile();
+                System.out.println("New file created: " + this.jobsPath);
+            }
+            File servJson = new File(this.serverPath);
+            if (!servJson.exists()) {
+                Files.createDirectories(Paths.get(pathDirectory + "\\serverInfo"));
+                servJson.createNewFile();
+                System.out.println("New file created: " + this.serverPath);
+            }
+        }
+        catch (IOException ex) {
+            Logger.getLogger(runMapOptics.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 //Constructor creates and encrypt the json files
