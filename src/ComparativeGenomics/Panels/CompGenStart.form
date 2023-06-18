@@ -1166,7 +1166,7 @@
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="serverTableMouseClicked"/>
               </Events>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="serversFromJson();&#xa;servTableModel.setData(this.servers);"/>
+                <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="this.servers = manageJson.getServersFromJson(this.servers);&#xa;servTableModel.setData(this.servers);"/>
               </AuxValues>
             </Component>
           </SubComponents>
@@ -2121,7 +2121,7 @@
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jobsTableMouseClicked"/>
               </Events>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="jobsFromJson();&#xa;JobTableModel newModel = new JobTableModel(this.jobsRunning);&#xa;jobsTable.setModel(newModel);"/>
+                <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="this.jobsRunning.clear();&#xa;this.jobsRunning = manageJson.getJobsFromJson(this.jobsRunning);&#xa;jobTableAdd(this.jobsRunning);&#xa;JobTableModel newModel = new JobTableModel(this.jobsRunning);&#xa;jobsTable.setModel(newModel);"/>
               </AuxValues>
             </Component>
           </SubComponents>

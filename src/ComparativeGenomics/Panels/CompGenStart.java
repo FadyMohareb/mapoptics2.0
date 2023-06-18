@@ -75,7 +75,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private ServTableModel servTableModel = new ServTableModel();
     private Boolean ref1FromURL = false;
     private Boolean qryFromURL = false;
-    private JsonFiles manageJson;
+    private JsonFiles manageJson = new JsonFiles();
 
     private String localrefcmap = "";
     private String localqrycmap = "";
@@ -188,7 +188,7 @@ public class CompGenStart extends javax.swing.JFrame {
         selectServerDialog = new javax.swing.JDialog();
         chooseServerButton = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        serversFromJson();
+        this.servers = manageJson.getServersFromJson(this.servers);
         servTableModel.setData(this.servers);
         serverTable = new javax.swing.JTable();
         chosenServerLabel = new javax.swing.JLabel();
@@ -1622,7 +1622,9 @@ public class CompGenStart extends javax.swing.JFrame {
             }
         });
         submittedJobPane.setViewportView(jobsTable);
-        jobsFromJson();
+        this.jobsRunning.clear();
+        this.jobsRunning = manageJson.getJobsFromJson(this.jobsRunning);
+        jobTableAdd(this.jobsRunning);
         JobTableModel newModel = new JobTableModel(this.jobsRunning);
         jobsTable.setModel(newModel);
 
@@ -2038,7 +2040,7 @@ public class CompGenStart extends javax.swing.JFrame {
         this.jobsRunning.add(this.newJob);
         System.out.println("New job added");
 //        Update the jobs JSON file
-        saveJobJson(this.jobsRunning);
+        manageJson.saveJobJson(this.jobsRunning);
 //        update the jobs table with the new job that has been created
         JobTableModel newModel = new JobTableModel(this.jobsRunning);
         jobsTable.setModel(newModel);
@@ -2136,7 +2138,7 @@ public class CompGenStart extends javax.swing.JFrame {
             this.selectedServer = server;
             this.serverLabel.setText(server.getName());
         }
-        saveServerJson(this.servers);
+        manageJson.saveServerJson(this.servers);
         this.servTableModel.setData(this.servers);
         newServerDialog.setVisible(false);
 
@@ -2205,7 +2207,7 @@ public class CompGenStart extends javax.swing.JFrame {
             JobTableModel newModel = new JobTableModel(this.jobsRunning);
             jobsTable.setModel(newModel);
             // Save updated job in json file
-            saveJobJson(this.jobsRunning);
+            manageJson.saveJobJson(this.jobsRunning);
         }
     }//GEN-LAST:event_refreshJobsTableActionPerformed
 
@@ -2540,6 +2542,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
     }
 
+    /*
     private void serversFromJson() {
         try {
             // create Gson instance
@@ -2587,6 +2590,8 @@ public class CompGenStart extends javax.swing.JFrame {
     /*
     * Read the jobs from the jobs.json file
      */
+    
+    /*
     private void jobsFromJson() {
         this.jobsRunning.clear();
         try {
@@ -2654,6 +2659,7 @@ public class CompGenStart extends javax.swing.JFrame {
         }
 
     }
+ */
 
     private static class ServTableModel extends DefaultTableModel {
 
@@ -2798,6 +2804,7 @@ public class CompGenStart extends javax.swing.JFrame {
         }
     }
 
+    /*
     private void saveServerJson(List<ExternalServer> servers) {
         try {
             // Get path where json is saved
@@ -2824,7 +2831,9 @@ public class CompGenStart extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
+    */
 
+    /**
     private void saveJobJson(List<Job> jobs) {
         try {
             // Get current path
@@ -2863,6 +2872,7 @@ public class CompGenStart extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
+    */
 
     private Boolean refreshJobStatus(Job job) {
 //          Connect to the server of the user selectedjob
