@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -134,13 +135,19 @@ public class JsonFiles {
             writer.name("data");
             writer.beginArray();
             for (ExternalServer s : serversList) {
-
+                String serverUser = encrypt(s.getUser(), PUBLIC_KEY);
+                String serverHost = encrypt(s.getHost(), PUBLIC_KEY);
+                String serverPwd = encrypt(s.getPassword(), PUBLIC_KEY);
+                String serverDir = encrypt(s.getWorkingDir(), PUBLIC_KEY);
+                
+                System.out.println("JsonFiles 143 : " + serverUser + " " + serverHost + " " + serverPwd + " " + serverDir);
+                
                 writer.beginObject();
                 writer.name("name").value(s.name);
-                writer.name("user").value(encrypt(s.getUser(), PUBLIC_KEY));
-                writer.name("host").value(encrypt(s.getHost(), PUBLIC_KEY));
-                writer.name("password").value(encrypt(s.getPassword(), PUBLIC_KEY));
-                writer.name("dir").value(encrypt(s.getWorkingDir(), PUBLIC_KEY));
+                writer.name("user").value(serverUser);
+                writer.name("host").value(serverHost);
+                writer.name("password").value(serverPwd);
+                writer.name("dir").value(serverDir);
                 writer.endObject();
 
             }
@@ -338,11 +345,10 @@ public class JsonFiles {
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         SecretKey secretKey = new SecretKeySpec(publicKey, "AES");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-        byte[] byteMessage = message.getBytes();
-        String encryptedMessage = new String(cipher.doFinal(byteMessage));
-        System.out.println("JsonFiles 343 input message " + message + " crypted output " + encryptedMessage);
-        return encryptedMessage;
-
+        //byte[] byteMessage = message.getBytes();
+        //String encryptedMessage = new String(cipher.doFinal(byteMessage));
+        byte[] encryptedMessage = cipher.doFinal(message.getBytes());
+        return Base64.getEncoder().encodeToString(encryptedMessage);
     }
 
     /**

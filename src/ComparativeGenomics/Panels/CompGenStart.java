@@ -2141,7 +2141,6 @@ public class CompGenStart extends javax.swing.JFrame {
         manageJson.saveServerJson(this.servers);
         this.servTableModel.setData(this.servers);
         newServerDialog.setVisible(false);
-
     }//GEN-LAST:event_addNewServerActionPerformed
 
     private void showPassItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showPassItemStateChanged
