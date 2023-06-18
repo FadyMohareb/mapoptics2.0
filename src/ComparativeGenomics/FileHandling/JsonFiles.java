@@ -93,26 +93,39 @@ public class JsonFiles {
             writer.name("data");
             writer.beginArray();
             for (Job j : jobs) {
-                ExternalServer s = j.getServer();
-                Enzyme e = j.getEnz();
-                writer.beginObject();
-                writer.name("Job name").value(j.getName());
-                writer.name("Server name").value(s.name);
-                writer.name("Server user").value(s.getUser());
-                writer.name("Server host").value(s.getHost());
-                writer.name("Server pass").value(s.getPassword());
-                writer.name("Server dir").value(s.getWorkingDir());
-                writer.name("qry").value(j.getQry());
-                writer.name("ref").value(j.getRef());
-                writer.name("Enzyme name").value(e.getName());
-                writer.name("Enzyme site").value(e.getSite());
-                writer.name("pipeline").value(j.getPipeline());
-                writer.name("Status").value(j.getStatus());
-                writer.name("Ref Organism").value(j.getRefOrg());
-                writer.name("Qry Organism").value(j.getQryOrg());
-                writer.name("Ref Annotation").value(j.getRefAnnot());
-                writer.name("Qry Annotation").value(j.getQryAnnot());
-                writer.endObject();
+                try {
+                    ExternalServer s = j.getServer();
+                    Enzyme e = j.getEnz();
+                    writer.beginObject();
+                    writer.name("Job name").value(j.getName());
+                    writer.name("Server name").value(s.name);
+                    writer.name("Server user").value(s.getUser());
+                    writer.name("Server host").value(s.getHost());
+                    writer.name("Server pass").value(encrypt(s.getPassword(), PUBLIC_KEY));
+                    writer.name("Server dir").value(s.getWorkingDir());
+                    writer.name("qry").value(j.getQry());
+                    writer.name("ref").value(j.getRef());
+                    writer.name("Enzyme name").value(e.getName());
+                    writer.name("Enzyme site").value(e.getSite());
+                    writer.name("pipeline").value(j.getPipeline());
+                    writer.name("Status").value(j.getStatus());
+                    writer.name("Ref Organism").value(j.getRefOrg());
+                    writer.name("Qry Organism").value(j.getQryOrg());
+                    writer.name("Ref Annotation").value(j.getRefAnnot());
+                    writer.name("Qry Annotation").value(j.getQryAnnot());
+                    writer.endObject();
+                } catch (InvalidKeyException e) {
+                    System.out.println("Invalid key for encryption)");
+                    e.printStackTrace();
+                } catch (NoSuchPaddingException e) {
+                    e.printStackTrace();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (BadPaddingException e) {
+                    e.printStackTrace();
+                } catch (IllegalBlockSizeException e) {
+                    e.printStackTrace();
+                }
             }
             writer.endArray();
             writer.endObject();
@@ -139,15 +152,16 @@ public class JsonFiles {
                 String serverHost = encrypt(s.getHost(), PUBLIC_KEY);
                 String serverPwd = encrypt(s.getPassword(), PUBLIC_KEY);
                 String serverDir = encrypt(s.getWorkingDir(), PUBLIC_KEY);
-                
-                System.out.println("JsonFiles 143 : " + serverUser + " " + serverHost + " " + serverPwd + " " + serverDir);
-                
+
+                // Save encrypted information in JSON server file
                 writer.beginObject();
                 writer.name("name").value(s.name);
-                writer.name("user").value(serverUser);
-                writer.name("host").value(serverHost);
-                writer.name("password").value(serverPwd);
-                writer.name("dir").value(serverDir);
+                // Before writing encoded message, replace padding characters = by +
+                // for better json reading pruposes
+                writer.name("user").value(serverUser.replace("=", "+"));
+                writer.name("host").value(serverHost.replace("=", "+"));
+                writer.name("password").value(serverPwd.replace("=", "+"));
+                writer.name("dir").value(serverDir.replace("=", "+"));
                 writer.endObject();
 
             }
@@ -182,36 +196,33 @@ public class JsonFiles {
         try {
             // create Gson instance
             Gson gson = new Gson();
-
             // create a reader
             Reader reader = Files.newBufferedReader(Paths.get(serverPath));
-
             // convert JSON file to map
-            Map<?, ?> map = gson.fromJson(reader, Map.class);
+            Map<?, ?> map = gson.fromJson(reader, Map.class
+            );
 //    ArrayList array = new ArrayList();
             // print map entries
             if (map == null) {
             } else {
                 for (Map.Entry<?, ?> entry : map.entrySet()) {
-
                     String[] value;
+                    System.out.println("JSON 208 " + entry.getValue().toString());
                     value = entry.getValue().toString().split("=");
+                    // Once strings are split on "=", 
+                    // temporary padding characters "+" can be replaced by the normal ones "="
 
 //        Work out how many servers are present
                     int numServers = (value.length) / 5;
-
                     try {
                         for (int s = 1; s <= numServers; s++) {
-
-//            messy but it works
 //            create server object
                             ExternalServer serv = new ExternalServer(
-                                    value[1 + 5 * (s - 1)].split(",")[0],
-                                    decrypt(value[2 + 5 * (s - 1)].split(",")[0], PUBLIC_KEY),
-                                    decrypt(value[3 + 5 * (s - 1)].split(",")[0], PUBLIC_KEY),
-                                    decrypt(value[4 + 5 * (s - 1)].split(",")[0], PUBLIC_KEY),
-                                    decrypt(value[5 + 5 * (s - 1)].split(",")[0], PUBLIC_KEY).replace("}", "").replaceAll("]", ""));
-
+                                    value[1 + 5 * (s - 1)].replace("+", "=").split(",")[0],
+                                    decrypt(value[2 + 5 * (s - 1)].replace("+", "=").split(",")[0], PUBLIC_KEY),
+                                    decrypt(value[3 + 5 * (s - 1)].replace("+", "=").split(",")[0], PUBLIC_KEY),
+                                    decrypt(value[4 + 5 * (s - 1)].replace("+", "=").split(",")[0], PUBLIC_KEY),
+                                    decrypt(value[5 + 5 * (s - 1)].replace("+", "=").split(",")[0], PUBLIC_KEY).replace("}", "").replaceAll("]", ""));
 //           Add job object to array
                             servers.add(serv);
                         }
@@ -269,11 +280,13 @@ public class JsonFiles {
             Path path = Paths.get("");
             String pathDirectory = path.toAbsolutePath().toString();
             // convert JSON file to map
+
             try (
                     // create a reader
                     Reader reader = Files.newBufferedReader(Paths.get(pathDirectory + "\\serverInfo\\jobs.json"))) {
                 // convert JSON file to map
-                Map<?, ?> map = gson.fromJson(reader, Map.class);
+                Map<?, ?> map = gson.fromJson(reader, Map.class
+                );
                 // print map entries
                 if (map == null) {
                 } else {
@@ -293,28 +306,41 @@ public class JsonFiles {
 
                             //            create server object
                             // Populate with name, user, host, pass, dir
-                            ExternalServer serv = new ExternalServer(value[2 + 16 * (j - 1)].split(",")[0],
-                                    value[3 + 16 * (j - 1)].split(",")[0],
-                                    value[4 + 16 * (j - 1)].split(",")[0],
-                                    value[5 + 16 * (j - 1)].split(",")[0],
-                                    value[6 + 16 * (j - 1)].split(",")[0]);
-
-                            //            create job object
-                            // Populate with name, query and reference fasta, status, ref and qry organism
-                            // Ref and query annotations
-                            Job job = new Job(serv,
-                                    value[1 + 16 * (j - 1)].split(",")[0],
-                                    value[8 + 16 * (j - 1)].split(",")[0],
-                                    value[7 + 16 * (j - 1)].split(",")[0],
-                                    enz,
-                                    value[11 + 16 * (j - 1)].split(",")[0],
-                                    value[12 + 16 * (j - 1)].split(",")[0],
-                                    value[14 + 16 * (j - 1)].split(",")[0],
-                                    value[13 + 16 * (j - 1)].split(",")[0],
-                                    value[15 + 16 * (j - 1)].split(",")[0],
-                                    value[16 + 16 * (j - 1)].split(",")[0].replace("}", "").replaceAll("]", ""));
-                            //           Add job object to array
-                            jobsRunning.add(job);
+                            try {
+                                ExternalServer serv = new ExternalServer(
+                                        value[2 + 16 * (j - 1)].split(",")[0],
+                                        value[3 + 16 * (j - 1)].split(",")[0],
+                                        value[4 + 16 * (j - 1)].split(",")[0],
+                                        decrypt(value[5 + 16 * (j - 1)].replace("+", "=").split(",")[0], PUBLIC_KEY),
+                                        value[6 + 16 * (j - 1)].split(",")[0]);
+                                //            create job object
+                                // Populate with name, query and reference fasta, status, ref and qry organism
+                                // Ref and query annotations
+                                Job job = new Job(serv,
+                                        value[1 + 16 * (j - 1)].split(",")[0],
+                                        value[8 + 16 * (j - 1)].split(",")[0],
+                                        value[7 + 16 * (j - 1)].split(",")[0],
+                                        enz,
+                                        value[11 + 16 * (j - 1)].split(",")[0],
+                                        value[12 + 16 * (j - 1)].split(",")[0],
+                                        value[14 + 16 * (j - 1)].split(",")[0],
+                                        value[13 + 16 * (j - 1)].split(",")[0],
+                                        value[15 + 16 * (j - 1)].split(",")[0],
+                                        value[16 + 16 * (j - 1)].split(",")[0].replace("}", "").replaceAll("]", ""));
+                                //           Add job object to array
+                                jobsRunning.add(job);
+                            } catch (InvalidKeyException e) {
+                                System.out.println("Invalid key for encryption)");
+                                e.printStackTrace();
+                            } catch (NoSuchPaddingException e) {
+                                e.printStackTrace();
+                            } catch (NoSuchAlgorithmException e) {
+                                e.printStackTrace();
+                            } catch (BadPaddingException e) {
+                                e.printStackTrace();
+                            } catch (IllegalBlockSizeException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -345,8 +371,6 @@ public class JsonFiles {
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         SecretKey secretKey = new SecretKeySpec(publicKey, "AES");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-        //byte[] byteMessage = message.getBytes();
-        //String encryptedMessage = new String(cipher.doFinal(byteMessage));
         byte[] encryptedMessage = cipher.doFinal(message.getBytes());
         return Base64.getEncoder().encodeToString(encryptedMessage);
     }
@@ -369,8 +393,9 @@ public class JsonFiles {
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         SecretKey secretKey = new SecretKeySpec(publicKey, "AES");
         cipher.init(Cipher.DECRYPT_MODE, secretKey);
-        byte[] byteMessage = cryptedMessage.getBytes();
-        String message = new String(cipher.doFinal(byteMessage));
-        return message;
+        // Decode crypted message from base 64 to normal string
+        byte[] message = Base64.getDecoder().decode(cryptedMessage);
+        // Decypher message and convert it to string
+        return new String(cipher.doFinal(message));
     }
 }
