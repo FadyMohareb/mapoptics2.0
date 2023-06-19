@@ -243,6 +243,15 @@ public class CompGenStart extends javax.swing.JFrame {
         helpHtmlPane = new javax.swing.JEditorPane();
         waitPanel = new javax.swing.JDialog();
         messageLabel = new javax.swing.JLabel();
+        authentificationPane = new javax.swing.JDialog();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel34 = new javax.swing.JLabel();
+        jLabel35 = new javax.swing.JLabel();
+        userLabel = new javax.swing.JTextField();
+        passwordLabel = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
+        infoLabel = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         submittedJobPane = new javax.swing.JScrollPane();
         jobsTable = new javax.swing.JTable();
@@ -1608,6 +1617,72 @@ public class CompGenStart extends javax.swing.JFrame {
                 .addGap(68, 68, 68))
         );
 
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel6.setText("Please enter or create your password and user name");
+
+        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel11.setText("to access the server functionalities");
+
+        jLabel34.setText("User name");
+
+        jLabel35.setText("Password");
+
+        jButton2.setText("Save");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        infoLabel.setText(" ");
+
+        javax.swing.GroupLayout authentificationPaneLayout = new javax.swing.GroupLayout(authentificationPane.getContentPane());
+        authentificationPane.getContentPane().setLayout(authentificationPaneLayout);
+        authentificationPaneLayout.setHorizontalGroup(
+            authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(authentificationPaneLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
+                    .addGroup(authentificationPaneLayout.createSequentialGroup()
+                        .addComponent(jLabel35)
+                        .addGap(32, 32, 32)
+                        .addComponent(passwordLabel))
+                    .addGroup(authentificationPaneLayout.createSequentialGroup()
+                        .addComponent(jLabel34)
+                        .addGap(26, 26, 26)
+                        .addComponent(userLabel))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, authentificationPaneLayout.createSequentialGroup()
+                        .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton2)))
+                .addContainerGap())
+        );
+        authentificationPaneLayout.setVerticalGroup(
+            authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(authentificationPaneLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel11)
+                .addGap(44, 44, 44)
+                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel34)
+                    .addComponent(userLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel35)
+                    .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2)
+                    .addComponent(infoLabel))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Comparative Genomics");
         setLocationByPlatform(true);
@@ -2473,6 +2548,13 @@ public class CompGenStart extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_selectBestEnzActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // Initialisation of user files and password
+        this.manageJson.accessInitialisation(userLabel.getText(), passwordLabel.getText());
+        this.authentificationPane.setVisible(true);
+        this.setVisible(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     public String checkEnzymeName(JTextField field) {
         String name = field.getText();
         if (name.equals("")) {
@@ -2902,6 +2984,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JButton addNewServer;
     private javax.swing.JMenuItem addServerMenu;
     private javax.swing.JPanel alignmentPanel;
+    public javax.swing.JDialog authentificationPane;
     private javax.swing.JLabel bestEnz;
     private javax.swing.JDialog bestEnzymeDialog;
     private javax.swing.JTable bestEnzymesTable;
@@ -2939,11 +3022,14 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JEditorPane helpHtmlPane;
     private javax.swing.JDialog helpPane;
     private javax.swing.JTextField hostAddressField;
+    private javax.swing.JLabel infoLabel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton13;
+    private javax.swing.JButton jButton2;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
@@ -2968,8 +3054,11 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
+    private javax.swing.JLabel jLabel34;
+    private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -3000,6 +3089,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JButton newJobRefQuery;
     private javax.swing.JDialog newServerDialog;
     private javax.swing.JButton openResults;
+    private javax.swing.JTextField passwordLabel;
     private javax.swing.JTextField qryAnnotFileName;
     private javax.swing.JLabel qryGenomeLabel;
     private javax.swing.JTextField qrySpecies;
@@ -3050,6 +3140,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JMenuItem uploadQueryGenome;
     private javax.swing.JMenuItem uploadReference;
     private javax.swing.JTextField userJobName;
+    private javax.swing.JTextField userLabel;
     private javax.swing.JTextField userNameField;
     private javax.swing.JDialog waitPanel;
     private javax.swing.JTextField workingDirField;

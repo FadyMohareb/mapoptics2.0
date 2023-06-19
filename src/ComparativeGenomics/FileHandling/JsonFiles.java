@@ -44,6 +44,7 @@ public class JsonFiles {
 
     private String jobsPath;
     private String serverPath;
+    private String authenticatePath;
     private List<Job> jobsRunning = new ArrayList();
     private List<ExternalServer> servers = new ArrayList();
     //private byte[] publicKey = "nVqQMdZYHsiBwKxm".getBytes();
@@ -52,29 +53,30 @@ public class JsonFiles {
 
     public JsonFiles() {
     }
-    
-    private void accessInitialisation(String user, String password){
+
+    public void accessInitialisation(String user, String password) {
         this.strKey = password;
         this.currentUser = user;
-        
+
         // Get current job json path
         Path path = Paths.get("");
         String pathDirectory = path.toAbsolutePath().toString();
-        this.jobsPath = pathDirectory + "\\serverInfo_" + user + "\\jobs.json";
+        this.jobsPath = pathDirectory + "\\serverInfo\\jobs_" + user + ".json";
         // Get current server json path
-        this.serverPath = pathDirectory + "\\serverInfo_" + user + "\\servers.json";
+        this.serverPath = pathDirectory + "\\serverInfo\\servers_" + user + ".json";
+        this.authenticatePath = pathDirectory + "\\serverInfo\\" + user + ".txt";
 
         try {
 //            Make sure the json files for the jobs and server objects to be saved between sessions still exist
             File jobsJson = new File(this.jobsPath);
             if (!jobsJson.exists()) {
-                Files.createDirectories(Paths.get(pathDirectory + "\\serverInfo_" + user));
+                Files.createDirectories(Paths.get(pathDirectory + "\\serverInfo"));
                 jobsJson.createNewFile();
                 System.out.println("New file created: " + this.jobsPath);
             }
             File servJson = new File(this.serverPath);
             if (!servJson.exists()) {
-                Files.createDirectories(Paths.get(pathDirectory + "\\serverInfo_" + user));
+                Files.createDirectories(Paths.get(pathDirectory + "\\serverInfo"));
                 servJson.createNewFile();
                 System.out.println("New file created: " + this.serverPath);
             }
@@ -84,14 +86,15 @@ public class JsonFiles {
     }
 
     /**
-     * Set the key that is used for the encryption / decryption of JSON file
-     * set the user name to access the right file
-     * @param password 
+     * Set the key that is used for the encryption / decryption of JSON file set
+     * the user name to access the right file
+     *
+     * @param password
      */
-    public void setAccess(String user, String password){
+    public void setAccess(String user, String password) {
         this.accessInitialisation(user, password);
     }
-    
+
 //Constructor creates and encrypt the json files
 // Add saveJobJson
 // saveServerJson
@@ -118,7 +121,7 @@ public class JsonFiles {
                     writer.name("Server name").value(s.name);
                     writer.name("Server user").value(s.getUser());
                     writer.name("Server host").value(s.getHost());
-                    writer.name("Server pass").value(encrypt(s.getPassword(), publicKey));
+                    writer.name("Server pass").value(encrypt(s.getPassword(), strKey.getBytes()));
                     writer.name("Server dir").value(s.getWorkingDir());
                     writer.name("qry").value(j.getQry());
                     writer.name("ref").value(j.getRef());
@@ -165,10 +168,10 @@ public class JsonFiles {
             writer.name("data");
             writer.beginArray();
             for (ExternalServer s : serversList) {
-                String serverUser = encrypt(s.getUser(), publicKey);
-                String serverHost = encrypt(s.getHost(), publicKey);
-                String serverPwd = encrypt(s.getPassword(), publicKey);
-                String serverDir = encrypt(s.getWorkingDir(), publicKey);
+                String serverUser = encrypt(s.getUser(), strKey.getBytes());
+                String serverHost = encrypt(s.getHost(), strKey.getBytes());
+                String serverPwd = encrypt(s.getPassword(), strKey.getBytes());
+                String serverDir = encrypt(s.getWorkingDir(), strKey.getBytes());
 
                 System.out.println("Json 156 user encrypt " + serverUser);
                 // Save encrypted information in JSON server file
@@ -234,12 +237,11 @@ public class JsonFiles {
                     try {
                         for (int s = 1; s <= numServers; s++) {
 //            create server object
-                            String servUser = decrypt(value[2 + 5 * (s - 1)].replace("*", "=").split(",")[0], publicKey);
-                            String servHost = decrypt(value[3 + 5 * (s - 1)].replace("*", "=").split(",")[0], publicKey);
-                            String servPassword = decrypt(value[4 + 5 * (s - 1)].replace("*", "=").split(",")[0], publicKey);
-                            String servDirectory = decrypt(value[5 + 5 * (s - 1)].replace("*", "=").split(",")[0].replace("}", "").replaceAll("]", ""), publicKey);
-                            
-                            
+                            String servUser = decrypt(value[2 + 5 * (s - 1)].replace("*", "=").split(",")[0], strKey.getBytes());
+                            String servHost = decrypt(value[3 + 5 * (s - 1)].replace("*", "=").split(",")[0], strKey.getBytes());
+                            String servPassword = decrypt(value[4 + 5 * (s - 1)].replace("*", "=").split(",")[0], strKey.getBytes());
+                            String servDirectory = decrypt(value[5 + 5 * (s - 1)].replace("*", "=").split(",")[0].replace("}", "").replaceAll("]", ""), strKey.getBytes());
+
                             ExternalServer serv = new ExternalServer(
                                     value[1 + 5 * (s - 1)].replace("*", "=").split(",")[0],
                                     servUser,
@@ -335,7 +337,7 @@ public class JsonFiles {
                                         value[2 + 16 * (j - 1)].split(",")[0],
                                         value[3 + 16 * (j - 1)].split(",")[0],
                                         value[4 + 16 * (j - 1)].split(",")[0],
-                                        decrypt(value[5 + 16 * (j - 1)].replace("*", "=").split(",")[0], publicKey),
+                                        decrypt(value[5 + 16 * (j - 1)].replace("*", "=").split(",")[0], strKey.getBytes()),
                                         value[6 + 16 * (j - 1)].split(",")[0]);
                                 //            create job object
                                 // Populate with name, query and reference fasta, status, ref and qry organism
@@ -391,13 +393,16 @@ public class JsonFiles {
     private String encrypt(String message, byte[] publicKey)
             throws InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException,
             BadPaddingException, IllegalBlockSizeException {
-
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-        SecretKey secretKey = new SecretKeySpec(publicKey, "AES");
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-        byte[] encryptedMessage = cipher.doFinal(message.getBytes());
-        System.out.println("JSON line 4400 - byte msg encryption " + new String(encryptedMessage));
-        return Base64.getEncoder().encodeToString(encryptedMessage);
+        try {
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            SecretKey secretKey = new SecretKeySpec(publicKey, "AES");
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            byte[] encryptedMessage = cipher.doFinal(message.getBytes());
+            System.out.println("JSON line 4400 - byte msg encryption " + new String(encryptedMessage));
+            return Base64.getEncoder().encodeToString(encryptedMessage);
+        } catch (Exception IllegalArgumentException) {
+            return null;
+        }
     }
 
     /**
@@ -415,15 +420,17 @@ public class JsonFiles {
     private String decrypt(String cryptedMessage, byte[] publicKey)
             throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
             BadPaddingException, IllegalBlockSizeException {
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-        SecretKey secretKey = new SecretKeySpec(publicKey, "AES");
-        cipher.init(Cipher.DECRYPT_MODE, secretKey);
-        // Decode crypted message from base 64 to normal string
-        byte[] message = Base64.getDecoder().decode(cryptedMessage);
-        System.out.println("JSON line 405 - byte msg " + new String(message) + " end decrypt " + new String(cipher.doFinal(message)));
-        // Decypher message and convert it to string
-        return new String(cipher.doFinal(message));
+        try {
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            SecretKey secretKey = new SecretKeySpec(publicKey, "AES");
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+            // Decode crypted message from base 64 to normal string
+            byte[] message = Base64.getDecoder().decode(cryptedMessage);
+            System.out.println("JSON line 405 - byte msg " + new String(message) + " end decrypt " + new String(cipher.doFinal(message)));
+            // Decypher message and convert it to string
+            return new String(cipher.doFinal(message));
+        } catch (Exception IllegalArgumentException) {
+            return null;
+        }
     }
 }
-
-
