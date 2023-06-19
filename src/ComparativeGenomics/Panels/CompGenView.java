@@ -1667,6 +1667,8 @@ public class CompGenView extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "No filename given", "Invalid input", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel alignerLabel;
     private ComparativeGenomics.Panels.AlignmentsOnChromosomeChartPanel alignmentsOnChromosomeChartPanel1;

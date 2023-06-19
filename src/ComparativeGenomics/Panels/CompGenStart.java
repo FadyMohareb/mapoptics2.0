@@ -88,7 +88,6 @@ public class CompGenStart extends javax.swing.JFrame {
      * Creates new form comparativeGenomics
      */
     public CompGenStart() {
-
         initComponents();
     }
 
@@ -1865,6 +1864,8 @@ public class CompGenStart extends javax.swing.JFrame {
     }//GEN-LAST:event_addServerMenuActionPerformed
 
     private void chooseServerMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseServerMenuActionPerformed
+        // Retrieve servers from json file in case a server was added
+        this.servers = manageJson.getServersFromJson(this.servers);
         selectServerDialog.setVisible(true);
     }//GEN-LAST:event_chooseServerMenuActionPerformed
 

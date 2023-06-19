@@ -46,27 +46,35 @@ public class JsonFiles {
     private String serverPath;
     private List<Job> jobsRunning = new ArrayList();
     private List<ExternalServer> servers = new ArrayList();
-    private byte[] PUBLIC_KEY = "nVqQMdZYHsiBwKxm".getBytes();
+    //private byte[] publicKey = "nVqQMdZYHsiBwKxm".getBytes();
+    private String strKey = new String();
+    private String currentUser = new String();
 
     public JsonFiles() {
+    }
+    
+    private void accessInitialisation(String user, String password){
+        this.strKey = password;
+        this.currentUser = user;
+        
         // Get current job json path
         Path path = Paths.get("");
         String pathDirectory = path.toAbsolutePath().toString();
-        this.jobsPath = pathDirectory + "\\serverInfo\\jobs.json";
+        this.jobsPath = pathDirectory + "\\serverInfo_" + user + "\\jobs.json";
         // Get current server json path
-        this.serverPath = pathDirectory + "\\serverInfo\\servers.json";
+        this.serverPath = pathDirectory + "\\serverInfo_" + user + "\\servers.json";
 
         try {
-//            Make sure the json files for the josb and server objects to be saved between sessions still exist
+//            Make sure the json files for the jobs and server objects to be saved between sessions still exist
             File jobsJson = new File(this.jobsPath);
             if (!jobsJson.exists()) {
-                Files.createDirectories(Paths.get(pathDirectory + "\\serverInfo"));
+                Files.createDirectories(Paths.get(pathDirectory + "\\serverInfo_" + user));
                 jobsJson.createNewFile();
                 System.out.println("New file created: " + this.jobsPath);
             }
             File servJson = new File(this.serverPath);
             if (!servJson.exists()) {
-                Files.createDirectories(Paths.get(pathDirectory + "\\serverInfo"));
+                Files.createDirectories(Paths.get(pathDirectory + "\\serverInfo_" + user));
                 servJson.createNewFile();
                 System.out.println("New file created: " + this.serverPath);
             }
@@ -75,6 +83,15 @@ public class JsonFiles {
         }
     }
 
+    /**
+     * Set the key that is used for the encryption / decryption of JSON file
+     * set the user name to access the right file
+     * @param password 
+     */
+    public void setAccess(String user, String password){
+        this.accessInitialisation(user, password);
+    }
+    
 //Constructor creates and encrypt the json files
 // Add saveJobJson
 // saveServerJson
@@ -101,7 +118,7 @@ public class JsonFiles {
                     writer.name("Server name").value(s.name);
                     writer.name("Server user").value(s.getUser());
                     writer.name("Server host").value(s.getHost());
-                    writer.name("Server pass").value(encrypt(s.getPassword(), PUBLIC_KEY));
+                    writer.name("Server pass").value(encrypt(s.getPassword(), publicKey));
                     writer.name("Server dir").value(s.getWorkingDir());
                     writer.name("qry").value(j.getQry());
                     writer.name("ref").value(j.getRef());
@@ -148,20 +165,21 @@ public class JsonFiles {
             writer.name("data");
             writer.beginArray();
             for (ExternalServer s : serversList) {
-                String serverUser = encrypt(s.getUser(), PUBLIC_KEY);
-                String serverHost = encrypt(s.getHost(), PUBLIC_KEY);
-                String serverPwd = encrypt(s.getPassword(), PUBLIC_KEY);
-                String serverDir = encrypt(s.getWorkingDir(), PUBLIC_KEY);
+                String serverUser = encrypt(s.getUser(), publicKey);
+                String serverHost = encrypt(s.getHost(), publicKey);
+                String serverPwd = encrypt(s.getPassword(), publicKey);
+                String serverDir = encrypt(s.getWorkingDir(), publicKey);
 
+                System.out.println("Json 156 user encrypt " + serverUser);
                 // Save encrypted information in JSON server file
                 writer.beginObject();
                 writer.name("name").value(s.name);
-                // Before writing encoded message, replace padding characters = by +
-                // for better json reading pruposes
-                writer.name("user").value(serverUser.replace("=", "+"));
-                writer.name("host").value(serverHost.replace("=", "+"));
-                writer.name("password").value(serverPwd.replace("=", "+"));
-                writer.name("dir").value(serverDir.replace("=", "+"));
+                // Before writing encoded message, replace padding characters = by * for better json reading pruposes
+                // * are not used in base64 encoding.
+                writer.name("user").value(serverUser.replace("=", "*"));
+                writer.name("host").value(serverHost.replace("=", "*"));
+                writer.name("password").value(serverPwd.replace("=", "*"));
+                writer.name("dir").value(serverDir.replace("=", "*"));
                 writer.endObject();
 
             }
@@ -207,24 +225,30 @@ public class JsonFiles {
             } else {
                 for (Map.Entry<?, ?> entry : map.entrySet()) {
                     String[] value;
-                    System.out.println("JSON 208 " + entry.getValue().toString());
                     value = entry.getValue().toString().split("=");
                     // Once strings are split on "=", 
-                    // temporary padding characters "+" can be replaced by the normal ones "="
+                    // temporary padding characters "*" can be replaced by the normal ones "="
 
 //        Work out how many servers are present
                     int numServers = (value.length) / 5;
                     try {
                         for (int s = 1; s <= numServers; s++) {
 //            create server object
+                            String servUser = decrypt(value[2 + 5 * (s - 1)].replace("*", "=").split(",")[0], publicKey);
+                            String servHost = decrypt(value[3 + 5 * (s - 1)].replace("*", "=").split(",")[0], publicKey);
+                            String servPassword = decrypt(value[4 + 5 * (s - 1)].replace("*", "=").split(",")[0], publicKey);
+                            String servDirectory = decrypt(value[5 + 5 * (s - 1)].replace("*", "=").split(",")[0].replace("}", "").replaceAll("]", ""), publicKey);
+                            
+                            
                             ExternalServer serv = new ExternalServer(
-                                    value[1 + 5 * (s - 1)].replace("+", "=").split(",")[0],
-                                    decrypt(value[2 + 5 * (s - 1)].replace("+", "=").split(",")[0], PUBLIC_KEY),
-                                    decrypt(value[3 + 5 * (s - 1)].replace("+", "=").split(",")[0], PUBLIC_KEY),
-                                    decrypt(value[4 + 5 * (s - 1)].replace("+", "=").split(",")[0], PUBLIC_KEY),
-                                    decrypt(value[5 + 5 * (s - 1)].replace("+", "=").split(",")[0], PUBLIC_KEY).replace("}", "").replaceAll("]", ""));
-//           Add job object to array
+                                    value[1 + 5 * (s - 1)].replace("*", "=").split(",")[0],
+                                    servUser,
+                                    servHost,
+                                    servPassword,
+                                    servDirectory);
+//           Add server object to array
                             servers.add(serv);
+                            System.out.println("JSONFiles 229 - Server added " + serv.name);
                         }
                     } catch (InvalidKeyException e) {
                         System.out.println("Invalid key for encryption)");
@@ -311,7 +335,7 @@ public class JsonFiles {
                                         value[2 + 16 * (j - 1)].split(",")[0],
                                         value[3 + 16 * (j - 1)].split(",")[0],
                                         value[4 + 16 * (j - 1)].split(",")[0],
-                                        decrypt(value[5 + 16 * (j - 1)].replace("+", "=").split(",")[0], PUBLIC_KEY),
+                                        decrypt(value[5 + 16 * (j - 1)].replace("*", "=").split(",")[0], publicKey),
                                         value[6 + 16 * (j - 1)].split(",")[0]);
                                 //            create job object
                                 // Populate with name, query and reference fasta, status, ref and qry organism
@@ -372,6 +396,7 @@ public class JsonFiles {
         SecretKey secretKey = new SecretKeySpec(publicKey, "AES");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
         byte[] encryptedMessage = cipher.doFinal(message.getBytes());
+        System.out.println("JSON line 4400 - byte msg encryption " + new String(encryptedMessage));
         return Base64.getEncoder().encodeToString(encryptedMessage);
     }
 
@@ -395,7 +420,10 @@ public class JsonFiles {
         cipher.init(Cipher.DECRYPT_MODE, secretKey);
         // Decode crypted message from base 64 to normal string
         byte[] message = Base64.getDecoder().decode(cryptedMessage);
+        System.out.println("JSON line 405 - byte msg " + new String(message) + " end decrypt " + new String(cipher.doFinal(message)));
         // Decypher message and convert it to string
         return new String(cipher.doFinal(message));
     }
 }
+
+
