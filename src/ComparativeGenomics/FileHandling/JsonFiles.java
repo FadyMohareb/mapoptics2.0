@@ -54,7 +54,7 @@ public class JsonFiles {
     public JsonFiles() {
     }
 
-    public void accessInitialisation(String user, String password) {
+    private void accessInitialisation(String user, String password) {
         this.strKey = password;
         this.currentUser = user;
 
@@ -168,11 +168,13 @@ public class JsonFiles {
             writer.name("data");
             writer.beginArray();
             for (ExternalServer s : serversList) {
+                System.out.println("Json 171 strKey " + strKey);
+                System.out.println("Json 171 strKey " + strKey.getBytes());
                 String serverUser = encrypt(s.getUser(), strKey.getBytes());
                 String serverHost = encrypt(s.getHost(), strKey.getBytes());
                 String serverPwd = encrypt(s.getPassword(), strKey.getBytes());
                 String serverDir = encrypt(s.getWorkingDir(), strKey.getBytes());
-
+                System.out.println("Json 156 user server " + s.getUser());
                 System.out.println("Json 156 user encrypt " + serverUser);
                 // Save encrypted information in JSON server file
                 writer.beginObject();
@@ -396,11 +398,13 @@ public class JsonFiles {
         try {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             SecretKey secretKey = new SecretKeySpec(publicKey, "AES");
+            System.out.println("JSON line 400 - secret key " + secretKey);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             byte[] encryptedMessage = cipher.doFinal(message.getBytes());
             System.out.println("JSON line 4400 - byte msg encryption " + new String(encryptedMessage));
             return Base64.getEncoder().encodeToString(encryptedMessage);
-        } catch (Exception IllegalArgumentException) {
+        } catch (Exception exc) {
+            System.out.println("Encryption failed " + exc);
             return null;
         }
     }

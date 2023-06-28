@@ -1617,6 +1617,8 @@ public class CompGenStart extends javax.swing.JFrame {
                 .addGap(68, 68, 68))
         );
 
+        authentificationPane.setMinimumSize(new java.awt.Dimension(350, 222));
+
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel6.setText("Please enter or create your password and user name");
@@ -2214,6 +2216,7 @@ public class CompGenStart extends javax.swing.JFrame {
             this.selectedServer = server;
             this.serverLabel.setText(server.getName());
         }
+        System.out.println("CompGenStart 2219 " + serverName);
         manageJson.saveServerJson(this.servers);
         this.servTableModel.setData(this.servers);
         newServerDialog.setVisible(false);
@@ -2550,7 +2553,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // Initialisation of user files and password
-        this.manageJson.accessInitialisation(userLabel.getText(), passwordLabel.getText());
+        this.manageJson.setAccess(userLabel.getText(), passwordLabel.getText());
         this.authentificationPane.setVisible(true);
         this.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
