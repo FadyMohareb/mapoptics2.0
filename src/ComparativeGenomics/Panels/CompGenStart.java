@@ -252,6 +252,9 @@ public class CompGenStart extends javax.swing.JFrame {
         passwordLabel = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
         infoLabel = new javax.swing.JLabel();
+        jLabel36 = new javax.swing.JLabel();
+        confirmLabel = new javax.swing.JTextField();
+        lengthPwd = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         submittedJobPane = new javax.swing.JScrollPane();
         jobsTable = new javax.swing.JTable();
@@ -1617,7 +1620,7 @@ public class CompGenStart extends javax.swing.JFrame {
                 .addGap(68, 68, 68))
         );
 
-        authentificationPane.setMinimumSize(new java.awt.Dimension(350, 222));
+        authentificationPane.setMinimumSize(new java.awt.Dimension(413, 266));
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -1631,6 +1634,12 @@ public class CompGenStart extends javax.swing.JFrame {
 
         jLabel35.setText("Password");
 
+        passwordLabel.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                checkPwdLength(evt);
+            }
+        });
+
         jButton2.setText("Save");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1640,6 +1649,13 @@ public class CompGenStart extends javax.swing.JFrame {
 
         infoLabel.setText(" ");
 
+        jLabel36.setText("Confirm password");
+
+        lengthPwd.setForeground(new java.awt.Color(255, 51, 51));
+        lengthPwd.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lengthPwd.setVisible(false);
+        lengthPwd.setText("Length of password must be 16");
+
         javax.swing.GroupLayout authentificationPaneLayout = new javax.swing.GroupLayout(authentificationPane.getContentPane());
         authentificationPane.getContentPane().setLayout(authentificationPaneLayout);
         authentificationPaneLayout.setHorizontalGroup(
@@ -1648,19 +1664,25 @@ public class CompGenStart extends javax.swing.JFrame {
             .addGroup(authentificationPaneLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
                     .addGroup(authentificationPaneLayout.createSequentialGroup()
-                        .addComponent(jLabel35)
-                        .addGap(32, 32, 32)
-                        .addComponent(passwordLabel))
-                    .addGroup(authentificationPaneLayout.createSequentialGroup()
-                        .addComponent(jLabel34)
-                        .addGap(26, 26, 26)
-                        .addComponent(userLabel))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, authentificationPaneLayout.createSequentialGroup()
+                        .addComponent(jLabel36)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(userLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, authentificationPaneLayout.createSequentialGroup()
+                        .addComponent(lengthPwd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton2)))
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, authentificationPaneLayout.createSequentialGroup()
+                        .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel34)
+                            .addComponent(jLabel35))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(passwordLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
+                            .addComponent(confirmLabel))))
                 .addContainerGap())
         );
         authentificationPaneLayout.setVerticalGroup(
@@ -1680,9 +1702,14 @@ public class CompGenStart extends javax.swing.JFrame {
                     .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(infoLabel)
+                    .addComponent(jLabel36)
+                    .addComponent(confirmLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
-                    .addComponent(infoLabel))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(lengthPwd))
+                .addContainerGap())
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -2134,7 +2161,7 @@ public class CompGenStart extends javax.swing.JFrame {
 //        clean slate for the channel object
         this.channel = new SSH();
         System.out.println("Channel cleaned");
-        
+
         //Show the correct JFrames
         makeCompGenJob.setVisible(false);
         this.setVisible(true);
@@ -2410,7 +2437,7 @@ public class CompGenStart extends javax.swing.JFrame {
             messageLabel.setText("Downloading calculation results...");
             messageLabel.setVisible(true);
             this.channel.downloadEnzResults(this.newJob);
-            
+
             messageLabel.setText("Reading results and selecting best enzyme...");
             messageLabel.setVisible(true);
             // Array list of best enzymes
@@ -2419,9 +2446,9 @@ public class CompGenStart extends javax.swing.JFrame {
             for (int i = 0; i < result.getResult().size(); i++) {
                 bestEnzymesTableModel.addRow(result.getResult().get(i));
             }
-            
+
             waitPanel.setVisible(false);
-            
+
             // Select enzyme with best density by default
             tempSelectedEnzyme = result.getBestEnzyme();
             LblEnzyme.setText(result.getBestEnzyme().getName());
@@ -2547,16 +2574,37 @@ public class CompGenStart extends javax.swing.JFrame {
             bestEnzymeDialog.setVisible(false);
         } else {
             JOptionPane.showMessageDialog(null, "You have not selected an enzyme, please select one from the table!",
-                "No enzyme selected", JOptionPane.ERROR_MESSAGE);
+                    "No enzyme selected", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_selectBestEnzActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // Initialisation of user files and password
         this.manageJson.setAccess(userLabel.getText(), passwordLabel.getText());
-        this.authentificationPane.setVisible(true);
-        this.setVisible(true);
+        if (confirmLabel.getText().equals(passwordLabel.getText())) {
+            if (passwordLabel.getText().length() == 16) {
+                this.authentificationPane.setVisible(false);
+                this.setVisible(true);
+            } else {
+                lengthPwd.setText("Password length must be 16.");
+                lengthPwd.setVisible(true);
+            }
+        } else {
+            lengthPwd.setText("Password and confirmation do not match");
+            lengthPwd.setVisible(true);
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void checkPwdLength(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_checkPwdLength
+        //Check the length of the password while it is typed
+        if (passwordLabel.getText().length() != 16) {
+            lengthPwd.setText("Password is " + passwordLabel.getText().length()
+                    + " characters long, it should conatin 16 characters.");
+            lengthPwd.setVisible(true);
+        } else {
+            lengthPwd.setVisible(false);
+        }
+    }//GEN-LAST:event_checkPwdLength
 
     public String checkEnzymeName(JTextField field) {
         String name = field.getText();
@@ -2675,8 +2723,7 @@ public class CompGenStart extends javax.swing.JFrame {
     /*
     * Read the jobs from the jobs.json file
      */
-    
-    /*
+ /*
     private void jobsFromJson() {
         this.jobsRunning.clear();
         try {
@@ -2744,8 +2791,7 @@ public class CompGenStart extends javax.swing.JFrame {
         }
 
     }
- */
-
+     */
     private static class ServTableModel extends DefaultTableModel {
 
         private List<ExternalServer> list = new ArrayList();
@@ -2916,49 +2962,30 @@ public class CompGenStart extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
-    */
-
+     */
     /**
-    private void saveJobJson(List<Job> jobs) {
-        try {
-            // Get current path
-            Path path = Paths.get("");
-            String pathDirectory = path.toAbsolutePath().toString();
-            JsonWriter writer = new JsonWriter(new FileWriter(pathDirectory + "\\serverInfo\\jobs.json"));
-            writer.beginObject();
-            writer.name("data");
-            writer.beginArray();
-            for (Job j : jobs) {
-                ExternalServer s = j.getServer();
-                Enzyme e = j.getEnz();
-                writer.beginObject();
-                writer.name("Job name").value(j.getName());
-                writer.name("Server name").value(s.name);
-                writer.name("Server user").value(s.getUser());
-                writer.name("Server host").value(s.getHost());
-                writer.name("Server pass").value(s.getPassword());
-                writer.name("Server dir").value(s.getWorkingDir());
-                writer.name("qry").value(j.getQry());
-                writer.name("ref").value(j.getRef());
-                writer.name("Enzyme name").value(e.getName());
-                writer.name("Enzyme site").value(e.getSite());
-                writer.name("pipeline").value(j.getPipeline());
-                writer.name("Status").value(j.getStatus());
-                writer.name("Ref Organism").value(j.getRefOrg());
-                writer.name("Qry Organism").value(j.getQryOrg());
-                writer.name("Ref Annotation").value(j.getRefAnnot());
-                writer.name("Qry Annotation").value(j.getQryAnnot());
-                writer.endObject();
-            }
-            writer.endArray();
-            writer.endObject();
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    */
-
+     * private void saveJobJson(List<Job> jobs) { try { // Get current path Path
+     * path = Paths.get(""); String pathDirectory =
+     * path.toAbsolutePath().toString(); JsonWriter writer = new JsonWriter(new
+     * FileWriter(pathDirectory + "\\serverInfo\\jobs.json"));
+     * writer.beginObject(); writer.name("data"); writer.beginArray(); for (Job
+     * j : jobs) { ExternalServer s = j.getServer(); Enzyme e = j.getEnz();
+     * writer.beginObject(); writer.name("Job name").value(j.getName());
+     * writer.name("Server name").value(s.name); writer.name("Server
+     * user").value(s.getUser()); writer.name("Server host").value(s.getHost());
+     * writer.name("Server pass").value(s.getPassword()); writer.name("Server
+     * dir").value(s.getWorkingDir()); writer.name("qry").value(j.getQry());
+     * writer.name("ref").value(j.getRef()); writer.name("Enzyme
+     * name").value(e.getName()); writer.name("Enzyme site").value(e.getSite());
+     * writer.name("pipeline").value(j.getPipeline());
+     * writer.name("Status").value(j.getStatus()); writer.name("Ref
+     * Organism").value(j.getRefOrg()); writer.name("Qry
+     * Organism").value(j.getQryOrg()); writer.name("Ref
+     * Annotation").value(j.getRefAnnot()); writer.name("Qry
+     * Annotation").value(j.getQryAnnot()); writer.endObject(); }
+     * writer.endArray(); writer.endObject(); writer.close(); } catch
+     * (IOException e) { e.printStackTrace(); } }
+     */
     private Boolean refreshJobStatus(Job job) {
 //          Connect to the server of the user selectedjob
         this.channel.setServer(job.getServer());
@@ -3008,6 +3035,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JLabel chosenServerLabel;
     private javax.swing.JButton clearNewServerFields;
     private javax.swing.JButton closeLocalWindow;
+    private javax.swing.JTextField confirmLabel;
     private javax.swing.JToggleButton connectServerToggle;
     private javax.swing.JTextField currentDir;
     private javax.swing.JTextField currentHost;
@@ -3059,6 +3087,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel34;
     private javax.swing.JLabel jLabel35;
+    private javax.swing.JLabel jLabel36;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -3080,6 +3109,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel jobDownloadingName;
     private javax.swing.JTable jobsTable;
+    private javax.swing.JLabel lengthPwd;
     private javax.swing.JButton loadLocalAlignment;
     private javax.swing.JLabel localQryCmapName;
     private javax.swing.JLabel localRefAnnotName;
