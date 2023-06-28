@@ -11,7 +11,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonWriter;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
@@ -24,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
@@ -44,7 +48,7 @@ public class JsonFiles {
 
     private String jobsPath;
     private String serverPath;
-    private String authenticatePath;
+    private String authenticatePassword;
     private List<Job> jobsRunning = new ArrayList();
     private List<ExternalServer> servers = new ArrayList();
     //private byte[] publicKey = "nVqQMdZYHsiBwKxm".getBytes();
@@ -54,7 +58,7 @@ public class JsonFiles {
     public JsonFiles() {
     }
 
-    private void accessInitialisation(String user, String password) {
+    private boolean accessInitialisation(String user, String password) {
         this.strKey = password;
         this.currentUser = user;
 
@@ -64,7 +68,8 @@ public class JsonFiles {
         this.jobsPath = pathDirectory + "\\serverInfo\\jobs_" + user + ".json";
         // Get current server json path
         this.serverPath = pathDirectory + "\\serverInfo\\servers_" + user + ".json";
-        this.authenticatePath = pathDirectory + "\\serverInfo\\" + user + ".txt";
+        // Save the encrypted password in a file to check that the correct password is entered
+        this.authenticatePassword = pathDirectory + "\\serverInfo\\" + user + ".txt";
 
         try {
 //            Make sure the json files for the jobs and server objects to be saved between sessions still exist
@@ -74,15 +79,84 @@ public class JsonFiles {
                 jobsJson.createNewFile();
                 System.out.println("New file created: " + this.jobsPath);
             }
+            // Check that server file exist, create it if neededs
             File servJson = new File(this.serverPath);
             if (!servJson.exists()) {
                 Files.createDirectories(Paths.get(pathDirectory + "\\serverInfo"));
                 servJson.createNewFile();
                 System.out.println("New file created: " + this.serverPath);
             }
+            // Check that file in which password is saved exists, create it if required
+            File checkPassword = new File(this.authenticatePassword);
+            if (checkPassword.exists()) {
+                // Check that given password corresponds to key saved in the file
+                try {
+                    // Get first line of the file
+                    FileInputStream inputStream = new FileInputStream(this.authenticatePassword);
+                    Scanner sc = new Scanner(inputStream, "UTF-8");
+                    while (sc.hasNextLine()) {
+                        // Decrypt the line saved in the file and compare to password
+                        // to check if entered password is true
+                        try {
+                            String savedKey = decrypt(sc.nextLine(), strKey.getBytes());
+                            // Check that the encrypted word saved in the file corresponds to the entered password
+                            if (this.strKey.equals(savedKey)) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+
+                        } catch (InvalidKeyException e) {
+                            System.out.println("Invalid key for encryption)");
+                            e.printStackTrace();
+                        } catch (NoSuchPaddingException e) {
+                            e.printStackTrace();
+                        } catch (NoSuchAlgorithmException e) {
+                            e.printStackTrace();
+                        } catch (BadPaddingException e) {
+                            e.printStackTrace();
+                        } catch (IllegalBlockSizeException e) {
+                            e.printStackTrace();
+                        }
+                    } 
+                } catch (FileNotFoundException ex) {
+                    System.out.println(ex);
+                }
+            } else {
+                try {
+                    // Create the file and saved the encrypted password in it
+                    Files.createDirectories(Paths.get(pathDirectory + "\\serverInfo"));
+                    checkPassword.createNewFile();
+                    // Add encrypted password to file
+                    BufferedWriter writer = new BufferedWriter(new FileWriter(checkPassword, true));
+                    try {
+                        String encryptPwd = encrypt(this.strKey, this.strKey.getBytes());
+                        System.out.println("JSON 115 encrypted password" + encryptPwd);
+                        writer.write(encryptPwd);
+                        writer.close();
+                    } catch (InvalidKeyException e) {
+                        System.out.println("Invalid key for encryption)");
+                        e.printStackTrace();
+                    } catch (NoSuchPaddingException e) {
+                        e.printStackTrace();
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    } catch (BadPaddingException e) {
+                        e.printStackTrace();
+                    } catch (IllegalBlockSizeException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("New file created: " + this.authenticatePassword);
+                    return true;
+                } catch (IOException e) {
+                    System.out.println(e);
+                }
+            }
         } catch (IOException ex) {
             Logger.getLogger(runMapOptics.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        return false;
     }
 
     /**
@@ -90,9 +164,10 @@ public class JsonFiles {
      * the user name to access the right file
      *
      * @param password
+     * @return boolean indicating if the password is correct or not
      */
-    public void setAccess(String user, String password) {
-        this.accessInitialisation(user, password);
+    public boolean setAccess(String user, String password) {
+        return (this.accessInitialisation(user, password));
     }
 
 //Constructor creates and encrypt the json files
@@ -174,8 +249,6 @@ public class JsonFiles {
                 String serverHost = encrypt(s.getHost(), strKey.getBytes());
                 String serverPwd = encrypt(s.getPassword(), strKey.getBytes());
                 String serverDir = encrypt(s.getWorkingDir(), strKey.getBytes());
-                System.out.println("Json 156 user server " + s.getUser());
-                System.out.println("Json 156 user encrypt " + serverUser);
                 // Save encrypted information in JSON server file
                 writer.beginObject();
                 writer.name("name").value(s.name);
@@ -252,7 +325,6 @@ public class JsonFiles {
                                     servDirectory);
 //           Add server object to array
                             servers.add(serv);
-                            System.out.println("JSONFiles 229 - Server added " + serv.name);
                         }
                     } catch (InvalidKeyException e) {
                         System.out.println("Invalid key for encryption)");
@@ -430,7 +502,6 @@ public class JsonFiles {
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
             // Decode crypted message from base 64 to normal string
             byte[] message = Base64.getDecoder().decode(cryptedMessage);
-            System.out.println("JSON line 405 - byte msg " + new String(message) + " end decrypt " + new String(cipher.doFinal(message)));
             // Decypher message and convert it to string
             return new String(cipher.doFinal(message));
         } catch (Exception IllegalArgumentException) {

@@ -121,6 +121,7 @@ public class Annot {
                 }
             }
         } catch (FileNotFoundException ex) {
+            System.out.println(ex);
         }
 
 //            Save the identified gene objects to arraylist to be accessed via chr name in the hashmap.

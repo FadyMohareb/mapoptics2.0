@@ -2580,12 +2580,20 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // Initialisation of user files and password
-        this.manageJson.setAccess(userLabel.getText(), passwordLabel.getText());
         if (confirmLabel.getText().equals(passwordLabel.getText())) {
             if (passwordLabel.getText().length() == 16) {
-                this.authentificationPane.setVisible(false);
-                this.setVisible(true);
-            } else {
+                // Initialisation of files and password / check existing password
+                boolean correctPwd = this.manageJson.setAccess(userLabel.getText(), passwordLabel.getText());
+                
+                if (correctPwd){
+                    this.authentificationPane.setVisible(false);
+                    this.setVisible(true);
+                }
+                else{
+                    lengthPwd.setText("Incorrect password for existing user " + userLabel.getText());
+                    lengthPwd.setVisible(true);
+                }
+                } else {
                 lengthPwd.setText("Password length must be 16.");
                 lengthPwd.setVisible(true);
             }
