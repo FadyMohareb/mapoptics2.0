@@ -249,12 +249,14 @@ public class CompGenStart extends javax.swing.JFrame {
         jLabel34 = new javax.swing.JLabel();
         jLabel35 = new javax.swing.JLabel();
         userLabel = new javax.swing.JTextField();
-        passwordLabel = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
         infoLabel = new javax.swing.JLabel();
         jLabel36 = new javax.swing.JLabel();
-        confirmLabel = new javax.swing.JTextField();
+        showAuthentPassword = new javax.swing.JCheckBox();
+        showConfirmPassword = new javax.swing.JCheckBox();
         lengthPwd = new javax.swing.JLabel();
+        passwordLabel = new javax.swing.JPasswordField();
+        confirmLabel = new javax.swing.JPasswordField();
         jPanel1 = new javax.swing.JPanel();
         submittedJobPane = new javax.swing.JScrollPane();
         jobsTable = new javax.swing.JTable();
@@ -860,6 +862,12 @@ public class CompGenStart extends javax.swing.JFrame {
         setNewAsServer.setText("Set As Server");
 
         jLabel22.setText("Server Name:");
+
+        serverPasswordField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                serverPasswordFieldActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout newServerDialogLayout = new javax.swing.GroupLayout(newServerDialog.getContentPane());
         newServerDialog.getContentPane().setLayout(newServerDialogLayout);
@@ -1620,7 +1628,7 @@ public class CompGenStart extends javax.swing.JFrame {
                 .addGap(68, 68, 68))
         );
 
-        authentificationPane.setMinimumSize(new java.awt.Dimension(413, 266));
+        authentificationPane.setMinimumSize(new java.awt.Dimension(446, 332));
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -1634,12 +1642,6 @@ public class CompGenStart extends javax.swing.JFrame {
 
         jLabel35.setText("Password");
 
-        passwordLabel.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                checkPwdLength(evt);
-            }
-        });
-
         jButton2.setText("Save");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1651,10 +1653,48 @@ public class CompGenStart extends javax.swing.JFrame {
 
         jLabel36.setText("Confirm password");
 
+        showAuthentPassword.setText("Show Password");
+        showAuthentPassword.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                showAuthentPasswordItemStateChanged(evt);
+            }
+        });
+        showAuthentPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showAuthentPasswordActionPerformed(evt);
+            }
+        });
+
+        showConfirmPassword.setText("Show Password");
+        showConfirmPassword.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                showConfirmPasswordItemStateChanged(evt);
+            }
+        });
+        showConfirmPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showConfirmPasswordActionPerformed(evt);
+            }
+        });
+
         lengthPwd.setForeground(new java.awt.Color(255, 51, 51));
         lengthPwd.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lengthPwd.setVisible(false);
-        lengthPwd.setText("Length of password must be 16");
+        lengthPwd.setVisible(true);
+        lengthPwd.setText(" ");
+        lengthPwd.setToolTipText("");
+        lengthPwd.setPreferredSize(new java.awt.Dimension(4, 16));
+
+        passwordLabel.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                passwordLabelKeyReleased(evt);
+            }
+        });
+
+        confirmLabel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                confirmLabelActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout authentificationPaneLayout = new javax.swing.GroupLayout(authentificationPane.getContentPane());
         authentificationPane.getContentPane().setLayout(authentificationPaneLayout);
@@ -1664,25 +1704,32 @@ public class CompGenStart extends javax.swing.JFrame {
             .addGroup(authentificationPaneLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
                     .addGroup(authentificationPaneLayout.createSequentialGroup()
-                        .addComponent(jLabel36)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(userLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, authentificationPaneLayout.createSequentialGroup()
-                        .addComponent(lengthPwd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
+                        .addComponent(lengthPwd, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, Short.MAX_VALUE)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, authentificationPaneLayout.createSequentialGroup()
                         .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel34)
-                            .addComponent(jLabel35))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(passwordLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
-                            .addComponent(confirmLabel))))
+                            .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(authentificationPaneLayout.createSequentialGroup()
+                                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel36)
+                                    .addComponent(jLabel34)
+                                    .addComponent(jLabel35))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(authentificationPaneLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(userLabel)
+                                    .addComponent(showAuthentPassword)
+                                    .addComponent(passwordLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)))
+                            .addGroup(authentificationPaneLayout.createSequentialGroup()
+                                .addGap(5, 5, 5)
+                                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(showConfirmPassword)
+                                    .addComponent(confirmLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                 .addContainerGap())
         );
         authentificationPaneLayout.setVerticalGroup(
@@ -1700,16 +1747,24 @@ public class CompGenStart extends javax.swing.JFrame {
                 .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel35)
                     .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGap(10, 10, 10)
+                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(infoLabel)
-                    .addComponent(jLabel36)
-                    .addComponent(confirmLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                    .addComponent(showAuthentPassword))
+                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(authentificationPaneLayout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jLabel36))
+                    .addGroup(authentificationPaneLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(confirmLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(showConfirmPassword)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
                 .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
-                    .addComponent(lengthPwd))
-                .addContainerGap())
+                    .addComponent(lengthPwd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -2578,10 +2633,46 @@ public class CompGenStart extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_selectBestEnzActionPerformed
 
+    private void serverPasswordFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverPasswordFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_serverPasswordFieldActionPerformed
+
+    private void confirmLabelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmLabelActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_confirmLabelActionPerformed
+
+    private void showConfirmPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showConfirmPasswordActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_showConfirmPasswordActionPerformed
+
+    private void showConfirmPasswordItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showConfirmPasswordItemStateChanged
+        // Show password
+        if (evt.getStateChange() == 1) {
+            confirmLabel.setEchoChar((char) 0);
+        } else {
+            confirmLabel.setEchoChar('\u25cf');
+        }
+    }//GEN-LAST:event_showConfirmPasswordItemStateChanged
+
+    private void showAuthentPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showAuthentPasswordActionPerformed
+
+    }//GEN-LAST:event_showAuthentPasswordActionPerformed
+
+    private void showAuthentPasswordItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showAuthentPasswordItemStateChanged
+        // Show password
+        if (evt.getStateChange() == 1) {
+            passwordLabel.setEchoChar((char) 0);
+        } else {
+            passwordLabel.setEchoChar('\u25cf');
+        }
+    }//GEN-LAST:event_showAuthentPasswordItemStateChanged
+
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        String confirmPwd = String.valueOf(confirmLabel.getPassword());
+        String inputPwd = String.valueOf(passwordLabel.getPassword());
         // Initialisation of user files and password
-        if (confirmLabel.getText().equals(passwordLabel.getText())) {
-            if (passwordLabel.getText().length() == 16) {
+        if (confirmPwd.equals(inputPwd)) {
+            if (inputPwd.length() == 16) {
                 // Initialisation of files and password / check existing password
                 boolean correctPwd = this.manageJson.setAccess(userLabel.getText(), passwordLabel.getText());
 
@@ -2602,16 +2693,13 @@ public class CompGenStart extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void checkPwdLength(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_checkPwdLength
-        //Check the length of the password while it is typed
-        if (passwordLabel.getText().length() != 16) {
-            lengthPwd.setText("Password is " + passwordLabel.getText().length()
-                    + " characters long, it should conatin 16 characters.");
+    private void passwordLabelKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordLabelKeyReleased
+        String inputPwd = String.valueOf(passwordLabel.getPassword());
+        if(inputPwd.length() != 16){
+            lengthPwd.setText("Password length is " + inputPwd.length() + " but must be 16.");
             lengthPwd.setVisible(true);
-        } else {
-            lengthPwd.setVisible(false);
         }
-    }//GEN-LAST:event_checkPwdLength
+    }//GEN-LAST:event_passwordLabelKeyReleased
 
     public String checkEnzymeName(JTextField field) {
         String name = field.getText();
@@ -3042,7 +3130,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JLabel chosenServerLabel;
     private javax.swing.JButton clearNewServerFields;
     private javax.swing.JButton closeLocalWindow;
-    private javax.swing.JTextField confirmLabel;
+    private javax.swing.JPasswordField confirmLabel;
     private javax.swing.JToggleButton connectServerToggle;
     private javax.swing.JTextField currentDir;
     private javax.swing.JTextField currentHost;
@@ -3129,7 +3217,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JButton newJobRefQuery;
     private javax.swing.JDialog newServerDialog;
     private javax.swing.JButton openResults;
-    private javax.swing.JTextField passwordLabel;
+    private javax.swing.JPasswordField passwordLabel;
     private javax.swing.JTextField qryAnnotFileName;
     private javax.swing.JLabel qryGenomeLabel;
     private javax.swing.JTextField qrySpecies;
@@ -3168,6 +3256,8 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JLabel setEnzymeLabel;
     private javax.swing.JButton setJobName;
     public javax.swing.JCheckBox setNewAsServer;
+    private javax.swing.JCheckBox showAuthentPassword;
+    private javax.swing.JCheckBox showConfirmPassword;
     private javax.swing.JCheckBox showPass;
     private javax.swing.JButton startJobButton;
     private javax.swing.JScrollPane submittedJobPane;
