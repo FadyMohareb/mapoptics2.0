@@ -2584,16 +2584,15 @@ public class CompGenStart extends javax.swing.JFrame {
             if (passwordLabel.getText().length() == 16) {
                 // Initialisation of files and password / check existing password
                 boolean correctPwd = this.manageJson.setAccess(userLabel.getText(), passwordLabel.getText());
-                
-                if (correctPwd){
+
+                if (correctPwd) {
                     this.authentificationPane.setVisible(false);
                     this.setVisible(true);
-                }
-                else{
+                } else {
                     lengthPwd.setText("Incorrect password for existing user " + userLabel.getText());
                     lengthPwd.setVisible(true);
                 }
-                } else {
+            } else {
                 lengthPwd.setText("Password length must be 16.");
                 lengthPwd.setVisible(true);
             }
