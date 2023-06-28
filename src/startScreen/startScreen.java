@@ -289,7 +289,9 @@ public class startScreen extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
  
-        new CompGenStart().setVisible(true);
+        CompGenStart compGenPanel = new CompGenStart();
+        compGenPanel.authentificationPane.setVisible(true);
+        //compGenPanel.setVisible(true);
         this.setVisible(false);
 
  

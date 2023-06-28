@@ -54,27 +54,8 @@ public class runMapOptics {
             UIManager.put("JButton.setBackground", Color.CYAN);
             startScreen screen = new startScreen();
             screen.setVisible(true);
-
-            // Get the path where files are saved
-            Path path = Paths.get("");
-            String pathDirectory = path.toAbsolutePath().toString();
-
-//            Make sure the json files for the josb and server objects to be saved between sessions still exist
-            File jobsJson = new File(pathDirectory + "\\serverInfo\\jobs.json");
-            if (!jobsJson.exists()) {
-                Files.createDirectories(Paths.get(pathDirectory + "\\serverInfo"));
-                jobsJson.createNewFile();
-                System.out.println("New file created: " + pathDirectory + "\\serverInfo\\jobs.json");
-            }
-            File servJson = new File(pathDirectory + "\\serverInfo\\servers.json");
-            if (!servJson.exists()) {
-                Files.createDirectories(Paths.get(pathDirectory + "\\serverInfo"));
-                servJson.createNewFile();
-            }
         } catch (UnsupportedLookAndFeelException ex) {
             System.err.println("Failed to initialize LaF");
-        } catch (IOException ex) {
-            Logger.getLogger(runMapOptics.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
