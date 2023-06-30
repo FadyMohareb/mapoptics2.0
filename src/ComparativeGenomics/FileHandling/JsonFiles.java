@@ -119,7 +119,7 @@ public class JsonFiles {
                         } catch (IllegalBlockSizeException e) {
                             e.printStackTrace();
                         }
-                    } 
+                    }
                 } catch (FileNotFoundException ex) {
                     System.out.println(ex);
                 }
@@ -132,7 +132,6 @@ public class JsonFiles {
                     BufferedWriter writer = new BufferedWriter(new FileWriter(checkPassword, true));
                     try {
                         String encryptPwd = encrypt(this.strKey, this.strKey.getBytes());
-                        System.out.println("JSON 115 encrypted password" + encryptPwd);
                         writer.write(encryptPwd);
                         writer.close();
                     } catch (InvalidKeyException e) {
@@ -197,9 +196,11 @@ public class JsonFiles {
                     writer.name("Server name").value(s.name);
                     writer.name("Server user").value(s.getUser());
                     writer.name("Server host").value(s.getHost());
-                    writer.name("Server pass").value(encrypt(s.getPassword(), strKey.getBytes()));
+                    writer.name("Server pass").value(encrypt(s.getPassword(), strKey.getBytes()).replace("=", "*"));
                     writer.name("Server dir").value(s.getWorkingDir());
+                    System.out.println("JSON 200 server dir " + s.getWorkingDir());
                     writer.name("qry").value(j.getQry());
+                    System.out.println("JSON 200 query " + j.getQry());
                     writer.name("ref").value(j.getRef());
                     writer.name("Enzyme name").value(e.getName());
                     writer.name("Enzyme site").value(e.getSite());
@@ -238,14 +239,13 @@ public class JsonFiles {
      * @param jobs List of Job objects
      */
     public void saveServerJson(List<ExternalServer> serversList) {
+        System.out.println("JSON 242 saveServersJson");
         try {
             JsonWriter writer = new JsonWriter(new FileWriter(serverPath));
             writer.beginObject();
             writer.name("data");
             writer.beginArray();
             for (ExternalServer s : serversList) {
-                System.out.println("Json 171 strKey " + strKey);
-                System.out.println("Json 171 strKey " + strKey.getBytes());
                 String serverUser = encrypt(s.getUser(), strKey.getBytes());
                 String serverHost = encrypt(s.getHost(), strKey.getBytes());
                 String serverPwd = encrypt(s.getPassword(), strKey.getBytes());
@@ -372,39 +372,39 @@ public class JsonFiles {
      * @param jobsRunningList
      */
     private void jobsFromJson(List<Job> jobsRunningList) {
+        System.out.println("JsonFiles 375 :jobsFromJSON");
         this.jobsRunning = jobsRunningList;
-        //this.jobsRunning.clear();
         try {
             // create Gson instance
             Gson gson = new Gson();
-            // Get path
-            Path path = Paths.get("");
-            String pathDirectory = path.toAbsolutePath().toString();
             // convert JSON file to map
-
             try (
                     // create a reader
-                    Reader reader = Files.newBufferedReader(Paths.get(pathDirectory + "\\serverInfo\\jobs.json"))) {
+                    Reader reader = Files.newBufferedReader(Paths.get(jobsPath))) {
+                
                 // convert JSON file to map
-                Map<?, ?> map = gson.fromJson(reader, Map.class
-                );
+                Map<?, ?> map = gson.fromJson(reader, Map.class);
+
                 // print map entries
                 if (map == null) {
+                    System.out.println("JSON jobs map entries are null.");
                 } else {
                     for (Map.Entry<?, ?> entry : map.entrySet()) {
                         //System.out.println(entry.getValue().toString());
                         String[] value = entry.getValue().toString().split("=");
+                        for (int i=0; i < 16; i++){
+                            System.out.println("VAL " + value[i]);
+                        }
+                        
                         //        Work out how many jobs are present
                         int numJobs = (value.length - 1) / 16;
-
+                        
+                        //Get information for each job
                         for (int j = 1; j <= numJobs; j++) {
-                            //            messy but it works
-                            //            create enyzme object
-
                             // Create enzyme, get site and name from json file
                             Enzyme enz = new Enzyme(value[9 + 16 * (j - 1)].split(",")[0],
                                     value[10 + 16 * (j - 1)].split(",")[0]);
-
+                            
                             //            create server object
                             // Populate with name, user, host, pass, dir
                             try {
@@ -429,17 +429,23 @@ public class JsonFiles {
                                         value[15 + 16 * (j - 1)].split(",")[0],
                                         value[16 + 16 * (j - 1)].split(",")[0].replace("}", "").replaceAll("]", ""));
                                 //           Add job object to array
+                                System.out.println("JSON 427 : ref " + value[8 + 16 * (j - 1)] + " qry " + value[7 + 16 * (j - 1)]);
+                                System.out.println("JSON 427 : name " + job.getName() + " server " + job.getServer() + " ref " + job.getRef() + " qry " + job.getQry() + " enz " + job.getEnz().getName() + " pip " + job.getPipeline() + " stat " + job.getStatus() + " qry " + job.getQryOrg() + " ref org " + job.getRefOrg() + " refAnnot " + job.getRefAnnot() + " qry annot " + job.getQryAnnot());
                                 jobsRunning.add(job);
                             } catch (InvalidKeyException e) {
-                                System.out.println("Invalid key for encryption)");
+                                System.out.println("Invalid key for jobs decryption");
                                 e.printStackTrace();
                             } catch (NoSuchPaddingException e) {
+                                System.out.println("Invalid padding while getting jobs");
                                 e.printStackTrace();
                             } catch (NoSuchAlgorithmException e) {
+                                System.out.println("Invalid decryption algorithm for getting jobs");
                                 e.printStackTrace();
                             } catch (BadPaddingException e) {
+                                System.out.println("Invalid padding while getting jobs");
                                 e.printStackTrace();
                             } catch (IllegalBlockSizeException e) {
+                                System.out.println("Invalid block size while getting jobs");
                                 e.printStackTrace();
                             }
                         }
@@ -450,6 +456,7 @@ public class JsonFiles {
             }
             //jobTableAdd(this.jobsRunning);
         } catch (JsonIOException | JsonSyntaxException | IOException ex) {
+            System.out.println("JSON line 458 reader not created " + ex);
             ex.getCause();
         }
     }

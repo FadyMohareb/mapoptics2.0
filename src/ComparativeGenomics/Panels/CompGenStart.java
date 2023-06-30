@@ -751,7 +751,7 @@ public class CompGenStart extends javax.swing.JFrame {
                     .addGroup(makeCompGenJobLayout.createSequentialGroup()
                         .addComponent(bnt_help)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(startJobButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(startJobButton)
                         .addContainerGap())
                     .addComponent(settingsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
@@ -1767,11 +1767,12 @@ public class CompGenStart extends javax.swing.JFrame {
             }
         });
         submittedJobPane.setViewportView(jobsTable);
-        this.jobsRunning.clear();
+        /*this.jobsRunning.clear();
         this.jobsRunning = manageJson.getJobsFromJson(this.jobsRunning);
         jobTableAdd(this.jobsRunning);
         JobTableModel newModel = new JobTableModel(this.jobsRunning);
         jobsTable.setModel(newModel);
+        */
 
         openResults.setText("Open Results");
         openResults.addActionListener(new java.awt.event.ActionListener() {
@@ -2185,24 +2186,21 @@ public class CompGenStart extends javax.swing.JFrame {
 //        need to update this to query the log file!
         this.newJob.setStatus("Started");
         this.jobsRunning.add(this.newJob);
-        System.out.println("New job added");
 //        Update the jobs JSON file
         manageJson.saveJobJson(this.jobsRunning);
 //        update the jobs table with the new job that has been created
         JobTableModel newModel = new JobTableModel(this.jobsRunning);
         jobsTable.setModel(newModel);
+        
 //        start a new job object ready for a new job to be made
         //will eventually add in user parameters here
         this.channel.runJob(this.newJob); //this sets the job as running on the server
         this.newJob = new Job();
-        System.out.println("CompGenStart 2047 - Script was properly executed.");
+        
 //        finally disconnect from the server
         this.channel.disconnectServer();
-        System.out.println("Chanel disconnected: " + this.channel.isChannelConnected());
-        System.out.println("Sftp channel disconnected: " + this.channel.isSftpChannelConnected());
 //        clean slate for the channel object
         this.channel = new SSH();
-        System.out.println("Channel cleaned");
 
         //Show the correct JFrames
         makeCompGenJob.setVisible(false);
@@ -2472,10 +2470,10 @@ public class CompGenStart extends javax.swing.JFrame {
         try {
             // Boolean indicating if the calculation of best enzyme is ran on query or on reference
             boolean boolQuery = true;
-            if (calculateReference.isSelected()){
+            if (calculateReference.isSelected()) {
                 boolQuery = false;
             }
-            
+
             // Display panel with message
             messageLabel.setText("Running best enzyme caculation...");
             messageLabel.setVisible(true);
@@ -2486,7 +2484,7 @@ public class CompGenStart extends javax.swing.JFrame {
             // Display message
             messageLabel.setText("Downloading calculation results...");
             messageLabel.setVisible(true);
-            
+
             // Download calculation results
             this.channel.downloadEnzResults(this.newJob);
 
@@ -2665,13 +2663,24 @@ public class CompGenStart extends javax.swing.JFrame {
         String inputPwd = String.valueOf(passwordLabel.getPassword());
         // Initialisation of user files and password
         if (confirmPwd.equals(inputPwd)) {
+            // PAssword and its confirmation are equal
             if (inputPwd.length() == 16) {
+                // Password has the right length (16)
                 lengthPwd.setText("");
                 // Initialisation of files and password / check existing password
                 boolean correctPwd = this.manageJson.setAccess(userLabel.getText(), String.valueOf(passwordLabel.getPassword()));
 
                 if (correctPwd) {
+                    // Entered password is correct
                     this.authentificationPane.setVisible(false);
+
+                    // Get jobs from job JSON to display them in the submitted jobs table
+                    this.jobsRunning.clear();
+                    this.jobsRunning = manageJson.getJobsFromJson(this.jobsRunning);
+                    jobTableAdd(this.jobsRunning);
+                    JobTableModel newModel = new JobTableModel(this.jobsRunning);
+                    jobsTable.setModel(newModel);
+
                     this.setVisible(true);
                 } else {
                     lengthPwd.setText("Incorrect password for existing user " + userLabel.getText());
@@ -2689,10 +2698,10 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void passwordLabelKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordLabelKeyReleased
         String inputPwd = String.valueOf(passwordLabel.getPassword());
-        if(inputPwd.length() != 16){
+        if (inputPwd.length() != 16) {
             lengthPwd.setText("Password length is " + inputPwd.length() + " but must be 16.");
             lengthPwd.setVisible(true);
-        }else{
+        } else {
             lengthPwd.setText("");
         }
     }//GEN-LAST:event_passwordLabelKeyReleased

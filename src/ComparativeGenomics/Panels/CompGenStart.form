@@ -27,7 +27,7 @@
                       <Group type="102" attributes="0">
                           <Component id="bnt_help" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
-                          <Component id="startJobButton" min="-2" pref="93" max="-2" attributes="0"/>
+                          <Component id="startJobButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                       <Component id="settingsPanel" alignment="0" max="32767" attributes="0"/>
@@ -2289,7 +2289,7 @@
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jobsTableMouseClicked"/>
               </Events>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="this.jobsRunning.clear();&#xa;this.jobsRunning = manageJson.getJobsFromJson(this.jobsRunning);&#xa;jobTableAdd(this.jobsRunning);&#xa;JobTableModel newModel = new JobTableModel(this.jobsRunning);&#xa;jobsTable.setModel(newModel);"/>
+                <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="/*this.jobsRunning.clear();&#xa;this.jobsRunning = manageJson.getJobsFromJson(this.jobsRunning);&#xa;jobTableAdd(this.jobsRunning);&#xa;JobTableModel newModel = new JobTableModel(this.jobsRunning);&#xa;jobsTable.setModel(newModel);&#xa;*/"/>
               </AuxValues>
             </Component>
           </SubComponents>
