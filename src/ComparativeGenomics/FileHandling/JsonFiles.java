@@ -98,7 +98,8 @@ public class JsonFiles {
                         // Decrypt the line saved in the file and compare to password
                         // to check if entered password is true
                         try {
-                            String savedKey = decrypt(sc.nextLine(), strKey.getBytes());
+                            String cryptedPwd = sc.nextLine();
+                            String savedKey = decrypt(cryptedPwd, strKey.getBytes());
                             // Check that the encrypted word saved in the file corresponds to the entered password
                             if (this.strKey.equals(savedKey)) {
                                 return true;
@@ -445,6 +446,7 @@ public class JsonFiles {
                     }
                 }
                 // close reader
+                reader.close();
             }
             //jobTableAdd(this.jobsRunning);
         } catch (JsonIOException | JsonSyntaxException | IOException ex) {
@@ -470,10 +472,8 @@ public class JsonFiles {
         try {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             SecretKey secretKey = new SecretKeySpec(publicKey, "AES");
-            System.out.println("JSON line 400 - secret key " + secretKey);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             byte[] encryptedMessage = cipher.doFinal(message.getBytes());
-            System.out.println("JSON line 4400 - byte msg encryption " + new String(encryptedMessage));
             return Base64.getEncoder().encodeToString(encryptedMessage);
         } catch (Exception exc) {
             System.out.println("Encryption failed " + exc);
@@ -505,6 +505,7 @@ public class JsonFiles {
             // Decypher message and convert it to string
             return new String(cipher.doFinal(message));
         } catch (Exception IllegalArgumentException) {
+            System.out.println("Decypher, illegal argument " + IllegalArgumentException);
             return null;
         }
     }

@@ -245,7 +245,7 @@ public class SSH {
         } catch (JSchException | SftpException ex) {
             System.out.println(ex);
             JOptionPane.showMessageDialog(null, "Could not create job folder.",
-                        "Creation failed!", JOptionPane.ERROR_MESSAGE);
+                    "Creation failed!", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
@@ -280,7 +280,7 @@ public class SSH {
                     System.out.println(ex.getCause());
                     ex.printStackTrace();
                     JOptionPane.showMessageDialog(null, "File transfert failed",
-                        "Transfert failed!", JOptionPane.ERROR_MESSAGE);
+                            "Transfert failed!", JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
             } else {
@@ -331,9 +331,10 @@ public class SSH {
     /**
      *
      * @param job run the calc_best_enz.sh script on the ExternalServer with the
-     * reference file of the given job
+     * @param query (boolean) indicates if the calculation must be ran on query
+     * or on reference reference file of the given job
      */
-    public void runCalcBestEnz(Job job) {
+    public void runCalcBestEnz(Job job, boolean query) {
         connectServer();
         String jobname = job.getName();
         String ref = job.getRef();
@@ -342,7 +343,13 @@ public class SSH {
 
         String align = job.getPipeline();
 
-        String cmd = "cd " + dir + "; ./calc_best_enz.sh " + jobname + "/Files/Query/" + job.getQry();
+        String cmd = new String();
+        // Run the script either on query or reference file
+        if (query) {
+            cmd = "cd " + dir + "; ./calc_best_enz.sh " + jobname + "/Files/Query/" + qry;
+        } else {
+            cmd = "cd " + dir + "; ./calc_best_enz.sh " + jobname + "/Files/Reference/" + ref;
+        }
         executeCmd(cmd);
     }
 
