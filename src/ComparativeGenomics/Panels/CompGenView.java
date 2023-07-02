@@ -98,7 +98,7 @@ public class CompGenView extends javax.swing.JFrame {
 
         // Annotation file is parsed
         refAnnot = new Annot(refannot);
-        
+
         populateData();
     }
 
@@ -122,16 +122,16 @@ public class CompGenView extends javax.swing.JFrame {
         // Cmap files are parsed
         cmapRef = new Cmap(refCmapPath);
         cmapQry = new Cmap(qryCmapPath);
-        
+
         // Karyotype file is parsed
         refKary = new Karyotype(karyPath);
-        
+
         // Xmap file is parsed
         xmap = new Xmap(xmapPath);
-        
+
         // Fasta and annotation files are parsed
         refFasta = new Fasta();
-        
+
         refAnnot = new Annot(this.job.getRefAnnot());
         populateData();
     }
@@ -1273,9 +1273,11 @@ public class CompGenView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void exitProgramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitProgramActionPerformed
+        //CompGenStart compGenPanel = new CompGenStart();
+        //compGenPanel.authentificationPane.setVisible(true);
         this.setVisible(false);
-        CompGenStart view = new CompGenStart();
-        view.setVisible(true);
+        //CompGenStart view = new CompGenStart();
+        //view.setVisible(true);
     }//GEN-LAST:event_exitProgramActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -1667,8 +1669,8 @@ public class CompGenView extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "No filename given", "Invalid input", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
-    
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel alignerLabel;
     private ComparativeGenomics.Panels.AlignmentsOnChromosomeChartPanel alignmentsOnChromosomeChartPanel1;

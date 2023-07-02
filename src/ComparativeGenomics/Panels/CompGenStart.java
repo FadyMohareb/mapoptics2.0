@@ -2363,8 +2363,14 @@ public class CompGenStart extends javax.swing.JFrame {
         } else {
 //            first check if the files have already been downloaded
             System.getProperty("user.dir");
+            
             File dir = new File(System.getProperty("user.dir") + "/download/" + this.selectedJob.getName() + "/");
-            if (dir.exists() && dir.isDirectory()) {
+            File qryFile = new File(System.getProperty("user.dir") + "/download/" + this.selectedJob.getQry());
+            File refFile = new File(System.getProperty("user.dir") + "/download/" + this.selectedJob.getRef());
+            
+            // Check that directory and files inside exist
+            // because directory can be created by enzymes calculation
+            if ((dir.exists() && dir.isDirectory()) && (qryFile.exists() && refFile.exists())) {
                 System.out.println("Download folder exists");
                 this.setVisible(false);
                 CompGenView viewResults = new CompGenView();
