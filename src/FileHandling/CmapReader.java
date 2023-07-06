@@ -82,6 +82,7 @@ public class CmapReader {
                 String[] rowData = line.split("\t");
                 int id = Integer.parseInt(rowData[0]);
 
+                // Get all the lines coresponding to the requested reference
                 if (references.containsKey(id)) {
                     Reference ref = references.get(id);
                     if (unvisited.contains(id)) {

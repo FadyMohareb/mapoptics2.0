@@ -129,14 +129,12 @@ fi
 if [[ $ref == *.fa ]]
   then    
     #generate the karyotype file
-   
     samtools faidx "$ref"
     awk -F "\t" 'OFS=" " {print $2, $1 }' "$ref".fai > "$out"/karyotype.txt
     # calculate the genome size in Mbp
     genomesize=$(awk '{sum+=$2}END{print sum*0.000001}' "$ref".fai)
     # digest the ref into a cmap 
-    perl $digest -i "$ref" -o "$ref_path" -e "$enzyme" 1 
-   
+    perl $digest -i "$ref" -o "$ref_path" -e "$enzyme" 1  
     echo "Status: Reference Digested"  >> /home/fran/mapoptics/jobs/"$job"/log.txt;
 elif [[ $ref == *.fasta ]]
   then    
@@ -147,11 +145,9 @@ elif [[ $ref == *.fasta ]]
     genomesize=$(awk '{sum+=$2}END{print sum*0.000001}' "$ref".fai)
     # digest the ref into a cmap 
     perl $digest -i "$ref" -o "$ref_path" -e "$enzyme" 1 
-   
     echo "Status: Reference Digested"  >> /home/fran/mapoptics/jobs/"$job"/log.txt;
 elif [[ $ref == *.fna ]]
   then
-    
     #generate the karyotype file
     samtools faidx "$ref"
     awk -F "\t" 'OFS=" " {print $2, $1 }' "$ref".fai > "$out"/karyotype.txt
@@ -159,7 +155,6 @@ elif [[ $ref == *.fna ]]
     genomesize=$(awk '{sum+=$2}END{print sum*0.000001}' "$ref".fai)
     # digest the ref into a cmap 
     perl $digest -i "$ref" -o "$ref_path" -e "$enzyme" 1 
-  
     echo "Status: Reference Digested"  >> /home/fran/mapoptics/jobs/"$job"/log.txt;
 else 
   echo "reference not in required format"

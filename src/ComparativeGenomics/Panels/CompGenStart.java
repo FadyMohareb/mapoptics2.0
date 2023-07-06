@@ -1985,7 +1985,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private void uploadQueryGenomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadQueryGenomeActionPerformed
         FileDialog queryGenome = new FileDialog(this, "Choose Reference Genome", FileDialog.LOAD);
         // Filter to accept only fasta format
-        queryGenome.setFile("*.fasta;*.fa;*.fna");
+        queryGenome.setFile("*.fasta;*.fa;*.fna;*.cmap");
         queryGenome.setVisible(true);
         this.queryFile = queryGenome.getFile();
         this.queryFilePath = queryGenome.getDirectory() + queryGenome.getFile();
