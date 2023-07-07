@@ -372,7 +372,6 @@ public class JsonFiles {
      * @param jobsRunningList
      */
     private void jobsFromJson(List<Job> jobsRunningList) {
-        System.out.println("JsonFiles 375 :jobsFromJSON");
         this.jobsRunning = jobsRunningList;
         try {
             // create Gson instance
@@ -392,10 +391,7 @@ public class JsonFiles {
                     for (Map.Entry<?, ?> entry : map.entrySet()) {
                         //System.out.println(entry.getValue().toString());
                         String[] value = entry.getValue().toString().split("=");
-                        for (int i=0; i < 16; i++){
-                            System.out.println("VAL " + value[i]);
-                        }
-                        
+                                             
                         //        Work out how many jobs are present
                         int numJobs = (value.length - 1) / 16;
                         
@@ -429,8 +425,6 @@ public class JsonFiles {
                                         value[15 + 16 * (j - 1)].split(",")[0],
                                         value[16 + 16 * (j - 1)].split(",")[0].replace("}", "").replaceAll("]", ""));
                                 //           Add job object to array
-                                System.out.println("JSON 427 : ref " + value[8 + 16 * (j - 1)] + " qry " + value[7 + 16 * (j - 1)]);
-                                System.out.println("JSON 427 : name " + job.getName() + " server " + job.getServer() + " ref " + job.getRef() + " qry " + job.getQry() + " enz " + job.getEnz().getName() + " pip " + job.getPipeline() + " stat " + job.getStatus() + " qry " + job.getQryOrg() + " ref org " + job.getRefOrg() + " refAnnot " + job.getRefAnnot() + " qry annot " + job.getQryAnnot());
                                 jobsRunning.add(job);
                             } catch (InvalidKeyException e) {
                                 System.out.println("Invalid key for jobs decryption");
@@ -456,7 +450,7 @@ public class JsonFiles {
             }
             //jobTableAdd(this.jobsRunning);
         } catch (JsonIOException | JsonSyntaxException | IOException ex) {
-            System.out.println("JSON line 458 reader not created " + ex);
+            System.out.println("JSON reader not created " + ex);
             ex.getCause();
         }
     }

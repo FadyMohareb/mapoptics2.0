@@ -636,7 +636,7 @@
                     </MenuItem>
                     <MenuItem class="javax.swing.JMenuItem" name="uploadQueryGenome">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Upload Query Fasta File"/>
+                        <Property name="text" type="java.lang.String" value="Upload Query Fasta or Cmap File"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="uploadQueryGenomeActionPerformed"/>

@@ -6,6 +6,7 @@ import ComparativeGenomics.ServerHandling.Job;
 import ComparativeGenomics.ServerHandling.SSH;
 import ComparativeGenomics.FileHandling.JsonFiles;
 import ComparativeGenomics.FileHandling.BestEnzyme;
+import FileHandling.CmapReader;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
@@ -83,6 +84,9 @@ public class CompGenStart extends javax.swing.JFrame {
     private String localrefannot = "";
     private String localreffasta = "";
     private String localrefkary = "";
+
+    private String refCmapEnzyme = "";
+    private String qryCmapEnzyme = "";
 
     /**
      * Creates new form comparativeGenomics
@@ -676,7 +680,7 @@ public class CompGenStart extends javax.swing.JFrame {
         });
         jMenu5.add(downloadQueryURL);
 
-        uploadQueryGenome.setText("Upload Query Fasta File");
+        uploadQueryGenome.setText("Upload Query Fasta or Cmap File");
         uploadQueryGenome.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 uploadQueryGenomeActionPerformed(evt);
@@ -1970,12 +1974,35 @@ public class CompGenStart extends javax.swing.JFrame {
     private void uploadReferenceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadReferenceActionPerformed
         FileDialog refGenome = new FileDialog(this, "Choose Reference Genome", FileDialog.LOAD);
         // Filter to accept only fasta format
-        refGenome.setFile("*.fasta;*.fa;*.fna");
+        refGenome.setFile("*.fasta;*.fa;*.fna;*.cmap");
         refGenome.setVisible(true);
         this.referenceFile = refGenome.getFile();
         this.referenceFilePath = refGenome.getDirectory() + refGenome.getFile();
         refGenomeFile.setText(referenceFile);
         this.ref1FromURL = false;
+
+        CmapReader cmapReader = new CmapReader();
+        if (cmapReader.validateCmap(this.referenceFilePath)) {
+            //If the file is a cmap, the enzyme chosen for in silico digestion must be
+            // the same as the query
+            String enzyme = cmapReader.getNickaseEnzyme(this.referenceFilePath);
+            if (enzyme == null || enzyme.equals("unknown")) {
+                JOptionPane.showMessageDialog(null, "Unknown enzyme in cmap file. The chosen enzyme should be the same as in the cmap",
+                        "Unkown enzyme", JOptionPane.ERROR_MESSAGE);
+            }
+            // The chosen enzymes of the reference and query must be the same
+            if (this.qryCmapEnzyme.equals(enzyme) || this.qryCmapEnzyme.equals("")) {
+                this.refCmapEnzyme = enzyme;
+                this.tempSelectedEnzyme = new Enzyme(enzyme);
+                System.out.println("1997 name " + this.tempSelectedEnzyme.getName() + " " + this.tempSelectedEnzyme.getSite());
+                setEnzymeLabel.setText(this.tempSelectedEnzyme.getName());
+            } else {
+                JOptionPane.showMessageDialog(null, "The query and reference cmap files selected do not have the same nickase enzymes.",
+                        "Different enzymes", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            this.refCmapEnzyme = "";
+        }
     }//GEN-LAST:event_uploadReferenceActionPerformed
 
     private void downloadQueryURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downloadQueryURLActionPerformed
@@ -1991,6 +2018,30 @@ public class CompGenStart extends javax.swing.JFrame {
         this.queryFilePath = queryGenome.getDirectory() + queryGenome.getFile();
         queryGenomeFileName.setText(queryFile);
         this.qryFromURL = false;
+
+        CmapReader cmapReader = new CmapReader();
+        if (cmapReader.validateCmap(this.queryFilePath)) {
+            //If the file is a cmap, the enzyme chosen for in silico digestion must be
+            // the same as the query
+            String enzyme = cmapReader.getNickaseEnzyme(this.queryFilePath);
+            if (enzyme == null || enzyme.equals("unknown")) {
+                JOptionPane.showMessageDialog(null, "Unknown enzyme in cmap file. The chosen enzyme should be the same as in the cmap",
+                        "Unkown enzyme", JOptionPane.ERROR_MESSAGE);
+            }
+            // The chosen enzymes of the reference and query must be the same
+            if (this.refCmapEnzyme.equals(enzyme) || this.refCmapEnzyme.equals("")) {
+                this.qryCmapEnzyme = enzyme;
+                this.tempSelectedEnzyme = new Enzyme(enzyme);
+                System.out.println("1997 name " + this.tempSelectedEnzyme.getName() + " " + this.tempSelectedEnzyme.getSite());
+                setEnzymeLabel.setText(this.tempSelectedEnzyme.getName());
+            } else {
+                JOptionPane.showMessageDialog(null, "The query and reference cmap files selected do not have the same nickase enzymes.",
+                        "Different enzymes", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            this.qryCmapEnzyme = "";
+        }
+
     }//GEN-LAST:event_uploadQueryGenomeActionPerformed
 
     private void serverInfoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverInfoButtonActionPerformed
@@ -2105,6 +2156,7 @@ public class CompGenStart extends javax.swing.JFrame {
                     "Enter a valid job name", JOptionPane.PLAIN_MESSAGE);
         } //need to add in a check for current server connection!
         else {
+
             if (!ref1FromURL) {
                 String dir = jobName + "/Files/Reference/" + this.referenceFile;
                 System.out.println("File transfer of reference file");
@@ -2191,12 +2243,12 @@ public class CompGenStart extends javax.swing.JFrame {
 //        update the jobs table with the new job that has been created
         JobTableModel newModel = new JobTableModel(this.jobsRunning);
         jobsTable.setModel(newModel);
-        
+
 //        start a new job object ready for a new job to be made
         //will eventually add in user parameters here
         this.channel.runJob(this.newJob); //this sets the job as running on the server
         this.newJob = new Job();
-        
+
 //        finally disconnect from the server
         this.channel.disconnectServer();
 //        clean slate for the channel object
@@ -2363,11 +2415,11 @@ public class CompGenStart extends javax.swing.JFrame {
         } else {
 //            first check if the files have already been downloaded
             System.getProperty("user.dir");
-            
+
             File dir = new File(System.getProperty("user.dir") + "/download/" + this.selectedJob.getName() + "/");
             File qryFile = new File(System.getProperty("user.dir") + "/download/" + this.selectedJob.getQry());
             File refFile = new File(System.getProperty("user.dir") + "/download/" + this.selectedJob.getRef());
-            
+
             // Check that directory and files inside exist
             // because directory can be created by enzymes calculation
             if ((dir.exists() && dir.isDirectory()) && (qryFile.exists() && refFile.exists())) {
