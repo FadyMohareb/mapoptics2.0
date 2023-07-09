@@ -19,6 +19,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -2130,12 +2133,12 @@ public class CompGenStart extends javax.swing.JFrame {
                     "Enter a valid job name", JOptionPane.PLAIN_MESSAGE);
         } //need to add in a check for current server connection!
         else {
-
             if (!ref1FromURL) {
                 String dir = jobName + "/Files/Reference/" + this.referenceFile;
                 System.out.println("File transfer of reference file");
                 this.channel.uploadFile(referenceFilePath, dir, refProgressBar);
             } else {
+                // URL was provided for reference file
                 String cmd = "cd mapoptics/jobs/" + this.jobName + "/Files/Reference; wget " + this.referenceFilePath;
                 this.channel.executeCmd(cmd);
             }
@@ -2145,7 +2148,7 @@ public class CompGenStart extends javax.swing.JFrame {
                 chooseEnzyme.setEnabled(true);
                 runCalcBestEnzyme.setEnabled(true);
             }
-            if ((this.refAdded && this.qryAdded) && this.selectedEnzyme != null){
+            if ((this.refAdded && this.qryAdded) && this.selectedEnzyme != null) {
                 startJobButton.setEnabled(true);
             }
         }
@@ -2171,7 +2174,7 @@ public class CompGenStart extends javax.swing.JFrame {
                 chooseEnzyme.setEnabled(true);
                 runCalcBestEnzyme.setEnabled(true);
             }
-            if ((this.refAdded && this.qryAdded) && this.selectedEnzyme != null){
+            if ((this.refAdded && this.qryAdded) && this.selectedEnzyme != null) {
                 startJobButton.setEnabled(true);
             }
         }
@@ -2203,51 +2206,53 @@ public class CompGenStart extends javax.swing.JFrame {
     }//GEN-LAST:event_chooseEnzymeActionPerformed
 
     private void startJobButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startJobButtonActionPerformed
-        if((this.queryFile == null) || (this.referenceFile == null)){
+        if ((this.queryFile == null) || (this.referenceFile == null)) {
             JOptionPane.showMessageDialog(null, "The query or the reference file could not be find.",
                     "File not found", JOptionPane.PLAIN_MESSAGE);
-        }
-        else{
-        this.newJob.setRefAnnot(this.referenceAnnotFilePath);
-        this.newJob.setQryAnnot(this.queryAnnotFilePath);
-        this.newJob.setRefOrg(this.refSpecies.getText());
-        this.newJob.setQryOrg(this.qrySpecies.getText());
+        } else {
+            this.newJob.setRefAnnot(this.referenceAnnotFilePath);
+            this.newJob.setQryAnnot(this.queryAnnotFilePath);
+            this.newJob.setRefOrg(this.refSpecies.getText());
+            this.newJob.setQryOrg(this.qrySpecies.getText());
 
-        if (fandomPipeline.isSelected()) {
-            this.newJob.setPipeline("fandom");
-        }
-        if (refalignerPipeline.isSelected()) {
-            this.newJob.setPipeline("refaligner");
-        }
+            if (fandomPipeline.isSelected()) {
+                this.newJob.setPipeline("fandom");
+            }
+            if (refalignerPipeline.isSelected()) {
+                this.newJob.setPipeline("refaligner");
+            }
 
 //        need to update this to query the log file!
-        this.newJob.setStatus("Started");
-        this.jobsRunning.add(this.newJob);
+            this.newJob.setStatus("Started");
+            this.jobsRunning.add(this.newJob);
 //        Update the jobs JSON file
-        manageJson.saveJobJson(this.jobsRunning);
+            manageJson.saveJobJson(this.jobsRunning);
 //        update the jobs table with the new job that has been created
-        JobTableModel newModel = new JobTableModel(this.jobsRunning);
-        jobsTable.setModel(newModel);
+            JobTableModel newModel = new JobTableModel(this.jobsRunning);
+            jobsTable.setModel(newModel);
 
 //        start a new job object ready for a new job to be made
-        //will eventually add in user parameters here
-        this.channel.runJob(this.newJob); //this sets the job as running on the server
-        this.newJob = new Job();
+            //will eventually add in user parameters here
+            this.channel.runJob(this.newJob); //this sets the job as running on the server
+            this.newJob = new Job();
 
 //        finally disconnect from the server
-        this.channel.disconnectServer();
+            this.channel.disconnectServer();
 //        clean slate for the channel object
-        this.channel = new SSH();
+            this.channel = new SSH();
 
-        //Show the correct JFrames
-        makeCompGenJob.setVisible(false);
-        this.setVisible(true);
-                }
+            //Show the correct JFrames
+            makeCompGenJob.setVisible(false);
+            this.setVisible(true);
+        }
     }//GEN-LAST:event_startJobButtonActionPerformed
 
     private void saveRefURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveRefURLActionPerformed
         this.referenceFilePath = referenceURL.getText();
         String filename = extractFileURL(referenceFilePath);
+        if (filename != null){
+        refProgressBar.setValue(100);
+    }
         refGenomeFile.setText(filename);
         refURLDialog.setVisible(false);
         this.ref1FromURL = true;
@@ -2456,6 +2461,9 @@ public class CompGenStart extends javax.swing.JFrame {
     private void uploadQryURLButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadQryURLButtonActionPerformed
         this.queryFilePath = queryURL.getText();
         String filename = extractFileURL(queryFilePath);
+        if(filename != null){
+            queryProgressBar.setValue(100);
+        }
         queryGenomeFileName.setText(filename);
         qryURLDialog.setVisible(false);
         this.qryFromURL = true;
@@ -2793,15 +2801,27 @@ public class CompGenStart extends javax.swing.JFrame {
         return name;
     }
 
-    String extractFileURL(String URL) {
+    String extractFileURL(String FileURL) {
+        //String filename = Paths.get(URL).getFileName().toString();
         try {
-            String filename = Paths.get(URL).getFileName().toString();
-            return filename;
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "File could not be downloaded, please check URL!",
-                    "URL error", JOptionPane.ERROR_MESSAGE);
+            URL u = new URL(FileURL); // Check for URL
+            u.toURI();
+            // Get the name of the downloaded file
+            String splitURL[] = FileURL.split("/");
+            int lenSplit = splitURL.length;
+            String fileName = splitURL[lenSplit-1]; //Arays are 0 indexed
+            System.out.println("CompGenStart line 2806 " + fileName);
+            return fileName;
+        } catch (MalformedURLException e) {
             System.out.println(e);
-            return "FALSE";
+            JOptionPane.showMessageDialog(null, "File could not be downloaded, please check URL!",
+                    "URL not valid", JOptionPane.ERROR_MESSAGE);
+            return null;
+        } catch (URISyntaxException e) {
+            System.out.println(e);
+            JOptionPane.showMessageDialog(null, "File could not be downloaded, please check URL!",
+                    "URL not valid", JOptionPane.ERROR_MESSAGE);
+            return null;
         }
     }
 
@@ -2827,7 +2847,6 @@ public class CompGenStart extends javax.swing.JFrame {
         servers.add(server);
 //        serverList.setListData(Servers);
     }*/
-
     private void jobTableAdd(List<Job> data) {
         this.jobsTableModel = new JobTableModel(data);
 
@@ -3202,7 +3221,7 @@ public class CompGenStart extends javax.swing.JFrame {
         queryAnnot = "";
         queryAnnotFilePath = "";
         currentServer = "";
-        
+
         this.selectedJob = null;
         this.selectedEnzyme = null;
         this.tempSelectedEnzyme = null;
