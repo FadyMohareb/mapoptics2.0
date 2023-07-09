@@ -198,11 +198,14 @@ public class JsonFiles {
                     writer.name("Server host").value(s.getHost());
                     writer.name("Server pass").value(encrypt(s.getPassword(), strKey.getBytes()).replace("=", "*"));
                     writer.name("Server dir").value(s.getWorkingDir());
-                    System.out.println("JSON 200 server dir " + s.getWorkingDir());
                     writer.name("qry").value(j.getQry());
-                    System.out.println("JSON 200 query " + j.getQry());
                     writer.name("ref").value(j.getRef());
-                    writer.name("Enzyme name").value(e.getName());
+                    try {
+                        writer.name("Enzyme name").value(e.getName());
+                    } catch (NullPointerException exeption) {
+                        System.out.println("Chosen enzyme is null");
+                        exeption.printStackTrace();
+                    }
                     writer.name("Enzyme site").value(e.getSite());
                     writer.name("pipeline").value(j.getPipeline());
                     writer.name("Status").value(j.getStatus());
@@ -211,17 +214,19 @@ public class JsonFiles {
                     writer.name("Ref Annotation").value(j.getRefAnnot());
                     writer.name("Qry Annotation").value(j.getQryAnnot());
                     writer.endObject();
-                } catch (InvalidKeyException e) {
+                } catch (InvalidKeyException exeption) {
                     System.out.println("Invalid key for encryption)");
-                    e.printStackTrace();
-                } catch (NoSuchPaddingException e) {
-                    e.printStackTrace();
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                } catch (BadPaddingException e) {
-                    e.printStackTrace();
-                } catch (IllegalBlockSizeException e) {
-                    e.printStackTrace();
+                    exeption.printStackTrace();
+                } catch (NoSuchPaddingException exeption) {
+                    exeption.printStackTrace();
+                } catch (NoSuchAlgorithmException exeption) {
+                    exeption.printStackTrace();
+                } catch (BadPaddingException exeption) {
+                    exeption.printStackTrace();
+                } catch (IllegalBlockSizeException exeption) {
+                    exeption.printStackTrace();
+                } catch (NullPointerException exeption) {
+                    exeption.printStackTrace();
                 }
             }
             writer.endArray();
@@ -239,7 +244,6 @@ public class JsonFiles {
      * @param jobs List of Job objects
      */
     public void saveServerJson(List<ExternalServer> serversList) {
-        System.out.println("JSON 242 saveServersJson");
         try {
             JsonWriter writer = new JsonWriter(new FileWriter(serverPath));
             writer.beginObject();
@@ -260,7 +264,6 @@ public class JsonFiles {
                 writer.name("password").value(serverPwd.replace("=", "*"));
                 writer.name("dir").value(serverDir.replace("=", "*"));
                 writer.endObject();
-
             }
             writer.endArray();
             writer.endObject();
@@ -380,7 +383,7 @@ public class JsonFiles {
             try (
                     // create a reader
                     Reader reader = Files.newBufferedReader(Paths.get(jobsPath))) {
-                
+
                 // convert JSON file to map
                 Map<?, ?> map = gson.fromJson(reader, Map.class);
 
@@ -391,16 +394,16 @@ public class JsonFiles {
                     for (Map.Entry<?, ?> entry : map.entrySet()) {
                         //System.out.println(entry.getValue().toString());
                         String[] value = entry.getValue().toString().split("=");
-                                             
+
                         //        Work out how many jobs are present
                         int numJobs = (value.length - 1) / 16;
-                        
+
                         //Get information for each job
                         for (int j = 1; j <= numJobs; j++) {
                             // Create enzyme, get site and name from json file
                             Enzyme enz = new Enzyme(value[9 + 16 * (j - 1)].split(",")[0],
                                     value[10 + 16 * (j - 1)].split(",")[0]);
-                            
+
                             //            create server object
                             // Populate with name, user, host, pass, dir
                             try {

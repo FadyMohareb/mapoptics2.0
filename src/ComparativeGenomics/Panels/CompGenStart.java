@@ -51,7 +51,6 @@ public class CompGenStart extends javax.swing.JFrame {
     private Job selectedJob;
     private List<Job> jobsRunning = new ArrayList<>();
     private List<ExternalServer> servers = new ArrayList<>();
-    ;
     private ExternalServer selectedServer;
     private ExternalServer tempSelectedServer;
     private String currentServer;
@@ -85,7 +84,6 @@ public class CompGenStart extends javax.swing.JFrame {
     private String localreffasta = "";
     private String localrefkary = "";
 
-    private String refCmapEnzyme = "";
     private String qryCmapEnzyme = "";
 
     /**
@@ -780,8 +778,9 @@ public class CompGenStart extends javax.swing.JFrame {
         startJobButton.setEnabled(false);
 
         refURLDialog.setBounds(new java.awt.Rectangle(500, 500, 401, 35));
-        refURLDialog.setMinimumSize(new java.awt.Dimension(381, 51));
-        refURLDialog.setSize(new java.awt.Dimension(385, 51));
+        refURLDialog.setMinimumSize(new java.awt.Dimension(381, 60));
+        refURLDialog.setPreferredSize(new java.awt.Dimension(385, 60));
+        refURLDialog.setSize(new java.awt.Dimension(385, 60));
 
         jLabel21.setText("Reference URL:");
 
@@ -847,6 +846,7 @@ public class CompGenStart extends javax.swing.JFrame {
         });
 
         workingDirField.setText("mapoptics/jobs/");
+        workingDirField.setEnabled(false);
 
         showPass.setText("Show Password");
         showPass.addItemListener(new java.awt.event.ItemListener() {
@@ -1131,8 +1131,9 @@ public class CompGenStart extends javax.swing.JFrame {
 
         qryURLDialog.setTitle("Query File from URL");
         qryURLDialog.setBounds(new java.awt.Rectangle(500, 500, 397, 35));
-        qryURLDialog.setMinimumSize(new java.awt.Dimension(401, 51));
-        qryURLDialog.setSize(new java.awt.Dimension(401, 51));
+        qryURLDialog.setMinimumSize(new java.awt.Dimension(401, 60));
+        qryURLDialog.setPreferredSize(new java.awt.Dimension(401, 60));
+        qryURLDialog.setSize(new java.awt.Dimension(401, 60));
 
         jLabel10.setText("File URL:");
 
@@ -1958,6 +1959,7 @@ public class CompGenStart extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void newJobRefQueryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newJobRefQueryActionPerformed
+        clearMakeCompGenJob();
         makeCompGenJob.setVisible(true);
     }//GEN-LAST:event_newJobRefQueryActionPerformed
 
@@ -2143,7 +2145,7 @@ public class CompGenStart extends javax.swing.JFrame {
                 chooseEnzyme.setEnabled(true);
                 runCalcBestEnzyme.setEnabled(true);
             }
-            if (this.refAdded && this.qryAdded) {
+            if ((this.refAdded && this.qryAdded) && this.selectedEnzyme != null){
                 startJobButton.setEnabled(true);
             }
         }
@@ -2169,7 +2171,7 @@ public class CompGenStart extends javax.swing.JFrame {
                 chooseEnzyme.setEnabled(true);
                 runCalcBestEnzyme.setEnabled(true);
             }
-            if (this.refAdded && this.qryAdded) {
+            if ((this.refAdded && this.qryAdded) && this.selectedEnzyme != null){
                 startJobButton.setEnabled(true);
             }
         }
@@ -2201,6 +2203,11 @@ public class CompGenStart extends javax.swing.JFrame {
     }//GEN-LAST:event_chooseEnzymeActionPerformed
 
     private void startJobButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startJobButtonActionPerformed
+        if((this.queryFile == null) || (this.referenceFile == null)){
+            JOptionPane.showMessageDialog(null, "The query or the reference file could not be find.",
+                    "File not found", JOptionPane.PLAIN_MESSAGE);
+        }
+        else{
         this.newJob.setRefAnnot(this.referenceAnnotFilePath);
         this.newJob.setQryAnnot(this.queryAnnotFilePath);
         this.newJob.setRefOrg(this.refSpecies.getText());
@@ -2235,6 +2242,7 @@ public class CompGenStart extends javax.swing.JFrame {
         //Show the correct JFrames
         makeCompGenJob.setVisible(false);
         this.setVisible(true);
+                }
     }//GEN-LAST:event_startJobButtonActionPerformed
 
     private void saveRefURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveRefURLActionPerformed
@@ -2307,13 +2315,11 @@ public class CompGenStart extends javax.swing.JFrame {
         }
         //     Once all these are checked the server can be added to the server hash map?
         ExternalServer server = new ExternalServer(serverName, userName, hostName, serverPass, workDir);
-        addServer(server);
         this.servers.add(server);
         if (setNewAsServer.isSelected()) {
             this.selectedServer = server;
             this.serverLabel.setText(server.getName());
         }
-        System.out.println("CompGenStart 2219 " + serverName);
         manageJson.saveServerJson(this.servers);
         this.servTableModel.setData(this.servers);
         newServerDialog.setVisible(false);
@@ -2788,8 +2794,15 @@ public class CompGenStart extends javax.swing.JFrame {
     }
 
     String extractFileURL(String URL) {
-        String filename = Paths.get(URL).getFileName().toString();
-        return filename;
+        try {
+            String filename = Paths.get(URL).getFileName().toString();
+            return filename;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "File could not be downloaded, please check URL!",
+                    "URL error", JOptionPane.ERROR_MESSAGE);
+            System.out.println(e);
+            return "FALSE";
+        }
     }
 
     private boolean checkIPAddress(String address) {
@@ -2809,10 +2822,11 @@ public class CompGenStart extends javax.swing.JFrame {
         return true;
     }
 
+    /*
     private void addServer(ExternalServer server) {
         servers.add(server);
 //        serverList.setListData(Servers);
-    }
+    }*/
 
     private void jobTableAdd(List<Job> data) {
         this.jobsTableModel = new JobTableModel(data);
@@ -3150,6 +3164,49 @@ public class CompGenStart extends javax.swing.JFrame {
             job.setStatus(latestStatus);
             return true;
         }
+    }
+
+    private void clearMakeCompGenJob() {
+        // Clear all the text boxes
+        userJobName.setText("");
+        refSpecies.setText("");
+        refAnnotFileName.setText("");
+        qrySpecies.setText("");
+        qryAnnotFileName.setText("");
+        setEnzymeLabel.setText("");
+        refProgressBar.setValue(0);
+        queryProgressBar.setValue(0);
+        serverLabel.setText("");
+        connectServerToggle.setBackground(Color.white);
+        connectServerToggle.setForeground(Color.black);
+        startJobButton.setEnabled(false);
+        // Unable buttons
+        setJobName.setEnabled(false);
+        uploadFileRef.setEnabled(false);
+        uploadQryGenome.setEnabled(false);
+        chooseEnzyme.setEnabled(false);
+        runCalcBestEnzyme.setEnabled(false);
+        Btn_modifAlignParam.setEnabled(false);
+        // Clear variables
+        qryCmapEnzyme = "";
+        refAdded = false;
+        qryAdded = false;
+        ref1FromURL = false;
+        qryFromURL = false;
+        referenceFile = "";
+        referenceFilePath = "";
+        referenceAnnot = "";
+        referenceAnnotFilePath = "";
+        queryFile = "";
+        queryFilePath = "";
+        queryAnnot = "";
+        queryAnnotFilePath = "";
+        currentServer = "";
+        
+        this.selectedJob = null;
+        this.selectedEnzyme = null;
+        this.tempSelectedEnzyme = null;
+        this.selectedServer = null;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
