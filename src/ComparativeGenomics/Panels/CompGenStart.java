@@ -1980,29 +1980,6 @@ public class CompGenStart extends javax.swing.JFrame {
         this.referenceFilePath = refGenome.getDirectory() + refGenome.getFile();
         refGenomeFile.setText(referenceFile);
         this.ref1FromURL = false;
-
-        CmapReader cmapReader = new CmapReader();
-        if (cmapReader.validateCmap(this.referenceFilePath)) {
-            //If the file is a cmap, the enzyme chosen for in silico digestion must be
-            // the same as the query
-            String enzyme = cmapReader.getNickaseEnzyme(this.referenceFilePath);
-            if (enzyme == null || enzyme.equals("unknown")) {
-                JOptionPane.showMessageDialog(null, "Unknown enzyme in cmap file. The chosen enzyme should be the same as in the cmap",
-                        "Unkown enzyme", JOptionPane.ERROR_MESSAGE);
-            }
-            // The chosen enzymes of the reference and query must be the same
-            if (this.qryCmapEnzyme.equals(enzyme) || this.qryCmapEnzyme.equals("")) {
-                this.refCmapEnzyme = enzyme;
-                this.tempSelectedEnzyme = new Enzyme(enzyme);
-                System.out.println("1997 name " + this.tempSelectedEnzyme.getName() + " " + this.tempSelectedEnzyme.getSite());
-                setEnzymeLabel.setText(this.tempSelectedEnzyme.getName());
-            } else {
-                JOptionPane.showMessageDialog(null, "The query and reference cmap files selected do not have the same nickase enzymes.",
-                        "Different enzymes", JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
-            this.refCmapEnzyme = "";
-        }
     }//GEN-LAST:event_uploadReferenceActionPerformed
 
     private void downloadQueryURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downloadQueryURLActionPerformed
@@ -2010,8 +1987,8 @@ public class CompGenStart extends javax.swing.JFrame {
     }//GEN-LAST:event_downloadQueryURLActionPerformed
 
     private void uploadQueryGenomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadQueryGenomeActionPerformed
-        FileDialog queryGenome = new FileDialog(this, "Choose Reference Genome", FileDialog.LOAD);
-        // Filter to accept only fasta format
+        FileDialog queryGenome = new FileDialog(this, "Choose query Genome", FileDialog.LOAD);
+        // Filter to accept only fasta or cmap format
         queryGenome.setFile("*.fasta;*.fa;*.fna;*.cmap");
         queryGenome.setVisible(true);
         this.queryFile = queryGenome.getFile();
@@ -2020,7 +1997,7 @@ public class CompGenStart extends javax.swing.JFrame {
         this.qryFromURL = false;
 
         CmapReader cmapReader = new CmapReader();
-        if (cmapReader.validateCmap(this.queryFilePath)) {
+        if (this.queryFilePath.endsWith(".cmap")) {
             //If the file is a cmap, the enzyme chosen for in silico digestion must be
             // the same as the query
             String enzyme = cmapReader.getNickaseEnzyme(this.queryFilePath);
@@ -2028,16 +2005,11 @@ public class CompGenStart extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Unknown enzyme in cmap file. The chosen enzyme should be the same as in the cmap",
                         "Unkown enzyme", JOptionPane.ERROR_MESSAGE);
             }
-            // The chosen enzymes of the reference and query must be the same
-            if (this.refCmapEnzyme.equals(enzyme) || this.refCmapEnzyme.equals("")) {
-                this.qryCmapEnzyme = enzyme;
-                this.tempSelectedEnzyme = new Enzyme(enzyme);
-                System.out.println("1997 name " + this.tempSelectedEnzyme.getName() + " " + this.tempSelectedEnzyme.getSite());
-                setEnzymeLabel.setText(this.tempSelectedEnzyme.getName());
-            } else {
-                JOptionPane.showMessageDialog(null, "The query and reference cmap files selected do not have the same nickase enzymes.",
-                        "Different enzymes", JOptionPane.ERROR_MESSAGE);
-            }
+            this.qryCmapEnzyme = enzyme;
+            this.tempSelectedEnzyme = new Enzyme(enzyme);
+            System.out.println("1997 name " + this.tempSelectedEnzyme.getName() + " " + this.tempSelectedEnzyme.getSite());
+            setEnzymeLabel.setText(this.tempSelectedEnzyme.getName());
+            this.newJob.setEnzyme(this.tempSelectedEnzyme);
         } else {
             this.qryCmapEnzyme = "";
         }
@@ -2167,9 +2139,12 @@ public class CompGenStart extends javax.swing.JFrame {
             }
             this.refAdded = true;
             this.newJob.setRefFile(referenceFile);
-            if (this.refAdded && this.qryAdded) {
+            if ((this.refAdded && this.qryAdded) && this.qryCmapEnzyme.equals("")) {
                 chooseEnzyme.setEnabled(true);
                 runCalcBestEnzyme.setEnabled(true);
+            }
+            if (this.refAdded && this.qryAdded) {
+                startJobButton.setEnabled(true);
             }
         }
     }//GEN-LAST:event_uploadFileRefActionPerformed
@@ -2190,9 +2165,12 @@ public class CompGenStart extends javax.swing.JFrame {
             }
             this.qryAdded = true;
             this.newJob.setQryFile(queryFile);
-            if (this.refAdded && this.qryAdded) {
+            if ((this.refAdded && this.qryAdded) && this.qryCmapEnzyme.equals("")) {
                 chooseEnzyme.setEnabled(true);
                 runCalcBestEnzyme.setEnabled(true);
+            }
+            if (this.refAdded && this.qryAdded) {
+                startJobButton.setEnabled(true);
             }
         }
     }//GEN-LAST:event_uploadQryGenomeActionPerformed
