@@ -2141,9 +2141,11 @@ public class CompGenStart extends javax.swing.JFrame {
                 // URL was provided for reference file
                 String cmd = "cd mapoptics/jobs/" + this.jobName + "/Files/Reference; wget " + this.referenceFilePath;
                 this.channel.executeCmd(cmd);
+                refProgressBar.setValue(100);
             }
             this.refAdded = true;
             this.newJob.setRefFile(referenceFile);
+            // Enable buttons
             if ((this.refAdded && this.qryAdded) && this.qryCmapEnzyme.equals("")) {
                 chooseEnzyme.setEnabled(true);
                 runCalcBestEnzyme.setEnabled(true);
@@ -2167,9 +2169,12 @@ public class CompGenStart extends javax.swing.JFrame {
             } else {
                 String cmd = "cd mapoptics/jobs/" + this.jobName + "/Files/Query; wget " + this.queryFilePath;
                 this.channel.executeCmd(cmd);
+                queryProgressBar.setValue(100);
+                this.qryAdded = true;
             }
             this.qryAdded = true;
             this.newJob.setQryFile(queryFile);
+            System.out.println("CompGenStart 2174 file from job " + queryFile);
             if ((this.refAdded && this.qryAdded) && this.qryCmapEnzyme.equals("")) {
                 chooseEnzyme.setEnabled(true);
                 runCalcBestEnzyme.setEnabled(true);
@@ -2206,8 +2211,11 @@ public class CompGenStart extends javax.swing.JFrame {
     }//GEN-LAST:event_chooseEnzymeActionPerformed
 
     private void startJobButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startJobButtonActionPerformed
-        if ((this.queryFile == null) || (this.referenceFile == null)) {
-            JOptionPane.showMessageDialog(null, "The query or the reference file could not be find.",
+        if (this.queryFile == null || this.queryFile.equals("")) {
+            JOptionPane.showMessageDialog(null, "The query file could not be find.",
+                    "File not found", JOptionPane.PLAIN_MESSAGE);
+        } else if (this.referenceFile == null || this.referenceFile.equals("")) {
+            JOptionPane.showMessageDialog(null, "The reference file could not be find.",
                     "File not found", JOptionPane.PLAIN_MESSAGE);
         } else {
             this.newJob.setRefAnnot(this.referenceAnnotFilePath);
@@ -2250,12 +2258,15 @@ public class CompGenStart extends javax.swing.JFrame {
     private void saveRefURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveRefURLActionPerformed
         this.referenceFilePath = referenceURL.getText();
         String filename = extractFileURL(referenceFilePath);
-        if (filename != null){
-        refProgressBar.setValue(100);
-    }
-        refGenomeFile.setText(filename);
-        refURLDialog.setVisible(false);
-        this.ref1FromURL = true;
+        if (filename != null) {
+            referenceFile = filename;
+            refGenomeFile.setText(filename);
+            refURLDialog.setVisible(false);
+            this.ref1FromURL = true;
+        } else {
+            JOptionPane.showMessageDialog(null, "Reference file could not be downloaded properly from URL.",
+                    "Missing reference file", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_saveRefURLActionPerformed
 
     private void serverNameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverNameFieldActionPerformed
@@ -2461,12 +2472,15 @@ public class CompGenStart extends javax.swing.JFrame {
     private void uploadQryURLButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadQryURLButtonActionPerformed
         this.queryFilePath = queryURL.getText();
         String filename = extractFileURL(queryFilePath);
-        if(filename != null){
-            queryProgressBar.setValue(100);
+        if (filename != null) {
+            queryFile = filename;
+            queryGenomeFileName.setText(filename);
+            qryURLDialog.setVisible(false);
+            this.qryFromURL = true;
+        } else {
+            JOptionPane.showMessageDialog(null, "Query file could not be downloaded properly from URL.",
+                    "Missing query file", JOptionPane.ERROR_MESSAGE);
         }
-        queryGenomeFileName.setText(filename);
-        qryURLDialog.setVisible(false);
-        this.qryFromURL = true;
     }//GEN-LAST:event_uploadQryURLButtonActionPerformed
 
     private void uploadPreAlignedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadPreAlignedActionPerformed
@@ -2809,7 +2823,7 @@ public class CompGenStart extends javax.swing.JFrame {
             // Get the name of the downloaded file
             String splitURL[] = FileURL.split("/");
             int lenSplit = splitURL.length;
-            String fileName = splitURL[lenSplit-1]; //Arays are 0 indexed
+            String fileName = splitURL[lenSplit - 1]; //Arays are 0 indexed
             System.out.println("CompGenStart line 2806 " + fileName);
             return fileName;
         } catch (MalformedURLException e) {

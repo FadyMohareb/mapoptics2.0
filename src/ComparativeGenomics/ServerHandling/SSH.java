@@ -237,10 +237,7 @@ public class SSH {
             connectServer();
             this.sftpChannel = (ChannelSftp) this.session.openChannel("sftp");
             this.sftpChannel.connect();
-            System.out.println("Server working directory SSH 239 " + this.server.getWorkingDir());
-            System.out.println("SSH 240 dir: " + dir);
             this.sftpChannel.mkdir(this.server.getWorkingDir() + dir);
-
             return true;
         } catch (JSchException | SftpException ex) {
             System.out.println(ex);
