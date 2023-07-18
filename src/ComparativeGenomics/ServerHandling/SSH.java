@@ -207,6 +207,7 @@ public class SSH {
         try {
             connectServer();
             this.execChannel = (ChannelExec) session.openChannel("exec");
+            this.execChannel.setPty(true);
             this.execChannel.setCommand(cmd);
             this.execChannel.connect();
             in = execChannel.getInputStream();
