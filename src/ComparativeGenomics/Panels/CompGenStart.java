@@ -2012,6 +2012,7 @@ public class CompGenStart extends javax.swing.JFrame {
             }
             this.qryCmapEnzyme = enzyme;
             this.tempSelectedEnzyme = new Enzyme(enzyme);
+            this.selectedEnzyme = this.tempSelectedEnzyme;
             System.out.println("1997 name " + this.tempSelectedEnzyme.getName() + " " + this.tempSelectedEnzyme.getSite());
             setEnzymeLabel.setText(this.tempSelectedEnzyme.getName());
             this.newJob.setEnzyme(this.tempSelectedEnzyme);
@@ -2150,7 +2151,7 @@ public class CompGenStart extends javax.swing.JFrame {
                 chooseEnzyme.setEnabled(true);
                 runCalcBestEnzyme.setEnabled(true);
             }
-            if ((this.refAdded && this.qryAdded) && this.selectedEnzyme != null) {
+            if ((this.refAdded && this.qryAdded) && (this.selectedEnzyme != null || !this.selectedEnzyme.getName().equals(""))) {
                 startJobButton.setEnabled(true);
             }
         }
@@ -2507,7 +2508,6 @@ public class CompGenStart extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "XMAP file cannot be empty",
                     "Missing file!", JOptionPane.ERROR_MESSAGE);
         } else {
-            //System.out.println(localqrycmap);
             CompGenView viewResults = new CompGenView();
             viewResults.setData(this.localSpecies.getText(), this.localrefcmap, this.localqrycmap,
                     this.localrefkary, this.localxmap, this.localreffasta, this.localrefannot);
@@ -3193,7 +3193,6 @@ public class CompGenStart extends javax.swing.JFrame {
         } else {
             // get the latest update from the log file
             String latestStatus = result.get(result.size() - 1).split(": ")[1];
-            //System.out.println(latestStatus);
             job.setStatus(latestStatus);
             return true;
         }
