@@ -2093,10 +2093,14 @@ public class CompGenStart extends javax.swing.JFrame {
         this.channel.mkDir(jobName + "/Files/Reference/");
         this.channel.mkDir(jobName + "/Files/Query/");
         this.channel.mkDir(jobName + "/Files/Results/");
+        
         this.startJobButton.setText("Start Job: " + jobName);
         this.uploadFileRef.setEnabled(true);
         this.uploadQryGenome.setEnabled(true);
         this.newJob.setName(jobName);
+        
+        // Run container for job
+        this.channel.runContainer(jobName);
     }//GEN-LAST:event_setJobNameActionPerformed
 
     private void connectServerToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectServerToggleActionPerformed

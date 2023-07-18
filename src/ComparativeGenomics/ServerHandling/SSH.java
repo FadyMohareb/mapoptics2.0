@@ -246,7 +246,23 @@ public class SSH {
                     "Creation failed!", JOptionPane.ERROR_MESSAGE);
             return false;
         }
+    }
 
+    /**
+     * Run a container using the Docker image mapoptics_docker_server. The name
+     * of the container is the name of the job. The job folder is a volume
+     * mounted in the container.
+     *
+     * @param job name
+     */
+    public void runContainer(String jobname) {
+        String dir = this.server.getWorkingDir();
+        // Run new container for the job
+        String cmd = "cd " + dir
+                + " && docker run -it -d --name mapopticsDock_" + jobname
+                + " -v ~/" + dir + jobname + ":/mapoptics/jobs/" + jobname + " marieschmit/mapoptics_docker_server:ubuntu16";
+        System.out.println(cmd);
+        executeCmd(cmd);
     }
 
     /**
@@ -320,27 +336,25 @@ public class SSH {
         String dir = job.getServer().getWorkingDir();
         String enz = job.getEnz().getSite();
         String align = job.getPipeline();
-        
+
         /*String cmd = "cd " + dir + 
                 " ; docker run -it -d --name mapopticsDock_" + jobname + 
                 " -v ~/" + dir + jobname + ":/mapoptics/jobs/" + jobname + " marieschmit/mapoptics_docker_server:ubuntu16 ; " + 
                 "docker exec -it mapopticsDock_" + jobname + " sh -c \"cd /mapoptics/jobs ; " +
                 "./run_job.sh -j " + jobname + " -r " + ref + " -q " + qry + " -e " + enz + " -a " + align + 
                 " > " + jobname + "/output.log 2>&1 \"";
-        */
-        
-        String cmd = "cd " + dir + 
-                " && docker run -it -d --name mapopticsDock_" + jobname + 
-                " -v ~/" + dir + jobname + ":/mapoptics/jobs/" + jobname + " marieschmit/mapoptics_docker_server:ubuntu16 && " + 
-                "docker exec -it mapopticsDock_" + jobname + " sh -c \"cd /mapoptics/jobs && " +
-                "./run_job.sh -j " + jobname + " -r " + ref + " -q " + qry + " -e " + enz + " -a " + align + 
-                " > " + jobname + "/output.log 2>&1 \"";
-        
-        
+         */
+        String cmd = "cd " + dir
+                //+ " ; docker run -it -d --name mapopticsDock_" + jobname
+                //+ " -v ~/" + dir + jobname + ":/mapoptics/jobs/" + jobname + " marieschmit/mapoptics_docker_server:ubuntu16 "
+                + "; docker start " + jobname
+                + "; docker exec -it mapopticsDock_" + jobname + " sh -c \"cd /mapoptics/jobs && "
+                + "./run_job.sh -j " + jobname + " -r " + ref + " -q " + qry + " -e " + enz + " -a " + align
+                + " > " + jobname + "/output.log 2>&1 \"";
+
         System.out.println(cmd + " Command send to server.");
         executeCmd(cmd);
     }
-    
 
     /**
      *
@@ -360,10 +374,23 @@ public class SSH {
         String cmd = new String();
         // Run the script either on query or reference file
         if (query) {
-            cmd = "cd " + dir + "; ./calc_best_enz.sh " + jobname + "/Files/Query/" + qry;
+            cmd = "cd " + dir
+                    //+ " ; docker run -it -d --name mapopticsDock_" + jobname
+                    //+ " -v ~/" + dir + jobname + ":/mapoptics/jobs/" + jobname + " marieschmit/mapoptics_docker_server:ubuntu16 "
+                    + " docker start " + jobname
+                    + "; docker exec -it mapopticsDock_" + jobname + " sh -c \"cd /mapoptics/jobs "
+                    + "; ./calc_best_enz.sh " + jobname + "/Files/Query/" + qry
+                    + "\"";
         } else {
-            cmd = "cd " + dir + "; ./calc_best_enz.sh " + jobname + "/Files/Reference/" + ref;
+            cmd = "cd " + dir
+                    //+ " ; docker run -it -d --name mapopticsDock_" + jobname
+                    //+ " -v ~/" + dir + jobname + ":/mapoptics/jobs/" + jobname + " marieschmit/mapoptics_docker_server:ubuntu16 "
+                    + "&& docker start " + jobname
+                    + "; docker exec -it mapopticsDock_" + jobname + " sh -c \"cd /mapoptics/jobs "
+                    + "; ./calc_best_enz.sh " + jobname + "/Files/Reference/" + ref
+                    + "\"";
         }
+        System.out.println(cmd);
         executeCmd(cmd);
     }
 
@@ -375,6 +402,7 @@ public class SSH {
      */
     public void downloadJobResults(Job job) throws SftpException {
         String jobName = job.getName();
+
         try {
             this.sftpChannel = (ChannelSftp) session.openChannel("sftp");
             this.sftpChannel.connect();
