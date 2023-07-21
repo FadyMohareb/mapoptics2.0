@@ -6,10 +6,12 @@
 #RefAligner
 #runBNG
 #path to required programs
-digest="/home/fran/mapoptics/solve/tools/pipeline/Solve3.7_03302022_283/HybridScaffold/03302022/scripts/fa2cmap_multi_color.pl"
-fandom="/home/fran/mapoptics/FaNDOM/"
-refaligner="/home/fran/mapoptics/solve/tools/pipeline/Solve3.7_03302022_283/RefAligner/12432.12542rel/RefAligner"
-runBNG="/home/fran/mapoptics/runBNG/"
+scriptdir=$(dirname "${BASH_SOURCE[0]}")
+mapoptics_folder="${scriptdir}"/../
+digest="${scriptdir}"/../solve/tools/pipeline/Solve3.7_03302022_283/HybridScaffold/03302022/scripts/fa2cmap_multi_color.pl
+fandom="${scriptdir}"/../FaNDOM/
+refaligner="${scriptdir}"/../solve/tools/pipeline/Solve3.7_03302022_283/RefAligner/12432.12542rel/RefAligner
+runBNG="${scriptdir}"/../runBNG/
 
 while test $# -gt 0; 
     do
@@ -46,40 +48,39 @@ while test $# -gt 0;
                     ;;
                 -j|--job)
                     shift
-                    job=$1
-                    if [ ! -d "/home/fran/mapoptics/jobs/$job" ] 
+                    job="$1"
+                    if [ ! -d "$scriptdir"/"$job" ] 
                       then
                           echo "Directory for Job: $job does not exist." 
                           exit 2;
                       fi
-                    out="/home/fran/mapoptics/jobs/$job/Files/Results"
-                    ref_folder="/home/fran/mapoptics/jobs/$job/Files/Reference/"
-                    qry_folder="/home/fran/mapoptics/jobs/$job/Files/Query/"
-                    shift
+                    out="$scriptdir""/""$job""/Files/Results/"
+                    ref_folder="$mapoptics_folder""jobs/""$job""/Files/Reference/"
+		    qry_folder="$mapoptics_folder""jobs/""$job""/Files/Query/"
+		    shift
                     ;;
                 -r|--ref)
                     shift
-                    ref="/home/fran/mapoptics/jobs/$job/Files/Reference/$1"
-                    ref_path="$(dirname "${ref}")"
-                    ref_basename="$(basename "${ref}")"
+                    ref="$scriptdir""/""$job""/Files/Reference/""$1"
+                    ref_path="$(dirname ""${ref}"")"
+                    ref_basename="$(basename ""${ref}"")"
                     ref_basename=${ref_basename%.*}
-		    echo "BASENAME: $ref_basename" >> /home/fran/mapoptics/jobs/"$job"/log.txt;
-                    if [[ ! -f "$ref" ]]
+		    if [[ ! -f "$ref" ]]
                     then
-                          echo "The reference file $1 has not been found"
+                          echo "The reference file ""$1"" has not been found"
                           exit 2;
                     fi
                     shift
                     ;;
                 -q|--qry)
                     shift
-                    qry="/home/fran/mapoptics/jobs/$job/Files/Query/$1"
-                    qry_path="$(dirname "${qry}")"
-                    qry_basename="$(basename "${qry}")"
+                    qry="${scriptdir}""/""${job}""/Files/Query/""$1"
+                    qry_path="$(dirname ""${qry}"")"
+                    qry_basename="$(basename ""${qry}"")"
                     qry_basename=${qry_basename%.*}
                     if [[ ! -f "$qry" ]]
                       then
-                          echo "The reference file $1 has not been found"
+                          echo "The reference file ""$1"" has not been found"
                     fi
                     shift
                     ;;
@@ -118,79 +119,87 @@ while test $# -gt 0;
   done  
 
 #Create the log file and add the start time 
-touch /home/fran/mapoptics/jobs/"$job"/log.txt;
-echo "Start: $(date)" >> /home/fran/mapoptics/jobs/"$job"/log.txt;
+touch "${scriptdir}""/""$job""/log.txt";
+echo "Start: $(date)" >> "${scriptdir}""/""$job""/log.txt";
 
-if [[ $ref == *".gz"* ]]
+if [[ "$ref" == *".gz"* ]]
     then
     gunzip "$ref"
 fi
 #check the reference is in fasta format 
-if [[ $ref == *.fa ]]
+if [[ "$ref" == *.fa ]]
   then    
     #generate the karyotype file
    
     samtools faidx "$ref"
-    awk -F "\t" 'OFS=" " {print $2, $1 }' "$ref".fai > "$out"/karyotype.txt
+    awk -F "\t" 'OFS=" " {print $2, $1 }' "$ref".fai > "$out"karyotype.txt
+    # calculate the genome size in Mbp
+    genomesize=$(awk '{sum+=$2}END{print sum*0.000001}' "$ref".fai)
+    # digest the ref into a cmap 
+    perl $digest -i "$ref" -o "$ref_path" -e "$enzyme" 1 
+
+    echo "Status: Reference Digested"  >> "${scriptdir}""/""$job""/log.txt";
+elif [[ "$ref" == *.fasta ]]
+  then    
+    #generate the karyotype file
+    samtools faidx "$ref"
+    awk -F "\t" 'OFS=" " {print $2, $1 }' "$ref".fai > "$out"karyotype.txt
     # calculate the genome size in Mbp
     genomesize=$(awk '{sum+=$2}END{print sum*0.000001}' "$ref".fai)
     # digest the ref into a cmap 
     perl $digest -i "$ref" -o "$ref_path" -e "$enzyme" 1 
    
-    echo "Status: Reference Digested"  >> /home/fran/mapoptics/jobs/"$job"/log.txt;
-elif [[ $ref == *.fasta ]]
-  then    
-    #generate the karyotype file
-    samtools faidx "$ref"
-    awk -F "\t" 'OFS=" " {print $2, $1 }' "$ref".fai > "$out"/karyotype.txt
-    # calculate the genome size in Mbp
-    genomesize=$(awk '{sum+=$2}END{print sum*0.000001}' "$ref".fai)
-    # digest the ref into a cmap 
-    perl $digest -i "$ref" -o "$ref_path" -e "$enzyme" 1 
-   
-    echo "Status: Reference Digested"  >> /home/fran/mapoptics/jobs/"$job"/log.txt;
-elif [[ $ref == *.fna ]]
+    echo "Status: Reference Digested"  >> "${scriptdir}""/""$job""/log.txt";
+elif [[ "$ref" == *.fna ]]
   then
     
     #generate the karyotype file
     samtools faidx "$ref"
-    awk -F "\t" 'OFS=" " {print $2, $1 }' "$ref".fai > "$out"/karyotype.txt
+    awk -F "\t" 'OFS=" " {print $2, $1 }' "$ref".fai > "$out"karyotype.txt
     # calculate the genome size in Mbp
     genomesize=$(awk '{sum+=$2}END{print sum*0.000001}' "$ref".fai)
     # digest the ref into a cmap 
     perl $digest -i "$ref" -o "$ref_path" -e "$enzyme" 1 
   
-    echo "Status: Reference Digested"  >> /home/fran/mapoptics/jobs/"$job"/log.txt;
+    echo "Status: Reference Digested"  >> "${scriptdir}/""$job""/log.txt";
 else 
   echo "reference not in required format"
 fi
 
   
-if [[ $qry == *".gz"* ]]
+if [[ "$qry" == *".gz"* ]]
     then
     gunzip "$qry"
 fi   
   
 #check the query is in fasta format
-if [[ $qry == *.fa ]] 
+if [[ "$qry" == *.fa ]] 
   then    
     
     # digest the qry into a cmap 
    
     perl $digest -i "$qry" -o "$qry_path" -e "$enzyme" 1 
-    echo "Status: Query Digested"  >> /home/fran/mapoptics/jobs/"$job"/log.txt;
-elif [[ $qry == *.fna ]]
+    echo "Status: Query Digested"  >> "${scriptdir}/""$job""/log.txt";
+    qryCmap="$qry_folder""$qry_basename""_""$enzyme""_0kb_0labels.cmap"
+elif [[ "$qry" == *.fna ]]
   then   
     # digest the qry into a cmap 
     perl $digest -i "$qry" -o "$qry_path" -e "$enzyme" 1 
    
-    echo "Status: Query Digested"  >> /home/fran/mapoptics/jobs/"$job"/log.txt;
-    elif [[ $qry == *.fasta ]]
+    echo "Status: Query Digested"  >> "${scriptdir}/""$job""/log.txt";
+    qryCmap="$qry_folder""$qry_basename""_""$enzyme""_0kb_0labels.cmap"
+    elif [[ "$qry" == *.fasta ]]
   then 
     # digest the qry into a cmap 
     perl $digest -i "$qry" -o "$qry_path" -e "$enzyme" 1
   
-    echo "Status: Query Digested"  >> /home/fran/mapoptics/jobs/"$job"/log.txt;
+    echo "Status: Query Digested"  >> "${scriptdir}/""$job""/log.txt";
+    qryCmap="$qry_folder""$qry_basename""_""$enzyme""_0kb_0labels.cmap"
+
+elif [[ "$qry" == *.cmap ]]
+  then
+    qryCmap="$qry_folder""$qry_basename"".cmap"
+
 elif  [[ "$qry" != *.cmap ]]
     then
       echo "Query file not in expected format"
@@ -200,43 +209,40 @@ else
 fi
 
 
-echo "Status: Aligning data using $aligner" >> /home/fran/mapoptics/jobs/"$job"/log.txt;
+echo "Status: Aligning data using $aligner" >> "${scriptdir}/""$job""/log.txt";
 
 if [[ "${aligner}" == *"fandom"* ]]
   then
-  echo "$ref_folder  $ref_basename_ $enzyme _0kn_0labels.cmap" >> /home/fran/mapoptics/jobs/"$job"/log.txt;
   cd $fandom || exit
-  #python PythonScript/wrapper_contigs.py -f "$PWD" -t 10 -r "$ref_folder""$ref_basename""_GCAATG_0kb_0labels.cmap" -q "$qry_folder""$qry_basename""_GCAATG_0kb_0labels.cmap" -n "$job" -o "$ref_folder" -c nh -m 1 
-  python PythonScript/wrapper_contigs.py -f "$PWD" -t 10 -r "$ref_folder""$ref_basename""_""$enzyme""_0kb_0labels.cmap" -q "$qry_folder""$qry_basename""_""$enzyme""_0kb_0labels.cmap" -n "$job" -o "$ref_folder" -c nh -m 1
-  echo "$PWD $ref_folder $ref_basename $qry $qry_folder $qry_basename"
-  cd "$ref_folder" || exit
-  mv  "$job""_final_alignment.xmap" "$job"".xmap"
-  mv  "$job"".xmap" "$out"
+  python PythonScript/wrapper_contigs.py -f ${PWD} -t 10 -r "$ref_folder""$ref_basename""_""$enzyme""_0kb_0labels.cmap" -q "$qryCmap" -n "$job" -o "../jobs/""$job""/Files/Reference/" -c nh -m 1
+  
+  # Go back to job folder once fandom is executed
+  cd ../jobs  
+
+  #cd "$ref_folder" || exit
+  mv "${ref_folder}""${job}"_final_alignment.xmap "${ref_folder}""${job}".xmap
+  mv  "${ref_folder}""${job}".xmap "$out"
 
 elif [[ "${aligner}" == *"refaligner"* ]]
   then
-    cd $runBNG || exit
-    
-    #./runBNG compare -R $refaligner -r "$ref_folder""$ref_basename""_GCAATG_0kb_0labels.cmap" -q "$qry_folder""$qry_basename""_GCAATG_0kb_0labels.cmap" -z "$genomesize" -t 10 -m 100 -p "$job" -o "$ref_folder"
-    ./runBNG compare -R "$refaligner" -r "$ref_folder""$ref_basename""_""$enzyme""_0kb_0labels.cmap" -q "$qry_folder""$qry_basename""_""$enzyme""_0kb_0labels.cmap" -z "$genomesize" -t 10 -m 100 -p "$job" -o "$ref_folder"
-    cd "$ref_folder" || exit
-    mv  "$job"".xmap" "$out"
+    cd $runBNG || exit    
+    ./runBNG compare -R "$refaligner" -r "$ref_folder""$ref_basename""_""$enzyme""_0kb_0labels.cmap" -q "$qryCmap" -z "$genomesize" -t 10 -m 100 -p "$job" -o "$ref_folder"
+
+    cd ../jobs/
+    mv "$ref_folder""${job}"".xmap" "$out"
 else
   echo "somethings gone wrong"
   exit 2;
 fi
 
 #move all the relevent files to the results directory
+mv "$ref_folder""${ref_basename}"_"$enzyme""_0kb_0labels.cmap" "$ref_folder""$job""_ref.cmap"
+mv "$ref_folder""${job}""_ref.cmap" "$out"
 
-cd "$ref_folder" || exit
-mv "$ref_basename""_""$enzyme""_0kb_0labels.cmap" "$job""_ref.cmap"
-mv "$job""_ref.cmap" "$out"
+mv "$qryCmap" "$qry_folder""${job}""_qry.cmap"
+mv "$qry_folder""$job""_qry.cmap" "$out"
 
-cd "$qry_folder" || exit
-mv "$qry_basename""_""$enzyme""_0kb_0labels.cmap" "$job""_qry.cmap"
-mv "$job""_qry.cmap" "$out"
-
-echo "Status: Completed" >> /home/fran/mapoptics/jobs/"$job"/log.txt;
+echo "Status: Completed" >> "${scriptdir}""/""$job""/log.txt";
 echo "----------------------------------"
 echo "End of pipeline. Results are in $out";
 exit 1;

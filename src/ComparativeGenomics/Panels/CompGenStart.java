@@ -6,6 +6,7 @@ import ComparativeGenomics.ServerHandling.Job;
 import ComparativeGenomics.ServerHandling.SSH;
 import ComparativeGenomics.FileHandling.JsonFiles;
 import ComparativeGenomics.FileHandling.BestEnzyme;
+import FileHandling.CmapReader;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
@@ -18,6 +19,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -50,7 +54,6 @@ public class CompGenStart extends javax.swing.JFrame {
     private Job selectedJob;
     private List<Job> jobsRunning = new ArrayList<>();
     private List<ExternalServer> servers = new ArrayList<>();
-    ;
     private ExternalServer selectedServer;
     private ExternalServer tempSelectedServer;
     private String currentServer;
@@ -83,6 +86,8 @@ public class CompGenStart extends javax.swing.JFrame {
     private String localrefannot = "";
     private String localreffasta = "";
     private String localrefkary = "";
+
+    private String qryCmapEnzyme = "";
 
     /**
      * Creates new form comparativeGenomics
@@ -127,7 +132,7 @@ public class CompGenStart extends javax.swing.JFrame {
         qrySpecies = new javax.swing.JTextField();
         jLabel33 = new javax.swing.JLabel();
         qryAnnotFileName = new javax.swing.JTextField();
-        jPanel3 = new javax.swing.JPanel();
+        settingsPanel = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         setEnzymeLabel = new javax.swing.JLabel();
         chooseEnzyme = new javax.swing.JButton();
@@ -136,6 +141,8 @@ public class CompGenStart extends javax.swing.JFrame {
         fandomPipeline = new javax.swing.JRadioButton();
         runCalcBestEnzyme = new javax.swing.JButton();
         Btn_modifAlignParam = new javax.swing.JButton();
+        calculateQuery = new javax.swing.JRadioButton();
+        calculateReference = new javax.swing.JRadioButton();
         bnt_help = new javax.swing.JButton();
         startJobButton = new javax.swing.JButton();
         sendQueryMenu = new javax.swing.JMenuBar();
@@ -225,7 +232,7 @@ public class CompGenStart extends javax.swing.JFrame {
         jLabel30 = new javax.swing.JLabel();
         chooseLocalXmap = new javax.swing.JButton();
         localXmapName = new javax.swing.JLabel();
-        buttonGroup1 = new javax.swing.ButtonGroup();
+        btnGroupPipeline = new javax.swing.ButtonGroup();
         filesDownloading = new javax.swing.JDialog();
         jLabel1 = new javax.swing.JLabel();
         jobDownloadingName = new javax.swing.JLabel();
@@ -233,7 +240,6 @@ public class CompGenStart extends javax.swing.JFrame {
         selectBestEnz = new javax.swing.JButton();
         bestEnz = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
-        jButton13 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         bestEnzymesTable = new javax.swing.JTable();
         LblEnzyme = new javax.swing.JLabel();
@@ -257,6 +263,7 @@ public class CompGenStart extends javax.swing.JFrame {
         lengthPwd = new javax.swing.JLabel();
         passwordLabel = new javax.swing.JPasswordField();
         confirmLabel = new javax.swing.JPasswordField();
+        btnGroupCalcEnzyme = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         submittedJobPane = new javax.swing.JScrollPane();
         jobsTable = new javax.swing.JTable();
@@ -276,7 +283,7 @@ public class CompGenStart extends javax.swing.JFrame {
         makeCompGenJob.setTitle("Send New Job");
         makeCompGenJob.setBounds(new java.awt.Rectangle(500, 500, 460, 500));
         makeCompGenJob.setLocationByPlatform(true);
-        makeCompGenJob.setMinimumSize(new java.awt.Dimension(457, 650));
+        makeCompGenJob.setMinimumSize(new java.awt.Dimension(554, 662));
         makeCompGenJob.setName("New Job Frame"); // NOI18N
 
         serverPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Server"));
@@ -320,15 +327,14 @@ public class CompGenStart extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(serverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(serverPanelLayout.createSequentialGroup()
-                        .addComponent(userJobName)
-                        .addGap(18, 18, 18)
-                        .addComponent(setJobName)
-                        .addGap(9, 9, 9))
+                        .addComponent(userJobName, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(setJobName, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(serverPanelLayout.createSequentialGroup()
                         .addComponent(serverLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(connectServerToggle)
-                        .addContainerGap())))
+                        .addComponent(connectServerToggle)))
+                .addContainerGap())
         );
         serverPanelLayout.setVerticalGroup(
             serverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -385,46 +391,34 @@ public class CompGenStart extends javax.swing.JFrame {
                     .addComponent(jLabel13)
                     .addComponent(refGenomeLabel))
                 .addGap(18, 18, 18)
-                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(sendRefGenomePanelLayout.createSequentialGroup()
-                        .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(refProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(refGenomeFile, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(uploadFileRef))
-                    .addGroup(sendRefGenomePanelLayout.createSequentialGroup()
-                        .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(refSpecies, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(refAnnotFileName, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(refSpecies, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(refGenomeFile, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(refProgressBar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(refAnnotFileName))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(uploadFileRef)
                 .addContainerGap())
         );
         sendRefGenomePanelLayout.setVerticalGroup(
             sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(sendRefGenomePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(sendRefGenomePanelLayout.createSequentialGroup()
-                        .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(sendRefGenomePanelLayout.createSequentialGroup()
-                                .addComponent(jLabel13)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel32)
-                                    .addComponent(refAnnotFileName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(sendRefGenomePanelLayout.createSequentialGroup()
-                                .addComponent(refSpecies, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(refGenomeFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(uploadFileRef)
-                                    .addComponent(refGenomeLabel))
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addContainerGap())
-                    .addGroup(sendRefGenomePanelLayout.createSequentialGroup()
-                        .addGap(58, 58, 58)
-                        .addComponent(refProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(38, Short.MAX_VALUE))))
+                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(refSpecies)
+                    .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(refGenomeFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(uploadFileRef)
+                    .addComponent(refGenomeLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(refProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel32)
+                    .addComponent(refAnnotFileName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         uploadFileRef.setEnabled(false);
@@ -445,9 +439,14 @@ public class CompGenStart extends javax.swing.JFrame {
 
         jLabel31.setText("Species:");
 
+        qrySpecies.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                qrySpeciesActionPerformed(evt);
+            }
+        });
+
         jLabel33.setText("Annotation File:");
 
-        qryAnnotFileName.setText("jTextField3");
         qryAnnotFileName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 qryAnnotFileNameActionPerformed(evt);
@@ -462,30 +461,22 @@ public class CompGenStart extends javax.swing.JFrame {
                 .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
                         .addGap(47, 47, 47)
-                        .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(qryGenomeLabel)
-                            .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel31)
-                                .addGap(2, 2, 2))))
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel31))
                     .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(jLabel33)))
+                        .addGap(48, 48, 48)
+                        .addComponent(qryGenomeLabel))
+                    .addComponent(jLabel33, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(18, 18, 18)
-                .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
-                        .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(qrySpecies, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(queryProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(queryGenomeFileName, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(uploadQryGenome))
-                    .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
-                        .addComponent(qryAnnotFileName, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(qryAnnotFileName, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(queryGenomeFileName, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(queryProgressBar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(qrySpecies))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(uploadQryGenome)
+                .addGap(8, 8, 8))
         );
         sendQueryGenomePanelLayout.setVerticalGroup(
             sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -496,31 +487,30 @@ public class CompGenStart extends javax.swing.JFrame {
                             .addGap(5, 5, 5)
                             .addComponent(jLabel4))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sendQueryGenomePanelLayout.createSequentialGroup()
-                            .addComponent(jLabel31)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
-                            .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(qryGenomeLabel)
-                                .addComponent(uploadQryGenome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(jLabel31, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
+                            .addGap(23, 23, 23)))
                     .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
-                        .addComponent(qrySpecies, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(qrySpecies)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(queryGenomeFileName, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(9, 9, 9)
-                        .addComponent(queryProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(queryGenomeFileName, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(uploadQryGenome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(qryGenomeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
-                        .addComponent(jLabel33)
-                        .addGap(31, 31, 31))
-                    .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(qryAnnotFileName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGap(7, 7, 7)
+                        .addComponent(queryProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(7, 7, 7)
+                        .addComponent(qryAnnotFileName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sendQueryGenomePanelLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel33, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         uploadQryGenome.setEnabled(false);
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Settings"));
+        settingsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Settings"));
 
         jLabel3.setText("Nickase Enzyme:");
 
@@ -535,7 +525,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
         jLabel9.setText("Pipeline:");
 
-        buttonGroup1.add(refalignerPipeline);
+        btnGroupPipeline.add(refalignerPipeline);
         refalignerPipeline.setSelected(true);
         refalignerPipeline.setText("RefAligner");
         refalignerPipeline.addActionListener(new java.awt.event.ActionListener() {
@@ -544,7 +534,7 @@ public class CompGenStart extends javax.swing.JFrame {
             }
         });
 
-        buttonGroup1.add(fandomPipeline);
+        btnGroupPipeline.add(fandomPipeline);
         fandomPipeline.setText("FaNDOM");
         fandomPipeline.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -566,52 +556,70 @@ public class CompGenStart extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        btnGroupCalcEnzyme.add(calculateQuery);
+        calculateQuery.setSelected(true);
+        calculateQuery.setText("Query");
+
+        btnGroupCalcEnzyme.add(calculateReference);
+        calculateReference.setText("Reference");
+        calculateReference.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                calculateReferenceActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout settingsPanelLayout = new javax.swing.GroupLayout(settingsPanel);
+        settingsPanel.setLayout(settingsPanelLayout);
+        settingsPanelLayout.setHorizontalGroup(
+            settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(settingsPanelLayout.createSequentialGroup()
                 .addGap(17, 17, 17)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel9))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
+                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(settingsPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel9)
+                        .addGap(13, 13, 13)
                         .addComponent(refalignerPipeline)
                         .addGap(18, 18, 18)
                         .addComponent(fandomPipeline)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(setEnzymeLabel)
-                        .addGap(66, 66, 66)
-                        .addComponent(chooseEnzyme)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(runCalcBestEnzyme)
-                        .addContainerGap())))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(Btn_modifAlignParam)
+                        .addComponent(Btn_modifAlignParam))
+                    .addGroup(settingsPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(setEnzymeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(runCalcBestEnzyme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(chooseEnzyme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addComponent(calculateQuery)
+                        .addGap(18, 18, 18)
+                        .addComponent(calculateReference)))
                 .addContainerGap())
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+        settingsPanelLayout.setVerticalGroup(
+            settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, settingsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(setEnzymeLabel)
-                    .addComponent(chooseEnzyme)
-                    .addComponent(runCalcBestEnzyme))
+                    .addComponent(chooseEnzyme))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(runCalcBestEnzyme)
+                    .addComponent(calculateQuery)
+                    .addComponent(calculateReference))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(refalignerPipeline)
                     .addComponent(fandomPipeline))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addContainerGap(28, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, settingsPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(Btn_modifAlignParam)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         chooseEnzyme.setEnabled(false);
@@ -673,7 +681,7 @@ public class CompGenStart extends javax.swing.JFrame {
         });
         jMenu5.add(downloadQueryURL);
 
-        uploadQueryGenome.setText("Upload Query Fasta File");
+        uploadQueryGenome.setText("Upload Query Fasta or Cmap File");
         uploadQueryGenome.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 uploadQueryGenomeActionPerformed(evt);
@@ -743,41 +751,39 @@ public class CompGenStart extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(makeCompGenJobLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(sendRefGenomePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(sendQueryGenomePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(serverPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(makeCompGenJobLayout.createSequentialGroup()
-                        .addGroup(makeCompGenJobLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(sendQueryGenomePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(serverPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(makeCompGenJobLayout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addComponent(bnt_help)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(startJobButton)))
-                        .addContainerGap())))
+                        .addComponent(bnt_help)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(startJobButton)
+                        .addContainerGap())
+                    .addComponent(settingsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         makeCompGenJobLayout.setVerticalGroup(
             makeCompGenJobLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(makeCompGenJobLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(7, 7, 7)
                 .addComponent(serverPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sendRefGenomePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sendQueryGenomePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(sendQueryGenomePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(7, 7, 7)
+                .addComponent(settingsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(makeCompGenJobLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(makeCompGenJobLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bnt_help)
                     .addComponent(startJobButton))
-                .addContainerGap())
+                .addGap(7, 7, 7))
         );
 
         startJobButton.setEnabled(false);
 
         refURLDialog.setBounds(new java.awt.Rectangle(500, 500, 401, 35));
-        refURLDialog.setMinimumSize(new java.awt.Dimension(381, 51));
-        refURLDialog.setSize(new java.awt.Dimension(385, 51));
+        refURLDialog.setMinimumSize(new java.awt.Dimension(381, 60));
+        refURLDialog.setPreferredSize(new java.awt.Dimension(385, 60));
+        refURLDialog.setSize(new java.awt.Dimension(385, 60));
 
         jLabel21.setText("Reference URL:");
 
@@ -843,6 +849,7 @@ public class CompGenStart extends javax.swing.JFrame {
         });
 
         workingDirField.setText("mapoptics/jobs/");
+        workingDirField.setEnabled(false);
 
         showPass.setText("Show Password");
         showPass.addItemListener(new java.awt.event.ItemListener() {
@@ -1127,8 +1134,9 @@ public class CompGenStart extends javax.swing.JFrame {
 
         qryURLDialog.setTitle("Query File from URL");
         qryURLDialog.setBounds(new java.awt.Rectangle(500, 500, 397, 35));
-        qryURLDialog.setMinimumSize(new java.awt.Dimension(401, 51));
-        qryURLDialog.setSize(new java.awt.Dimension(401, 51));
+        qryURLDialog.setMinimumSize(new java.awt.Dimension(401, 60));
+        qryURLDialog.setPreferredSize(new java.awt.Dimension(401, 60));
+        qryURLDialog.setSize(new java.awt.Dimension(401, 60));
 
         jLabel10.setText("File URL:");
 
@@ -1452,13 +1460,6 @@ public class CompGenStart extends javax.swing.JFrame {
 
         jLabel20.setText("Best Enzyme:");
 
-        jButton13.setText("Save");
-        jButton13.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton13ActionPerformed(evt);
-            }
-        });
-
         bestEnzymesTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][][] {
             },
@@ -1482,12 +1483,10 @@ public class CompGenStart extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
-                        .addComponent(jButton13)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel20)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(LblEnzyme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(76, 76, 76)
                         .addComponent(bestEnz)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(selectBestEnz))
@@ -1506,13 +1505,9 @@ public class CompGenStart extends javax.swing.JFrame {
                     .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
                         .addComponent(bestEnz)
                         .addGap(0, 0, 0)
-                        .addComponent(LblEnzyme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
-                        .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
-                        .addGap(2, 2, 2))
-                    .addGroup(bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(selectBestEnz)
-                        .addComponent(jButton13)))
+                        .addComponent(LblEnzyme, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE))
+                    .addComponent(selectBestEnz)
+                    .addComponent(jLabel20, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -1780,11 +1775,12 @@ public class CompGenStart extends javax.swing.JFrame {
             }
         });
         submittedJobPane.setViewportView(jobsTable);
-        this.jobsRunning.clear();
+        /*this.jobsRunning.clear();
         this.jobsRunning = manageJson.getJobsFromJson(this.jobsRunning);
         jobTableAdd(this.jobsRunning);
         JobTableModel newModel = new JobTableModel(this.jobsRunning);
         jobsTable.setModel(newModel);
+        */
 
         openResults.setText("Open Results");
         openResults.addActionListener(new java.awt.event.ActionListener() {
@@ -1966,6 +1962,7 @@ public class CompGenStart extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void newJobRefQueryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newJobRefQueryActionPerformed
+        clearMakeCompGenJob();
         makeCompGenJob.setVisible(true);
     }//GEN-LAST:event_newJobRefQueryActionPerformed
 
@@ -1982,7 +1979,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private void uploadReferenceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadReferenceActionPerformed
         FileDialog refGenome = new FileDialog(this, "Choose Reference Genome", FileDialog.LOAD);
         // Filter to accept only fasta format
-        refGenome.setFile("*.fasta;*.fa;*.fna");
+        refGenome.setFile("*.fasta;*.fa;*.fna;*.cmap");
         refGenome.setVisible(true);
         this.referenceFile = refGenome.getFile();
         this.referenceFilePath = refGenome.getDirectory() + refGenome.getFile();
@@ -1995,14 +1992,34 @@ public class CompGenStart extends javax.swing.JFrame {
     }//GEN-LAST:event_downloadQueryURLActionPerformed
 
     private void uploadQueryGenomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadQueryGenomeActionPerformed
-        FileDialog queryGenome = new FileDialog(this, "Choose Reference Genome", FileDialog.LOAD);
-        // Filter to accept only fasta format
-        queryGenome.setFile("*.fasta;*.fa;*.fna");
+        FileDialog queryGenome = new FileDialog(this, "Choose query Genome", FileDialog.LOAD);
+        // Filter to accept only fasta or cmap format
+        queryGenome.setFile("*.fasta;*.fa;*.fna;*.cmap");
         queryGenome.setVisible(true);
         this.queryFile = queryGenome.getFile();
         this.queryFilePath = queryGenome.getDirectory() + queryGenome.getFile();
         queryGenomeFileName.setText(queryFile);
         this.qryFromURL = false;
+
+        CmapReader cmapReader = new CmapReader();
+        if (this.queryFilePath.endsWith(".cmap")) {
+            //If the file is a cmap, the enzyme chosen for in silico digestion must be
+            // the same as the query
+            String enzyme = cmapReader.getNickaseEnzyme(this.queryFilePath);
+            if (enzyme == null || enzyme.equals("unknown")) {
+                JOptionPane.showMessageDialog(null, "Unknown enzyme in cmap file. The chosen enzyme should be the same as in the cmap",
+                        "Unkown enzyme", JOptionPane.ERROR_MESSAGE);
+            }
+            this.qryCmapEnzyme = enzyme;
+            this.tempSelectedEnzyme = new Enzyme(enzyme);
+            this.selectedEnzyme = this.tempSelectedEnzyme;
+            System.out.println("1997 name " + this.tempSelectedEnzyme.getName() + " " + this.tempSelectedEnzyme.getSite());
+            setEnzymeLabel.setText(this.tempSelectedEnzyme.getName());
+            this.newJob.setEnzyme(this.tempSelectedEnzyme);
+        } else {
+            this.qryCmapEnzyme = "";
+        }
+
     }//GEN-LAST:event_uploadQueryGenomeActionPerformed
 
     private void serverInfoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverInfoButtonActionPerformed
@@ -2076,10 +2093,14 @@ public class CompGenStart extends javax.swing.JFrame {
         this.channel.mkDir(jobName + "/Files/Reference/");
         this.channel.mkDir(jobName + "/Files/Query/");
         this.channel.mkDir(jobName + "/Files/Results/");
+        
         this.startJobButton.setText("Start Job: " + jobName);
         this.uploadFileRef.setEnabled(true);
         this.uploadQryGenome.setEnabled(true);
         this.newJob.setName(jobName);
+        
+        // Run container for job
+        this.channel.runContainer(jobName);
     }//GEN-LAST:event_setJobNameActionPerformed
 
     private void connectServerToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectServerToggleActionPerformed
@@ -2122,14 +2143,20 @@ public class CompGenStart extends javax.swing.JFrame {
                 System.out.println("File transfer of reference file");
                 this.channel.uploadFile(referenceFilePath, dir, refProgressBar);
             } else {
+                // URL was provided for reference file
                 String cmd = "cd mapoptics/jobs/" + this.jobName + "/Files/Reference; wget " + this.referenceFilePath;
                 this.channel.executeCmd(cmd);
+                refProgressBar.setValue(100);
             }
             this.refAdded = true;
             this.newJob.setRefFile(referenceFile);
-            if (this.refAdded && this.qryAdded) {
+            // Enable buttons
+            if ((this.refAdded && this.qryAdded) && this.qryCmapEnzyme.equals("")) {
                 chooseEnzyme.setEnabled(true);
                 runCalcBestEnzyme.setEnabled(true);
+            }
+            if ((this.refAdded && this.qryAdded) && (this.selectedEnzyme != null || !this.selectedEnzyme.getName().equals(""))) {
+                startJobButton.setEnabled(true);
             }
         }
     }//GEN-LAST:event_uploadFileRefActionPerformed
@@ -2147,12 +2174,18 @@ public class CompGenStart extends javax.swing.JFrame {
             } else {
                 String cmd = "cd mapoptics/jobs/" + this.jobName + "/Files/Query; wget " + this.queryFilePath;
                 this.channel.executeCmd(cmd);
+                queryProgressBar.setValue(100);
+                this.qryAdded = true;
             }
             this.qryAdded = true;
             this.newJob.setQryFile(queryFile);
-            if (this.refAdded && this.qryAdded) {
+            System.out.println("CompGenStart 2174 file from job " + queryFile);
+            if ((this.refAdded && this.qryAdded) && this.qryCmapEnzyme.equals("")) {
                 chooseEnzyme.setEnabled(true);
                 runCalcBestEnzyme.setEnabled(true);
+            }
+            if ((this.refAdded && this.qryAdded) && this.selectedEnzyme != null) {
+                startJobButton.setEnabled(true);
             }
         }
     }//GEN-LAST:event_uploadQryGenomeActionPerformed
@@ -2183,51 +2216,62 @@ public class CompGenStart extends javax.swing.JFrame {
     }//GEN-LAST:event_chooseEnzymeActionPerformed
 
     private void startJobButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startJobButtonActionPerformed
-        this.newJob.setRefAnnot(this.referenceAnnotFilePath);
-        this.newJob.setQryAnnot(this.queryAnnotFilePath);
-        this.newJob.setRefOrg(this.refSpecies.getText());
-        this.newJob.setQryOrg(this.qrySpecies.getText());
+        if (this.queryFile == null || this.queryFile.equals("")) {
+            JOptionPane.showMessageDialog(null, "The query file could not be find.",
+                    "File not found", JOptionPane.PLAIN_MESSAGE);
+        } else if (this.referenceFile == null || this.referenceFile.equals("")) {
+            JOptionPane.showMessageDialog(null, "The reference file could not be find.",
+                    "File not found", JOptionPane.PLAIN_MESSAGE);
+        } else {
+            this.newJob.setRefAnnot(this.referenceAnnotFilePath);
+            this.newJob.setQryAnnot(this.queryAnnotFilePath);
+            this.newJob.setRefOrg(this.refSpecies.getText());
+            this.newJob.setQryOrg(this.qrySpecies.getText());
 
-        if (fandomPipeline.isSelected()) {
-            this.newJob.setPipeline("fandom");
-        }
-        if (refalignerPipeline.isSelected()) {
-            this.newJob.setPipeline("refaligner");
-        }
+            if (fandomPipeline.isSelected()) {
+                this.newJob.setPipeline("fandom");
+            }
+            if (refalignerPipeline.isSelected()) {
+                this.newJob.setPipeline("refaligner");
+            }
 
 //        need to update this to query the log file!
-        this.newJob.setStatus("Started");
-        this.jobsRunning.add(this.newJob);
-        System.out.println("New job added");
+            this.newJob.setStatus("Started");
+            this.jobsRunning.add(this.newJob);
 //        Update the jobs JSON file
-        manageJson.saveJobJson(this.jobsRunning);
+            manageJson.saveJobJson(this.jobsRunning);
 //        update the jobs table with the new job that has been created
-        JobTableModel newModel = new JobTableModel(this.jobsRunning);
-        jobsTable.setModel(newModel);
-//        start a new job object ready for a new job to be made
-        //will eventually add in user parameters here
-        this.channel.runJob(this.newJob); //this sets the job as running on the server
-        this.newJob = new Job();
-        System.out.println("CompGenStart 2047 - Script was properly executed.");
-//        finally disconnect from the server
-        this.channel.disconnectServer();
-        System.out.println("Chanel disconnected: " + this.channel.isChannelConnected());
-        System.out.println("Sftp channel disconnected: " + this.channel.isSftpChannelConnected());
-//        clean slate for the channel object
-        this.channel = new SSH();
-        System.out.println("Channel cleaned");
+            JobTableModel newModel = new JobTableModel(this.jobsRunning);
+            jobsTable.setModel(newModel);
 
-        //Show the correct JFrames
-        makeCompGenJob.setVisible(false);
-        this.setVisible(true);
+//        start a new job object ready for a new job to be made
+            //will eventually add in user parameters here
+            this.channel.runJob(this.newJob); //this sets the job as running on the server
+            this.newJob = new Job();
+
+//        finally disconnect from the server
+            this.channel.disconnectServer();
+//        clean slate for the channel object
+            this.channel = new SSH();
+
+            //Show the correct JFrames
+            makeCompGenJob.setVisible(false);
+            this.setVisible(true);
+        }
     }//GEN-LAST:event_startJobButtonActionPerformed
 
     private void saveRefURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveRefURLActionPerformed
         this.referenceFilePath = referenceURL.getText();
         String filename = extractFileURL(referenceFilePath);
-        refGenomeFile.setText(filename);
-        refURLDialog.setVisible(false);
-        this.ref1FromURL = true;
+        if (filename != null) {
+            referenceFile = filename;
+            refGenomeFile.setText(filename);
+            refURLDialog.setVisible(false);
+            this.ref1FromURL = true;
+        } else {
+            JOptionPane.showMessageDialog(null, "Reference file could not be downloaded properly from URL.",
+                    "Missing reference file", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_saveRefURLActionPerformed
 
     private void serverNameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverNameFieldActionPerformed
@@ -2292,13 +2336,11 @@ public class CompGenStart extends javax.swing.JFrame {
         }
         //     Once all these are checked the server can be added to the server hash map?
         ExternalServer server = new ExternalServer(serverName, userName, hostName, serverPass, workDir);
-        addServer(server);
         this.servers.add(server);
         if (setNewAsServer.isSelected()) {
             this.selectedServer = server;
             this.serverLabel.setText(server.getName());
         }
-        System.out.println("CompGenStart 2219 " + serverName);
         manageJson.saveServerJson(this.servers);
         this.servTableModel.setData(this.servers);
         newServerDialog.setVisible(false);
@@ -2378,8 +2420,14 @@ public class CompGenStart extends javax.swing.JFrame {
         } else {
 //            first check if the files have already been downloaded
             System.getProperty("user.dir");
+
             File dir = new File(System.getProperty("user.dir") + "/download/" + this.selectedJob.getName() + "/");
-            if (dir.exists() && dir.isDirectory()) {
+            File qryFile = new File(System.getProperty("user.dir") + "/download/" + this.selectedJob.getQry());
+            File refFile = new File(System.getProperty("user.dir") + "/download/" + this.selectedJob.getRef());
+
+            // Check that directory and files inside exist
+            // because directory can be created by enzymes calculation
+            if ((dir.exists() && dir.isDirectory()) && (qryFile.exists() && refFile.exists())) {
                 System.out.println("Download folder exists");
                 this.setVisible(false);
                 CompGenView viewResults = new CompGenView();
@@ -2429,9 +2477,15 @@ public class CompGenStart extends javax.swing.JFrame {
     private void uploadQryURLButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadQryURLButtonActionPerformed
         this.queryFilePath = queryURL.getText();
         String filename = extractFileURL(queryFilePath);
-        queryGenomeFileName.setText(filename);
-        qryURLDialog.setVisible(false);
-        this.qryFromURL = true;
+        if (filename != null) {
+            queryFile = filename;
+            queryGenomeFileName.setText(filename);
+            qryURLDialog.setVisible(false);
+            this.qryFromURL = true;
+        } else {
+            JOptionPane.showMessageDialog(null, "Query file could not be downloaded properly from URL.",
+                    "Missing query file", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_uploadQryURLButtonActionPerformed
 
     private void uploadPreAlignedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadPreAlignedActionPerformed
@@ -2458,7 +2512,6 @@ public class CompGenStart extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "XMAP file cannot be empty",
                     "Missing file!", JOptionPane.ERROR_MESSAGE);
         } else {
-            //System.out.println(localqrycmap);
             CompGenView viewResults = new CompGenView();
             viewResults.setData(this.localSpecies.getText(), this.localrefcmap, this.localqrycmap,
                     this.localrefkary, this.localxmap, this.localreffasta, this.localrefannot);
@@ -2483,14 +2536,24 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void runCalcBestEnzymeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runCalcBestEnzymeActionPerformed
         try {
+            // Boolean indicating if the calculation of best enzyme is ran on query or on reference
+            boolean boolQuery = true;
+            if (calculateReference.isSelected()) {
+                boolQuery = false;
+            }
+
+            // Display panel with message
             messageLabel.setText("Running best enzyme caculation...");
             messageLabel.setVisible(true);
             waitPanel.setVisible(true);
             messageLabel.setVisible(true);
             //Run the calc_best_enz.sh script on the ExternalServer
-            this.channel.runCalcBestEnz(this.newJob);
+            this.channel.runCalcBestEnz(this.newJob, boolQuery);
+            // Display message
             messageLabel.setText("Downloading calculation results...");
             messageLabel.setVisible(true);
+
+            // Download calculation results
             this.channel.downloadEnzResults(this.newJob);
 
             messageLabel.setText("Reading results and selecting best enzyme...");
@@ -2615,10 +2678,6 @@ public class CompGenStart extends javax.swing.JFrame {
         tempSelectedEnzyme = new Enzyme(name, site);
     }//GEN-LAST:event_bestEnzymesTableMouseClicked
 
-    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton13ActionPerformed
-
     private void selectBestEnzActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectBestEnzActionPerformed
         if (this.tempSelectedEnzyme != null) {
             this.selectedEnzyme = this.tempSelectedEnzyme;
@@ -2672,12 +2731,24 @@ public class CompGenStart extends javax.swing.JFrame {
         String inputPwd = String.valueOf(passwordLabel.getPassword());
         // Initialisation of user files and password
         if (confirmPwd.equals(inputPwd)) {
+            // PAssword and its confirmation are equal
             if (inputPwd.length() == 16) {
+                // Password has the right length (16)
+                lengthPwd.setText("");
                 // Initialisation of files and password / check existing password
-                boolean correctPwd = this.manageJson.setAccess(userLabel.getText(), passwordLabel.getText());
+                boolean correctPwd = this.manageJson.setAccess(userLabel.getText(), String.valueOf(passwordLabel.getPassword()));
 
                 if (correctPwd) {
+                    // Entered password is correct
                     this.authentificationPane.setVisible(false);
+
+                    // Get jobs from job JSON to display them in the submitted jobs table
+                    this.jobsRunning.clear();
+                    this.jobsRunning = manageJson.getJobsFromJson(this.jobsRunning);
+                    jobTableAdd(this.jobsRunning);
+                    JobTableModel newModel = new JobTableModel(this.jobsRunning);
+                    jobsTable.setModel(newModel);
+
                     this.setVisible(true);
                 } else {
                     lengthPwd.setText("Incorrect password for existing user " + userLabel.getText());
@@ -2695,11 +2766,21 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void passwordLabelKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordLabelKeyReleased
         String inputPwd = String.valueOf(passwordLabel.getPassword());
-        if(inputPwd.length() != 16){
+        if (inputPwd.length() != 16) {
             lengthPwd.setText("Password length is " + inputPwd.length() + " but must be 16.");
             lengthPwd.setVisible(true);
+        } else {
+            lengthPwd.setText("");
         }
     }//GEN-LAST:event_passwordLabelKeyReleased
+
+    private void calculateReferenceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calculateReferenceActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_calculateReferenceActionPerformed
+
+    private void qrySpeciesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_qrySpeciesActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_qrySpeciesActionPerformed
 
     public String checkEnzymeName(JTextField field) {
         String name = field.getText();
@@ -2738,9 +2819,28 @@ public class CompGenStart extends javax.swing.JFrame {
         return name;
     }
 
-    String extractFileURL(String URL) {
-        String filename = Paths.get(URL).getFileName().toString();
-        return filename;
+    String extractFileURL(String FileURL) {
+        //String filename = Paths.get(URL).getFileName().toString();
+        try {
+            URL u = new URL(FileURL); // Check for URL
+            u.toURI();
+            // Get the name of the downloaded file
+            String splitURL[] = FileURL.split("/");
+            int lenSplit = splitURL.length;
+            String fileName = splitURL[lenSplit - 1]; //Arays are 0 indexed
+            System.out.println("CompGenStart line 2806 " + fileName);
+            return fileName;
+        } catch (MalformedURLException e) {
+            System.out.println(e);
+            JOptionPane.showMessageDialog(null, "File could not be downloaded, please check URL!",
+                    "URL not valid", JOptionPane.ERROR_MESSAGE);
+            return null;
+        } catch (URISyntaxException e) {
+            System.out.println(e);
+            JOptionPane.showMessageDialog(null, "File could not be downloaded, please check URL!",
+                    "URL not valid", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
     }
 
     private boolean checkIPAddress(String address) {
@@ -2760,11 +2860,11 @@ public class CompGenStart extends javax.swing.JFrame {
         return true;
     }
 
+    /*
     private void addServer(ExternalServer server) {
         servers.add(server);
 //        serverList.setListData(Servers);
-    }
-
+    }*/
     private void jobTableAdd(List<Job> data) {
         this.jobsTableModel = new JobTableModel(data);
 
@@ -3097,10 +3197,52 @@ public class CompGenStart extends javax.swing.JFrame {
         } else {
             // get the latest update from the log file
             String latestStatus = result.get(result.size() - 1).split(": ")[1];
-            //System.out.println(latestStatus);
             job.setStatus(latestStatus);
             return true;
         }
+    }
+
+    private void clearMakeCompGenJob() {
+        // Clear all the text boxes
+        userJobName.setText("");
+        refSpecies.setText("");
+        refAnnotFileName.setText("");
+        qrySpecies.setText("");
+        qryAnnotFileName.setText("");
+        setEnzymeLabel.setText("");
+        refProgressBar.setValue(0);
+        queryProgressBar.setValue(0);
+        serverLabel.setText("");
+        connectServerToggle.setBackground(Color.white);
+        connectServerToggle.setForeground(Color.black);
+        startJobButton.setEnabled(false);
+        // Unable buttons
+        setJobName.setEnabled(false);
+        uploadFileRef.setEnabled(false);
+        uploadQryGenome.setEnabled(false);
+        chooseEnzyme.setEnabled(false);
+        runCalcBestEnzyme.setEnabled(false);
+        Btn_modifAlignParam.setEnabled(false);
+        // Clear variables
+        qryCmapEnzyme = "";
+        refAdded = false;
+        qryAdded = false;
+        ref1FromURL = false;
+        qryFromURL = false;
+        referenceFile = "";
+        referenceFilePath = "";
+        referenceAnnot = "";
+        referenceAnnotFilePath = "";
+        queryFile = "";
+        queryFilePath = "";
+        queryAnnot = "";
+        queryAnnotFilePath = "";
+        currentServer = "";
+
+        this.selectedJob = null;
+        this.selectedEnzyme = null;
+        this.tempSelectedEnzyme = null;
+        this.selectedServer = null;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -3116,7 +3258,10 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JButton bnt_help;
     private javax.swing.JMenuItem browseEnzymes;
     private javax.swing.JDialog browseEnzymesDialog;
-    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.ButtonGroup btnGroupCalcEnzyme;
+    private javax.swing.ButtonGroup btnGroupPipeline;
+    private javax.swing.JRadioButton calculateQuery;
+    private javax.swing.JRadioButton calculateReference;
     private javax.swing.JButton chooseEnzyme;
     private javax.swing.JButton chooseEnzymeButton;
     private javax.swing.JButton chooseLocalQryCmap;
@@ -3150,7 +3295,6 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JTextField hostAddressField;
     private javax.swing.JLabel infoLabel;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton2;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
@@ -3196,7 +3340,6 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
@@ -3256,6 +3399,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JLabel setEnzymeLabel;
     private javax.swing.JButton setJobName;
     public javax.swing.JCheckBox setNewAsServer;
+    private javax.swing.JPanel settingsPanel;
     private javax.swing.JCheckBox showAuthentPassword;
     private javax.swing.JCheckBox showConfirmPassword;
     private javax.swing.JCheckBox showPass;

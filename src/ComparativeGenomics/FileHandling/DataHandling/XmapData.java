@@ -168,6 +168,7 @@ public class XmapData {
         if (refSite != null && qrySite != null) {
             Double refPos = refSite.getPosition();
             Double qryPos = qrySite.getPosition();
+            // Length of reference and length of query
             Double refDiff = refPos - lastRefPos;
             Double qryDiff = qryPos - lastQryPos;
             // The length of the query and reference sites is not the same
@@ -175,11 +176,12 @@ public class XmapData {
             if (!Objects.equals(refDiff, qryDiff)) {
                 // Check if length of insertion or deletion is higher than minimum indel size
                 if (refDiff - qryDiff > minIndelSize || qryDiff - refDiff > minIndelSize) {
+                    // Deletion if query is smaller than reference
                     if (refDiff - qryDiff < 0) {
                         Indel i = new Indel("Deletion", lastRefPos, refPos, refID, qryID);
                         foundIndels.add(i);
-                        // System.out.println("Indel added XmapData 181");
                     } else {
+                        // Insertion if query larger than reference
                         Indel i = new Indel("Insertion", lastRefPos, refPos, refID, qryID);
                         foundIndels.add(i);
                     }

@@ -16,7 +16,8 @@ import org.knowm.xchart.style.Styler.ChartTheme;
 
 /**
  *
- * @author franpeters Plot the number of each different type of SV event per
+ * @author franpeters 
+ * Plot the number of each different type of SV event per
  * chromosome within the reference genome using XChart. The chart style can be
  * changed by the user.
  */

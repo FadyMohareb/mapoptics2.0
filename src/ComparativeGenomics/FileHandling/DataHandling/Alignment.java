@@ -168,6 +168,7 @@ public final class Alignment {
                                                                     this.refGenome.getChromosomes()
                                                                                   .get(distinctChrs.get(1)));
                     translocations.add(translocation);
+                    System.out.println("Alignment line 171 translocation: " + translocation.getRefChr1Name() + translocation.getRefChr2Name());
                     
             }
         }

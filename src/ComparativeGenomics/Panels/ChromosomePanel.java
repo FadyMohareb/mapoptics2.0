@@ -117,6 +117,18 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
 //                    get the first and last matched sites on the reference for this query map
         Integer firstRefSiteID = matches.get(0).getRef();
         Integer lastRefSiteID = matches.get(matches.size() - 1).getRef();
+        
+        int i =0;
+        int j = 0;
+                
+        while (firstRefSiteID == null && i<(matches.size()-1)){
+            firstRefSiteID = matches.get(i).getRef();
+            i += 1;
+        }
+        while(lastRefSiteID == null && j<(matches.size()-1)){
+            lastRefSiteID = matches.get(matches.size() - j).getRef();
+            j += 1;
+        }
 //                    determine the position on the panel to draw these sites
         Site firstSiteRef = this.chr.getRefSites().get(firstRefSiteID);
         Site lastSiteRef = this.chr.getRefSites().get(lastRefSiteID);
@@ -147,7 +159,6 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
         if (!chrAdded) {
             drawTextCentre(g2d, "No Chromosome has been selected, please select a chromosome.", w, h);
         } else {
-            System.out.println("chr being drawn in ChromosomePanel");
             g2d.setColor(Color.LIGHT_GRAY);
             Integer y = startY + 20 + 5;
             Double yPos = y.doubleValue();

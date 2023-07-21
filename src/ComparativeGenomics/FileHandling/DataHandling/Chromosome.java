@@ -76,6 +76,10 @@ public class Chromosome {
         return this.size;
     }
 
+    /** 
+     * 
+     * @return CMAP ID associated with the chromosome
+     */
     public Integer getCmapID() {
         return this.refCmapMap.getID();
     }
@@ -158,7 +162,6 @@ public class Chromosome {
                                 indel.addFeature(feature);
                                 if (!genesOnIndels.contains(feature.getName())) {
                                     genesOnIndels.add(feature.getName());
-//                                    System.out.println(feature.getName());
                                     indel.addFeature(feature);
                                 }
                             }

@@ -98,7 +98,8 @@ public class JsonFiles {
                         // Decrypt the line saved in the file and compare to password
                         // to check if entered password is true
                         try {
-                            String savedKey = decrypt(sc.nextLine(), strKey.getBytes());
+                            String cryptedPwd = sc.nextLine();
+                            String savedKey = decrypt(cryptedPwd, strKey.getBytes());
                             // Check that the encrypted word saved in the file corresponds to the entered password
                             if (this.strKey.equals(savedKey)) {
                                 return true;
@@ -118,7 +119,7 @@ public class JsonFiles {
                         } catch (IllegalBlockSizeException e) {
                             e.printStackTrace();
                         }
-                    } 
+                    }
                 } catch (FileNotFoundException ex) {
                     System.out.println(ex);
                 }
@@ -131,7 +132,6 @@ public class JsonFiles {
                     BufferedWriter writer = new BufferedWriter(new FileWriter(checkPassword, true));
                     try {
                         String encryptPwd = encrypt(this.strKey, this.strKey.getBytes());
-                        System.out.println("JSON 115 encrypted password" + encryptPwd);
                         writer.write(encryptPwd);
                         writer.close();
                     } catch (InvalidKeyException e) {
@@ -196,11 +196,16 @@ public class JsonFiles {
                     writer.name("Server name").value(s.name);
                     writer.name("Server user").value(s.getUser());
                     writer.name("Server host").value(s.getHost());
-                    writer.name("Server pass").value(encrypt(s.getPassword(), strKey.getBytes()));
+                    writer.name("Server pass").value(encrypt(s.getPassword(), strKey.getBytes()).replace("=", "*"));
                     writer.name("Server dir").value(s.getWorkingDir());
                     writer.name("qry").value(j.getQry());
                     writer.name("ref").value(j.getRef());
-                    writer.name("Enzyme name").value(e.getName());
+                    try {
+                        writer.name("Enzyme name").value(e.getName());
+                    } catch (NullPointerException exeption) {
+                        System.out.println("Chosen enzyme is null");
+                        exeption.printStackTrace();
+                    }
                     writer.name("Enzyme site").value(e.getSite());
                     writer.name("pipeline").value(j.getPipeline());
                     writer.name("Status").value(j.getStatus());
@@ -209,17 +214,19 @@ public class JsonFiles {
                     writer.name("Ref Annotation").value(j.getRefAnnot());
                     writer.name("Qry Annotation").value(j.getQryAnnot());
                     writer.endObject();
-                } catch (InvalidKeyException e) {
+                } catch (InvalidKeyException exeption) {
                     System.out.println("Invalid key for encryption)");
-                    e.printStackTrace();
-                } catch (NoSuchPaddingException e) {
-                    e.printStackTrace();
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                } catch (BadPaddingException e) {
-                    e.printStackTrace();
-                } catch (IllegalBlockSizeException e) {
-                    e.printStackTrace();
+                    exeption.printStackTrace();
+                } catch (NoSuchPaddingException exeption) {
+                    exeption.printStackTrace();
+                } catch (NoSuchAlgorithmException exeption) {
+                    exeption.printStackTrace();
+                } catch (BadPaddingException exeption) {
+                    exeption.printStackTrace();
+                } catch (IllegalBlockSizeException exeption) {
+                    exeption.printStackTrace();
+                } catch (NullPointerException exeption) {
+                    exeption.printStackTrace();
                 }
             }
             writer.endArray();
@@ -243,8 +250,6 @@ public class JsonFiles {
             writer.name("data");
             writer.beginArray();
             for (ExternalServer s : serversList) {
-                System.out.println("Json 171 strKey " + strKey);
-                System.out.println("Json 171 strKey " + strKey.getBytes());
                 String serverUser = encrypt(s.getUser(), strKey.getBytes());
                 String serverHost = encrypt(s.getHost(), strKey.getBytes());
                 String serverPwd = encrypt(s.getPassword(), strKey.getBytes());
@@ -259,7 +264,6 @@ public class JsonFiles {
                 writer.name("password").value(serverPwd.replace("=", "*"));
                 writer.name("dir").value(serverDir.replace("=", "*"));
                 writer.endObject();
-
             }
             writer.endArray();
             writer.endObject();
@@ -372,34 +376,30 @@ public class JsonFiles {
      */
     private void jobsFromJson(List<Job> jobsRunningList) {
         this.jobsRunning = jobsRunningList;
-        //this.jobsRunning.clear();
         try {
             // create Gson instance
             Gson gson = new Gson();
-            // Get path
-            Path path = Paths.get("");
-            String pathDirectory = path.toAbsolutePath().toString();
             // convert JSON file to map
-
             try (
                     // create a reader
-                    Reader reader = Files.newBufferedReader(Paths.get(pathDirectory + "\\serverInfo\\jobs.json"))) {
+                    Reader reader = Files.newBufferedReader(Paths.get(jobsPath))) {
+
                 // convert JSON file to map
-                Map<?, ?> map = gson.fromJson(reader, Map.class
-                );
+                Map<?, ?> map = gson.fromJson(reader, Map.class);
+
                 // print map entries
                 if (map == null) {
+                    System.out.println("JSON jobs map entries are null.");
                 } else {
                     for (Map.Entry<?, ?> entry : map.entrySet()) {
                         //System.out.println(entry.getValue().toString());
                         String[] value = entry.getValue().toString().split("=");
+
                         //        Work out how many jobs are present
                         int numJobs = (value.length - 1) / 16;
 
+                        //Get information for each job
                         for (int j = 1; j <= numJobs; j++) {
-                            //            messy but it works
-                            //            create enyzme object
-
                             // Create enzyme, get site and name from json file
                             Enzyme enz = new Enzyme(value[9 + 16 * (j - 1)].split(",")[0],
                                     value[10 + 16 * (j - 1)].split(",")[0]);
@@ -430,24 +430,30 @@ public class JsonFiles {
                                 //           Add job object to array
                                 jobsRunning.add(job);
                             } catch (InvalidKeyException e) {
-                                System.out.println("Invalid key for encryption)");
+                                System.out.println("Invalid key for jobs decryption");
                                 e.printStackTrace();
                             } catch (NoSuchPaddingException e) {
+                                System.out.println("Invalid padding while getting jobs");
                                 e.printStackTrace();
                             } catch (NoSuchAlgorithmException e) {
+                                System.out.println("Invalid decryption algorithm for getting jobs");
                                 e.printStackTrace();
                             } catch (BadPaddingException e) {
+                                System.out.println("Invalid padding while getting jobs");
                                 e.printStackTrace();
                             } catch (IllegalBlockSizeException e) {
+                                System.out.println("Invalid block size while getting jobs");
                                 e.printStackTrace();
                             }
                         }
                     }
                 }
                 // close reader
+                reader.close();
             }
             //jobTableAdd(this.jobsRunning);
         } catch (JsonIOException | JsonSyntaxException | IOException ex) {
+            System.out.println("JSON reader not created " + ex);
             ex.getCause();
         }
     }
@@ -470,10 +476,8 @@ public class JsonFiles {
         try {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             SecretKey secretKey = new SecretKeySpec(publicKey, "AES");
-            System.out.println("JSON line 400 - secret key " + secretKey);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             byte[] encryptedMessage = cipher.doFinal(message.getBytes());
-            System.out.println("JSON line 4400 - byte msg encryption " + new String(encryptedMessage));
             return Base64.getEncoder().encodeToString(encryptedMessage);
         } catch (Exception exc) {
             System.out.println("Encryption failed " + exc);
@@ -505,6 +509,7 @@ public class JsonFiles {
             // Decypher message and convert it to string
             return new String(cipher.doFinal(message));
         } catch (Exception IllegalArgumentException) {
+            System.out.println("Decypher, illegal argument " + IllegalArgumentException);
             return null;
         }
     }

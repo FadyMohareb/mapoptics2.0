@@ -166,7 +166,7 @@ public class Xmap {
                         for (Map.Entry<Integer, ArrayList<XmapData>> entry : this.queryMapsToRef.entrySet()) {
                                 Integer key = entry.getKey();
                                 ArrayList<XmapData> value = entry.getValue();
-                                if (value.size()>1){
+                                if (value.size() > 1){
                                     boolean allEqual = value.stream().distinct().count() <= 1;
                                     if (!allEqual){
                                         // Possible translocation found
