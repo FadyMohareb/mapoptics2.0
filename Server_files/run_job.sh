@@ -8,10 +8,15 @@
 #path to required programs
 scriptdir=$(dirname "${BASH_SOURCE[0]}")
 mapoptics_folder="${scriptdir}"/../
-digest="${scriptdir}"/../solve/tools/pipeline/Solve3.7_03302022_283/HybridScaffold/03302022/scripts/fa2cmap_multi_color.pl
+#digest="${scriptdir}"/../solve/tools/pipeline/Solve3.7_03302022_283/HybridScaffold/03302022/scripts/fa2cmap_multi_color.pl
+digest="${scriptdir}"/../Solve3.5.1_01142020/HybridScaffold/1.0/scripts/fa2cmap_multi_color.pl
 fandom="${scriptdir}"/../FaNDOM/
-refaligner="${scriptdir}"/../solve/tools/pipeline/Solve3.7_03302022_283/RefAligner/12432.12542rel/RefAligner
+#refaligner="${scriptdir}"/../solve/tools/pipeline/Solve3.7_03302022_283/RefAligner/12432.12542rel/RefAligner
+refaligner="${scriptdir}"/../Solve3.5.1_01142020/RefAligner/10330.10436rel/RefAligner
 runBNG="${scriptdir}"/../runBNG/
+solve="${scriptdir}"/../Solve3.5.1_01142020
+#solve="${scriptdir}"/../solve/tools/pipeline/Solve3.7_03302022_283/
+echo solve
 
 while test $# -gt 0; 
     do
@@ -80,7 +85,7 @@ while test $# -gt 0;
                     qry_basename=${qry_basename%.*}
                     if [[ ! -f "$qry" ]]
                       then
-                          echo "The reference file ""$1"" has not been found"
+                          echo "The query file ""$1"" has not been found"
                     fi
                     shift
                     ;;
@@ -137,6 +142,7 @@ if [[ "$ref" == *.fa ]]
     genomesize=$(awk '{sum+=$2}END{print sum*0.000001}' "$ref".fai)
     # digest the ref into a cmap 
     perl $digest -i "$ref" -o "$ref_path" -e "$enzyme" 1 
+    refCmap="$ref_folder""$ref_basename""_""$enzyme""_0kb_0labels.cmap"
 
     echo "Status: Reference Digested"  >> "${scriptdir}""/""$job""/log.txt";
 elif [[ "$ref" == *.fasta ]]
@@ -148,8 +154,9 @@ elif [[ "$ref" == *.fasta ]]
     genomesize=$(awk '{sum+=$2}END{print sum*0.000001}' "$ref".fai)
     # digest the ref into a cmap 
     perl $digest -i "$ref" -o "$ref_path" -e "$enzyme" 1 
-   
+    refCmap="$ref_folder""$ref_basename""_""$enzyme""_0kb_0labels.cmap"
     echo "Status: Reference Digested"  >> "${scriptdir}""/""$job""/log.txt";
+
 elif [[ "$ref" == *.fna ]]
   then
     
@@ -158,9 +165,12 @@ elif [[ "$ref" == *.fna ]]
     awk -F "\t" 'OFS=" " {print $2, $1 }' "$ref".fai > "$out"karyotype.txt
     # calculate the genome size in Mbp
     genomesize=$(awk '{sum+=$2}END{print sum*0.000001}' "$ref".fai)
+    echo
+    echo genomeSize "$genomesize"
+    echo
     # digest the ref into a cmap 
     perl $digest -i "$ref" -o "$ref_path" -e "$enzyme" 1 
-  
+    refCmap="$ref_folder""$ref_basename""_""$enzyme""_0kb_0labels.cmap"
     echo "Status: Reference Digested"  >> "${scriptdir}/""$job""/log.txt";
 else 
   echo "reference not in required format"
@@ -181,6 +191,7 @@ if [[ "$qry" == *.fa ]]
     perl $digest -i "$qry" -o "$qry_path" -e "$enzyme" 1 
     echo "Status: Query Digested"  >> "${scriptdir}/""$job""/log.txt";
     qryCmap="$qry_folder""$qry_basename""_""$enzyme""_0kb_0labels.cmap"
+
 elif [[ "$qry" == *.fna ]]
   then   
     # digest the qry into a cmap 
@@ -188,7 +199,8 @@ elif [[ "$qry" == *.fna ]]
    
     echo "Status: Query Digested"  >> "${scriptdir}/""$job""/log.txt";
     qryCmap="$qry_folder""$qry_basename""_""$enzyme""_0kb_0labels.cmap"
-    elif [[ "$qry" == *.fasta ]]
+
+elif [[ "$qry" == *.fasta ]]
   then 
     # digest the qry into a cmap 
     perl $digest -i "$qry" -o "$qry_path" -e "$enzyme" 1
@@ -199,7 +211,7 @@ elif [[ "$qry" == *.fna ]]
 elif [[ "$qry" == *.cmap ]]
   then
     qryCmap="$qry_folder""$qry_basename"".cmap"
-
+    echo "$qry_folder""$qry_basename"".cmap"
 elif  [[ "$qry" != *.cmap ]]
     then
       echo "Query file not in expected format"
@@ -214,7 +226,7 @@ echo "Status: Aligning data using $aligner" >> "${scriptdir}/""$job""/log.txt";
 if [[ "${aligner}" == *"fandom"* ]]
   then
   cd $fandom || exit
-  python PythonScript/wrapper_contigs.py -f ${PWD} -t 10 -r "$ref_folder""$ref_basename""_""$enzyme""_0kb_0labels.cmap" -q "$qryCmap" -n "$job" -o "../jobs/""$job""/Files/Reference/" -c nh -m 1
+  python PythonScript/wrapper_contigs.py -f ${PWD} -t 10 -r "$refCmap" -q "$qryCmap" -n "$job" -o "../jobs/""$job""/Files/Reference/" -c nh -m 1
   
   # Go back to job folder once fandom is executed
   cd ../jobs  
@@ -222,24 +234,38 @@ if [[ "${aligner}" == *"fandom"* ]]
   #cd "$ref_folder" || exit
   mv "${ref_folder}""${job}"_final_alignment.xmap "${ref_folder}""${job}".xmap
   mv  "${ref_folder}""${job}".xmap "$out"
+  mv  "${ref_folder}"SV.txt "$out"
 
 elif [[ "${aligner}" == *"refaligner"* ]]
   then
+    genomesize=${genomesize%.*}
     cd $runBNG || exit    
-    ./runBNG compare -R "$refaligner" -r "$ref_folder""$ref_basename""_""$enzyme""_0kb_0labels.cmap" -q "$qryCmap" -z "$genomesize" -t 10 -m 100 -p "$job" -o "$ref_folder"
+    echo "Query cmap: ""$qryCmap"
+    ./runBNG compare -R "$refaligner" -r "$refCmap" -q "$qryCmap" -z "$genomesize" -t 10 -m 100 -p "$job" -o "../jobs/""$job""/Files/Reference/"
+    echo ./runBNG compare -R "$refaligner" -r "$refCmap" -q "$qryCmap" -z "$genomesize" -t 10 -m 100 -p "$job"
+    
+    if [[ "$enzyme" == "CTTAAG" ]]
+      then
+        isDLE1="yes"
+      else
+        isDLE1="no"
+    fi
+    ./runBNG SV -e "$isDLE1" -r "$refCmap" -q "$qryCmap" -s "$solve" -R "$refaligner" -z "$genomesize" -t 10 -o "$ref_folder"
+    echo ./runBNG SV -e "$isDLE1" -r "$refCmap" -q "$qryCmap" -s "$solve" -R "$refaligner" -z "$genomesize" -t 10 -o "$ref_folder"    
 
-    cd ../jobs/
+    cd ../jobs
     mv "$ref_folder""${job}"".xmap" "$out"
+    mv "$ref_folder"SV/*.smap "$out"
 else
   echo "somethings gone wrong"
   exit 2;
 fi
 
 #move all the relevent files to the results directory
-mv "$ref_folder""${ref_basename}"_"$enzyme""_0kb_0labels.cmap" "$ref_folder""$job""_ref.cmap"
-mv "$ref_folder""${job}""_ref.cmap" "$out"
+cp "$refCmap" "$ref_folder""$job""_ref.cmap"
+mv "$ref_folder""$job""_ref.cmap" "$out"
 
-mv "$qryCmap" "$qry_folder""${job}""_qry.cmap"
+cp "$qryCmap" "$qry_folder""${job}""_qry.cmap"
 mv "$qry_folder""$job""_qry.cmap" "$out"
 
 echo "Status: Completed" >> "${scriptdir}""/""$job""/log.txt";
