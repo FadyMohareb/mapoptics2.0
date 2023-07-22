@@ -135,36 +135,32 @@ public class CompGenView extends javax.swing.JFrame {
 
         checkData();
     }
-    
+
     /**
-     * Check if all the entered files contained data before calling the "populate data" function
+     * Check if all the entered files contained data before calling the
+     * "populate data" function
      */
-    private void checkData(){
+    private void checkData() {
         String errorMessage = "";
-        
-        
+
         if (!cmapRef.getValidity()) {
-            errorMessage += "Reference CMAP file is empty. Information cannot be displayed properly.";
+            errorMessage += "Reference CMAP file is empty.\n";
         }
         if (!cmapQry.getValidity()) {
-            errorMessage += "Query CMAP file is empty. Information cannot be displayed properly.";
+            errorMessage += "Query CMAP file is empty.\n";
         }
         if (!refKary.getValidity()) {
-            errorMessage += "Karyotype file is empty. Information cannot be displayed properly.";
+            errorMessage += "Karyotype file is empty.\n";
         }
-        /* else if (xmap == null) {
-            JOptionPane.showMessageDialog(null,
-                    "XMAP file is empty. Information cannot be displayed properly.",
-                    "XMAP file error",
-                    JOptionPane.ERROR_MESSAGE);
-        } else if (refAnnot == null) {
-            JOptionPane.showMessageDialog(null,
-                    "Annotation file file is empty. Information cannot be displayed properly.",
-                    "Annotations error",
-                    JOptionPane.ERROR_MESSAGE);
-        } */
+        if (!xmap.getValidity()) {
+            errorMessage += "XMAP file is empty or has invalid format.\n";
+        }
+        if (!refAnnot.getValidity()) {
+            errorMessage += "Annotation file file is empty.\n";
+        }
 
         if (errorMessage.length() != 0) {
+            errorMessage += "\n Information will not be displayed. Please change problematic files and try again.";
             System.out.println(errorMessage);
             JOptionPane.showMessageDialog(null,
                     errorMessage,
@@ -174,7 +170,6 @@ public class CompGenView extends javax.swing.JFrame {
             populateData();
         }
     }
-    
 
     private void populateData() {
         xmap.setRefCmap(cmapRef);
