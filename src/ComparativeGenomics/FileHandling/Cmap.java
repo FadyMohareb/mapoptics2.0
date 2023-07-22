@@ -39,8 +39,8 @@ public class Cmap {
     private String filename;
 
     private Double genomeSize;
-    
-    private boolean isValid;
+
+    private boolean isValid = true;
 
     /**
      *
@@ -126,10 +126,10 @@ public class Cmap {
     /**
      * @return boolean indicating if CMAP file read is vailid
      */
-    public boolean getValidity(){
+    public boolean getValidity() {
         return this.isValid;
     }
-    
+
     /**
      * Method to read in the data within the cmap file into CmapData and Site
      * objects
@@ -137,8 +137,8 @@ public class Cmap {
     private void readCmap() {
         String[] directory = this.filepath.split("/");
         filename = directory[directory.length - 1];
-//        System.out.println(filename);
         boolean checkCmap = validateCmap(this.filepath);
+        System.out.println("Validate CMAP " + checkCmap);
         this.isValid = checkCmap;
 //       Validate CMAP
         if (checkCmap) {
@@ -218,6 +218,7 @@ public class Cmap {
             if (Files.exists(Paths.get(filePath))) {
                 try {
                     BufferedReader br = new BufferedReader(new FileReader(filePath));
+
                     String line;
 
                     while ((line = br.readLine()) != null && line.startsWith("#")) {
@@ -254,7 +255,6 @@ public class Cmap {
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
-
         return false;
     }
 }

@@ -132,7 +132,11 @@ public class CompGenView extends javax.swing.JFrame {
         // Fasta and annotation files are parsed
         refFasta = new Fasta();
         refAnnot = new Annot(this.job.getRefAnnot());
+        
+        System.out.println(cmapRef.getValidity() + "cmap qry " + cmapQry.getValidity() + " kary " + refKary.getValidity());
 
+        String errorMessage = "";
+        
         if (!cmapRef.getValidity()) {
             JOptionPane.showMessageDialog(null,
                     "Reference CMAP file is empty. Information cannot be displayed properly.",
@@ -148,7 +152,7 @@ public class CompGenView extends javax.swing.JFrame {
                     "Karyotype file is empty. Information cannot be displayed properly.",
                     "Karyotype error",
                     JOptionPane.ERROR_MESSAGE);
-        } else if (xmap == null) {
+        } /* else if (xmap == null) {
             JOptionPane.showMessageDialog(null,
                     "XMAP file is empty. Information cannot be displayed properly.",
                     "XMAP file error",
@@ -158,9 +162,14 @@ public class CompGenView extends javax.swing.JFrame {
                     "Annotation file file is empty. Information cannot be displayed properly.",
                     "Annotations error",
                     JOptionPane.ERROR_MESSAGE);
-        } else {
-            populateData();
-        }
+        } */
+        
+        JOptionPane.showMessageDialog(null,
+                    "Reference CMAP file is empty. Information cannot be displayed properly.",
+                    "Error while displaying data",
+                    JOptionPane.ERROR_MESSAGE);
+        
+        populateData();
     }
 
     private void populateData() {
@@ -1438,7 +1447,6 @@ public class CompGenView extends javax.swing.JFrame {
     }//GEN-LAST:event_clearChrAlignmentHighlightedActionPerformed
 
     private void chromosomeTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chromosomeTableMouseClicked
-
         JTable source = (JTable) evt.getSource();
         // Get the number of the selected chromosome
         int row = source.rowAtPoint(evt.getPoint()) + 1;
