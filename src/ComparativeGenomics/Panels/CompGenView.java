@@ -131,9 +131,36 @@ public class CompGenView extends javax.swing.JFrame {
 
         // Fasta and annotation files are parsed
         refFasta = new Fasta();
-
         refAnnot = new Annot(this.job.getRefAnnot());
-        populateData();
+
+        if (!cmapRef.getValidity()) {
+            JOptionPane.showMessageDialog(null,
+                    "Reference CMAP file is empty. Information cannot be displayed properly.",
+                    "Reference CMAP error",
+                    JOptionPane.ERROR_MESSAGE);
+        } else if (!cmapQry.getValidity()) {
+            JOptionPane.showMessageDialog(null,
+                    "Query CMAP file is empty. Information cannot be displayed properly.",
+                    "Query CMAP error",
+                    JOptionPane.ERROR_MESSAGE);
+        } else if (!refKary.getValidity()) {
+            JOptionPane.showMessageDialog(null,
+                    "Karyotype file is empty. Information cannot be displayed properly.",
+                    "Karyotype error",
+                    JOptionPane.ERROR_MESSAGE);
+        } else if (xmap == null) {
+            JOptionPane.showMessageDialog(null,
+                    "XMAP file is empty. Information cannot be displayed properly.",
+                    "XMAP file error",
+                    JOptionPane.ERROR_MESSAGE);
+        } else if (refAnnot == null) {
+            JOptionPane.showMessageDialog(null,
+                    "Annotation file file is empty. Information cannot be displayed properly.",
+                    "Annotations error",
+                    JOptionPane.ERROR_MESSAGE);
+        } else {
+            populateData();
+        }
     }
 
     private void populateData() {
