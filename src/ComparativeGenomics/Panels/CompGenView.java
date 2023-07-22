@@ -99,7 +99,7 @@ public class CompGenView extends javax.swing.JFrame {
         // Annotation file is parsed
         refAnnot = new Annot(refannot);
 
-        populateData();
+        checkData();
     }
 
     public void setJob(Job j) {
@@ -132,27 +132,27 @@ public class CompGenView extends javax.swing.JFrame {
         // Fasta and annotation files are parsed
         refFasta = new Fasta();
         refAnnot = new Annot(this.job.getRefAnnot());
-        
-        System.out.println(cmapRef.getValidity() + "cmap qry " + cmapQry.getValidity() + " kary " + refKary.getValidity());
 
+        checkData();
+    }
+    
+    /**
+     * Check if all the entered files contained data before calling the "populate data" function
+     */
+    private void checkData(){
         String errorMessage = "";
         
+        
         if (!cmapRef.getValidity()) {
-            JOptionPane.showMessageDialog(null,
-                    "Reference CMAP file is empty. Information cannot be displayed properly.",
-                    "Reference CMAP error",
-                    JOptionPane.ERROR_MESSAGE);
-        } else if (!cmapQry.getValidity()) {
-            JOptionPane.showMessageDialog(null,
-                    "Query CMAP file is empty. Information cannot be displayed properly.",
-                    "Query CMAP error",
-                    JOptionPane.ERROR_MESSAGE);
-        } else if (!refKary.getValidity()) {
-            JOptionPane.showMessageDialog(null,
-                    "Karyotype file is empty. Information cannot be displayed properly.",
-                    "Karyotype error",
-                    JOptionPane.ERROR_MESSAGE);
-        } /* else if (xmap == null) {
+            errorMessage += "Reference CMAP file is empty. Information cannot be displayed properly.";
+        }
+        if (!cmapQry.getValidity()) {
+            errorMessage += "Query CMAP file is empty. Information cannot be displayed properly.";
+        }
+        if (!refKary.getValidity()) {
+            errorMessage += "Karyotype file is empty. Information cannot be displayed properly.";
+        }
+        /* else if (xmap == null) {
             JOptionPane.showMessageDialog(null,
                     "XMAP file is empty. Information cannot be displayed properly.",
                     "XMAP file error",
@@ -163,14 +163,18 @@ public class CompGenView extends javax.swing.JFrame {
                     "Annotations error",
                     JOptionPane.ERROR_MESSAGE);
         } */
-        
-        JOptionPane.showMessageDialog(null,
-                    "Reference CMAP file is empty. Information cannot be displayed properly.",
+
+        if (errorMessage.length() != 0) {
+            System.out.println(errorMessage);
+            JOptionPane.showMessageDialog(null,
+                    errorMessage,
                     "Error while displaying data",
                     JOptionPane.ERROR_MESSAGE);
-        
-        populateData();
+        } else {
+            populateData();
+        }
     }
+    
 
     private void populateData() {
         xmap.setRefCmap(cmapRef);

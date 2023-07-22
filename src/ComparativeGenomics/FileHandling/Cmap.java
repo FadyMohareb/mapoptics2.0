@@ -138,7 +138,6 @@ public class Cmap {
         String[] directory = this.filepath.split("/");
         filename = directory[directory.length - 1];
         boolean checkCmap = validateCmap(this.filepath);
-        System.out.println("Validate CMAP " + checkCmap);
         this.isValid = checkCmap;
 //       Validate CMAP
         if (checkCmap) {
