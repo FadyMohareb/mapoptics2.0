@@ -4,6 +4,8 @@ import ComparativeGenomics.StructuralVariant.Translocation;
 import ComparativeGenomics.FileHandling.Xmap;
 import ComparativeGenomics.FileHandling.Cmap;
 import ComparativeGenomics.FileHandling.Annot;
+import ComparativeGenomics.FileHandling.Smap;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,8 +18,7 @@ import java.util.Objects;
 
 /**
  *
- * @author franpeters 
- * Stores the alignment files produced by the job
+ * @author franpeters Stores the alignment files produced by the job
  */
 public final class Alignment {
 
@@ -29,17 +30,16 @@ public final class Alignment {
     private ArrayList<Integer> refCmapIDs = new ArrayList();
     private ArrayList<Translocation> translocations = new ArrayList();
 
-
 //    SV detection settings (Can be altered by user)
-    Integer distance =  30000;
+    Integer distance = 30000;
     Integer minIndelSize = 500;
     Integer duplicationMin = 2;
 
     /**
-     * 
+     *
      * @param refGenome
      * @param qryGenome
-     * @param xmap 
+     * @param xmap
      */
     public Alignment(Genome refGenome, Cmap qryCmap, Xmap xmap) {
         this.refGenome = refGenome;
@@ -61,28 +61,27 @@ public final class Alignment {
                     for (Pair pair : map.returnAlignments()) {
                         Integer refID = pair.getRef();
                         Integer qryID = pair.getQry();
-                        if(r.getSite(refID)!=null & q.getSite(qryID)!=null){
-                            r.getSite(refID).addMatch(map.getID(),new Match(map.getQryID(),true,q.getSite(qryID)));
-                            q.getSite(qryID).addMatch(map.getID(),new Match(map.getRefID(),true, r.getSite(refID)));
+                        if (r.getSite(refID) != null & q.getSite(qryID) != null) {
+                            r.getSite(refID).addMatch(map.getID(), new Match(map.getQryID(), true, q.getSite(qryID)));
+                            q.getSite(qryID).addMatch(map.getID(), new Match(map.getRefID(), true, r.getSite(refID)));
                             pair.setSite(r.getSite(refID), q.getSite(qryID));
-                            
-                    }
-                       
+
+                        }
+
                     }
                 }
             }
         }
 
-
         setAlignments();
         for (Chromosome chr : this.refGenome.getChromosomes().values()) {
-           
+
 //            detect inversions
-             for (XmapData xmap1: chr.getAlignments()){
+            for (XmapData xmap1 : chr.getAlignments()) {
                 Integer id = xmap1.getID();
-                for (XmapData xmap2: this.xmap.getAllXmaps().values() ){
+                for (XmapData xmap2 : this.xmap.getAllXmaps().values()) {
 //                    check not comparing to itself
-                    if (!Objects.equals(xmap2.getID(), id)&Objects.equals(xmap1.getRefID(), xmap2.getRefID())){
+                    if (!Objects.equals(xmap2.getID(), id) & Objects.equals(xmap1.getRefID(), xmap2.getRefID())) {
 //                        detect duplications
 //                        detectDuplications(xmap1,xmap2,duplicationMin);
                     }
@@ -90,7 +89,7 @@ public final class Alignment {
             }
         }
         detectTranslocations();
-        
+
     }
 
     public String getRefGenomeName() {
@@ -110,8 +109,8 @@ public final class Alignment {
     }
 
     /**
-     * Assigns each chromosome in a genome a cmap file with all the
-     * digestion sites corresponding to that chromosome
+     * Assigns each chromosome in a genome a cmap file with all the digestion
+     * sites corresponding to that chromosome
      */
     private void setAlignments() {
 //       where a refcmapid refers to a chromosome as each cmap refers to one chromosome
@@ -128,10 +127,9 @@ public final class Alignment {
                     this.refGenome.getChromosomes().get(cmapID).setAlignment(chrAlignments, cmapQry);
                     System.out.println("Alignment l129 OK TEST OK");
                 }
-            } 
+            }
         }
     }
-
 
     public Genome getRefGenome() {
         return this.refGenome;
@@ -140,37 +138,52 @@ public final class Alignment {
 //    public Genome getQryGenome() {
 //        return this.qryGenome;
 //    }
-
     public ArrayList<Translocation> getTranslocations() {
         return this.translocations;
     }
 
-
-
     public void detectTranslocations() {
-        
+
 //        making translocation objects
-         for (Map.Entry<Integer, ArrayList<XmapData>> entry : this.xmap.getPotentialTranslocations().entrySet()) {
-                Integer key = entry.getKey();
-                ArrayList<XmapData> value = entry.getValue();
+        for (Map.Entry<Integer, ArrayList<XmapData>> entry : this.xmap.getPotentialTranslocations().entrySet()) {
+            Integer key = entry.getKey();
+            ArrayList<XmapData> value = entry.getValue();
 //        first only going to deal with scenarios where there are only two different chromosomes affected
-                boolean twoChrs = value.stream().distinct().count() <= 2;
-                if(twoChrs){
+            boolean twoChrs = value.stream().distinct().count() <= 2;
+            if (twoChrs) {
 //                    get the two chromosomes involved cmap id's
-                    List<XmapData> distinctChrs = value.stream().distinct().collect(Collectors.toList());
-                    Translocation translocation = new Translocation(key, 
-                                                                    distinctChrs.get(0),
-                                                                    distinctChrs.get(1),
-                                                                    this.refGenome.getChromosomes()
-                                                                                  .get(distinctChrs.get(0)),
-                                                                    this.refGenome.getChromosomes()
-                                                                                  .get(distinctChrs.get(1)));
-                    translocations.add(translocation);
-                    
+                List<XmapData> distinctChrs = value.stream().distinct().collect(Collectors.toList());
+                Translocation translocation = new Translocation(key,
+                        distinctChrs.get(0),
+                        distinctChrs.get(1),
+                        this.refGenome.getChromosomes()
+                                .get(distinctChrs.get(0)),
+                        this.refGenome.getChromosomes()
+                                .get(distinctChrs.get(1)));
+                translocations.add(translocation);
+
             }
         }
     }
-   
+
+    /**
+     * Detect translocations among the ones detected in SV.txt file, that
+     * results from FaNDOM SV detection.
+     */
+    public void detectTxtTranslocations(Smap smap) {
+        for (int i = 0; i < smap.getTxtTransloc().size(); i++) {
+            SVFandom currentInput = smap.getTxtTransloc().get(i);
+            Translocation translocation = new Translocation(currentInput.getIds(),
+                    this.refGenome.getChromosomes()
+                            .get(currentInput.getChr1()),
+                    this.refGenome.getChromosomes()
+                            .get(currentInput.getChr2()));
+            translocations.add(translocation);
+            System.out.println("Alignment 181 " + this.refGenome.getChromosomes()
+                    .get(currentInput.getChr1()).getName());
+        }
+    }
+
 //   private ArrayList<Duplication> detectDuplications(XmapData xmap1, XmapData xmap2, int duplicationMin) {
 //        ArrayList<Duplication> duplications =  new ArrayList();
 //        ArrayList<Site> duplicatedSites = new ArrayList();

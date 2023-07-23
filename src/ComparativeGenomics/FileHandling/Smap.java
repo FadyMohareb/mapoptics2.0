@@ -6,6 +6,7 @@ package ComparativeGenomics.FileHandling;
 
 import ComparativeGenomics.FileHandling.DataHandling.SVFandom;
 import ComparativeGenomics.FileHandling.DataHandling.SVRefAligner;
+import ComparativeGenomics.StructuralVariant.Translocation;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -35,6 +36,8 @@ public class Smap {
     private boolean smapFormat; // Indicates if the file is a txt from FaNDOM or a SMAP from runBNG
     private boolean isValid = true; // Indicates file is valid (not empty, in proper format)
     private ArrayList<SVFandom> SVList = new ArrayList<>();
+    private ArrayList<SVFandom> possibleTxtTranslocations = new ArrayList<>();
+    //private ArrayList<Translocation> translocations = new ArrayList<>();
 
     /**
      * Passes file to read and parse it if it is valid (proper format, non
@@ -43,14 +46,13 @@ public class Smap {
      * @param filepath Path of the file to parse
      */
     public Smap(String filepath) {
-        System.out.println("SMAP 46 new SMAP");
         this.filepath = filepath;
-        System.out.println("SMAP 46 " + filepath);
         if (this.filepath.endsWith(".txt")) {
             this.smapFormat = false;
-            System.out.println("SMAP 46 text ok");
             // Read and parse file
             readSVtxt(filepath);
+            // Detect and sort SV
+            sortTxtSV();
         } else if (this.filepath.endsWith(".smap")) {
             this.smapFormat = false;
         } else {
@@ -102,9 +104,6 @@ public class Smap {
                         }
                         String geneFusion = rowData[10];
                         
-                        System.out.println("SMAP 100 " + Chrom1 + " " + refPos1 + " " + direction1 + " " + Chrom2 + " " + refPos2 + " " + direction2 + " " + type + " " + id + " " +
-                                numSupports + " " + geneInterrupt + " " + geneFusion);
-                        
                         // Create SVFandom instance to store resulting data
                         SVFandom svObject = new SVFandom( Chrom1, Chrom2, refPos1, refPos2, direction1, direction2, type, id, numSupports, geneInterrupt, geneFusion);
                         SVList.add(svObject);
@@ -129,7 +128,6 @@ public class Smap {
 
                 // Check that a line in the file contains the standard header
                 while ((line = br.readLine()) != null && line.startsWith("#")) {
-                    System.out.println("SMAP 130 " + line);
                     if (line.toLowerCase().contains("#header")) {
                         return true;
                     }
@@ -140,7 +138,6 @@ public class Smap {
             }
         } else {
             isValid = false;
-            System.out.println("SMAP 46 " + filePath);
             //Show error message if no file found
             JOptionPane.showMessageDialog(null,
                     "Error loading SV file."
@@ -152,4 +149,31 @@ public class Smap {
         return false;
     }
 
+    /**
+     * Detect SV if input file is a text file following the format of those produced by FaNDOM
+     */
+    private void sortTxtSV(){
+        for(int i = 0; i < this.SVList.size(); i ++){
+            SVFandom currentSV = this.SVList.get(i);
+            // Detect translocations
+            if(currentSV.getType().equals("Unkown")  && currentSV.getChr1() != currentSV.getChr2()){
+                possibleTxtTranslocations.add(currentSV);
+            }
+        }
+    }
+    
+    
+    /**
+     * @return File format: SMAP or txt
+     */
+    public boolean getSmapFormat(){
+        return this.smapFormat;
+    }
+    
+    /**
+     * @return list of SVFandom objects having possible translocations
+     */
+    public ArrayList<SVFandom> getTxtTransloc(){
+        return this.possibleTxtTranslocations;
+    }
 }

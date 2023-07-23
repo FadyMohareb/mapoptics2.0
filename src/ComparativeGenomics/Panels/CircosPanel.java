@@ -137,8 +137,6 @@ public class CircosPanel extends javax.swing.JPanel implements MouseListener, Mo
             }
             g2d.setColor(Color.black);
             g2d.drawString(chrName, X, Y);
-            System.out.println(X + " " + Y + " " + chrName);
-//              }
 
         }
     }

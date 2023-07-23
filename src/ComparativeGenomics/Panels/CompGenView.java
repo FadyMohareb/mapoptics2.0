@@ -57,7 +57,7 @@ public class CompGenView extends javax.swing.JFrame {
     private Annot refAnnot;
 //    private Annot qryAnnot;
     private Smap smap;
-    
+
     private String localSMAP; // Path of file containing SV data
 
     /**
@@ -1448,12 +1448,20 @@ public class CompGenView extends javax.swing.JFrame {
         FileDialog fileDialog = new FileDialog(this, "Choose SV file", FileDialog.LOAD);
         fileDialog.setFile("*.smap;*.txt");
         fileDialog.setVisible(true);
-        
+
         this.localSMAP = fileDialog.getDirectory() + fileDialog.getFile();
-        
+
         // Parse input SV file
         this.smap = new Smap(fileDialog.getDirectory() + fileDialog.getFile());
-        
+        if (this.smap.getSmapFormat()) {
+
+        } else {
+            // Detect translocations from text file
+            this.alignment.detectTxtTranslocations(this.smap);
+        }
+        // Redraw circos panel
+        this.circosPanel1.setKaryotype(refKary, this.alignment);
+
     }//GEN-LAST:event_chooseSMAPActionPerformed
     private void changePlotStyles(String style) {
         if ("ggplot".equals(style)) {
