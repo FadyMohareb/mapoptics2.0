@@ -127,7 +127,7 @@ public class Cmap {
             FileInputStream inputStream = null;
             Scanner sc = null;
             try {
-                Integer count=0;
+                Integer count = 0;
                 inputStream = new FileInputStream(this.filepath);
                 sc = new Scanner(inputStream, "UTF-8");
                 while (sc.hasNextLine()) {
