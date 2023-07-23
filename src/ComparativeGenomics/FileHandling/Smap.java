@@ -156,7 +156,7 @@ public class Smap {
         for(int i = 0; i < this.SVList.size(); i ++){
             SVFandom currentSV = this.SVList.get(i);
             // Detect translocations
-            if(currentSV.getType().equals("Unkown")  && currentSV.getChr1() != currentSV.getChr2()){
+            if(currentSV.getType().equals("Unknown")  && currentSV.getChr1() != currentSV.getChr2()){
                 possibleTxtTranslocations.add(currentSV);
             }
         }

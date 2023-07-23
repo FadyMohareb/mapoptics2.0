@@ -121,11 +121,8 @@ public final class Alignment {
             if (this.xmap.getXmap().containsKey(cmapID)) {
 //                these are all the qry cmap matches to the ref cmap
                 ArrayList<XmapData> chrAlignments = this.xmap.getXmap().get(cmapID);
-
-                System.out.println("Alignment l126 cmapID " + cmapID + " " + this.refGenome.getChromosomes().get(cmapID));
                 if (this.refGenome.getChromosomes().get(cmapID) != null) {
                     this.refGenome.getChromosomes().get(cmapID).setAlignment(chrAlignments, cmapQry);
-                    System.out.println("Alignment l129 OK TEST OK");
                 }
             }
         }
@@ -171,13 +168,13 @@ public final class Alignment {
      * results from FaNDOM SV detection.
      */
     public void detectTxtTranslocations(Smap smap) {
+        System.out.println("Alignmenet 174 " + smap.getTxtTransloc().size());
         for (int i = 0; i < smap.getTxtTransloc().size(); i++) {
             SVFandom currentInput = smap.getTxtTransloc().get(i);
+            System.out.println("Alignment 181 " + currentInput.getChr1() + currentInput.getChr2());
             Translocation translocation = new Translocation(currentInput.getIds(),
-                    this.refGenome.getChromosomes()
-                            .get(currentInput.getChr1()),
-                    this.refGenome.getChromosomes()
-                            .get(currentInput.getChr2()));
+                    this.refGenome.getChromosomes().get(currentInput.getChr1()),
+                    this.refGenome.getChromosomes().get(currentInput.getChr2()));
             translocations.add(translocation);
             System.out.println("Alignment 181 " + this.refGenome.getChromosomes()
                     .get(currentInput.getChr1()).getName());

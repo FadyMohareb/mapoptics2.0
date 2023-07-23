@@ -1453,6 +1453,7 @@ public class CompGenView extends javax.swing.JFrame {
 
         // Parse input SV file
         this.smap = new Smap(fileDialog.getDirectory() + fileDialog.getFile());
+        System.out.println("CompGenView 1456 " + this.smap.getSmapFormat());
         if (this.smap.getSmapFormat()) {
 
         } else {
