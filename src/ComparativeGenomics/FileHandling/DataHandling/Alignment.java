@@ -153,11 +153,9 @@ public final class Alignment {
          for (Map.Entry<Integer, ArrayList<XmapData>> entry : this.xmap.getPotentialTranslocations().entrySet()) {
                 Integer key = entry.getKey();
                 ArrayList<XmapData> value = entry.getValue();
-                System.out.println(value.size() + " translocations?");
 //        first only going to deal with scenarios where there are only two different chromosomes affected
                 boolean twoChrs = value.stream().distinct().count() <= 2;
                 if(twoChrs){
-                  
 //                    get the two chromosomes involved cmap id's
                     List<XmapData> distinctChrs = value.stream().distinct().collect(Collectors.toList());
                     Translocation translocation = new Translocation(key, 

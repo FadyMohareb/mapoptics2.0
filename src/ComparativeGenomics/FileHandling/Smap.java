@@ -34,7 +34,7 @@ public class Smap {
     private String filepath;
     private boolean smapFormat; // Indicates if the file is a txt from FaNDOM or a SMAP from runBNG
     private boolean isValid = true; // Indicates file is valid (not empty, in proper format)
-    private ArrayList<SVFandom> SVList;
+    private ArrayList<SVFandom> SVList = new ArrayList<>();
 
     /**
      * Passes file to read and parse it if it is valid (proper format, non
@@ -43,9 +43,14 @@ public class Smap {
      * @param filepath Path of the file to parse
      */
     public Smap(String filepath) {
+        System.out.println("SMAP 46 new SMAP");
         this.filepath = filepath;
+        System.out.println("SMAP 46 " + filepath);
         if (this.filepath.endsWith(".txt")) {
             this.smapFormat = false;
+            System.out.println("SMAP 46 text ok");
+            // Read and parse file
+            readSVtxt(filepath);
         } else if (this.filepath.endsWith(".smap")) {
             this.smapFormat = false;
         } else {
@@ -83,23 +88,26 @@ public class Smap {
                         // Parse data
                         String[] rowData = row.split("\t");
                         int Chrom1 = Integer.valueOf(rowData[0]);
-                        int refPos1 = Integer.valueOf(rowData[1]);
+                        int refPos1 = (int)Double.parseDouble(rowData[1]);
                         String direction1 = rowData[2];
                         int Chrom2 = Integer.valueOf(rowData[3]);
-                        int refPos2 = Integer.valueOf(rowData[4]);
+                        int refPos2 = (int)Double.parseDouble(rowData[4]);
                         String direction2 = rowData[5];
                         String type = rowData[6];
                         int id = Integer.valueOf(rowData[7]);
                         int numSupports = Integer.valueOf(rowData[8]);
                         boolean geneInterrupt = true ;
-                        if(Integer.valueOf(rowData[9]).equals("False")){
+                        if(rowData[9].equals("False")){
                             geneInterrupt = false;
                         }
                         String geneFusion = rowData[10];
                         
+                        System.out.println("SMAP 100 " + Chrom1 + " " + refPos1 + " " + direction1 + " " + Chrom2 + " " + refPos2 + " " + direction2 + " " + type + " " + id + " " +
+                                numSupports + " " + geneInterrupt + " " + geneFusion);
+                        
                         // Create SVFandom instance to store resulting data
                         SVFandom svObject = new SVFandom( Chrom1, Chrom2, refPos1, refPos2, direction1, direction2, type, id, numSupports, geneInterrupt, geneFusion);
-                        
+                        SVList.add(svObject);
                     }
                 }
             } catch (FileNotFoundException ex) {
@@ -121,7 +129,8 @@ public class Smap {
 
                 // Check that a line in the file contains the standard header
                 while ((line = br.readLine()) != null && line.startsWith("#")) {
-                    if (line.toLowerCase().contains("Header\tChrom1")) {
+                    System.out.println("SMAP 130 " + line);
+                    if (line.toLowerCase().contains("#header")) {
                         return true;
                     }
                 }
@@ -131,6 +140,7 @@ public class Smap {
             }
         } else {
             isValid = false;
+            System.out.println("SMAP 46 " + filePath);
             //Show error message if no file found
             JOptionPane.showMessageDialog(null,
                     "Error loading SV file."
