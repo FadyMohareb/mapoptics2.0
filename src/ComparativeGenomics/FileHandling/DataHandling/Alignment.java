@@ -5,6 +5,8 @@ import ComparativeGenomics.FileHandling.Xmap;
 import ComparativeGenomics.FileHandling.Cmap;
 import ComparativeGenomics.FileHandling.Annot;
 import ComparativeGenomics.FileHandling.Smap;
+import ComparativeGenomics.FileHandling.DataHandling.SVFandom;
+import ComparativeGenomics.FileHandling.FileHandlingDataHandling.SVRefAligner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -164,6 +166,7 @@ public final class Alignment {
     }
 
     /**
+     * @author marie schmit
      * Detect translocations among the ones detected in SV.txt file, that
      * results from FaNDOM SV detection.
      */
@@ -180,6 +183,28 @@ public final class Alignment {
                     .get(currentInput.getChr1()).getName());
         }
     }
+    
+    /** 
+     * Detect inter chromosomal translocations from SMAP file resulting from RefAligner translocation detection
+     * @author marie schmit
+     * @param smap 
+     */
+    public void detectSmapTranslocations(Smap smap) {
+        System.out.println("Alignmenet 174 " + smap.getTxtTransloc().size());
+        for (int i = 0; i < smap.getTxtTransloc().size(); i++) {
+            SVRefAligner currentInput = smap.getSmapTransloc().get(i);
+            System.out.println("Alignment 181 " + currentInput.getXmapID1() + " " + currentInput.getXmapID2());
+            
+            Translocation translocation = new Translocation(currentInput.getQryContigID(), xmap.getAllXmaps().get(currentInput.getXmapID1()), 
+                    xmap.getAllXmaps().get(currentInput.getXmapID1()),this.refGenome.getChromosomes().get(currentInput.getRefContigID()[0]), 
+                    this.refGenome.getChromosomes().get(currentInput.getRefContigID()[1]));
+            
+            translocations.add(translocation);
+            System.out.println("Alignment 181 " + this.refGenome.getChromosomes().get(currentInput.getRefContigID()[0]) 
+                    + " " + this.refGenome.getChromosomes().get(currentInput.getRefContigID()[1]));
+        }
+    }
+    
 
 //   private ArrayList<Duplication> detectDuplications(XmapData xmap1, XmapData xmap2, int duplicationMin) {
 //        ArrayList<Duplication> duplications =  new ArrayList();

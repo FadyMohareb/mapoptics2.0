@@ -1455,7 +1455,8 @@ public class CompGenView extends javax.swing.JFrame {
         this.smap = new Smap(fileDialog.getDirectory() + fileDialog.getFile());
         System.out.println("CompGenView 1456 " + this.smap.getSmapFormat());
         if (this.smap.getSmapFormat()) {
-
+            // Detect translocations from SMAP file
+            this.alignment.detectSmapTranslocations(this.smap);
         } else {
             // Detect translocations from text file
             this.alignment.detectTxtTranslocations(this.smap);
@@ -1634,9 +1635,7 @@ public class CompGenView extends javax.swing.JFrame {
                     for (int i = 0; i < saveTable.getRowCount(); i++) {
                         // Nest for loops to take values from table and add to CSV file
                         for (int j = 0; j < saveTable.getColumnCount(); j++) {
-
                             qryOut[j] = saveTable.getValueAt(i, j).toString();
-
                         }
 
                         tableContents.writeNext(qryOut);

@@ -38,7 +38,7 @@ public class Smap {
     private ArrayList<SVFandom> SVList = new ArrayList<>();
     private ArrayList<SVRefAligner> smapSVList = new ArrayList<>();
     private ArrayList<SVFandom> possibleTxtTranslocations = new ArrayList<>();
-    //private ArrayList<Translocation> translocations = new ArrayList<>();
+    private ArrayList<SVRefAligner> possibleSmapTranslocations = new ArrayList<>();
 
     /**
      * Passes file to read and parse it if it is valid (proper format, non
@@ -168,7 +168,6 @@ public class Smap {
 
     /**
      * Read and parse SMAP input file.
-     *
      * @param filepath Path to SMAP file
      */
     private void readSmap(String filepath) {
@@ -217,6 +216,12 @@ public class Smap {
                         double SVsize = Double.parseDouble(rowData[24]);
                         double SVfreq = Double.parseDouble(rowData[25]);
                         String orientation = rowData[26];
+                        
+                        System.out.println("SMAP 221 " + " " + smapID  + " " +  qryID  + " " +  refID1  + " " +  refID2 + " " + qryStart + " " + 
+                                qryEnd + " " + refStart + " " + refEnd + " " + confidence + " " + type + " " + xmapID1 + " " + xmapID2 + " " + linkID + " " + 
+                                qryStartIdx + " " + qryEndIdx + " " + refStartIdx + " " + refEndIdx + " " + zygosity + " " + genotype + " " +genotypeGroup + " " + 
+                                rawConfidence + " " + rawConfidenceLeft + " " + rawConfidenceRight + " " + rawConfidenceCenter + " " + 
+                                SVsize + " " + SVfreq + " " + orientation);
 
                         // Create SVRefAligner instance to store resulting data
                         SVRefAligner svOjbect = new SVRefAligner(smapID, qryID, refID1, refID2, qryStart, 
@@ -267,6 +272,19 @@ public class Smap {
         }
         return false;
     }
+    
+    /**
+     * Detect SV if input file is a text file following the SMAP format
+     */
+    private void sortSmapSV() {
+        for (int i = 0; i < this.smapSVList.size(); i++) {
+            SVRefAligner currentSV = this.smapSVList.get(i);
+            // Detect translocations
+            if (currentSV.getType().equals("translocation_interchr")) {
+                possibleSmapTranslocations.add(currentSV);
+            }
+        }
+    }
 
     /**
      * @return File format: SMAP or txt
@@ -280,5 +298,12 @@ public class Smap {
      */
     public ArrayList<SVFandom> getTxtTransloc() {
         return this.possibleTxtTranslocations;
+    }
+    
+    /**
+     * @return list of SVRefAlignerobjects having possible translocations
+     */
+    public ArrayList<SVRefAligner> getSmapTransloc() {
+        return this.possibleSmapTranslocations;
     }
 }
