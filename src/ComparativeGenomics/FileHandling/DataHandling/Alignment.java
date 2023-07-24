@@ -19,7 +19,6 @@ import java.util.Objects;
  * @author franpeters Stores the alignment files produced by the job
  */
 public final class Alignment {
-
     private Cmap cmapRef;
     private Cmap cmapQry;
     private Xmap xmap;

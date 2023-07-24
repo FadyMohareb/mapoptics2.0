@@ -260,7 +260,7 @@ public class SSH {
         // Run new container for the job
         String cmd = "cd " + dir
                 + " && docker run -it -d --name mapopticsDock_" + jobname
-                + " -v ~/" + dir + jobname + ":/mapoptics/jobs/" + jobname + " marieschmit/mapoptics_docker_server:ubuntu16";
+                + " -v ~/" + dir + jobname + ":/mapoptics/jobs/" + jobname + " marieschmit/mapoptics_docker_server:ubuntu16v4";
         System.out.println(cmd);
         executeCmd(cmd);
     }
