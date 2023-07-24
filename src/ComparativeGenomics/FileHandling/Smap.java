@@ -36,6 +36,7 @@ public class Smap {
     private boolean smapFormat; // Indicates if the file is a txt from FaNDOM or a SMAP from runBNG
     private boolean isValid = true; // Indicates file is valid (not empty, in proper format)
     private ArrayList<SVFandom> SVList = new ArrayList<>();
+    private ArrayList<SVRefAligner> smapSVList = new ArrayList<>();
     private ArrayList<SVFandom> possibleTxtTranslocations = new ArrayList<>();
     //private ArrayList<Translocation> translocations = new ArrayList<>();
 
@@ -55,6 +56,8 @@ public class Smap {
             sortTxtSV();
         } else if (this.filepath.endsWith(".smap")) {
             this.smapFormat = false;
+            // Read and parse SMAP
+            readSmap(filepath);
         } else {
             this.isValid = false;
             //Show error message if wrong file type
@@ -90,22 +93,22 @@ public class Smap {
                         // Parse data
                         String[] rowData = row.split("\t");
                         int Chrom1 = Integer.valueOf(rowData[0]);
-                        int refPos1 = (int)Double.parseDouble(rowData[1]);
+                        int refPos1 = (int) Double.parseDouble(rowData[1]);
                         String direction1 = rowData[2];
                         int Chrom2 = Integer.valueOf(rowData[3]);
-                        int refPos2 = (int)Double.parseDouble(rowData[4]);
+                        int refPos2 = (int) Double.parseDouble(rowData[4]);
                         String direction2 = rowData[5];
                         String type = rowData[6];
                         int id = Integer.valueOf(rowData[7]);
                         int numSupports = Integer.valueOf(rowData[8]);
-                        boolean geneInterrupt = true ;
-                        if(rowData[9].equals("False")){
+                        boolean geneInterrupt = true;
+                        if (rowData[9].equals("False")) {
                             geneInterrupt = false;
                         }
                         String geneFusion = rowData[10];
-                        
+
                         // Create SVFandom instance to store resulting data
-                        SVFandom svObject = new SVFandom( Chrom1, Chrom2, refPos1, refPos2, direction1, direction2, type, id, numSupports, geneInterrupt, geneFusion);
+                        SVFandom svObject = new SVFandom(Chrom1, Chrom2, refPos1, refPos2, direction1, direction2, type, id, numSupports, geneInterrupt, geneFusion);
                         SVList.add(svObject);
                     }
                 }
@@ -150,30 +153,132 @@ public class Smap {
     }
 
     /**
-     * Detect SV if input file is a text file following the format of those produced by FaNDOM
+     * Detect SV if input file is a text file following the format of those
+     * produced by FaNDOM
      */
-    private void sortTxtSV(){
-        for(int i = 0; i < this.SVList.size(); i ++){
+    private void sortTxtSV() {
+        for (int i = 0; i < this.SVList.size(); i++) {
             SVFandom currentSV = this.SVList.get(i);
             // Detect translocations
-            if(currentSV.getType().equals("Unknown")  && currentSV.getChr1() != currentSV.getChr2()){
+            if (currentSV.getType().equals("Unknown") && currentSV.getChr1() != currentSV.getChr2()) {
                 possibleTxtTranslocations.add(currentSV);
             }
         }
     }
-    
-    
+
+    /**
+     * Read and parse SMAP input file.
+     *
+     * @param filepath Path to SMAP file
+     */
+    private void readSmap(String filepath) {
+        if (validateSmap(filepath)) {
+            // Read the file
+            FileInputStream inputStream = null;
+            Scanner sc = null;
+            try {
+                inputStream = new FileInputStream(this.filepath);
+                sc = new Scanner(inputStream, "UTF-8");
+                while (sc.hasNextLine()) {
+                    String row = sc.nextLine();
+
+                    // Analys the lines that are not headers
+                    String chrPattern = "#";
+                    Pattern c = Pattern.compile(chrPattern);
+                    Matcher checkHeader = c.matcher(row);
+                    
+                    if (!checkHeader.find()) {
+                        // Parse data
+                        String[] rowData = row.split("\t");
+                        int smapID = Integer.valueOf(rowData[0]);
+                        int qryID = Integer.valueOf(rowData[1]);
+                        int refID1 = Integer.valueOf(rowData[2]);
+                        int refID2 = Integer.valueOf(rowData[3]);
+                        int qryStart = (int) Double.parseDouble(rowData[4]);
+                        int qryEnd = (int) Double.parseDouble(rowData[5]);
+                        int refStart = (int) Double.parseDouble(rowData[6]); 
+                        int refEnd = (int) Double.parseDouble(rowData[7]);
+                        int confidence = (int) Double.parseDouble(rowData[8]);
+                        String type = rowData[9];
+                        int xmapID1 = (int) Double.parseDouble(rowData[10]);
+                        int xmapID2 = (int) Double.parseDouble(rowData[11]);
+                        int linkID = (int) Double.parseDouble(rowData[12]);
+                        int qryStartIdx = (int) Double.parseDouble(rowData[13]);
+                        int qryEndIdx = (int) Double.parseDouble(rowData[14]);
+                        int refStartIdx = (int) Double.parseDouble(rowData[15]);
+                        int refEndIdx = (int) Double.parseDouble(rowData[16]);
+                        String zygosity = rowData[17];
+                        int genotype = Integer.valueOf(rowData[18]);
+                        int genotypeGroup = Integer.valueOf(rowData[19]);
+                        double rawConfidence = Double.parseDouble(rowData[20]);
+                        double rawConfidenceLeft = Double.parseDouble(rowData[21]);
+                        double rawConfidenceRight = Double.parseDouble(rowData[22]);
+                        double rawConfidenceCenter = Double.parseDouble(rowData[23]);
+                        double SVsize = Double.parseDouble(rowData[24]);
+                        double SVfreq = Double.parseDouble(rowData[25]);
+                        String orientation = rowData[26];
+
+                        // Create SVRefAligner instance to store resulting data
+                        SVRefAligner svOjbect = new SVRefAligner(smapID, qryID, refID1, refID2, qryStart, 
+                                qryEnd, refStart, refEnd, confidence, type, xmapID1, xmapID2, linkID, 
+                                qryStartIdx, qryEndIdx, refStartIdx, refEndIdx, zygosity, genotype,genotypeGroup, 
+                                rawConfidence, rawConfidenceLeft, rawConfidenceRight, rawConfidenceCenter, 
+                                SVsize, SVfreq, orientation);
+                        smapSVList.add(svOjbect);
+                    }
+                }
+            } catch (FileNotFoundException ex) {
+                System.out.println("Smap file not found.");
+            }
+        }
+    }
+
+    /**
+     * Validate file format (SMAP) and check that the file is not empty.
+     *
+     * @param filePath
+     * @return Validation result (true if file is non empty SMAP)
+     */
+    private boolean validateSmap(String filePath) {
+        if (Files.exists(Paths.get(filePath))) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(filePath));
+                String line;
+
+                // Check that a line in the file contains mandatory line
+                while ((line = br.readLine()) != null && line.startsWith("#")) {
+                    if (line.toLowerCase().contains("# smap file version")) {
+                        return true;
+                    }
+                }
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            isValid = false;
+            //Show error message if no file found
+            JOptionPane.showMessageDialog(null,
+                    "Error loading SMAP file."
+                    + "\n\nFile does not exist!",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return false;
+    }
+
     /**
      * @return File format: SMAP or txt
      */
-    public boolean getSmapFormat(){
+    public boolean getSmapFormat() {
         return this.smapFormat;
     }
-    
+
     /**
      * @return list of SVFandom objects having possible translocations
      */
-    public ArrayList<SVFandom> getTxtTransloc(){
+    public ArrayList<SVFandom> getTxtTransloc() {
         return this.possibleTxtTranslocations;
     }
 }
