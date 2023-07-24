@@ -461,6 +461,7 @@ public class JsonFiles {
     /**
      * Encrypt a message.
      *
+     * @author marie
      * @param message
      * @param keyBytes
      * @return encryptedMessage
@@ -488,6 +489,7 @@ public class JsonFiles {
     /**
      * Decrypt a crypted message.
      *
+     * @author marie
      * @param cryptedMessage
      * @param publicKey
      * @return

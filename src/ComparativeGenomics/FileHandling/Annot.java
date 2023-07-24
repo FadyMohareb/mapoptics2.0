@@ -150,6 +150,7 @@ public class Annot {
     /**
      * Validate the file is in the correct format
      *
+     * @author marie
      * @param filepath the filepath of the file to be validated
      * @return true if file is valid and false if not
      */
