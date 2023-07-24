@@ -6,7 +6,7 @@ import ComparativeGenomics.FileHandling.Cmap;
 import ComparativeGenomics.FileHandling.Annot;
 import ComparativeGenomics.FileHandling.Smap;
 import ComparativeGenomics.FileHandling.DataHandling.SVFandom;
-import ComparativeGenomics.FileHandling.FileHandlingDataHandling.SVRefAligner;
+import ComparativeGenomics.FileHandling.DataHandling.SVRefAligner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
