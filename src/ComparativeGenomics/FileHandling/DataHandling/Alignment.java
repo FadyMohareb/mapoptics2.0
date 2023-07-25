@@ -62,7 +62,6 @@ public final class Alignment {
                             r.getSite(refID).addMatch(map.getID(), new Match(map.getQryID(), true, q.getSite(qryID)));
                             q.getSite(qryID).addMatch(map.getID(), new Match(map.getRefID(), true, r.getSite(refID)));
                             pair.setSite(r.getSite(refID), q.getSite(qryID));
-
                         }
 
                     }
