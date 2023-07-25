@@ -103,7 +103,8 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
     }
 
     public void setChr(Chromosome chr) {
-        //System.out.println("Chromosome to set: " + chr.getName());
+        //Reset th array list
+        reset();
         if (chr != null) {
             this.chr = chr;
             findSites();
@@ -152,7 +153,6 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
             Integer siteID = site.getSiteID();
 
             XmapData map = this.xmap.getXmapByXmapID(xmapID);
-            //System.out.println("Are reference sites relative positions null? " + this.refSitesRelPos.get(siteID) + " Site ID: " + siteID);
             Double sitePosPx = this.refSitesRelPos.get(siteID);
 
             Double relFirstPosRef = 0.0;
@@ -172,8 +172,6 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
                 relFirstPosRef = sitePosPx - sizeDiffPx;
             }
 
-            //System.out.println("get query cmaps: " + this.chr.getQryCmaps());
-
             QueryShape shape = new QueryShape(refSitesRelPos, relFirstPosRef,
                     220.0,
                     relSize,
@@ -185,11 +183,12 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
             // Check that the query ID exists in the list of cmaps of the chromosome
             // The query ID is the cmap ID saved in the XMAP file for this chr
             if (this.chr.getQryCmapsByID(map.getQryID()) != null) {
-                System.out.println("Shape coords:" + map.getID() + " " + this.chr.getQryCmapsByID(map.getQryID()).getID() + " "
+                /*System.out.println("Shape coords:" + map.getID() + " " + this.chr.getQryCmapsByID(map.getQryID()).getID() + " "
                         + relFirstPosRef + " "
                         + relSize + " "
                         + start + " "
                         + end);
+                */
             } else {
                 System.out.println("Query CMAP does not exist for the following ID from XMAP file: " + map.getQryID());
             }
@@ -218,7 +217,6 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
         } else {
             System.out.println("Start cannot be more than end");
         }
-
         findSites();
     }
 

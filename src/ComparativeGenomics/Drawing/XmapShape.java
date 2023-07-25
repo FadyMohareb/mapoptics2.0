@@ -123,7 +123,6 @@ public class XmapShape {
             }
         } catch (Exception e) {
             System.out.println("Data could not be extracted from CMAP, or other problem occured. Impossible to draw chart.");
-
         }
     }
 
