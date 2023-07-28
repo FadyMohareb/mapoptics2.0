@@ -183,7 +183,6 @@ public class Xmap {
                     sc.close();
                 }
             }
-
         }
     }
 
@@ -261,7 +260,7 @@ public class Xmap {
     public String getVersion() {
         return this.version;
     }
-    
+
     /**
      * Return the validity of the file
      * @return boolean is valid

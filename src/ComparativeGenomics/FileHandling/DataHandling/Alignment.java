@@ -4,6 +4,10 @@ import ComparativeGenomics.StructuralVariant.Translocation;
 import ComparativeGenomics.FileHandling.Xmap;
 import ComparativeGenomics.FileHandling.Cmap;
 import ComparativeGenomics.FileHandling.Annot;
+import ComparativeGenomics.FileHandling.Smap;
+import ComparativeGenomics.FileHandling.DataHandling.SVFandom;
+import ComparativeGenomics.FileHandling.DataHandling.SVRefAligner;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +67,6 @@ public final class Alignment {
                             q.getSite(qryID).addMatch(map.getID(), new Match(map.getRefID(), true, r.getSite(refID)));
                             pair.setSite(r.getSite(refID), q.getSite(qryID));
                         }
-
                     }
                 }
             }
@@ -117,7 +120,6 @@ public final class Alignment {
             if (this.xmap.getXmap().containsKey(cmapID)) {
 //                these are all the qry cmap matches to the ref cmap
                 ArrayList<XmapData> chrAlignments = this.xmap.getXmap().get(cmapID);
-
                 if (this.refGenome.getChromosomes().get(cmapID) != null) {
                     this.refGenome.getChromosomes().get(cmapID).setAlignment(chrAlignments, cmapQry);
                 }
@@ -142,25 +144,60 @@ public final class Alignment {
         for (Map.Entry<Integer, ArrayList<XmapData>> entry : this.xmap.getPotentialTranslocations().entrySet()) {
             Integer key = entry.getKey();
             ArrayList<XmapData> value = entry.getValue();
-            //System.out.println(value.size() + " translocations?");
 //        first only going to deal with scenarios where there are only two different chromosomes affected
             boolean twoChrs = value.stream().distinct().count() <= 2;
             if (twoChrs) {
-
 //                    get the two chromosomes involved cmap id's
                 List<XmapData> distinctChrs = value.stream().distinct().collect(Collectors.toList());
                 Translocation translocation = new Translocation(key,
                         distinctChrs.get(0),
                         distinctChrs.get(1),
                         this.refGenome.getChromosomes()
-                                .get(distinctChrs.get(0)),
+                                .get(distinctChrs.get(0).getID()),
                         this.refGenome.getChromosomes()
-                                .get(distinctChrs.get(1)));
+                                .get(distinctChrs.get(1).getID()));
                 translocations.add(translocation);
 
             }
         }
     }
+
+    /**
+     * @author marie schmit
+     * Detect translocations among the ones detected in SV.txt file, that
+     * results from FaNDOM SV detection.
+     */
+    public void detectTxtTranslocations(Smap smap) {
+        for (int i = 0; i < smap.getTxtTransloc().size(); i++) {
+            SVFandom currentInput = smap.getTxtTransloc().get(i);
+            for (int j = 0; j < currentInput.getIds().length; j++){
+                Translocation translocation = new Translocation(currentInput.getIds()[j],
+                    this.refGenome.getChromosomes().get(currentInput.getChr1()),
+                    this.refGenome.getChromosomes().get(currentInput.getChr2()));
+                translocations.add(translocation);
+            }
+        }
+    }
+    
+    /** 
+     * Detect inter chromosomal translocations from SMAP file resulting from RefAligner translocation detection
+     * @author marie schmit
+     * @param smap 
+     */
+    public void detectSmapTranslocations(Smap smap) {
+        for (int i = 0; i < smap.getSmapTransloc().size(); i++) {
+            SVRefAligner currentInput = smap.getSmapTransloc().get(i);
+            
+            Translocation translocation = new Translocation(currentInput.getQryContigID(), 
+                    xmap.getAllXmaps().get(currentInput.getXmapID1()), 
+                    xmap.getAllXmaps().get(currentInput.getXmapID1()),
+                    this.refGenome.getChromosomes().get(currentInput.getRefContigID()[0]), 
+                    this.refGenome.getChromosomes().get(currentInput.getRefContigID()[1]));
+            
+            translocations.add(translocation);
+        }
+    }
+    
 
 //   private ArrayList<Duplication> detectDuplications(XmapData xmap1, XmapData xmap2, int duplicationMin) {
 //        ArrayList<Duplication> duplications =  new ArrayList();

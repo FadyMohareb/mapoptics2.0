@@ -137,8 +137,6 @@ public class CircosPanel extends javax.swing.JPanel implements MouseListener, Mo
             }
             g2d.setColor(Color.black);
             g2d.drawString(chrName, X, Y);
-            System.out.println(X + " " + Y + " " + chrName);
-//              }
 
         }
     }
@@ -147,19 +145,27 @@ public class CircosPanel extends javax.swing.JPanel implements MouseListener, Mo
         System.out.println("draw translocations has been called");
         Graphics2D g2d = (Graphics2D) g;
         for (Translocation t : translocations) {
-//            System.out.println(t.getRefChr1Name() + " + " + t.getRefChr2Name());
-            Double x1 = arcs.get(t.getRefChr1Name()).getEndPoint().getX();
-            Double y1 = arcs.get(t.getRefChr1Name()).getEndPoint().getY();
+            System.out.println("CircosPanel 148 " + t.getRefChr1Name() + " + " + t.getRefChr2Name()
+                    + " " + t.getRefChr1Name());
+            System.out.println("CircosPanel 148 " + arcs.get(t.getRefChr1Name()));
+            System.out.println("CircosPanel 148 " + arcs.get(t.getRefChr1Name()).getEndPoint().getX());
 
-            Double x3 = arcs.get(t.getRefChr2Name()).getEndPoint().getX();
-            Double y3 = arcs.get(t.getRefChr2Name()).getEndPoint().getY();
+            try {
+                Double x1 = arcs.get(t.getRefChr1Name()).getEndPoint().getX();
+                Double y1 = arcs.get(t.getRefChr1Name()).getEndPoint().getY();
+
+                Double x3 = arcs.get(t.getRefChr2Name()).getEndPoint().getX();
+                Double y3 = arcs.get(t.getRefChr2Name()).getEndPoint().getY();
 
 //            Line2D.Double transLine;
 //            transLine = new Line2D.Double(x1, y1, x3, y3);
-            QuadCurve2D.Double quad = new QuadCurve2D.Double(x1, y1, arcs.get(t.getRefChr2Name()).getCenterX(), arcs.get(t.getRefChr2Name()).getCenterY(), x3, y3);
-            Shape shape3 = quad;
-            g2d.setColor(Color.red);
-            g2d.draw(shape3);
+                QuadCurve2D.Double quad = new QuadCurve2D.Double(x1, y1, arcs.get(t.getRefChr2Name()).getCenterX(), arcs.get(t.getRefChr2Name()).getCenterY(), x3, y3);
+                Shape shape3 = quad;
+                g2d.setColor(Color.red);
+                g2d.draw(shape3);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
         }
 
     }
