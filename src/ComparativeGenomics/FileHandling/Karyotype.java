@@ -35,6 +35,7 @@ public class Karyotype {
     private HashMap<Double, String> info = new HashMap();
     private ArrayList<Double> relativeStarts = new ArrayList();
     private ArrayList<Double> relativeSizes = new ArrayList();
+    private boolean isValid = true; //Indicates if given karyotype file is valid and not empty
 
     public Karyotype(String filepath) {
         readKaryotypeFile(filepath);
@@ -100,7 +101,6 @@ public class Karyotype {
      * @param h height of JPanel
      */
     public void drawChromosomes(Graphics2D g2d, Integer w, Integer h) {
-
         Font labelFont = new Font("Arial", 1, 10);
         Font chrFont = new Font("Arial", 1, 8);
         Double sizeCounter = 0.0;
@@ -161,15 +161,17 @@ public class Karyotype {
      * @param filepath of the file to be parsed
      */
     private void readKaryotypeFile(String filepath) {
-
         String[] directory = filepath.split("/");
         this.filename = directory[directory.length - 1];
+
         String karyPattern = ".txt";
         Pattern k = Pattern.compile(karyPattern);
         Matcher checkFileTypeKary = k.matcher(this.filename);
+
         if (checkFileTypeKary.find() != true) {
             JOptionPane.showMessageDialog(null, "Karyotype File type must be .txt\nPlease choose a different file!",
                     "Karyotype file error", JOptionPane.ERROR_MESSAGE);
+            this.isValid = false;
         }
         File file = new File(filepath); //Make a new fileobject for the user selected file
         try {
@@ -185,12 +187,15 @@ public class Karyotype {
                 info.put(chrSize, chrName);
                 this.sizeGenome += (chrSize / 1000);
                 count += 1;
-//                    }
             }
             this.numChrs = chrSizes.size();
-
+            // Check that the karyotype is not empty
+            if (this.numChrs == 0) {
+                this.isValid = false;
+            }
         } catch (FileNotFoundException ex) {
-
+            System.out.println("Karyotype file not found.");
+            this.isValid = false;
         }
         this.getChrSizesCircos();
     }
@@ -211,6 +216,15 @@ public class Karyotype {
         g2d.drawString(text, 0, 0);
         g2d.rotate(-Math.toRadians(angle));
         g2d.translate(-(float) x, -(float) y);
+    }
+
+    /**
+     * @return The boolean indicating if the karyotype file is valid or not An
+     * invalid file is a file with extension different than ".txt", or empty, or
+     * that could not be read
+     */
+    public boolean getValidity() {
+        return this.isValid;
     }
 
 }

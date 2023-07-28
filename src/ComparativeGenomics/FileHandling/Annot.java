@@ -30,6 +30,7 @@ public class Annot {
     private String filepath;
     private boolean gff3 = false;
     private boolean gtf = false;
+    private boolean isValid = false;
     private ArrayList<Gene> genes = new ArrayList();
 
     public Annot(String filepath) {
@@ -59,6 +60,9 @@ public class Annot {
             inputStream = new FileInputStream(this.filepath);
             sc = new Scanner(inputStream, "UTF-8");
             
+            if(sc != null){
+                this.isValid = true;
+            }
             // Read the whole file and save lines corresponding to chromosomes as Gene objects
             while (sc.hasNextLine()) {
                 String row = sc.nextLine();
@@ -146,6 +150,7 @@ public class Annot {
     /**
      * Validate the file is in the correct format
      *
+     * @author marie
      * @param filepath the filepath of the file to be validated
      * @return true if file is valid and false if not
      */
@@ -205,5 +210,13 @@ public class Annot {
      */
     public ArrayList<Gene> getGenes() {
         return this.genes;
+    }
+    
+    /**
+     * @return boolean indicating file validity
+     * A valid file exists, is in proper format and is not empty
+     */
+    public boolean getValidity(){
+        return this.isValid;
     }
 }

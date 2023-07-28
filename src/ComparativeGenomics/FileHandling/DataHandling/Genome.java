@@ -59,7 +59,6 @@ public class Genome {
             CmapData map = this.cmap.getCmapBySize(chrSize);
             Sequence sequence = this.fasta.getSequence(chrSize);
             ArrayList<Gene> chrGenes = this.annot.getFeatureByChr(chrName.toLowerCase());
-            System.out.println("Genome line 62, chrGenes: " + chrName.toLowerCase());
             if (map != null) {
                 Chromosome chr = new Chromosome(chrName, map, relSize, sequence, chrGenes);
                 chromosomes.put(map.getID(), chr);

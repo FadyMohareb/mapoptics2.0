@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.HashMap;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.knowm.xchart.CategoryChart;
 import org.knowm.xchart.CategoryChartBuilder;
@@ -45,13 +46,16 @@ public class AlignmentsPerChromosomeChartPanel extends JPanel {
         for (Chromosome chr: genome.getChromosomes().values()){
             numAlignments.add(chr.getAlignments().size());
             chrNames.add(chr.getName());
-            System.out.println(chr.getName());
-            System.out.println(chr.getAlignments().size());
         }
+        try{
         chart.addSeries("Alignments", chrNames, numAlignments);
         chart.getStyler().setXAxisLabelRotation(45);
         chart.getStyler().setChartTitleVisible(true);
-        repaint();
+        repaint();}
+        catch (java.lang.IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(null, "A problem occured while plotting alignments. The plot will not be complete",
+                    "Alignments display problem!", JOptionPane.ERROR_MESSAGE);
+        }
     }
 @Override
     public void paint(Graphics g) {

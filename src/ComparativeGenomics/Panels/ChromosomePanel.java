@@ -117,31 +117,36 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
 //                    get the first and last matched sites on the reference for this query map
         Integer firstRefSiteID = matches.get(0).getRef();
         Integer lastRefSiteID = matches.get(matches.size() - 1).getRef();
-        
-        int i =0;
+
+        int i = 0;
         int j = 0;
-                
-        while (firstRefSiteID == null && i<(matches.size()-1)){
+
+        while (firstRefSiteID == null && i < (matches.size() - 1)) {
             firstRefSiteID = matches.get(i).getRef();
             i += 1;
         }
-        while(lastRefSiteID == null && j<(matches.size()-1)){
+        while (lastRefSiteID == null && j < (matches.size() - 1)) {
             lastRefSiteID = matches.get(matches.size() - j).getRef();
             j += 1;
         }
+        try {
 //                    determine the position on the panel to draw these sites
-        Site firstSiteRef = this.chr.getRefSites().get(firstRefSiteID);
-        Site lastSiteRef = this.chr.getRefSites().get(lastRefSiteID);
-        // Scaling of first and last chromosome positions
-        Double relFirstPosRef = firstSiteRef.getPosition() * relSize;
-        Double relLastPosRef = lastSiteRef.getPosition() * relSize;
-        // Get CMAP having the same ID as current xmap
-        CmapData qryCmapMap = this.qryCmap.getCmapByID(map.getQryID());
-        // Draw lines of alignement of the maps
-        XmapShape shape = new XmapShape(map, qryCmapMap, relFirstPosRef + 10, relLastPosRef + 10);
-        // Add to list of shapes to draw
-        alignShapes.add(shape);
-        repaint();
+            Site firstSiteRef = this.chr.getRefSites().get(firstRefSiteID);
+            Site lastSiteRef = this.chr.getRefSites().get(lastRefSiteID);
+            // Scaling of first and last chromosome positions
+            Double relFirstPosRef = firstSiteRef.getPosition() * relSize;
+            Double relLastPosRef = lastSiteRef.getPosition() * relSize;
+            // Get CMAP having the same ID as current xmap
+            CmapData qryCmapMap = this.qryCmap.getCmapByID(map.getQryID());
+            // Draw lines of alignement of the maps
+            XmapShape shape = new XmapShape(map, qryCmapMap, relFirstPosRef + 10, relLastPosRef + 10);
+            // Add to list of shapes to draw
+            alignShapes.add(shape);
+            repaint();
+        } catch (Exception e) {
+            System.out.println(e);
+            repaint();
+        }
     }
 
     /**

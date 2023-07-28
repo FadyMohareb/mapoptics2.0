@@ -99,7 +99,7 @@ public class CompGenView extends javax.swing.JFrame {
         // Annotation file is parsed
         refAnnot = new Annot(refannot);
 
-        populateData();
+        checkData();
     }
 
     public void setJob(Job j) {
@@ -131,9 +131,44 @@ public class CompGenView extends javax.swing.JFrame {
 
         // Fasta and annotation files are parsed
         refFasta = new Fasta();
-
         refAnnot = new Annot(this.job.getRefAnnot());
-        populateData();
+
+        checkData();
+    }
+
+    /**
+     * Check if all the entered files contained data before calling the
+     * "populate data" function
+     */
+    private void checkData() {
+        String errorMessage = "";
+
+        if (!cmapRef.getValidity()) {
+            errorMessage += "Reference CMAP file is empty.\n";
+        }
+        if (!cmapQry.getValidity()) {
+            errorMessage += "Query CMAP file is empty.\n";
+        }
+        if (!refKary.getValidity()) {
+            errorMessage += "Karyotype file is empty.\n";
+        }
+        if (!xmap.getValidity()) {
+            errorMessage += "XMAP file is empty or has invalid format.\n";
+        }
+        if (!refAnnot.getValidity()) {
+            errorMessage += "Annotation file file is empty.\n";
+        }
+
+        if (errorMessage.length() != 0) {
+            errorMessage += "\n Information will not be displayed. Please change problematic files and try again.";
+            System.out.println(errorMessage);
+            JOptionPane.showMessageDialog(null,
+                    errorMessage,
+                    "Error while displaying data",
+                    JOptionPane.ERROR_MESSAGE);
+        } else {
+            populateData();
+        }
     }
 
     private void populateData() {
@@ -1411,7 +1446,6 @@ public class CompGenView extends javax.swing.JFrame {
     }//GEN-LAST:event_clearChrAlignmentHighlightedActionPerformed
 
     private void chromosomeTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_chromosomeTableMouseClicked
-
         JTable source = (JTable) evt.getSource();
         // Get the number of the selected chromosome
         int row = source.rowAtPoint(evt.getPoint()) + 1;
