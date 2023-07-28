@@ -190,8 +190,8 @@ public final class Alignment {
      * @param smap 
      */
     public void detectSmapTranslocations(Smap smap) {
-        System.out.println("Alignmenet 174 " + smap.getTxtTransloc().size());
-        for (int i = 0; i < smap.getTxtTransloc().size(); i++) {
+        System.out.println("Alignmenet 193 " + smap.getSmapTransloc().size());
+        for (int i = 0; i < smap.getSmapTransloc().size(); i++) {
             SVRefAligner currentInput = smap.getSmapTransloc().get(i);
             System.out.println("Alignment 181 " + currentInput.getXmapID1() + " " + currentInput.getXmapID2());
             

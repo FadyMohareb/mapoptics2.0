@@ -55,9 +55,11 @@ public class Smap {
             // Detect and sort SV
             sortTxtSV();
         } else if (this.filepath.endsWith(".smap")) {
-            this.smapFormat = false;
+            this.smapFormat = true;
             // Read and parse SMAP
             readSmap(filepath);
+            // Detect and sort SV
+            sortSmapSV();
         } else {
             this.isValid = false;
             //Show error message if wrong file type
@@ -220,7 +222,7 @@ public class Smap {
                         double SVfreq = Double.parseDouble(rowData[25]);
                         String orientation = rowData[26];
                         
-                        System.out.println("SMAP 221 " + " " + smapID  + " " +  qryID  + " " +  refID1  + " " +  refID2 + " " + qryStart + " " + 
+                        System.out.println("SMAP 223 " + " " + smapID  + " " +  qryID  + " " +  refID1  + " " +  refID2 + " " + qryStart + " " + 
                                 qryEnd + " " + refStart + " " + refEnd + " " + confidence + " " + type + " " + xmapID1 + " " + xmapID2 + " " + linkID + " " + 
                                 qryStartIdx + " " + qryEndIdx + " " + refStartIdx + " " + refEndIdx + " " + zygosity + " " + genotype + " " +genotypeGroup + " " + 
                                 rawConfidence + " " + rawConfidenceLeft + " " + rawConfidenceRight + " " + rawConfidenceCenter + " " + 
