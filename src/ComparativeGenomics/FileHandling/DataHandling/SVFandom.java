@@ -17,13 +17,13 @@ public class SVFandom {
     private int refPos2; //Position of breakpoint 2
     private String direction2; // Direction of breakpoint 2
     private String type; // Type of SV
-    private int ids; // ID of contig supporting the breakpoint
+    private int[] ids; // ID of contig supporting the breakpoint
     private int numSupports; // Number of contigs supporting the breakpoint
     private boolean geneInterrupt;
     private String geneFusion;
 
     public SVFandom(int chr1, int chr2, int refpos1, int refpos2, String direction1, 
-            String direction2, String type, int ids, int numsupports, 
+            String direction2, String type, int[] ids, int numsupports, 
             boolean geneinterrupt, String genefusion){
         this.chr1 = chr1;
         this.chr2 = chr2;
@@ -65,7 +65,7 @@ public class SVFandom {
         return this.type;
     }
     
-    public int getIds(){
+    public int[] getIds(){
         return this.ids;
     }
     

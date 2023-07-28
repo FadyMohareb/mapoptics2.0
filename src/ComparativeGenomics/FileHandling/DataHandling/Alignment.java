@@ -175,10 +175,12 @@ public final class Alignment {
         for (int i = 0; i < smap.getTxtTransloc().size(); i++) {
             SVFandom currentInput = smap.getTxtTransloc().get(i);
             System.out.println("Alignment 181 " + currentInput.getChr1() + currentInput.getChr2());
-            Translocation translocation = new Translocation(currentInput.getIds(),
+            for (int j = 0; j < currentInput.getIds().length; j++){
+                Translocation translocation = new Translocation(currentInput.getIds()[j],
                     this.refGenome.getChromosomes().get(currentInput.getChr1()),
                     this.refGenome.getChromosomes().get(currentInput.getChr2()));
-            translocations.add(translocation);
+                translocations.add(translocation);
+            }
             System.out.println("Alignment 181 " + this.refGenome.getChromosomes()
                     .get(currentInput.getChr1()).getName());
         }

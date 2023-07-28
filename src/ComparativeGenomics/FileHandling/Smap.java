@@ -99,7 +99,10 @@ public class Smap {
                         int refPos2 = (int) Double.parseDouble(rowData[4]);
                         String direction2 = rowData[5];
                         String type = rowData[6];
-                        int id = Integer.valueOf(rowData[7]);
+                        int[] id = new int[rowData[7].split(",").length];
+                        for (int i = 0; i < rowData[7].split(",").length; i++){
+                            id[i] = Integer.valueOf(rowData[7].split(",")[i]);
+                        }
                         int numSupports = Integer.valueOf(rowData[8]);
                         boolean geneInterrupt = true;
                         if (rowData[9].equals("False")) {
