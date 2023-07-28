@@ -179,8 +179,6 @@ public final class Alignment {
                     this.refGenome.getChromosomes().get(currentInput.getChr2()));
                 translocations.add(translocation);
             }
-            System.out.println("Alignment 181 " + this.refGenome.getChromosomes().get(currentInput.getChr1()).getName()
-                    + " " + this.refGenome.getChromosomes().get(currentInput.getChr2()).getName());
         }
     }
     
@@ -190,18 +188,16 @@ public final class Alignment {
      * @param smap 
      */
     public void detectSmapTranslocations(Smap smap) {
-        System.out.println("Alignmenet 193 " + smap.getSmapTransloc().size());
         for (int i = 0; i < smap.getSmapTransloc().size(); i++) {
             SVRefAligner currentInput = smap.getSmapTransloc().get(i);
-            System.out.println("Alignment 181 " + currentInput.getXmapID1() + " " + currentInput.getXmapID2());
             
-            Translocation translocation = new Translocation(currentInput.getQryContigID(), xmap.getAllXmaps().get(currentInput.getXmapID1()), 
-                    xmap.getAllXmaps().get(currentInput.getXmapID1()),this.refGenome.getChromosomes().get(currentInput.getRefContigID()[0]), 
+            Translocation translocation = new Translocation(currentInput.getQryContigID(), 
+                    xmap.getAllXmaps().get(currentInput.getXmapID1()), 
+                    xmap.getAllXmaps().get(currentInput.getXmapID1()),
+                    this.refGenome.getChromosomes().get(currentInput.getRefContigID()[0]), 
                     this.refGenome.getChromosomes().get(currentInput.getRefContigID()[1]));
             
             translocations.add(translocation);
-            System.out.println("Alignment 181 " + this.refGenome.getChromosomes().get(currentInput.getRefContigID()[0]) 
-                    + " " + this.refGenome.getChromosomes().get(currentInput.getRefContigID()[1]));
         }
     }
     

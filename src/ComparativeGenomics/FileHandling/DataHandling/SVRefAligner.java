@@ -12,13 +12,13 @@ package ComparativeGenomics.FileHandling.DataHandling;
 public class SVRefAligner {
 
     private int smapID;
-    private int qryContigID;
-    private int refContigID1;
-    private int refContigID2;
-    private int qryStartPos;
+    private int qryContigID; // Map ID of query map (contig ID from .cmap)
+    private int refContigID1; // Map ID of the reference map from the .cmap reference file
+    private int refContigID2; // Same as refContigID1 for insertions, deletions, duplications, inversions
+    private int qryStartPos; //Start of SV on query map
     private int qryEndPos;
-    private int refStartPos;
-    private int refEndPos;
+    private int refStartPos; // Coordinate of reference contig1 aligned position which borders the SV
+    private int refEndPos; // Coordinate of reference contig2 which borders the SV
     private int confidence;
     private String type;
     private int xmapID1;
