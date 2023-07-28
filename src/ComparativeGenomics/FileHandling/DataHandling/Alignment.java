@@ -156,9 +156,9 @@ public final class Alignment {
                         distinctChrs.get(0),
                         distinctChrs.get(1),
                         this.refGenome.getChromosomes()
-                                .get(distinctChrs.get(0)),
+                                .get(distinctChrs.get(0).getID()),
                         this.refGenome.getChromosomes()
-                                .get(distinctChrs.get(1)));
+                                .get(distinctChrs.get(1).getID()));
                 translocations.add(translocation);
 
             }
@@ -171,18 +171,16 @@ public final class Alignment {
      * results from FaNDOM SV detection.
      */
     public void detectTxtTranslocations(Smap smap) {
-        System.out.println("Alignmenet 174 " + smap.getTxtTransloc().size());
         for (int i = 0; i < smap.getTxtTransloc().size(); i++) {
             SVFandom currentInput = smap.getTxtTransloc().get(i);
-            System.out.println("Alignment 181 " + currentInput.getChr1() + currentInput.getChr2());
             for (int j = 0; j < currentInput.getIds().length; j++){
                 Translocation translocation = new Translocation(currentInput.getIds()[j],
                     this.refGenome.getChromosomes().get(currentInput.getChr1()),
                     this.refGenome.getChromosomes().get(currentInput.getChr2()));
                 translocations.add(translocation);
             }
-            System.out.println("Alignment 181 " + this.refGenome.getChromosomes()
-                    .get(currentInput.getChr1()).getName());
+            System.out.println("Alignment 181 " + this.refGenome.getChromosomes().get(currentInput.getChr1()).getName()
+                    + " " + this.refGenome.getChromosomes().get(currentInput.getChr2()).getName());
         }
     }
     

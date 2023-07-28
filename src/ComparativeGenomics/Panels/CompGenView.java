@@ -7,6 +7,7 @@ import ComparativeGenomics.FileHandling.DataHandling.Genome;
 import ComparativeGenomics.FileHandling.DataHandling.Chromosome;
 import ComparativeGenomics.ServerHandling.*;
 import ComparativeGenomics.FileHandling.*;
+import ComparativeGenomics.FileHandling.DataHandling.Pair;
 import ComparativeGenomics.StructuralVariant.*;
 import com.opencsv.CSVWriter;
 import com.qoppa.pdfWriter.PDFDocument;
@@ -21,7 +22,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JFileChooser;
@@ -190,7 +193,6 @@ public class CompGenView extends javax.swing.JFrame {
         transTableModel.setColumnIdentifiers(columnNamesTrans); //Set the column names of this table
 
         for (Translocation t : this.alignment.getTranslocations()) {
-
             String[] tData = {t.getRefChr1Name(), t.getRefChr2Name()};
             transTableModel.addRow(tData);
         }
@@ -1463,6 +1465,32 @@ public class CompGenView extends javax.swing.JFrame {
         }
         // Redraw circos panel
         this.circosPanel1.setKaryotype(refKary, this.alignment);
+        // Add translocations to translocation table
+        DefaultTableModel transTableModel = (DefaultTableModel) this.translocationTable.getModel();
+        this.translocationTable.setAutoCreateRowSorter(true);
+        transTableModel.setRowCount(0);
+        transTableModel.setColumnCount(0);
+
+        String[] columnNamesTrans = {"Chromosome 1", "Chromosome 2"};
+        transTableModel.setColumnIdentifiers(columnNamesTrans); //Set the column names of this table
+        // Check that the translocation is not already in the table
+        Set<String[]> setPairs = new HashSet<String[]>();
+        for (Translocation t : this.alignment.getTranslocations()) {
+            String[] tData = {t.getRefChr1Name(), t.getRefChr2Name()};
+            boolean addTranslocation = true;
+            // Check if translocation already exists
+            for (String[] set : setPairs){
+                if((set[0].equals(t.getRefChr1Name()) || set[1].equals(t.getRefChr1Name()))
+                        || (set[0].equals(t.getRefChr2Name()) || set[1].equals(t.getRefChr2Name()))){
+                    addTranslocation = false;
+                }
+            }
+            if(addTranslocation)
+                transTableModel.addRow(tData);
+            
+            // Add translocation to set
+            setPairs.add(tData);
+        }
 
     }//GEN-LAST:event_chooseSMAPActionPerformed
     private void changePlotStyles(String style) {
