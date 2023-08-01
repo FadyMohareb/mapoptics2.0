@@ -318,7 +318,6 @@ public class CompGenView extends javax.swing.JFrame {
         jTabbedPane2 = new javax.swing.JTabbedPane();
         jScrollPane6 = new javax.swing.JScrollPane();
         variantTable = new javax.swing.JTable();
-        jPanel10 = new javax.swing.JPanel();
         alignmentsOnChromosomeChartPanel1 = new ComparativeGenomics.Panels.AlignmentsOnChromosomeChartPanel();
         jScrollPane7 = new javax.swing.JScrollPane();
         geneTable = new javax.swing.JTable();
@@ -498,6 +497,8 @@ public class CompGenView extends javax.swing.JFrame {
         );
 
         jTabbedPane3.addTab("SVs Across Genome", chromosomeChartPanel1);
+
+        alignmentsPerChromosomeChartPanel1.setInheritsPopupMenu(true);
 
         javax.swing.GroupLayout alignmentsPerChromosomeChartPanel1Layout = new javax.swing.GroupLayout(alignmentsPerChromosomeChartPanel1);
         alignmentsPerChromosomeChartPanel1.setLayout(alignmentsPerChromosomeChartPanel1Layout);
@@ -1063,6 +1064,9 @@ public class CompGenView extends javax.swing.JFrame {
 
         jTabbedPane2.addTab("Indels", jScrollPane6);
 
+        alignmentsOnChromosomeChartPanel1.setInheritsPopupMenu(true);
+        alignmentsOnChromosomeChartPanel1.setPreferredSize(new java.awt.Dimension(948, 334));
+
         javax.swing.GroupLayout alignmentsOnChromosomeChartPanel1Layout = new javax.swing.GroupLayout(alignmentsOnChromosomeChartPanel1);
         alignmentsOnChromosomeChartPanel1.setLayout(alignmentsOnChromosomeChartPanel1Layout);
         alignmentsOnChromosomeChartPanel1Layout.setHorizontalGroup(
@@ -1071,23 +1075,10 @@ public class CompGenView extends javax.swing.JFrame {
         );
         alignmentsOnChromosomeChartPanel1Layout.setVerticalGroup(
             alignmentsOnChromosomeChartPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 296, Short.MAX_VALUE)
+            .addGap(0, 334, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
-        jPanel10.setLayout(jPanel10Layout);
-        jPanel10Layout.setHorizontalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(alignmentsOnChromosomeChartPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        jPanel10Layout.setVerticalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addComponent(alignmentsOnChromosomeChartPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-
-        jTabbedPane2.addTab("Alignments", jPanel10);
+        jTabbedPane2.addTab("Alignments", alignmentsOnChromosomeChartPanel1);
 
         geneTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -1132,7 +1123,7 @@ public class CompGenView extends javax.swing.JFrame {
                 .addComponent(jPanel24, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jLayeredPane6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(50, Short.MAX_VALUE))
         );
@@ -1300,7 +1291,7 @@ public class CompGenView extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(genomeViewTabPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 764, Short.MAX_VALUE)
+            .addComponent(genomeViewTabPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 764, Short.MAX_VALUE)
         );
 
         getAccessibleContext().setAccessibleDescription("Comparative Genomics View");
@@ -1556,14 +1547,15 @@ public class CompGenView extends javax.swing.JFrame {
 
     private void chooseChromosome(Integer x) {
         genes.clear();
-//       this.alignmentsOnChromosomeChartPanel1 = new AlignmentsOnChromosomeChartPanel();
-//       this.alignmentsPerChromosomeChartPanel1 = new AlignmentsPerChromosomeChartPanel();
+       
+        //this.alignmentsOnChromosomeChartPanel1 = new AlignmentsOnChromosomeChartPanel();
+        this.alignmentsPerChromosomeChartPanel1 = new AlignmentsPerChromosomeChartPanel();
         this.chromosomeChartPanel1 = new ChromosomeChartPanel();
 
         currentChr = this.alignment.getRefGenome().getChromosomes().get(x);
 
         if (currentChr != null) {
-//            this.alignmentsOnChromosomeChartPanel1.plotCounts(currentChr);
+            this.alignmentsOnChromosomeChartPanel1.plotCounts(currentChr);
             chrLabel.setText(currentChr.getName());
             chrLabel2.setText(currentChr.getName());
             this.queryPanel1.setChr(currentChr);
@@ -1747,7 +1739,6 @@ public class CompGenView extends javax.swing.JFrame {
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Error saving image to pdf file", "Error", JOptionPane.ERROR_MESSAGE);
             }
-
         } else {
             JOptionPane.showMessageDialog(null, "No filename given", "Invalid input", JOptionPane.ERROR_MESSAGE);
         }
@@ -1813,7 +1804,6 @@ public class CompGenView extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu7;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel2;

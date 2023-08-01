@@ -2450,7 +2450,7 @@ public class CompGenStart extends javax.swing.JFrame {
                         this.jobDownloadingName.setText(this.selectedJob.getName());
                         this.channel.downloadJobResults(this.selectedJob);
                         this.filesDownloading.setVisible(false);
-                        this.setVisible(false);
+                        //this.setVisible(false);
                         CompGenView viewResults = new CompGenView();
                         viewResults.setJob(this.selectedJob);
                     } catch (SftpException ex) {

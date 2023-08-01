@@ -108,7 +108,7 @@ public class Chromosome {
         return this.indels;
     }
 
-    public Sequence getSequnce() {
+    public Sequence getSequence() {
         return this.sequence;
     }
 
