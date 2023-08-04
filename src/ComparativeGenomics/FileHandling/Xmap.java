@@ -40,7 +40,7 @@ public class Xmap {
 //   this is to check if there have been any translocation events. 
     //i.e. one query map mapping to more than one ref cmap i.e. chromosome!
     private HashMap<Integer, ArrayList<XmapData>> queryMapsToRef = new HashMap();
-    //where key is the query map ID and values are the refmap IDs
+    //where key is the query map ID and values are the corresponding xmap map
     private Cmap refCmap;
     private Cmap qryCmap;
     private Integer indelTotal = 0;
@@ -48,7 +48,7 @@ public class Xmap {
     private HashMap<Integer, ArrayList<XmapData>> potentialTranslocations = new HashMap();
     private HashMap<Integer, XmapData> allXmaps = new HashMap();
 
-    private boolean isValid = true; //Check if the file is valide, ie in xmap format and not empty
+    private boolean isValid = true; //Check if the file is valid, ie in xmap format and not empty
 
     public Xmap(String filepath) {
         this.filepath = filepath;
@@ -267,6 +267,20 @@ public class Xmap {
      */
     public boolean getValidity(){
         return this.isValid;
+    }
+    
+    /**
+     * Return a Hashmap of all maps (values) corresponding to a refContigID (key) in the XMAP
+     */
+    public HashMap<Integer, ArrayList<XmapData>> getXmapByRef(){
+        return xmap;
+    }
+    
+    /**
+     * Return a Hashmap of all maps (values) corresponding to a qryContigID (key) in the XMAP
+     */
+    public HashMap<Integer, ArrayList<XmapData>> getXmapByQry(){
+        return queryMapsToRef;
     }
 
     /**

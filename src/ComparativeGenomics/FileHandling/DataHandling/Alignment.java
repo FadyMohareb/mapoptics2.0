@@ -23,6 +23,7 @@ import java.util.Objects;
  * @author franpeters Stores the alignment files produced by the job
  */
 public final class Alignment {
+
     private Cmap cmapRef;
     private Cmap cmapQry;
     private Xmap xmap;
@@ -149,55 +150,72 @@ public final class Alignment {
             if (twoChrs) {
 //                    get the two chromosomes involved cmap id's
                 List<XmapData> distinctChrs = value.stream().distinct().collect(Collectors.toList());
-                Translocation translocation = new Translocation(key,
-                        distinctChrs.get(0),
-                        distinctChrs.get(1),
-                        this.refGenome.getChromosomes()
-                                .get(distinctChrs.get(0).getID()),
-                        this.refGenome.getChromosomes()
-                                .get(distinctChrs.get(1).getID()));
-                translocations.add(translocation);
 
+                // Get all the xmap by their reference contig ID
+                HashMap<Integer, ArrayList<XmapData>> xmapByRefID = this.xmap.getXmapByRef();
+
+                // Get the reference ID corresponding to the possible translocation
+                for (XmapData xmapByQryLine : value) {
+                    // Query contig that is mapped to the same reference ID as the considered possible translocation
+                    for (XmapData xmapByRefLine : xmapByRefID.get(xmapByQryLine.getRefID())) {
+
+                        int firstChrQry = xmapByRefLine.getQryID();
+                        int secondChrQry = xmapByQryLine.getQryID();
+
+                        // Translocation if the query ID share a reference with another query ID
+                        if (firstChrQry != secondChrQry) {
+                            // add translocation
+                            Translocation translocation = new Translocation(key,
+                                    distinctChrs.get(0),
+                                    distinctChrs.get(1),
+                                    this.refGenome.getChromosomes()
+                                            .get(firstChrQry),
+                                    this.refGenome.getChromosomes()
+                                            .get(secondChrQry));
+                            translocations.add(translocation);
+                        }
+                    }
+                }
             }
         }
     }
 
     /**
-     * @author marie schmit
-     * Detect translocations among the ones detected in SV.txt file, that
-     * results from FaNDOM SV detection.
+     * @author marie schmit Detect translocations among the ones detected in
+     * SV.txt file, that results from FaNDOM SV detection.
      */
     public void detectTxtTranslocations(Smap smap) {
         for (int i = 0; i < smap.getTxtTransloc().size(); i++) {
             SVFandom currentInput = smap.getTxtTransloc().get(i);
-            for (int j = 0; j < currentInput.getIds().length; j++){
+            for (int j = 0; j < currentInput.getIds().length; j++) {
                 Translocation translocation = new Translocation(currentInput.getIds()[j],
-                    this.refGenome.getChromosomes().get(currentInput.getChr1()),
-                    this.refGenome.getChromosomes().get(currentInput.getChr2()));
+                        this.refGenome.getChromosomes().get(currentInput.getChr1()),
+                        this.refGenome.getChromosomes().get(currentInput.getChr2()));
                 translocations.add(translocation);
             }
         }
     }
-    
-    /** 
-     * Detect inter chromosomal translocations from SMAP file resulting from RefAligner translocation detection
+
+    /**
+     * Detect inter chromosomal translocations from SMAP file resulting from
+     * RefAligner translocation detection
+     *
      * @author marie schmit
-     * @param smap 
+     * @param smap
      */
     public void detectSmapTranslocations(Smap smap) {
         for (int i = 0; i < smap.getSmapTransloc().size(); i++) {
             SVRefAligner currentInput = smap.getSmapTransloc().get(i);
-            
-            Translocation translocation = new Translocation(currentInput.getQryContigID(), 
-                    xmap.getAllXmaps().get(currentInput.getXmapID1()), 
+
+            Translocation translocation = new Translocation(currentInput.getQryContigID(),
                     xmap.getAllXmaps().get(currentInput.getXmapID1()),
-                    this.refGenome.getChromosomes().get(currentInput.getRefContigID()[0]), 
+                    xmap.getAllXmaps().get(currentInput.getXmapID1()),
+                    this.refGenome.getChromosomes().get(currentInput.getRefContigID()[0]),
                     this.refGenome.getChromosomes().get(currentInput.getRefContigID()[1]));
-            
+
             translocations.add(translocation);
         }
     }
-    
 
 //   private ArrayList<Duplication> detectDuplications(XmapData xmap1, XmapData xmap2, int duplicationMin) {
 //        ArrayList<Duplication> duplications =  new ArrayList();

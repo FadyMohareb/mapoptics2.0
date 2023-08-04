@@ -1504,15 +1504,18 @@ public class CompGenView extends javax.swing.JFrame {
             String[] tData = {t.getRefChr1Name(), t.getRefChr2Name()};
             boolean addTranslocation = true;
             // Check if translocation already exists
-            for (String[] set : setPairs){
-                if((set[0].equals(t.getRefChr1Name()) || set[1].equals(t.getRefChr1Name()))
-                        || (set[0].equals(t.getRefChr2Name()) || set[1].equals(t.getRefChr2Name()))){
-                    addTranslocation = false;
+            for (String[] set : setPairs) {
+                if (set[0] != null && set[1] != null) {
+                    if (((set[0].equals(t.getRefChr1Name())) || set[1].equals(t.getRefChr1Name()))
+                            || (set[0].equals(t.getRefChr2Name()) || set[1].equals(t.getRefChr2Name()))) {
+                        addTranslocation = false;
+                    }
                 }
             }
-            if(addTranslocation)
+            if (addTranslocation) {
                 transTableModel.addRow(tData);
-            
+            }
+
             // Add translocation to set
             setPairs.add(tData);
         }
@@ -1547,7 +1550,7 @@ public class CompGenView extends javax.swing.JFrame {
 
     private void chooseChromosome(Integer x) {
         genes.clear();
-       
+
         //this.alignmentsOnChromosomeChartPanel1 = new AlignmentsOnChromosomeChartPanel();
         this.alignmentsPerChromosomeChartPanel1 = new AlignmentsPerChromosomeChartPanel();
         this.chromosomeChartPanel1 = new ChromosomeChartPanel();
