@@ -218,18 +218,34 @@ public class CompGenView extends javax.swing.JFrame {
         this.parsingDialog.setVisible(false);
         this.setVisible(true);
 
+        // Add translocations to translocation table
         DefaultTableModel transTableModel = (DefaultTableModel) this.translocationTable.getModel();
         this.translocationTable.setAutoCreateRowSorter(true);
-//         First clear the chromosomes JTable of any previous data
         transTableModel.setRowCount(0);
         transTableModel.setColumnCount(0);
 
         String[] columnNamesTrans = {"Chromosome 1", "Chromosome 2"};
         transTableModel.setColumnIdentifiers(columnNamesTrans); //Set the column names of this table
-
+        // Check that the translocation is not already in the table
+        Set<String[]> setPairs = new HashSet<String[]>();
         for (Translocation t : this.alignment.getTranslocations()) {
             String[] tData = {t.getRefChr1Name(), t.getRefChr2Name()};
-            transTableModel.addRow(tData);
+            boolean addTranslocation = true;
+            // Check if translocation already exists
+            for (String[] set : setPairs) {
+                if (set[0] != null && set[1] != null) {
+                    if (set[0].equals(t.getRefChr1Name())
+                            && set[1].equals(t.getRefChr2Name())) {
+                        addTranslocation = false;
+                    }
+                }
+            }
+            if (addTranslocation) {
+                transTableModel.addRow(tData);
+            }
+
+            // Add translocation to set
+            setPairs.add(tData);
         }
         this.parsingDialog.setVisible(false);
         this.setVisible(true);
@@ -1480,7 +1496,8 @@ public class CompGenView extends javax.swing.JFrame {
 
         // Parse input SV file
         this.smap = new Smap(fileDialog.getDirectory() + fileDialog.getFile());
-        System.out.println("CompGenView 1456 " + this.smap.getSmapFormat());
+
+        //Detect translocations
         if (this.smap.getSmapFormat()) {
             // Detect translocations from SMAP file
             this.alignment.detectSmapTranslocations(this.smap);
@@ -1488,6 +1505,7 @@ public class CompGenView extends javax.swing.JFrame {
             // Detect translocations from text file
             this.alignment.detectTxtTranslocations(this.smap);
         }
+
         // Redraw circos panel
         this.circosPanel1.setKaryotype(refKary, this.alignment);
         // Add translocations to translocation table
@@ -1506,8 +1524,8 @@ public class CompGenView extends javax.swing.JFrame {
             // Check if translocation already exists
             for (String[] set : setPairs) {
                 if (set[0] != null && set[1] != null) {
-                    if (((set[0].equals(t.getRefChr1Name())) || set[1].equals(t.getRefChr1Name()))
-                            || (set[0].equals(t.getRefChr2Name()) || set[1].equals(t.getRefChr2Name()))) {
+                    if (set[0].equals(t.getRefChr1Name())
+                            && set[1].equals(t.getRefChr2Name())) {
                         addTranslocation = false;
                     }
                 }
