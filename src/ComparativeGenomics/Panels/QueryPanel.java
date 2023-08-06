@@ -454,6 +454,7 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
 
         geneDialog.setBounds(new java.awt.Rectangle(300, 300, 283, 120));
         geneDialog.setLocation(new java.awt.Point(300, 300));
+        geneDialog.setMinimumSize(new java.awt.Dimension(249, 134));
 
         jLabel1.setText("Gene Name:");
 
@@ -510,8 +511,7 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
                     .addComponent(geneSource)
                     .addGroup(geneDialogLayout.createSequentialGroup()
                         .addGap(19, 19, 19)
-                        .addComponent(queryDBButton)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(queryDBButton))))
         );
         geneDialogLayout.setVerticalGroup(
             geneDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

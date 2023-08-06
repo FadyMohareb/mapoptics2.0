@@ -172,6 +172,7 @@ public class CompGenView extends javax.swing.JFrame {
                     errorMessage,
                     "Error while displaying data",
                     JOptionPane.ERROR_MESSAGE);
+            this.parsingDialog.setVisible(false);
         } else {
             populateData();
         }
