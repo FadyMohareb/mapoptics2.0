@@ -11,7 +11,10 @@
           <Point value="[300, 300]"/>
         </Property>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[249, 134]"/>
+          <Dimension value="[249, 160]"/>
+        </Property>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[249, 165]"/>
         </Property>
       </Properties>
 
@@ -79,7 +82,7 @@
                       <Component id="clinVarButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="dbVarButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="38" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
