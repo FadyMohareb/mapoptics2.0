@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -60,6 +61,13 @@ public class CompGenView extends javax.swing.JFrame {
     private Annot refAnnot;
 //    private Annot qryAnnot;
     private Smap smap;
+
+    // Maximal number of translocations that can be displayed at a time
+    // on the circos plot and table of translocations
+    final int MAX_TRANSLOCATION = 10000;
+
+    //Translocations page number
+    private int translocPage = 0;
 
     private String localSMAP; // Path of file containing SV data
 
@@ -145,6 +153,8 @@ public class CompGenView extends javax.swing.JFrame {
     /**
      * Check if all the entered files contained data before calling the
      * "populate data" function
+     *
+     * @author Marie Schmit
      */
     private void checkData() {
         String errorMessage = "";
@@ -216,16 +226,26 @@ public class CompGenView extends javax.swing.JFrame {
         }
 
         // Read and display translocations
-        displayTranslocations();
+        displayTranslocations(0, MAX_TRANSLOCATION);
 
-        
         this.parsingDialog.setVisible(false);
         this.setVisible(true);
     }
-    
-    private void displayTranslocations(){
+
+    /**
+     * Draw circos plot for current karyotype and alignments. Display
+     * translocations in translocation table.
+     *
+     * @author Marie Schmit
+     * @param fromIndex, toIndex Indexes of start and end of extracted
+     * translocations
+     */
+    private void displayTranslocations(int fromIndex, int toIndex) {
+        pageNumber.setText("Page " + this.translocPage);
+
         // Draw circos plot
-        this.circosPanel1.setKaryotype(refKary, this.alignment);
+        this.circosPanel1.setKaryotype(refKary, this.alignment, fromIndex, toIndex);
+
         // Add translocations to translocation table
         DefaultTableModel transTableModel = (DefaultTableModel) this.translocationTable.getModel();
         this.translocationTable.setAutoCreateRowSorter(true);
@@ -236,8 +256,11 @@ public class CompGenView extends javax.swing.JFrame {
         transTableModel.setColumnIdentifiers(columnNamesTrans); //Set the column names of this table
         // Check that the translocation is not already in the table
         Set<String[]> setPairs = new HashSet<String[]>();
-        
-        for (Translocation t : this.alignment.getTranslocations()) {
+
+        // Extract a sublist of translocations
+        ArrayList<Translocation> subListTransloc = this.alignment.getLocalisedTranslocations(fromIndex, toIndex);
+
+        for (Translocation t : subListTransloc) {
             String[] tData = {t.getRefChr1Name(), t.getRefChr2Name()};
             boolean addTranslocation = true;
             // Check if translocation already exists
@@ -291,6 +314,9 @@ public class CompGenView extends javax.swing.JFrame {
         circosPanel1 = new ComparativeGenomics.Panels.CircosPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         translocationTable = new javax.swing.JTable();
+        nextTranslocPage = new javax.swing.JButton();
+        previousTranslocPage = new javax.swing.JButton();
+        pageNumber = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -544,7 +570,7 @@ public class CompGenView extends javax.swing.JFrame {
         );
         circosPanel1Layout.setVerticalGroup(
             circosPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 381, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         translocationTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -560,6 +586,24 @@ public class CompGenView extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(translocationTable);
 
+        nextTranslocPage.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        nextTranslocPage.setText(">");
+        nextTranslocPage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nextTranslocPageActionPerformed(evt);
+            }
+        });
+
+        previousTranslocPage.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        previousTranslocPage.setText("<");
+        previousTranslocPage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                previousTranslocPageActionPerformed(evt);
+            }
+        });
+
+        pageNumber.setText("Page 0");
+
         javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
         jPanel14.setLayout(jPanel14Layout);
         jPanel14Layout.setHorizontalGroup(
@@ -568,16 +612,31 @@ public class CompGenView extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(circosPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 503, Short.MAX_VALUE)
+                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 503, Short.MAX_VALUE)
+                    .addGroup(jPanel14Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(pageNumber)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(previousTranslocPage)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(nextTranslocPage)))
                 .addContainerGap())
         );
         jPanel14Layout.setVerticalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
+            .addGroup(jPanel14Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(circosPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel14Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(nextTranslocPage)
+                            .addComponent(previousTranslocPage)
+                            .addComponent(pageNumber))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(circosPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -842,7 +901,7 @@ public class CompGenView extends javax.swing.JFrame {
             jLayeredPane4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jLayeredPane4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -860,7 +919,7 @@ public class CompGenView extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSplitPane2))
+                .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 899, Short.MAX_VALUE))
         );
 
         genomeViewTabPane.addTab("Chromosome View", jPanel3);
@@ -1098,7 +1157,7 @@ public class CompGenView extends javax.swing.JFrame {
         );
         alignmentsOnChromosomeChartPanel1Layout.setVerticalGroup(
             alignmentsOnChromosomeChartPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 334, Short.MAX_VALUE)
+            .addGap(0, 402, Short.MAX_VALUE)
         );
 
         jTabbedPane2.addTab("Alignments", alignmentsOnChromosomeChartPanel1);
@@ -1314,7 +1373,7 @@ public class CompGenView extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(genomeViewTabPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 764, Short.MAX_VALUE)
+            .addComponent(genomeViewTabPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 764, Short.MAX_VALUE)
         );
 
         getAccessibleContext().setAccessibleDescription("Comparative Genomics View");
@@ -1524,9 +1583,38 @@ public class CompGenView extends javax.swing.JFrame {
         }
 
         // Display translocations on circos plot and translocations table
-        displayTranslocations();
+        displayTranslocations(0, MAX_TRANSLOCATION);
     }//GEN-LAST:event_chooseSMAPActionPerformed
-    
+
+    private void nextTranslocPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextTranslocPageActionPerformed
+        if (this.translocPage < this.alignment.getTranslocations().size()/MAX_TRANSLOCATION) {         
+            this.translocPage += 1;
+            int fromIndex = translocPage * MAX_TRANSLOCATION;
+            int toIndex = (1 + translocPage) * MAX_TRANSLOCATION;
+            if(toIndex > this.alignment.getTranslocations().size()){
+                toIndex = this.alignment.getTranslocations().size();
+            }
+            displayTranslocations(fromIndex, toIndex);
+            previousTranslocPage.setEnabled(true);
+        }
+        else{
+            nextTranslocPage.setEnabled(false);
+        }
+    }//GEN-LAST:event_nextTranslocPageActionPerformed
+
+    private void previousTranslocPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previousTranslocPageActionPerformed
+        if (this.translocPage > 0) {
+            this.translocPage -= 1;
+            int fromIndex = translocPage * MAX_TRANSLOCATION;
+            int toIndex = (1 + translocPage) * MAX_TRANSLOCATION;
+            displayTranslocations(fromIndex, toIndex);
+            nextTranslocPage.setEnabled(true);
+        }
+        else{
+            previousTranslocPage.setEnabled(false);
+        }
+    }//GEN-LAST:event_previousTranslocPageActionPerformed
+
     private void changePlotStyles(String style) {
         if ("ggplot".equals(style)) {
             this.alignmentsOnChromosomeChartPanel1.setStyle(Styler.ChartTheme.GGPlot2);
@@ -1838,7 +1926,10 @@ public class CompGenView extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane3;
     private javax.swing.JLabel jobNameLabel;
     private javax.swing.JRadioButton matlabButton;
+    private javax.swing.JButton nextTranslocPage;
+    private javax.swing.JLabel pageNumber;
     private javax.swing.JDialog parsingDialog;
+    private javax.swing.JButton previousTranslocPage;
     private javax.swing.JLabel qrySpeciesLabel;
     private javax.swing.JLabel queryChrSize;
     private javax.swing.JTextField queryEnd;

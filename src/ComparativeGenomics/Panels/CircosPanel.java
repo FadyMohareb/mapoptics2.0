@@ -49,7 +49,30 @@ public class CircosPanel extends javax.swing.JPanel implements MouseListener, Mo
         trans = true;
         repaint();
     }
+    
+    /**
+     * Set karyotype and translocations from given indexes
+     * 
+     * @author Marie Schmit
+     * @param kary
+     * @param comp
+     * @param fromIndex
+     * @param toIndex 
+     */
+    public void setKaryotype(Karyotype kary, Alignment comp, int fromIndex, int toIndex) {
+        this.karyotype = kary;
+        this.chrSizes = this.karyotype.getChrRelativeStarts();
+        this.chrNames = this.karyotype.getChrNames();
+        this.refGenome = comp.getRefGenome();
+        this.translocations = comp.getLocalisedTranslocations(fromIndex, toIndex);
+        trans = true;
+        repaint();
+    }
 
+    /**
+     * Draw circos plot
+     * @param g 
+     */
     private void drawCircos(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         //get size of drawing panel

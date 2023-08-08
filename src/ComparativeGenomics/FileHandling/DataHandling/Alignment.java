@@ -132,13 +132,25 @@ public final class Alignment {
         return this.refGenome;
     }
 
-//    public Genome getQryGenome() {
-//        return this.qryGenome;
-//    }
+    
     public ArrayList<Translocation> getTranslocations() {
         return this.translocations;
     }
 
+    /**
+     * Get translocations according to their position's
+     * in the array list of translocation
+     * 
+     * @author Marie Schmit
+     * @return ArrayList of translocations
+     * @param int fromIndex, int toIndex: First and second indexes of translocations
+     */
+    public ArrayList<Translocation> getLocalisedTranslocations(int fromIndex, int toIndex) {
+        ArrayList<Translocation> subListTransloc = new ArrayList<Translocation>(this.translocations.subList(fromIndex, toIndex));
+        return subListTransloc;
+    }
+    
+    
     public void detectTranslocations() {
 //        making translocation objects
         for (Map.Entry<Integer, ArrayList<XmapData>> entry : this.xmap.getPotentialTranslocations().entrySet()) {
@@ -180,8 +192,11 @@ public final class Alignment {
     }
 
     /**
-     * @author marie schmit Detect translocations among the ones detected in
+     * Detect translocations among the ones detected in
      * SV.txt file, that results from FaNDOM SV detection.
+     * 
+     * @author marie schmit
+     * @param smap
      */
     public void detectTxtTranslocations(Smap smap) {
         for (int i = 0; i < smap.getTxtTransloc().size(); i++) {
