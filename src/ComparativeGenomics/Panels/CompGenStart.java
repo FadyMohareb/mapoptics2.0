@@ -140,7 +140,6 @@ public class CompGenStart extends javax.swing.JFrame {
         refalignerPipeline = new javax.swing.JRadioButton();
         fandomPipeline = new javax.swing.JRadioButton();
         runCalcBestEnzyme = new javax.swing.JButton();
-        Btn_modifAlignParam = new javax.swing.JButton();
         calculateQuery = new javax.swing.JRadioButton();
         calculateReference = new javax.swing.JRadioButton();
         bnt_help = new javax.swing.JButton();
@@ -549,13 +548,6 @@ public class CompGenStart extends javax.swing.JFrame {
             }
         });
 
-        Btn_modifAlignParam.setText("Modify Alignment Parameters");
-        Btn_modifAlignParam.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Btn_modifAlignParamActionPerformed(evt);
-            }
-        });
-
         btnGroupCalcEnzyme.add(calculateQuery);
         calculateQuery.setSelected(true);
         calculateQuery.setText("Query");
@@ -580,9 +572,7 @@ public class CompGenStart extends javax.swing.JFrame {
                         .addGap(13, 13, 13)
                         .addComponent(refalignerPipeline)
                         .addGap(18, 18, 18)
-                        .addComponent(fandomPipeline)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(Btn_modifAlignParam))
+                        .addComponent(fandomPipeline))
                     .addGroup(settingsPanelLayout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -595,7 +585,7 @@ public class CompGenStart extends javax.swing.JFrame {
                         .addComponent(calculateQuery)
                         .addGap(18, 18, 18)
                         .addComponent(calculateReference)))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         settingsPanelLayout.setVerticalGroup(
             settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -616,16 +606,10 @@ public class CompGenStart extends javax.swing.JFrame {
                     .addComponent(refalignerPipeline)
                     .addComponent(fandomPipeline))
                 .addContainerGap(28, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, settingsPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(Btn_modifAlignParam)
-                .addContainerGap())
         );
 
         chooseEnzyme.setEnabled(false);
         runCalcBestEnzyme.setEnabled(false);
-        // The button is only visible once server and files are chosen
-        Btn_modifAlignParam.setEnabled(false);
 
         bnt_help.setText("Help");
         bnt_help.addActionListener(new java.awt.event.ActionListener() {
@@ -782,7 +766,6 @@ public class CompGenStart extends javax.swing.JFrame {
 
         refURLDialog.setBounds(new java.awt.Rectangle(500, 500, 401, 35));
         refURLDialog.setMinimumSize(new java.awt.Dimension(381, 60));
-        refURLDialog.setPreferredSize(new java.awt.Dimension(385, 60));
         refURLDialog.setSize(new java.awt.Dimension(385, 60));
 
         jLabel21.setText("Reference URL:");
@@ -1135,7 +1118,6 @@ public class CompGenStart extends javax.swing.JFrame {
         qryURLDialog.setTitle("Query File from URL");
         qryURLDialog.setBounds(new java.awt.Rectangle(500, 500, 397, 35));
         qryURLDialog.setMinimumSize(new java.awt.Dimension(401, 60));
-        qryURLDialog.setPreferredSize(new java.awt.Dimension(401, 60));
         qryURLDialog.setSize(new java.awt.Dimension(401, 60));
 
         jLabel10.setText("File URL:");
@@ -2631,10 +2613,6 @@ public class CompGenStart extends javax.swing.JFrame {
         helpPane.setVisible(true);
     }//GEN-LAST:event_bnt_helpActionPerformed
 
-    private void Btn_modifAlignParamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_modifAlignParamActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_Btn_modifAlignParamActionPerformed
-
     private void exitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitBtnActionPerformed
         // Close help panel
         helpPane.setVisible(false);
@@ -3220,7 +3198,6 @@ public class CompGenStart extends javax.swing.JFrame {
         uploadQryGenome.setEnabled(false);
         chooseEnzyme.setEnabled(false);
         runCalcBestEnzyme.setEnabled(false);
-        Btn_modifAlignParam.setEnabled(false);
         // Clear variables
         qryCmapEnzyme = "";
         refAdded = false;
@@ -3244,7 +3221,6 @@ public class CompGenStart extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Btn_modifAlignParam;
     private javax.swing.JLabel LblEnzyme;
     private javax.swing.JButton addNewServer;
     private javax.swing.JMenuItem addServerMenu;

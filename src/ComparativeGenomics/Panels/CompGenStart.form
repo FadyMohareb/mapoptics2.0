@@ -415,8 +415,6 @@
                               <Component id="refalignerPipeline" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="fandomPipeline" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
-                              <Component id="Btn_modifAlignParam" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
                               <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
@@ -433,7 +431,7 @@
                               <Component id="calculateReference" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -459,11 +457,6 @@
                           <Component id="fandomPipeline" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="28" max="32767" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace max="32767" attributes="0"/>
-                      <Component id="Btn_modifAlignParam" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -529,17 +522,6 @@
               </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="runCalcBestEnzyme.setEnabled(false);"/>
-              </AuxValues>
-            </Component>
-            <Component class="javax.swing.JButton" name="Btn_modifAlignParam">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Modify Alignment Parameters"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Btn_modifAlignParamActionPerformed"/>
-              </Events>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_AddingCodePost" type="java.lang.String" value="// The button is only visible once server and files are chosen&#xa;Btn_modifAlignParam.setEnabled(false);"/>
               </AuxValues>
             </Component>
             <Component class="javax.swing.JRadioButton" name="calculateQuery">
