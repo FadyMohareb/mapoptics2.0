@@ -2009,13 +2009,14 @@ public class CompGenStart extends javax.swing.JFrame {
             if (enzyme == null || enzyme.equals("unknown")) {
                 JOptionPane.showMessageDialog(null, "Unknown enzyme in cmap file. The chosen enzyme should be the same as in the cmap",
                         "Unkown enzyme", JOptionPane.ERROR_MESSAGE);
+                this.qryCmapEnzyme = "";
+            } else {
+                this.qryCmapEnzyme = enzyme;
+                this.tempSelectedEnzyme = new Enzyme(enzyme);
+                this.selectedEnzyme = this.tempSelectedEnzyme;
+                setEnzymeLabel.setText(this.tempSelectedEnzyme.getName());
+                this.newJob.setEnzyme(this.tempSelectedEnzyme);
             }
-            this.qryCmapEnzyme = enzyme;
-            this.tempSelectedEnzyme = new Enzyme(enzyme);
-            this.selectedEnzyme = this.tempSelectedEnzyme;
-            System.out.println("1997 name " + this.tempSelectedEnzyme.getName() + " " + this.tempSelectedEnzyme.getSite());
-            setEnzymeLabel.setText(this.tempSelectedEnzyme.getName());
-            this.newJob.setEnzyme(this.tempSelectedEnzyme);
         } else {
             this.qryCmapEnzyme = "";
         }
@@ -2093,12 +2094,12 @@ public class CompGenStart extends javax.swing.JFrame {
         this.channel.mkDir(jobName + "/Files/Reference/");
         this.channel.mkDir(jobName + "/Files/Query/");
         this.channel.mkDir(jobName + "/Files/Results/");
-        
+
         this.startJobButton.setText("Start Job: " + jobName);
         this.uploadFileRef.setEnabled(true);
         this.uploadQryGenome.setEnabled(true);
         this.newJob.setName(jobName);
-        
+
         // Run container for job
         this.channel.runContainer(jobName);
     }//GEN-LAST:event_setJobNameActionPerformed
@@ -2169,7 +2170,7 @@ public class CompGenStart extends javax.swing.JFrame {
         else {
             if (!qryFromURL) {
                 String dir = jobName + "/Files/Query/" + queryFile;
-                System.out.println("file transfer of query file");
+                System.out.println("File transfer of query file");
                 this.channel.uploadFile(queryFilePath, dir, queryProgressBar);
             } else {
                 String cmd = "cd mapoptics/jobs/" + this.jobName + "/Files/Query; wget " + this.queryFilePath;
@@ -2179,7 +2180,6 @@ public class CompGenStart extends javax.swing.JFrame {
             }
             this.qryAdded = true;
             this.newJob.setQryFile(queryFile);
-            System.out.println("CompGenStart 2174 file from job " + queryFile);
             if ((this.refAdded && this.qryAdded) && this.qryCmapEnzyme.equals("")) {
                 chooseEnzyme.setEnabled(true);
                 runCalcBestEnzyme.setEnabled(true);
@@ -2827,7 +2827,6 @@ public class CompGenStart extends javax.swing.JFrame {
             String splitURL[] = FileURL.split("/");
             int lenSplit = splitURL.length;
             String fileName = splitURL[lenSplit - 1]; //Arays are 0 indexed
-            System.out.println("CompGenStart line 2806 " + fileName);
             return fileName;
         } catch (MalformedURLException e) {
             System.out.println(e);

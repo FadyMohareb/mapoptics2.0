@@ -140,14 +140,13 @@ public final class Alignment {
     }
 
     public void detectTranslocations() {
-
 //        making translocation objects
         for (Map.Entry<Integer, ArrayList<XmapData>> entry : this.xmap.getPotentialTranslocations().entrySet()) {
             Integer key = entry.getKey();
             ArrayList<XmapData> value = entry.getValue();
 //        first only going to deal with scenarios where there are only two different chromosomes affected
             boolean twoChrs = value.stream().distinct().count() <= 2;
-            //if (twoChrs) {
+            if (twoChrs) {
 //                    get the two chromosomes involved cmap id's
                 List<XmapData> distinctChrs = value.stream().distinct().collect(Collectors.toList());
 
@@ -176,7 +175,7 @@ public final class Alignment {
                         }
                     }
                 }
-            //}
+            }
         }
     }
 

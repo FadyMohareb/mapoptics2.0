@@ -216,8 +216,8 @@ public class CompGenView extends javax.swing.JFrame {
             chrTable.addRow(chrData);
         }
 
-        this.parsingDialog.setVisible(false);
-        this.setVisible(true);
+        //this.parsingDialog.setVisible(false);
+        //this.setVisible(true);
 
         // Add translocations to translocation table
         DefaultTableModel transTableModel = (DefaultTableModel) this.translocationTable.getModel();
@@ -229,6 +229,7 @@ public class CompGenView extends javax.swing.JFrame {
         transTableModel.setColumnIdentifiers(columnNamesTrans); //Set the column names of this table
         // Check that the translocation is not already in the table
         Set<String[]> setPairs = new HashSet<String[]>();
+        
         for (Translocation t : this.alignment.getTranslocations()) {
             String[] tData = {t.getRefChr1Name(), t.getRefChr2Name()};
             boolean addTranslocation = true;
@@ -1401,7 +1402,17 @@ public class CompGenView extends javax.swing.JFrame {
 
     private void updateRangeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateRangeButtonActionPerformed
 
-        this.queryPanel1.setRange(Integer.valueOf(this.queryStart.getText()), Integer.valueOf(this.queryEnd.getText()));
+        String textQryStart = this.queryStart.getText();
+        String textQryEnd = this.queryEnd.getText();
+
+        if (textQryStart.contains(".")) {
+            textQryStart = new String(textQryStart.replace(".", "").replaceFirst("\\.0*$", ""));
+        }
+        if (textQryEnd.contains(".")) {
+            textQryEnd = new String(textQryEnd.replace(".", "").replaceFirst("\\.0*$", ""));
+        }
+
+        this.queryPanel1.setRange(Integer.parseInt(textQryStart), Integer.parseInt(textQryEnd));
 
         this.geneTable.setAutoCreateRowSorter(true);
         DefaultTableModel geneTableModel = (DefaultTableModel) this.geneTable.getModel();
@@ -1459,7 +1470,7 @@ public class CompGenView extends javax.swing.JFrame {
                         JOptionPane.ERROR_MESSAGE);
             }
         } catch (NullPointerException e) {
-            System.out.println("Map for row " + row + " is null :(");
+            System.out.println("Map for row " + row + " is null");
         }
     }//GEN-LAST:event_chrAlignTableMousePressed
 

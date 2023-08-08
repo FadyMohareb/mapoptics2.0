@@ -242,7 +242,7 @@ public class SSH {
             return true;
         } catch (JSchException | SftpException ex) {
             System.out.println(ex);
-            JOptionPane.showMessageDialog(null, "Could not create job folder.",
+            JOptionPane.showMessageDialog(null, "Could not create folder " + dir + ", or folder already exists.",
                     "Creation failed!", JOptionPane.ERROR_MESSAGE);
             return false;
         }

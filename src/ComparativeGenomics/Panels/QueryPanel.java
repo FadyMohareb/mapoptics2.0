@@ -115,7 +115,6 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
         w = this.getWidth();
         h = this.getHeight();
         qryWidth = w.doubleValue() - (2 * startX);
-        //System.out.println("Query Width " + qryWidth);
     }
 
     public void findSites() {
@@ -221,7 +220,6 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
     }
 
     private void drawQuery(Graphics g) {
-        //System.out.println("relSize: " + relSize + "start: " + start + "end " + end + "size: " + size);
         Graphics2D g2d = (Graphics2D) g;
         g2d.setFont(chrFont);
         if (chr == null) {
