@@ -145,36 +145,36 @@ public final class Alignment {
             Integer key = entry.getKey();
             ArrayList<XmapData> value = entry.getValue();
 //        first only going to deal with scenarios where there are only two different chromosomes affected
-            boolean twoChrs = value.stream().distinct().count() <= 2;
-            if (twoChrs) {
+            //boolean twoChrs = value.stream().distinct().count() <= 2;
+            //if (twoChrs) {
 //                    get the two chromosomes involved cmap id's
-                List<XmapData> distinctChrs = value.stream().distinct().collect(Collectors.toList());
+            List<XmapData> distinctChrs = value.stream().distinct().collect(Collectors.toList());
 
-                // Get all the xmap by their reference contig ID
-                HashMap<Integer, ArrayList<XmapData>> xmapByRefID = this.xmap.getXmapByRef();
+            // Get all the xmap by their reference contig ID
+            HashMap<Integer, ArrayList<XmapData>> xmapByRefID = this.xmap.getXmapByRef();
 
-                // Get the reference ID corresponding to the possible translocation
-                for (XmapData xmapByQryLine : value) {
-                    // Query contig that is mapped to the same reference ID as the considered possible translocation
-                    for (XmapData xmapByRefLine : xmapByRefID.get(xmapByQryLine.getRefID())) {
+            // Get the reference ID corresponding to the possible translocation
+            for (XmapData xmapByQryLine : value) {
+                // Query contig that is mapped to the same reference ID as the considered possible translocation
+                for (XmapData xmapByRefLine : xmapByRefID.get(xmapByQryLine.getRefID())) {
 
-                        int firstChrQry = xmapByRefLine.getQryID();
-                        int secondChrQry = xmapByQryLine.getQryID();
+                    int firstChrQry = xmapByRefLine.getQryID();
+                    int secondChrQry = xmapByQryLine.getQryID();
 
-                        // Translocation if the query ID share a reference with another query ID
-                        if (firstChrQry != secondChrQry) {
-                            // add translocation
-                            Translocation translocation = new Translocation(key,
-                                    distinctChrs.get(0),
-                                    distinctChrs.get(1),
-                                    this.refGenome.getChromosomes()
-                                            .get(firstChrQry),
-                                    this.refGenome.getChromosomes()
-                                            .get(secondChrQry));
-                            translocations.add(translocation);
-                        }
+                    // Translocation if the query ID share a reference with another query ID
+                    if (firstChrQry != secondChrQry) {
+                        // add translocation
+                        Translocation translocation = new Translocation(key,
+                                distinctChrs.get(0),
+                                distinctChrs.get(1),
+                                this.refGenome.getChromosomes()
+                                        .get(firstChrQry),
+                                this.refGenome.getChromosomes()
+                                        .get(secondChrQry));
+                        translocations.add(translocation);
                     }
                 }
+                // }
             }
         }
     }

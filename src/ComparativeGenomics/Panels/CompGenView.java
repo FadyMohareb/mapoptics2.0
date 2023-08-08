@@ -199,7 +199,6 @@ public class CompGenView extends javax.swing.JFrame {
         this.alignmentsPerChromosomeChartPanel1.plotGenome(refGenome);
         this.queryPanel1.setRefOrg(this.refGenome.getName());
         this.queryPanel1.setXmap(this.alignment.getXmap());
-        this.circosPanel1.setKaryotype(refKary, this.alignment);
 
         DefaultTableModel chrTable = (DefaultTableModel) this.chromosomeTable.getModel();
         this.chromosomeTable.setAutoCreateRowSorter(true);
@@ -216,9 +215,17 @@ public class CompGenView extends javax.swing.JFrame {
             chrTable.addRow(chrData);
         }
 
-        //this.parsingDialog.setVisible(false);
-        //this.setVisible(true);
+        // Read and display translocations
+        displayTranslocations();
 
+        
+        this.parsingDialog.setVisible(false);
+        this.setVisible(true);
+    }
+    
+    private void displayTranslocations(){
+        // Draw circos plot
+        this.circosPanel1.setKaryotype(refKary, this.alignment);
         // Add translocations to translocation table
         DefaultTableModel transTableModel = (DefaultTableModel) this.translocationTable.getModel();
         this.translocationTable.setAutoCreateRowSorter(true);
@@ -249,8 +256,6 @@ public class CompGenView extends javax.swing.JFrame {
             // Add translocation to set
             setPairs.add(tData);
         }
-        this.parsingDialog.setVisible(false);
-        this.setVisible(true);
     }
 
     /**
@@ -1518,39 +1523,10 @@ public class CompGenView extends javax.swing.JFrame {
             this.alignment.detectTxtTranslocations(this.smap);
         }
 
-        // Redraw circos panel
-        this.circosPanel1.setKaryotype(refKary, this.alignment);
-        // Add translocations to translocation table
-        DefaultTableModel transTableModel = (DefaultTableModel) this.translocationTable.getModel();
-        this.translocationTable.setAutoCreateRowSorter(true);
-        transTableModel.setRowCount(0);
-        transTableModel.setColumnCount(0);
-
-        String[] columnNamesTrans = {"Chromosome 1", "Chromosome 2"};
-        transTableModel.setColumnIdentifiers(columnNamesTrans); //Set the column names of this table
-        // Check that the translocation is not already in the table
-        Set<String[]> setPairs = new HashSet<String[]>();
-        for (Translocation t : this.alignment.getTranslocations()) {
-            String[] tData = {t.getRefChr1Name(), t.getRefChr2Name()};
-            boolean addTranslocation = true;
-            // Check if translocation already exists
-            for (String[] set : setPairs) {
-                if (set[0] != null && set[1] != null) {
-                    if (set[0].equals(t.getRefChr1Name())
-                            && set[1].equals(t.getRefChr2Name())) {
-                        addTranslocation = false;
-                    }
-                }
-            }
-            if (addTranslocation) {
-                transTableModel.addRow(tData);
-            }
-
-            // Add translocation to set
-            setPairs.add(tData);
-        }
-
+        // Display translocations on circos plot and translocations table
+        displayTranslocations();
     }//GEN-LAST:event_chooseSMAPActionPerformed
+    
     private void changePlotStyles(String style) {
         if ("ggplot".equals(style)) {
             this.alignmentsOnChromosomeChartPanel1.setStyle(Styler.ChartTheme.GGPlot2);
