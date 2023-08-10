@@ -226,7 +226,13 @@ public class CompGenView extends javax.swing.JFrame {
         }
 
         // Read and display translocations
-        displayTranslocations(0, MAX_TRANSLOCATION);
+        if (this.alignment.getTranslocations().size() > MAX_TRANSLOCATION) {
+            displayTranslocations(0, MAX_TRANSLOCATION);
+        } else {
+            displayTranslocations(0, this.alignment.getTranslocations().size());
+            this.previousTranslocPage.setEnabled(false);
+            this.nextTranslocPage.setEnabled(false);
+        }
 
         this.parsingDialog.setVisible(false);
         this.setVisible(true);
@@ -1583,21 +1589,27 @@ public class CompGenView extends javax.swing.JFrame {
         }
 
         // Display translocations on circos plot and translocations table
-        displayTranslocations(0, MAX_TRANSLOCATION);
+        // Read and display translocations
+        if (this.alignment.getTranslocations().size() > MAX_TRANSLOCATION) {
+            displayTranslocations(0, MAX_TRANSLOCATION);
+        } else {
+            displayTranslocations(0, this.alignment.getTranslocations().size());
+            this.previousTranslocPage.setEnabled(false);
+            this.nextTranslocPage.setEnabled(false);
+        }
     }//GEN-LAST:event_chooseSMAPActionPerformed
 
     private void nextTranslocPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextTranslocPageActionPerformed
-        if (this.translocPage < this.alignment.getTranslocations().size()/MAX_TRANSLOCATION) {         
+        if (this.translocPage < this.alignment.getTranslocations().size() / MAX_TRANSLOCATION) {
             this.translocPage += 1;
             int fromIndex = translocPage * MAX_TRANSLOCATION;
             int toIndex = (1 + translocPage) * MAX_TRANSLOCATION;
-            if(toIndex > this.alignment.getTranslocations().size()){
+            if (toIndex > this.alignment.getTranslocations().size()) {
                 toIndex = this.alignment.getTranslocations().size();
             }
             displayTranslocations(fromIndex, toIndex);
             previousTranslocPage.setEnabled(true);
-        }
-        else{
+        } else {
             nextTranslocPage.setEnabled(false);
         }
     }//GEN-LAST:event_nextTranslocPageActionPerformed
@@ -1607,10 +1619,12 @@ public class CompGenView extends javax.swing.JFrame {
             this.translocPage -= 1;
             int fromIndex = translocPage * MAX_TRANSLOCATION;
             int toIndex = (1 + translocPage) * MAX_TRANSLOCATION;
+            if (toIndex > this.alignment.getTranslocations().size()) {
+                toIndex = this.alignment.getTranslocations().size();
+            }
             displayTranslocations(fromIndex, toIndex);
             nextTranslocPage.setEnabled(true);
-        }
-        else{
+        } else {
             previousTranslocPage.setEnabled(false);
         }
     }//GEN-LAST:event_previousTranslocPageActionPerformed
