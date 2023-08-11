@@ -180,8 +180,12 @@ public final class Alignment {
                                         .get(secondChrQry));
                         translocations.add(translocation);
 
-                        // Add translocation to list of translocations of first chromosome
-                        this.refGenome.getChromosomes().get(firstChrQry).addTranslocation(translocation);
+                        try {
+                            // Add translocation to list of translocations of first chromosome
+                            this.refGenome.getChromosomes().get(firstChrQry).addTranslocation(translocation);
+                        } catch (Exception e) {
+                            System.out.println(e);
+                        }
                     }
                 }
             }
@@ -204,8 +208,12 @@ public final class Alignment {
                         this.refGenome.getChromosomes().get(currentInput.getChr2()));
                 translocations.add(translocation);
 
-                // Add tran slocation to list of translocations of the first chromosome
-                this.refGenome.getChromosomes().get(currentInput.getChr1()).addTranslocation(translocation);
+                try {
+                    // Add tran slocation to list of translocations of the first chromosome
+                    this.refGenome.getChromosomes().get(currentInput.getChr1()).addTranslocation(translocation);
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
             }
         }
     }
@@ -228,9 +236,12 @@ public final class Alignment {
                     this.refGenome.getChromosomes().get(currentInput.getRefContigID()[1]));
 
             translocations.add(translocation);
-
-            // Add translocation to list of translocations of first chromosome
-            this.refGenome.getChromosomes().get(currentInput.getRefContigID()[0]).addTranslocation(translocation);
+            try {
+                // Add translocation to list of translocations of first chromosome
+                this.refGenome.getChromosomes().get(currentInput.getRefContigID()[0]).addTranslocation(translocation);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
         }
     }
 

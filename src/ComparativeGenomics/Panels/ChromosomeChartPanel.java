@@ -16,8 +16,7 @@ import org.knowm.xchart.style.Styler.ChartTheme;
 
 /**
  *
- * @author franpeters 
- * Plot the number of each different type of SV event per
+ * @author franpeters Plot the number of each different type of SV event per
  * chromosome within the reference genome using XChart. The chart style can be
  * changed by the user.
  */
@@ -38,6 +37,12 @@ public class ChromosomeChartPanel extends JPanel {
     }
 
     public void plotGenome(Genome genome) {
+        this.chart = new CategoryChartBuilder()
+            .width(this.getWidth()).height(this.getHeight())
+            .title("Structural Variants Detected By Chromosome").xAxisTitle("Chromosome").yAxisTitle("SV Count")
+            .theme(this.style).build();
+        
+        chart.getStyler().setOverlapped(false);
         drawChart = true;
         this.genome = genome;
         ArrayList<Number> numIndels = new ArrayList();
@@ -58,24 +63,28 @@ public class ChromosomeChartPanel extends JPanel {
             JOptionPane.showMessageDialog(null, "A problem occured while plotting indels. The plot will not be complete. \n"
                     + ex,
                     "Indels display problem!", JOptionPane.ERROR_MESSAGE);
+            System.out.println(ex);
         }
         try {
             chart.addSeries("Translocations", chrNames, numTrans);
         } catch (java.lang.IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(null, "A problem occured while plotting translocations. The plot will not be complete",
                     "Translocations display problem!", JOptionPane.ERROR_MESSAGE);
+            System.out.println(ex);
         }
         try {
             chart.addSeries("Duplications", chrNames, numDups);
         } catch (java.lang.IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(null, "A problem occured while plotting duplications. The plot will not be complete",
                     "Duplications display problem!", JOptionPane.ERROR_MESSAGE);
+            System.out.println(ex);
         }
         try {
             chart.addSeries("Inversions", chrNames, numInvs);
         } catch (java.lang.IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(null, "A problem occured while plotting inversions. The plot will not be complete",
                     "Inversions display problem!", JOptionPane.ERROR_MESSAGE);
+            System.out.println(ex);
         }
         chart.getStyler().setXAxisLabelRotation(45);
         chart.getStyler().setChartTitleVisible(true);

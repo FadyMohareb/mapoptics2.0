@@ -1587,6 +1587,8 @@ public class CompGenView extends javax.swing.JFrame {
             // Detect translocations from text file
             this.alignment.detectTxtTranslocations(this.smap);
         }
+        
+        this.chromosomeChartPanel1.plotGenome(refGenome);
 
         // Display translocations on circos plot and translocations table
         // Read and display translocations
