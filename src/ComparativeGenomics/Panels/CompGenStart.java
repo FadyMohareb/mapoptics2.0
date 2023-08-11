@@ -1538,6 +1538,10 @@ public class CompGenStart extends javax.swing.JFrame {
             "      the button <b>Upload</b> is available. The same goes for the selection \n" +
             "      of an Annotation file (either gff3 or gtf), in <b>File, Reference \n" +
             "      Genome, Reference annotation file</b>.\n\n" +
+            "      Query annotation file is not necessary.\n\n" +
+            "      Query file can be in CMAP format. If the input query file contains information about \n" +
+            "      its in silico digestion enzyme, the same enzyme will be used to digest the reference.\n"+
+            "      the buttons <b>Calculate enzyme</b> or <b>Choose enzyme</b> will not be available.\n\n"
             "    <br></p>\n" +
             "    <h3>\n" +
             "      Set alignment parameters\n" +
@@ -1546,8 +1550,11 @@ public class CompGenStart extends javax.swing.JFrame {
             "      The <b>Settings</b> section is available once the query and reference \n" +
             "      genome are both selected. You can either <b>Choose</b> or <b>Calculate</b> \n" +
             "      the optimise Nickase Enzymes to use for the <i>in silico</i> digestion \n" +
-            "      of your file. Then, choose your aligner: <b>RefAligner</b> or <bfandom>. \n" +
-            "      Click <b>Modify Alignment Parameters</b> to customise your alignmenet \n" +
+            "      of your file. With the option <b>Reference</b> or <b>Query</b>, \n" +
+            "      choose if the enzyme density scores are calculated on the reference \n" +
+            "      or on the query. \n" +
+            "      Then, choose your aligner: <b>RefAligner</b> or <bfandom>. \n" +
+            "      Click <b>Modify Alignment Parameters</b> to customise your alignment \n" +
             "      parameters.\n" +
             "    <br></p>\n" +
             "    <h3>\n" +
