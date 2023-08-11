@@ -132,34 +132,29 @@ public final class Alignment {
         return this.refGenome;
     }
 
-    
     public ArrayList<Translocation> getTranslocations() {
         return this.translocations;
     }
 
     /**
-     * Get translocations according to their position's
-     * in the array list of translocation
-     * 
+     * Get translocations according to their position's in the array list of
+     * translocation
+     *
      * @author Marie Schmit
      * @return ArrayList of translocations
-     * @param int fromIndex, int toIndex: First and second indexes of translocations
+     * @param int fromIndex, int toIndex: First and second indexes of
+     * translocations
      */
     public ArrayList<Translocation> getLocalisedTranslocations(int fromIndex, int toIndex) {
         ArrayList<Translocation> subListTransloc = new ArrayList<Translocation>(this.translocations.subList(fromIndex, toIndex));
         return subListTransloc;
     }
-    
-    
+
     public void detectTranslocations() {
 //        making translocation objects
         for (Map.Entry<Integer, ArrayList<XmapData>> entry : this.xmap.getPotentialTranslocations().entrySet()) {
             Integer key = entry.getKey();
             ArrayList<XmapData> value = entry.getValue();
-//        first only going to deal with scenarios where there are only two different chromosomes affected
-            //boolean twoChrs = value.stream().distinct().count() <= 2;
-            //if (twoChrs) {
-//                    get the two chromosomes involved cmap id's
             List<XmapData> distinctChrs = value.stream().distinct().collect(Collectors.toList());
 
             // Get all the xmap by their reference contig ID
@@ -184,17 +179,19 @@ public final class Alignment {
                                 this.refGenome.getChromosomes()
                                         .get(secondChrQry));
                         translocations.add(translocation);
+
+                        // Add translocation to list of translocations of first chromosome
+                        this.refGenome.getChromosomes().get(firstChrQry).addTranslocation(translocation);
                     }
                 }
-                // }
             }
         }
     }
 
     /**
-     * Detect translocations among the ones detected in
-     * SV.txt file, that results from FaNDOM SV detection.
-     * 
+     * Detect translocations among the ones detected in SV.txt file, that
+     * results from FaNDOM SV detection.
+     *
      * @author marie schmit
      * @param smap
      */
@@ -206,6 +203,9 @@ public final class Alignment {
                         this.refGenome.getChromosomes().get(currentInput.getChr1()),
                         this.refGenome.getChromosomes().get(currentInput.getChr2()));
                 translocations.add(translocation);
+
+                // Add tran slocation to list of translocations of the first chromosome
+                this.refGenome.getChromosomes().get(currentInput.getChr1()).addTranslocation(translocation);
             }
         }
     }
@@ -228,6 +228,9 @@ public final class Alignment {
                     this.refGenome.getChromosomes().get(currentInput.getRefContigID()[1]));
 
             translocations.add(translocation);
+
+            // Add translocation to list of translocations of first chromosome
+            this.refGenome.getChromosomes().get(currentInput.getRefContigID()[0]).addTranslocation(translocation);
         }
     }
 

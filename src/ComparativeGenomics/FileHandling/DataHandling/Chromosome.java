@@ -55,6 +55,10 @@ public class Chromosome {
             qryCmapMaps.put(align.getQryID(), qryCmapMap);
         }  
     }
+    
+    public void addTranslocation(Translocation transloc){
+        this.translocations.add(transloc);
+    }
 
     public Integer getNumIndels() {
         return this.indels.size();
@@ -65,7 +69,7 @@ public class Chromosome {
     }
 
     public Integer getNumTranslocations() {
-        return 0;
+        return this.translocations.size();
     }
 
     public Integer getNumDuplications() {
@@ -206,9 +210,6 @@ public class Chromosome {
         this.inversions.add(inversion);
     }
 
-    public void addTranslocation(Translocation trans) {
-        this.translocations.add(trans);
-    }
 
     public void addIndel(Indel indel) {
         this.indels.add(indel);
