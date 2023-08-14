@@ -7,7 +7,7 @@ MapOptics is a lightweight cross-platform tool that enables the user to visualis
 #### 1. Through the Java JAR executable:
 The easiest way to get started is to download the stable release [here](https://github.com/FadyMohareb/mapoptics/releases). Uncompres the zipped file and run the JAR executable directly.
 
-Alternatively, you can clone the git repository:
+Alternatively, you can clone the git repository: 
 
 ```
 git clone https://github.com/franpeters/mapoptics
@@ -22,7 +22,7 @@ sudo docker pull marieschmit/mapoptics_docker_server:ubuntu16v6
 ```
 
 ## Start Screen
-![alt text](https://github.com/Marie-Schmit/mapoptics2.0/blob/master/UserGuide/StartUp.png "Start Screen"
+![alt text](UserGuide/StartUp.png "Start Screen"
 
 On start-up of MapOptics, a window will launch whereby you can choose to launch the ‘Verify Genome Assembly’ pipeline by clicking button A. To launch the ‘Perform Comparative Genomics’ pipeline click button B. Button C will show information about program and button D will launch a window showing this help document. Pressing button E will exit the program. 
 
