@@ -51,7 +51,7 @@ Once maps have been loaded, click Run and the software should populate the table
 ----
 # Summary View
 Summary View provides a good overview for the user to navigate through the contigs of the reference dataset using the table on the left, to view the alignments and quality of the contigs on the right.
-![alt text](https://github.com/Marie-Schmit/mapoptics2.0/blob/master/UserGuide/Fig1.png "Summary View")
+![alt text](UserGuide/Fig1.png "Summary View")
 
 (A)	The table of reference contigs should be populated when the maps are loaded. This includes information on the reference contig length, number of labels, label density (/100kb), number of query contigs aligned to the reference and number of query contigs which overlap in regions of their alignment. The table can be sorted in order of any of these fields. When a row of the table is selected, the information of that reference is displayed.
 
@@ -67,7 +67,7 @@ If a user wishes to explore the alignments of a reference contig in more detail,
 
 # Reference View
 Reference View gives the user more of an interactive view of the contig alignment with more information on aspects of their quality.
- ![alt text]( https://github.com/Marie-Schmit/mapoptics2.0/blob/master/UserGuide/Fig2.png "Reference View")
+ ![alt text](UserGuide/Fig2.png "Reference View")
  
  
 (A)	The display generated for Reference View is similar to that of Summary View but is more interactive. Here, the user can drag the contigs and screen so as to centre the view as required.
@@ -83,7 +83,7 @@ If the user wishes to explore a single alignment between one reference and one q
 # Query View
 Query View shows the most in detail view of one alignment. Here the user can see a simplified view of one alignment and navigate through all the labels on the query contig.
 
-![alt text](https://github.com/Marie-Schmit/mapoptics2.0/blob/master/UserGuide/Fig3.png "Query View")
+![alt text](UserGuide/Fig3.png "Query View")
 
 (A)	The display generated for Query View is not as interactive as Reference View. By default, the query contig is oriented positively and positioned to match the leftmost alignment. The display settings match those set in Reference View (e.g. label style).
 
@@ -123,8 +123,10 @@ Finally, the user must select which dataset the FASTA file is in regards to, the
 
 ## Comparative Genomics
 
+# User identification
+
 # Comparative Genomics Start
-![alt text]( https://github.com/Marie-Schmit/mapoptics2.0/blob/master/UserGuide/compgenstart.png "CompGenStart")
+![alt text](UserGuide/compgenstart.png "CompGenStart")
 
 Upon launching the comparative genomics pipeline a window showing will launch, with all previously submitted jobs to MapOptics shown in table A. By clicking on a row in the table the job name will appear in text field B. 
 To query the progress of the selected job, click on button C and the log.txt file corresponding to that job will be queried and the latest update will appear in table A. 
@@ -132,7 +134,7 @@ To open the results into the Comparative Genomics View window click on button D.
 To launch the window to begin performing alignment of two genomes within MapOptics click on button E, otherwise choose option F to upload files relating to a completed alignment of two genomes, see section 5 for information on required files and accepted file formats.
 
 # New Alignment Job
-![alt text]( https://github.com/Marie-Schmit/mapoptics2.0/blob/master/UserGuide/newjob.png "New Job")
+![alt text](UserGuide/newjob.png "New Job")
 
 To send a new alignment job six files are required alongside a job name, chosen digestion enzyme and pipeline. The send new job window (Figure 3) will be used to upload these files and submit the new job to the server. To upload files to a server, MapOptics must be connected to a sever. This is achieved using button D. The button will change to green if a connection is established successfully (Figure 3).
 
@@ -146,14 +148,14 @@ Once the form has been completed, the alignment job can be executed on the serve
 
 # Genome View
 
-![alt text]( https://github.com/Marie-Schmit/mapoptics2.0/blob/master/UserGuide/compgenview.png "CompGenView")
+![alt text](UserGuide/compgenview.png "CompGenView")
 
 Genome view is divided into four main sections, A which lists information about the job the data was generated from, B contains a table with all the chromosomes contained within the reference genome, C which is a graphical representation of all the chromosomes within the reference genome and D which is a tabbed pane containing graphs of structural variants across the genome, number of alignments per chromosome and also a graphic of all the translocation events detected. 
 
 The chromosomes in the chromosome table (C) can be clicked on, which will change the selected tab to ‘chromosome view’. The chromosome being viewed in query view will also be set to this selected chromosome. 
 
 # Chromosome View
-![alt text]( https://github.com/Marie-Schmit/mapoptics2.0/master/UserGuide/chromosomeview.png "Chromosomeview")
+![alt text](UserGuide/chromosomeview.png "Chromosomeview")
 
 Chromosome view shows all the different alignments across the whole chromosome in panel A. The chromosome is represented by the grey rectangle and a scale bar is drawn at the top of the panel for reference. Each alternating alignment is assigned a different colour to distinguish between different adjacent alignments. 
 
@@ -161,7 +163,7 @@ An alignment which has a ’-‘ alignment will be indicated by the two alignmen
 
 # Query View
 
-![alt text]( https://github.com/Marie-Schmit/mapoptics2.0/master/UserGuide/queryview.png "Queryview")
+![alt text](UserGuide/queryview.png "Queryview")
 
 Query view (Figure 17) allows the user to zoom in on alignments within a query range given by the user. Information on how to change the range can be found in section 4.4.1. 
 
