@@ -1541,7 +1541,7 @@ public class CompGenStart extends javax.swing.JFrame {
             "      Query annotation file is not necessary.\n\n" +
             "      Query file can be in CMAP format. If the input query file contains information about \n" +
             "      its in silico digestion enzyme, the same enzyme will be used to digest the reference.\n"+
-            "      the buttons <b>Calculate enzyme</b> or <b>Choose enzyme</b> will not be available.\n\n"
+            "      the buttons <b>Calculate enzyme</b> or <b>Choose enzyme</b> will not be available.\n\n" +
             "    <br></p>\n" +
             "    <h3>\n" +
             "      Set alignment parameters\n" +
@@ -2434,13 +2434,15 @@ public class CompGenStart extends javax.swing.JFrame {
                         //            Connect to the server of the user selectedjob
                         System.out.println("Connection to server " + this.selectedJob.getServer().getName());
                         this.channel.setServer(this.selectedJob.getServer());
-                        this.channel.connectServer();
-                        this.filesDownloading.setVisible(true);
-                        this.jobDownloadingName.setText(this.selectedJob.getName());
-                        this.channel.downloadJobResults(this.selectedJob);
-                        this.filesDownloading.setVisible(false);
-                        CompGenView viewResults = new CompGenView();
-                        viewResults.setJob(this.selectedJob);
+                        boolean connected = this.channel.connectServer();
+                        if (connected) {
+                            this.filesDownloading.setVisible(true);
+                            this.jobDownloadingName.setText(this.selectedJob.getName());
+                            this.channel.downloadJobResults(this.selectedJob);
+                            this.filesDownloading.setVisible(false);
+                            CompGenView viewResults = new CompGenView();
+                            viewResults.setJob(this.selectedJob);
+                        }
                     } catch (SftpException ex) {
                         Logger.getLogger(CompGenStart.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -3168,20 +3170,25 @@ public class CompGenStart extends javax.swing.JFrame {
 //          Connect to the server of the user selectedjob
         this.channel.setServer(job.getServer());
 
-        this.channel.connectServer();
-        ArrayList<String> result = this.channel.queryLogFile(this.selectedJob);
-        for (String s : result) {
-            System.out.println("Refresh status result (CompGenStart): " + s);
-        }
-        if (result.isEmpty()) {
-            System.out.println("Log file was not found or empty.");
+        boolean connected = this.channel.connectServer();
+        if (connected) {
+            ArrayList<String> result = this.channel.queryLogFile(this.selectedJob);
+            for (String s : result) {
+                System.out.println("Refresh status result (CompGenStart): " + s);
+            }
+            if (result.isEmpty()) {
+                System.out.println("Log file was not found or empty.");
+                job.setStatus("Failed");
+                return false;
+            } else {
+                // get the latest update from the log file
+                String latestStatus = result.get(result.size() - 1).split(": ")[1];
+                job.setStatus(latestStatus);
+                return true;
+            }
+        } else {
             job.setStatus("Failed");
             return false;
-        } else {
-            // get the latest update from the log file
-            String latestStatus = result.get(result.size() - 1).split(": ")[1];
-            job.setStatus(latestStatus);
-            return true;
         }
     }
 

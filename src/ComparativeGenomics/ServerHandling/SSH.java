@@ -127,6 +127,7 @@ public class SSH {
             JOptionPane.showMessageDialog(null, "Connection to server has not been established!",
                     "Connection error!", JOptionPane.ERROR_MESSAGE);
             System.out.println(ex);
+            this.connection = false;
         }
         return this.connection;
     }
