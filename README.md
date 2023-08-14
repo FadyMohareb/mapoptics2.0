@@ -22,7 +22,7 @@ sudo docker pull marieschmit/mapoptics_docker_server:ubuntu16v6
 ```
 
 ## Start Screen
-![alt text](UserGuide/StartUp.png "Start Screen"
+![alt text](UserGuide/StartUp.png) "Start Screen"
 
 On start-up of MapOptics, a window will launch whereby you can choose to launch the ‘Verify Genome Assembly’ pipeline by clicking button A. To launch the ‘Perform Comparative Genomics’ pipeline click button B. Button C will show information about program and button D will launch a window showing this help document. Pressing button E will exit the program. 
 
@@ -124,42 +124,71 @@ Finally, the user must select which dataset the FASTA file is in regards to, the
 ## Comparative Genomics
 
 # User identification
+![alt text](UserGuide/useridentification.png "UserIdentification")
+
+A window for user identification will open. Here, enter your username and password. Those will be used to securely store then access servers sensitive information (like servers password) from one session to the other. On your first connection, choose your username and associated password. Please be careful to remember them later: they are not stored in MapOptics.
+
+The password must be 16 characters long. A message indicates if it size is not 16 characters (D). Type your username (A) password (B), then the confirmation (C) and save (E).
+
 
 # Comparative Genomics Start
 ![alt text](UserGuide/compgenstart.png "CompGenStart")
 
-Upon launching the comparative genomics pipeline a window showing will launch, with all previously submitted jobs to MapOptics shown in table A. By clicking on a row in the table the job name will appear in text field B. 
-To query the progress of the selected job, click on button C and the log.txt file corresponding to that job will be queried and the latest update will appear in table A. 
+Upon launching the comparative genomics pipeline a window will open, with all previously submitted jobs to MapOptics shown in table A. By clicking on a row in the table the job name will appear in text field B. 
+To query the progress of the selected job, click on button C and the log.txt file corresponding to that job will be queried and the latest update will appear in table A. The possible states of a job are the following:
+* Failed: The server could not be reached, or the job failed and its log file does not exist. In the first case, error messages will indicates a failed connection.
+* Start: The job was successfully started but no other step has finished.
+* Reference digested: The reference was successfully digested. This is the first step of each job.
+* Query digested: The query was successfully digested.
+* Aligning data using RefAligner or FaNDOM: Alignment is processed by the indicated aligner. It includes alignment and SV detection.
+* Complete: The job was successfully calculated, the results are available in Results folder. They can be downloaded and displayed in MapOptics with the button "Open results" (D).
+
+
 To open the results into the Comparative Genomics View window click on button D. 
 To launch the window to begin performing alignment of two genomes within MapOptics click on button E, otherwise choose option F to upload files relating to a completed alignment of two genomes, see section 5 for information on required files and accepted file formats.
 
 # New Alignment Job
 ![alt text](UserGuide/newjob.png "New Job")
 
-To send a new alignment job six files are required alongside a job name, chosen digestion enzyme and pipeline. The send new job window (Figure 3) will be used to upload these files and submit the new job to the server. To upload files to a server, MapOptics must be connected to a sever. This is achieved using button D. The button will change to green if a connection is established successfully (Figure 3).
+To send a new alignment job, three files are required (a reference and query genome and a reference annotation file) alongside a job name, chosen digestion enzyme and pipeline. The query annotation file is not required. The send new job window will be used to upload these files and submit the new job to the server. To upload files to a server, MapOptics must be connected to a sever. This is achieved using button D. The button will change to green if a connection is established successfully (Figure 3). Added servers are saved from one session to another.
 
-Next a Job name must be selected. Note: a job name must not contain any numbers as the first character nor any spaces. The buttons J, N, Q and U will now become enabled and uploading the required files to the server can begin. 
+Then, a Job name must be selected. Note: a job name must not contain any numbers as the first character nor any spaces. The button F will then be enabled to set the jobs: new folders will be created for the job. Once jobs are st, buttons "Upload" (I, M) are enabled to upload the choosen query and reference files.
 
-Next selection of restriction enzyme can occur, either using an enzyme chosen from a list of supported enzymes or an enzyme that has been analysed by MapOptics. Note: if using experimental cmap data for your query genome the chosen enzyme must match the enzyme used to generate this data else the alignment will not run.
+Those files can either be saved and locally selected, or uploaded via URL: those options are available in "File" (A). The reference file must be in FASTA format, while the query can be in CMAP or FASTA format.
 
-Once the digestion enzyme has been selected the alignment algorithm must be selected. MapOptics currently supports two algorithms, RefAligner and FaNDOM. Using the radio buttons (S) either one can be selected. 
+Once files are uploaded, selection of restriction enzyme can occur: either using an enzyme chosen from a list of supported enzymes (O) or an enzyme that has been analysed by MapOptics (P). In that case, the reference or query is digested by all the available enzymes and their restriction sites density is calculated and displayed on a new window. This allows to chose an enzyme based on its density scores. By default, the enzyme with the higher density score is selected when the window opens. The radio button (Q) indicates on which file (reference or query) the density scores must be calculated.
 
-Once the form has been completed, the alignment job can be executed on the server by clicking button U. This window will close, and you will return to the previous window.
+If the chosen query is in CMAP format, the enzyme used to digest the reference is by default the same as the one used to digest the query CMAP. In that case, enzyme selection section is not available. If the digestion enzyme of the query cannot be extracted from the CMAP, the selection section is available. An message will indicate this situation.
+**In that case, if using experimental CMAP data for your query genome, with no extracted enzyme from the CMAP, the chosen enzyme must match the enzyme used to generate this data. Else, the alignment will not run.**
+
+Once the digestion enzyme has been selected, the alignment algorithm must be selected. MapOptics currently supports two algorithms, RefAligner and FaNDOM. Using the radio buttons (R) either one can be selected.
+
+Once the form has been completed, the alignment job can be executed on the server by clicking button "Start" (T). This window will close, and you will return to the previous window.
+
+For further information, opens the "Help" section (button S).
 
 # Genome View
 
 ![alt text](UserGuide/compgenview.png "CompGenView")
 
-Genome view is divided into four main sections, A which lists information about the job the data was generated from, B contains a table with all the chromosomes contained within the reference genome, C which is a graphical representation of all the chromosomes within the reference genome and D which is a tabbed pane containing graphs of structural variants across the genome, number of alignments per chromosome and also a graphic of all the translocation events detected. 
+Genome view is divided into four main sections: A lists information about the job the data was generated from, B contains a table with all the chromosomes contained within the reference genome, C is a graphical representation of all the chromosomes within the reference genome and D is a tabbed pane containing graphs of structural variants across the genome, number of alignments per chromosome and also a graphic of all the translocation events detected. 
 
 The chromosomes in the chromosome table (C) can be clicked on, which will change the selected tab to ‘chromosome view’. The chromosome being viewed in query view will also be set to this selected chromosome. 
+
+# Translocations section
+
+![alt text](UserGuide/translocations.png "Translocations")
+
+Translocations identified in the alignment file are directly displayed on the translocation section. However, they can also be extracted from FaNDOM or RefAligner output, respectively SV.txt or SMAP file. To upload and display those results, choose "File, Upload Smap data" (A).
+
+Translocations are displayed on a circos plot (B) and on a table listing the chromosomes involved (C). If a dataset comports a very large number of translocations, they are splitted on different pages, which can be navigated through using the arrow buttons (D).
 
 # Chromosome View
 ![alt text](UserGuide/chromosomeview.png "Chromosomeview")
 
 Chromosome view shows all the different alignments across the whole chromosome in panel A. The chromosome is represented by the grey rectangle and a scale bar is drawn at the top of the panel for reference. Each alternating alignment is assigned a different colour to distinguish between different adjacent alignments. 
 
-An alignment which has a ’-‘ alignment will be indicated by the two alignment lines forming a ‘X’ shape. Those which have a’+’ alignment will be drawn perpendicularly to the chromosome rectangle. Using the table C, a user can click on an alignment to highlight its position. Finally, button B can be used to clear any previous highlighting.
+An alignment which has a ’-‘ alignment will be indicated by the two alignment lines forming a ‘X’ shape. Those which have a ’+’ alignment will be drawn perpendicularly to the chromosome rectangle. Using the table C, a user can click on an alignment to highlight its position. Finally, button B can be used to clear any previous highlighting.
 
 # Query View
 
