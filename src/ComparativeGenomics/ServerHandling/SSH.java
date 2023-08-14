@@ -285,8 +285,6 @@ public class SSH {
             if (this.connection == true) {
 
                 try {
-
-//                    System.out.println(file + "file6");
                     System.out.println("File to upload " + this.server.getWorkingDir() + dir);
                     this.sftpChannel.put(file, this.server.getWorkingDir() + dir, this.monitor);
                     this.sftpChannel.exit();
@@ -337,14 +335,7 @@ public class SSH {
         String dir = job.getServer().getWorkingDir();
         String enz = job.getEnz().getSite();
         String align = job.getPipeline();
-
-        /*String cmd = "cd " + dir + 
-                " ; docker run -it -d --name mapopticsDock_" + jobname + 
-                " -v ~/" + dir + jobname + ":/mapoptics/jobs/" + jobname + " marieschmit/mapoptics_docker_server:ubuntu16 ; " + 
-                "docker exec -it mapopticsDock_" + jobname + " sh -c \"cd /mapoptics/jobs ; " +
-                "./run_job.sh -j " + jobname + " -r " + ref + " -q " + qry + " -e " + enz + " -a " + align + 
-                " > " + jobname + "/output.log 2>&1 \"";
-         */
+        
         String cmd = "cd " + dir
                 //+ " ; docker run -it -d --name mapopticsDock_" + jobname
                 //+ " -v ~/" + dir + jobname + ":/mapoptics/jobs/" + jobname + " marieschmit/mapoptics_docker_server:ubuntu16 "
