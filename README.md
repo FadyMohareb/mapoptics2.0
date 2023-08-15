@@ -24,7 +24,7 @@ sudo docker pull marieschmit/mapoptics_docker_server:ubuntu16v6
 ## Start Screen
 ![alt text](UserGuide/StartUp.png) "Start Screen"
 
-On start-up of MapOptics, a window will launch whereby you can choose to launch the ‘Verify Genome Assembly’ pipeline by clicking button A. To launch the ‘Perform Comparative Genomics’ pipeline click button B. Button C will show information about program and button D will launch a window showing this help document. Pressing button E will exit the program. 
+On start-up of MapOptics, a window will launch whereby you can choose to launch the ‘Verify Genome Assembly’ pipeline by clicking button A. To launch the ‘Perform Comparative Genomics’ pipeline click button B. Button D will launch a window showing this help document. Pressing button E will exit the program. 
 
 ## Verify Genome Assembly
 
