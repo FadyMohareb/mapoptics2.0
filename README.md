@@ -232,28 +232,40 @@ Karyotype
 
 The karyotype file used in MapOptics is a simple text file with two columns and no headers. The columns are space delimited. The first column is the length of the chromosome to one decimal place and the second column is the chromosome name, extracted from the fasta header. 
 
+SV.txt
+
+This file is FaNDOM translocation detection output. Its format is detailed here:
+https://www.youtube.com/watch?v=T8Pasp3Aa9M
+
+SMAP 
+
+All SMAP files must follow the format laid out by BioNano genomics found here:
+https://bionanogenomics.com/wp-content/uploads/2017/03/30041-SMAP-File-Format-Specification-Sheet.pdf
+
 # Server set-up
 
-In order for MapOptics to perform alignment a linux based server using either CentOS or Ubuntu is recommended. All files from the ‘Server_files’ directory must be uploaded to the server. 
+In order for MapOptics to perform alignment a linux based server using either CentOS or Ubuntu is recommended. The Docker image marieschmit/mapoptics_docker_server:ubuntu16v6 must be pulled from Docker hub.
 
-Hardware requirements
+**Hardware requirements**
 
 At least 32GB of RAM and space to install required softwares  and also upload data is required. 
 
-Software requirements
+**Software requirements**
+
+The following software will be installed in the Docker image.
 
 Bionano solve package https://bionanogenomics.com/support/software-downloads/
 FaNDOM v 0.2 https://github.com/jluebeck/FaNDOM
 Samtools v 0.1.19-96b5f2294a https://github.com/samtools/samtools
 runBNG v 2.01 https://github.com/AppliedBioinformatics/runBNG
 
-Working directory
+**Working directory**
  
-Each server must have a dedicated working directory to save the files in the ‘Server_files” directory. It is within this directory that the data for each submitted job will be saved to. 
+Each server must have a dedicated working directory to save the jobs files, called "mapoptics/jobs". It is within this directory that the data for each submitted job will be saved to. 
 
 # Test Files
 
-Two test datasets are provided, except for the GFF files. Simply launch Comparative Genomics and click on the dataset to load.
+Various test datasets are provided. Simply launch Comparative Genomics and click on the dataset to load.
 
 # User Manual
 
