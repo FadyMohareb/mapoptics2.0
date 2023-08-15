@@ -318,7 +318,7 @@ public class startScreen extends javax.swing.JFrame {
         Path path = Paths.get("");
         String pathDirectory = path.toAbsolutePath().toString();
         try {
-            File manual = new File(pathDirectory + "\\src\\Resources\\README.md");
+            File manual = new File(pathDirectory + "\\src\\Resources\\UserManual.pdf");
             Desktop.getDesktop().open(manual);
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
