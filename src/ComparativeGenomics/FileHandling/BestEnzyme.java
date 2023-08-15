@@ -27,8 +27,9 @@ public class BestEnzyme {
     HashMap<String, String> listEnzymes = new HashMap();
 
     /**
-     *
-     * @param filepath of the file to be read
+     * Read path given in parameter and return its best enzyme
+     * 
+     * @param filepath Path of file containing enzymes
      */
     public BestEnzyme(String filepath) {
         this.filepath = filepath;
@@ -112,6 +113,7 @@ public class BestEnzyme {
 
     /**
      *
+     * Return HashMap of results
      * @return result HashMap
      */
     public ArrayList<String[]> getResult() {
@@ -119,7 +121,8 @@ public class BestEnzyme {
     }
     
     /**
-     * @return Enzyme with highest density
+     * Return enzyme with highest density
+     * @return bestDensity
      */
     public Enzyme getBestEnzyme(){
         return this.bestDensity;

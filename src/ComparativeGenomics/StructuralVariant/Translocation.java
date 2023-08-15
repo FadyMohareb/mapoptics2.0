@@ -44,17 +44,7 @@ public class Translocation {
         this.refChr2 = refChr2;
     }
 
-    /**
-     * @param values from FaNDOM .txt output file
-     * @return
-     */
-    /*
-    public Translocation(Chromosome refChr1, Chromosome refChr2) {
-        this.refChr1 = refChr1;
-        this.refChr2 = refChr2;
-//        compareMatchingSites();
-    }
-     */
+
     public String getRefChr1Name() {
         if (this.refChr1 != null) {
             return this.refChr1.getName();

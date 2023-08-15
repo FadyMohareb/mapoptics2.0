@@ -34,10 +34,17 @@ public class AlignmentsPerChromosomeChartPanel extends JPanel {
             .title("Number of Alignments per Chromosome").xAxisTitle("Chromosome").yAxisTitle("Alignment Count")
             .theme(this.style).build();
 
+    /**
+     * Class constructor
+     */
     public AlignmentsPerChromosomeChartPanel() {
 
     }
 
+    /**
+     * Plot the number of XmapData objects created per chromosomes
+     * @param genome Genome to plot
+     */
     public void plotGenome(Genome genome) {
         this.drawChart = true;
 //        this.genome=genome;
@@ -60,7 +67,6 @@ public class AlignmentsPerChromosomeChartPanel extends JPanel {
     
     /**
      * Reset the panel
-     * @param g 
      */
     public void reset(){
         this.drawChart = false;
@@ -80,6 +86,10 @@ public class AlignmentsPerChromosomeChartPanel extends JPanel {
         }
     }
 
+    /**
+     * Change the style of the plot made using XChart
+     * @param style Style of the plot
+     */
     public void setStyle(Styler.ChartTheme style) {
         this.style = style;
         repaint();

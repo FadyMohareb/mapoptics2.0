@@ -5,10 +5,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Cigar {
-    /*
-    * @author Anisha
-    *
-    * */
+
+    /**
+     * Class containing cigar string data
+     *
+     * @author Anisha
+     */
 
     private final String hitEnum;
     public final List<String> parsedCigar;
@@ -18,8 +20,11 @@ public class Cigar {
     private final Map<Double, String> cigRefPos;
     private final Map<Double, String> cigQryPos;
 
-
-
+    /**
+     * Class constructor
+     *
+     * @param hitEnum Input string from XMAP file
+     */
     public Cigar(String hitEnum) {
         this.hitEnum = hitEnum;
         parsedCigar = new ArrayList<>();
@@ -28,14 +33,19 @@ public class Cigar {
         cigRefPos = new LinkedHashMap<>();
         cigQrySites = new LinkedHashMap<>();
         cigQryPos = new LinkedHashMap<>();
-
     }
+
+    /**
+     * Parse CIGAR string
+     *
+     * @return Parsed string
+     */
     public List<String> parseHitEnum() {
         // create regex pattern (for 1 or more digits followed by a letter (non-digit)
         Pattern pattern = Pattern.compile("\\d+\\D");
         Matcher m = pattern.matcher(hitEnum);
 
-        List<String> cigPairs= new ArrayList<>();
+        List<String> cigPairs = new ArrayList<>();
 
         // retrieve the matches start and end positions
         while (m.find()) {
@@ -48,14 +58,18 @@ public class Cigar {
             for (int i = 0; i < freq; i++) {
                 parsedCigar.add(iter.substring(iter.length() - 1));
             }
-
-
         }
         return parsedCigar;
     }
 
-    public void mapCigSites(Map<Integer, Double> refSites, Map<Integer, Double> qrySites, Map<Integer,
-            List<Integer>> qryAlignments, String orientation) {
+    /**
+     * Map cigar strings
+     * @param refSites Reference sites from XMAP input
+     * @param qrySites Query sites from XMAP input
+     * @param qryAlignments Query alignments
+     * @param orientation Query orientation
+     */
+    public void mapCigSites(Map<Integer, Double> refSites, Map<Integer, Double> qrySites, Map<Integer, List<Integer>> qryAlignments, String orientation) {
         // Loop through cigar string, ref and qry sites
         // convert sets to lists for easier access
         // extract relevant subset of ref sites for query region
@@ -67,29 +81,24 @@ public class Cigar {
         List<Integer> revQryAligned = new ArrayList<>();
         // check orientation, if negative reverse
 
-
         int qryStart = alignedQrys.get(0);
         int qryEnd = alignedQrys.get(alignedQrys.size() - 1);
 
-        if(qryStart>alignedQrys.get(alignedQrys.size()-1) ){
-            qryStart = alignedQrys.get(alignedQrys.size()-1);
+        if (qryStart > alignedQrys.get(alignedQrys.size() - 1)) {
+            qryStart = alignedQrys.get(alignedQrys.size() - 1);
             qryEnd = alignedQrys.get(0);
 
         }
         int refStartSite = qryAlignments.get(qryStart).get(0);
         int refEndSite = qryAlignments.get(qryEnd).get(0);
 
-
-
-
-
         // get the last ref site
         //List<Integer> refEndSites = qryAlignments.get(qryEnd);
         //int refEndSite = refEndSites.get(refEndSites.size() - 1);
         //
-        if(refStartSite>refEndSite){
-            refStartSite=refEndSite;
-            refEndSite=qryAlignments.get(qryStart).get(0);
+        if (refStartSite > refEndSite) {
+            refStartSite = refEndSite;
+            refEndSite = qryAlignments.get(qryStart).get(0);
         }
 
         // loop through refsites in alignment range
@@ -105,14 +114,13 @@ public class Cigar {
         List<Integer> qrySitesList = new ArrayList<>(qrySites.keySet());
 
         int QrySiteEnd;
-        if (orientation.equals("-")){
-         Collections.reverse(qrySitesList);
-            QrySiteEnd=qrySitesList.get(0);
-      }else{
-        Collections.sort(qrySitesList);
-            QrySiteEnd=qrySitesList.get(qrySitesList.size()-1);
-       }
-
+        if (orientation.equals("-")) {
+            Collections.reverse(qrySitesList);
+            QrySiteEnd = qrySitesList.get(0);
+        } else {
+            Collections.sort(qrySitesList);
+            QrySiteEnd = qrySitesList.get(qrySitesList.size() - 1);
+        }
 
         ListIterator<Integer> qryIter = qrySitesList.listIterator();
         while (cigIter.hasNext()) {
@@ -122,9 +130,11 @@ public class Cigar {
                     int nextRef = refIter.next();
                     int nextQry = qryIter.next();
                     cigRefSites.put(nextRef, "M");
-                    if (orientation.equals("-")){
-                        cigQrySites.put(QrySiteEnd-nextQry+qryStart, "M");
-                    }else{cigQrySites.put(nextQry+qryStart-1, "M");}
+                    if (orientation.equals("-")) {
+                        cigQrySites.put(QrySiteEnd - nextQry + qryStart, "M");
+                    } else {
+                        cigQrySites.put(nextQry + qryStart - 1, "M");
+                    }
                 }
             } else if ("D".equals(next)) {
                 if (refIter.hasNext()) {
@@ -134,52 +144,75 @@ public class Cigar {
             } else if ("I".equals(next)) {
                 if (qryIter.hasNext()) {
                     int nextQry = qryIter.next();
-                    if (orientation.equals("-")){
-                        cigQrySites.put(QrySiteEnd-nextQry+qryStart, "I");
-                    }else{cigQrySites.put(nextQry+qryStart-1, "I"); }
+                    if (orientation.equals("-")) {
+                        cigQrySites.put(QrySiteEnd - nextQry + qryStart, "I");
+                    } else {
+                        cigQrySites.put(nextQry + qryStart - 1, "I");
+                    }
                 }
             }
         }
         //reverse the site num for negative orientation
-        if (orientation.equals("-")){
+        if (orientation.equals("-")) {
             List<Integer> revQrylist = new ArrayList<>(cigQrySites.keySet());
             Collections.sort(revQrylist);
-            int Minsite= revQrylist.get(0);
-            int Maxsite = revQrylist.get(revQrylist.size()-1);
-            for(int i :revQrylist){
-                if(cigQrySites.get(i).equals("I")){
-                    int site = Maxsite-(i-Minsite);
+            int Minsite = revQrylist.get(0);
+            int Maxsite = revQrylist.get(revQrylist.size() - 1);
+            for (int i : revQrylist) {
+                if (cigQrySites.get(i).equals("I")) {
+                    int site = Maxsite - (i - Minsite);
                     String rev = cigQrySites.get(site);
-                    cigQrySites.replace(i,rev);
-                    cigQrySites.replace(site,"I");
+                    cigQrySites.replace(i, rev);
+                    cigQrySites.replace(site, "I");
                 }
             }
         }
-
 
         this.setCigRefSites(cigRefSites);
         this.setCigQrySites(cigQrySites);
     }
 
+    /**
+     * Get reference cigar sites
+     * @return reference sites
+     */
     public Map<Integer, String> getCigRefSites() {
         return cigRefSites;
     }
 
+    /**
+     * Set query cigar sites
+     * @param cigQrySites Cigar sites of the query
+     */
     public void setCigQrySites(Map<Integer, String> cigQrySites) {
         this.cigQrySites = cigQrySites;
     }
 
+    /**
+     * Get query cigar sites
+     * @return query cigar sites
+     */
     public Map<Integer, String> getCigQrySites() {
         return cigQrySites;
     }
 
+    /**
+     * Set reference cigar sites
+     * @param cigRefSites Cigar sites of reference
+     */
     public void setCigRefSites(Map<Integer, String> cigRefSites) {
         this.cigRefSites = cigRefSites;
 
     }
 
-    public Map<Integer, List<Integer>> mapParsedCigarSites(Map<Integer, List<Integer>> qryAlignments, Map<Integer, Double>
-            qrySites, Map<Integer, Double> refSites) {
+    /**
+     * Parse cigar sites in a map of integer (ID) and list of integer
+     * @param qryAlignments Query alignments
+     * @param qrySites Query sites
+     * @param refSites Reference sites
+     * @return Map of cigar sites
+     */
+    public Map<Integer, List<Integer>> mapParsedCigarSites(Map<Integer, List<Integer>> qryAlignments, Map<Integer, Double> qrySites, Map<Integer, Double> refSites) {
         Map<Integer, List<Integer>> mappedCigar = new HashMap<>();
         List<Integer> qrySiteList = new ArrayList<>(qrySites.keySet());
         List<Integer> refSiteList = new ArrayList<>(refSites.keySet());
@@ -212,7 +245,11 @@ public class Cigar {
         return mappedCigar;
     }
 
-    // computes the reverse complement of the CIGAR string
+    /**
+     * computes the reverse complement of the CIGAR string
+     * @param parsedCigar Parsed cigar string
+     * @return Cigar string reversed complement
+     */
     public List<String> reverseComplement(List<String> parsedCigar) {
         // loop through reversed Cigar sites
         for (int i = parsedCigar.size() - 1; i >= 0; i--) {
@@ -228,7 +265,12 @@ public class Cigar {
         return revCompCigar;
     }
 
-    // find sequences which are palindromic within the CIGAR string
+    /**
+     * Find sequences which are palindromic within the CIGAR string
+     * @param parsedCigar Parsed cigar string
+     * @param revCompCigar Cigar sting reversed complement
+     * @return Palyndromic sequences
+     */
     public List<String> getRevPalindromes(List<String> parsedCigar, List<String> revCompCigar) {
         List<String> revPalindromes = new ArrayList<>();
         // concatenate individual string letters of cigar into a single string
@@ -258,11 +300,16 @@ public class Cigar {
         return revPalindromes;
     }
 
+    /**
+     * Change orientation of query alignments
+     * @param qryAlignments List of query alignments
+     * @return Map of reversed alignments
+     */
     public static Map<Integer, List<Integer>> changeOrientation(Map<Integer, List<Integer>> qryAlignments) {
         // reverse the order of the query sites
         Map<Integer, List<Integer>> reverseMap = new LinkedHashMap<>();
         ArrayList<Integer> qrySites = new ArrayList<>(qryAlignments.keySet());
-        for(int i = qrySites.size() - 1; i >= 0; i--){
+        for (int i = qrySites.size() - 1; i >= 0; i--) {
             int revQrySite = qrySites.get(i);
             reverseMap.put(revQrySite, qryAlignments.get(revQrySite));
 
@@ -270,4 +317,3 @@ public class Cigar {
         return reverseMap;
     }
 }
-

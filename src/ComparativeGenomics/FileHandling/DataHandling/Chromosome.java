@@ -32,6 +32,14 @@ public class Chromosome {
     private ArrayList<Translocation> translocations = new ArrayList();
     private ArrayList<Gene> features = new ArrayList();
 
+    /**
+     * Constructor of class Chromosome
+     * @param name Chromosome name
+     * @param cmap Cmap data for the considered chromosome
+     * @param relsize Relative size of the chromosome
+     * @param seq Sequence of the chromosome
+     * @param genes List of genes on the chromosome
+     */
     public Chromosome(String name, CmapData cmap, Double relsize, Sequence seq, ArrayList<Gene> genes) {
         this.name = name;
         this.refCmapMap = cmap;
@@ -41,6 +49,11 @@ public class Chromosome {
         this.features = genes;
     }
 
+    /**
+     * Set new alignment
+     * @param map ArrayList of XmapData (corresponding to one line of an XMAP file)
+     * @param qryCmap CMAP data of the query
+     */
     public void setAlignment(ArrayList<XmapData> map, Cmap qryCmap) {
         Integer s = map.size();
         for (Integer i = 0; i < s; i++) {
@@ -56,33 +69,57 @@ public class Chromosome {
         }  
     }
     
+    /** 
+     * Add a translocation to the list of translocations in the chromosomes
+     * @param transloc New translocation
+     */
     public void addTranslocation(Translocation transloc){
         this.translocations.add(transloc);
     }
 
+    /**
+     * Get number of indels in chromosome
+     * @return Number of indels
+     */
     public Integer getNumIndels() {
         return this.indels.size();
     }
 
+    /**
+     * Get number of inversions in chromosome
+     * @return Number of inversions
+     */
     public Integer getNumInversions() {
         return this.inversions.size();
     }
 
+    /**
+     * Get number of translocations in chromosome
+     * @return  Translocations number
+     */
     public Integer getNumTranslocations() {
         return this.translocations.size();
     }
 
+    /**
+     * Get number of duplications in chromosome
+     * @return duplication number
+     */
     public Integer getNumDuplications() {
         return this.duplications.size();
     }
 
+    /**
+     * Get chromosome size
+     * @return size chromosome size
+     */
     public Double getSize() {
         return this.size;
     }
 
     /** 
-     * 
-     * @return CMAP ID associated with the chromosome
+     * Get cmap ID associated with the chromosome
+     * @return refCmapMap CMAP ID associated with the chromosome
      */
     public Integer getCmapID() {
         return this.refCmapMap.getID();
@@ -202,15 +239,27 @@ public class Chromosome {
         }
     }
 
+    /**
+     * Add duplication object to the arrayList
+     * @param dup 
+     */
     public void addDuplication(Duplication dup) {
         this.duplications.add(dup);
     }
 
+    /**
+     * Add inversion object to the arrayList
+     * @param inversion 
+     */
     public void addInversion(Inversion inversion) {
         this.inversions.add(inversion);
     }
 
 
+    /**
+     * Add Indel object to the arrayList
+     * @param indel 
+     */
     public void addIndel(Indel indel) {
         this.indels.add(indel);
     }

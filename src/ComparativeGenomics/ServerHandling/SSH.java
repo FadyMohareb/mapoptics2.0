@@ -254,7 +254,7 @@ public class SSH {
      * of the container is the name of the job. The job folder is a volume
      * mounted in the container.
      *
-     * @param job name
+     * @param jobname
      */
     public void runContainer(String jobname) {
         String dir = this.server.getWorkingDir();

@@ -40,13 +40,16 @@ public class AlignmentsOnChromosomeChartPanel extends JPanel {
     ArrayList<Number> counts = new ArrayList();
     HashMap<Integer, Number> qryIDCount = new HashMap();
 
+    /**
+     * Constructor of the class
+     */
     public AlignmentsOnChromosomeChartPanel() {
     }
 
     /**
      * o Plot the counts of each query map ID on a chromosome.
      *
-     * @param chr
+     * @param chr Chromosome to analyse and for which maps are displayed
      */
     public void plotCounts(Chromosome chr) {
         drawChart = true;
@@ -100,6 +103,10 @@ public class AlignmentsOnChromosomeChartPanel extends JPanel {
         }
     }
 
+    /**
+     * Set style of the plots
+     * @param style Style chosen by the user
+     */
     public void setStyle(Styler.ChartTheme style) {
         this.style = style;
         repaint();

@@ -160,7 +160,7 @@ public class CmapReader {
     /**
      * Get Nickase enzyme
      *
-     * @param filename
+     * @param filePath
      * @return enzyme motif
      */
     public String getNickaseEnzyme(String filePath) {

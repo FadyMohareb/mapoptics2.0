@@ -89,7 +89,7 @@ public class Fasta {
     
     /**
      *
-     * @param Double size
+     * @param size
      * @return Sequence object corresponding to that size
      */
     public Sequence getSequence(Double size){

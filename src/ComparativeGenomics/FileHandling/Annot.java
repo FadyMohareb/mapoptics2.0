@@ -33,12 +33,20 @@ public class Annot {
     private boolean isValid = false;
     private ArrayList<Gene> genes = new ArrayList();
 
+    /**
+     * Class constructor
+     * 
+     * @param filepath Path of annotation file
+     */
     public Annot(String filepath) {
         this.filepath = filepath;
         readAnnotation();
 
     }
 
+    /**
+     * Class constructor with empty annotations
+     */
     public Annot() {
 
     }
@@ -177,8 +185,9 @@ public class Annot {
     }
 
     /**
-     *
-     * @param filepath the filepath of the annotation file to be read
+     * Set the filepath of the annotation file to be read
+     * 
+     * @param filepath File path of the annotation file to be read
      */
     public void setFilepath(String filepath) {
         this.filepath = filepath;
@@ -186,7 +195,15 @@ public class Annot {
     }
 
     /**
-     *
+     * Access all of the Gene objects associated with that chromosome from the chrAnnotations HashMap.
+     * <p>
+     * Return a HashMap that stores the contents of the annotation file whereby the key is the
+     * chromosome name and the contents an ArrayList of all the genes.
+     * Please note the chromosome name on the header of the Fasta file should
+     * be the same as the chromosome name format used here. For example, either chr1 or 1 or chr_1.
+     * The specific format does not matter if it is consistent between the annotation and fasta
+     * files for a genome. The query and reference genomes can use different formats.
+     * 
      * @param chr the chromosome name of the annotations to be accessed
      * @return Access all of the Gene objects associated with that chromosome
      * from the chrAnnotations HashMap
@@ -196,7 +213,8 @@ public class Annot {
     }
 
     /**
-     *
+     * Return the number of genes for each chromosome
+     * 
      * @param chr the chromosome name to count the number of annotations of
      * @return the Integer value of the number of annotations
      */
@@ -205,7 +223,8 @@ public class Annot {
     }
 
     /**
-     *
+     *Get genes of the annotation file
+     * 
      * @return all genes from the file regardless of the chromosome
      */
     public ArrayList<Gene> getGenes() {
@@ -213,8 +232,9 @@ public class Annot {
     }
     
     /**
-     * @return boolean indicating file validity
-     * A valid file exists, is in proper format and is not empty
+     * Indicate if A valid file exists, is in proper format and is not empty
+     * 
+     * @return isValid Boolean indicating file validity
      */
     public boolean getValidity(){
         return this.isValid;

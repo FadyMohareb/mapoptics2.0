@@ -241,7 +241,7 @@ public class JsonFiles {
      * Save jobs information from a list of Job objects to the json file
      * "jobs.json" saved in the folder "serverInfo"
      *
-     * @param jobs List of Job objects
+     * @param serversList List of servers objects
      */
     public void saveServerJson(List<ExternalServer> serversList) {
         try {
