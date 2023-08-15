@@ -14,6 +14,8 @@ import java.awt.geom.Line2D;
 import java.util.HashMap;
 
 /**
+ * Draws the query chromosome that has been aligned to the reference chromosome
+ * in <code>QueryPanel</code>
  *
  * @author franpeters
  */
@@ -53,6 +55,17 @@ public class QueryShape {
     private Line2D.Double refSiteLine;
     HashMap<Integer, Double> refSitesRelPos = new HashMap();
 
+    /**
+     * Constructor with positins, scale, start y, cmap, xmap, start query
+     *
+     * @param refSitesRelPos relative position of reference sites
+     * @param xPosFirstMatchedSite x coordinate of first matched site
+     * @param startY y coordinate
+     * @param scale scale
+     * @param xmap xmap data
+     * @param cmap cmap data
+     * @param queryStart position of the query start
+     */
     public QueryShape(HashMap<Integer, Double> refSitesRelPos, Double xPosFirstMatchedSite, double startY, Double scale, XmapData xmap, CmapData cmap, Double queryStart) {
         this.startY = startY;
         this.cmap = cmap;
@@ -79,6 +92,11 @@ public class QueryShape {
 
     }
 
+    /**
+     * Draws the query rectangle on the <code>JPanel</code>
+     *
+     * @param g2d graphical device
+     */
     public void drawRect(Graphics2D g2d) {
         g2d.setColor(rectColour);
         queryRect = new MapOpticsRectangle(startX + this.deltaX, startY + this.deltaY, this.queryLengthScaled, 50);
@@ -102,7 +120,6 @@ public class QueryShape {
                             startY + deltaY);
                     Shape s = line;
                     g2d.draw(s);
-//                System.out.println("aligns "+ this.refSitesRelPos.get(p.getRefSite().getSiteID())+ " test  "+ (p.getQrySite().getPosition()*scale) + startX +  deltaX+ " " +startY);
                     qrySiteLine = new Line2D.Double((p.getQrySite().getPosition() * scale) + startX + deltaX, 220 + deltaY, (p.getQrySite().getPosition() * scale) + startX + deltaX, 220 + deltaY + 50);
                     refSiteLine = new Line2D.Double(this.refSitesRelPos.get(p.getRefSite().getSiteID()), 70, this.refSitesRelPos.get(p.getRefSite().getSiteID()), 120);
                     if (!p.getQrySite().isMatch()) {
@@ -122,35 +139,68 @@ public class QueryShape {
         }
     }
 
+    /**
+     * Gets rectangle
+     * @return rectangle
+     */
     public MapOpticsRectangle getRect() {
         return this.queryRect;
     }
 
+    /**
+     * Sets if the rectangle has been clicked on
+     * @param bool selected
+     */
     public void setSelected(boolean bool) {
         this.selected = bool;
     }
 
+    /**
+     * Records the change in position of the shape if it is dragged
+     * @param dx x coordinate
+     * @param dy y coordinate
+     */
     public void moveRect(Double dx, Double dy) {
         this.deltaX = dx;
         this.deltaY = dy;
     }
 
+    /**
+     * Sets the colour of matched sites. Default is green
+     * @param c colour
+     */
     public void setMatchedColour(Color c) {
         this.matchedSiteColour = c;
     }
 
+    /**
+     * Sets the colour of unmatched sites. Default is black
+     * @param c colour
+     */
     public void setUnmatchedColour(Color c) {
         this.unmatchedSiteColour = c;
     }
 
+    /**
+     * Set the colour of query rectangle. Default is light grey
+     * @param c colour
+     */
     public void setRectColour(Color c) {
         this.rectColour = c;
     }
 
+    /**
+     * Changes the position of the shape in x axis
+     * @param dX shape x coordinate
+     */
     public void setDeltaX(Double dX) {
         this.deltaX = dX;
     }
 
+    /**
+     * Changes the position of the shape in y axis
+     * @param dY shape y coordinate
+     */
     public void setDeltaY(Double dY) {
         this.deltaY = dY;
     }

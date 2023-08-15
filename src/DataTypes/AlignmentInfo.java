@@ -40,7 +40,7 @@ public class AlignmentInfo {
     }
     
     /**
-     * Get query alignment start
+     * Gets query alignment start
      * 
      * @return qryAlignStart
      */
@@ -49,7 +49,7 @@ public class AlignmentInfo {
     }
 
     /**
-     * Get query alignment end
+     * Gets query alignment end
      * 
      * @return qryAlignEnd
      */
@@ -58,7 +58,7 @@ public class AlignmentInfo {
     }
 
     /**
-     * Get reference alignment start
+     * Gets reference alignment start
      * @return refAlignStart
      */
     public String getRefAlignStart() {
@@ -66,7 +66,7 @@ public class AlignmentInfo {
     }
 
     /**
-     * Gete reference alignment end
+     * Gets reference alignment end
      * @return refAlignEnd
      */
     public String getRefAlignEnd() {
@@ -74,7 +74,7 @@ public class AlignmentInfo {
     }
 
     /**
-     * Get contig orientation
+     * Gets contig orientation
      * @return orientation
      */
     public String getOrientation() {
@@ -82,7 +82,7 @@ public class AlignmentInfo {
     }
 
     /**
-     * Set orientation of alignments
+     * Sets orientation of alignments
      * @param orientation Orientation of alignment
      */
     public void setOrientation(String orientation) {
@@ -90,7 +90,7 @@ public class AlignmentInfo {
     }
 
     /**
-     * Get confidence score
+     * Gets confidence score
      * @return confidence
      */
     public String getConfidence() {
@@ -98,7 +98,7 @@ public class AlignmentInfo {
     }
 
     /**
-     * Set confidence score
+     * Sets confidence score
      * @param confidence confidence score
      */
     public void setConfidence(String confidence) {
@@ -106,40 +106,41 @@ public class AlignmentInfo {
     }
 
     /**
-     * Get hit enum
-     * @return hitEnum
+     * Gets hit enum
+     * @return hitEnum pseudo-cigar string representing matches (M), insertions (I) or deletions (D)
+     * or label sites with respect to the reference or anchor map.
      */
     public String getHitEnum() {
         return hitEnum;
     }
 
     /**
-     * Set hit enumeration
-     * @param hitEnum Enumeration of hits
-     * @return hitEnum
+     * Sets hit enumeration
+     * @param hitEnum pseudo-cigar string representing matches (M), insertions (I) or deletions (D) 
+     * or label sites with respect to the reference or anchor map
      */
     public void setHitEnum(String hitEnum) {
         this.hitEnum = hitEnum;
     }
 
     /**
-     * Get channel label
-     * @return labelChannel
+     * Gets channel label
+     * @return labelChannel Color channel of alignment from cmap files
      */
     public String getLabelChannel() {
         return labelChannel;
     }
 
     /**
-     * Set label of the channel
-     * @param labelChannel Label of the channel
+     * Sets label channel
+     * @param labelChannel Color channel of alignment from cmap files
      */
     public void setLabelChannel(String labelChannel) {
         this.labelChannel = labelChannel;
     }
 
     /**
-     * Get alignment
+     * Gets alignment
      * @return alignment
      */
     public String getAlignment() {
@@ -147,30 +148,10 @@ public class AlignmentInfo {
     }
 
     /**
-     * Set alignment
+     * Sets alignment
      * @param alignment alignment object
      */
     public void setAlignment(String alignment) {
         this.alignment = alignment;
     }
-    /*
-     public void setQryAlignStart(String qryAlignStart) {
-         this.qryAlignStart = qryAlignStart;
-     }
-
-     public void setQryAlignEnd(String qryAlignEnd) {
-         this.qryAlignEnd = qryAlignEnd;
-     }
-
-     public void setRefAlignEnd(String refAlignEnd) {
-        this.refAlignEnd = refAlignEnd;
-     }
-
-     public void setRefAlignStart(String refAlignStart) {
-        this.refAlignStart = refAlignStart;
-    }
-
-    */
-
-
 }

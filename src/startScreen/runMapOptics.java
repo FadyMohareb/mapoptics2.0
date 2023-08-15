@@ -13,7 +13,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- *
+ * Contains main function to run MapOptics.
+ * 
  * @author franpeters
  */
 public class runMapOptics {

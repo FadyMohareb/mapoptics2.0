@@ -11,11 +11,20 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-/*
+/**
+ * Validates and reads CMAP files
+ *
  * @author Josie
  */
 public class CmapReader {
 
+    /**
+     * Validate cmap file: check file format (correct extension, file containing
+     * cmap version)
+     *
+     * @param filePath path of cmap file
+     * @return boolean validation of the cmap file
+     */
     public static boolean validateCmap(String filePath) {
 
         if (filePath.endsWith(".cmap")) {
@@ -62,6 +71,15 @@ public class CmapReader {
         return false;
     }
 
+    /**
+     * Gets summary data. Summary data is displayed in
+     * <code>SummaryViewData</code>, containing queries and references
+     * <code>HashMap</code> where references are scaled relative to the summary
+     * view panel.
+     *
+     * @param cmapFile cmap file
+     * @param references map of references, the key is their ID
+     */
     public static void getSummaryData(File cmapFile, Map<Integer, Reference> references) {
 
         Set<Integer> unvisited = new HashSet<>(references.keySet());
@@ -109,6 +127,12 @@ public class CmapReader {
         }
     }
 
+    /**
+     * Gets reference data.
+     *
+     * @param qryFile query file path
+     * @param queries map of queries, the key is the query contig ID
+     */
     public static void getReferenceData(File qryFile, Map<Integer, Query> queries) {
 
         Set<Integer> unvisited = new HashSet<>(queries.keySet());
@@ -158,9 +182,9 @@ public class CmapReader {
     }
 
     /**
-     * Get Nickase enzyme
+     * Extract nickase enzyme from file containing enzyme information.
      *
-     * @param filePath
+     * @param filePath path of file containing enzymes names and patterns
      * @return enzyme motif
      */
     public String getNickaseEnzyme(String filePath) {
@@ -185,42 +209,12 @@ public class CmapReader {
         return null;
     }
 
-//    public static List<List<Object>> getSummaryData(File cmapFile, List<Integer> refIds) {
-//
-//        List<List<Object>> summaryData = new ArrayList<>();
-//
-//        try {
-//            BufferedReader br = new BufferedReader(new FileReader(cmapFile));
-//            String line;
-//
-//            while ((line = br.readLine()) != null) {
-//                if (line.startsWith("#")) {
-//                    continue;
-//                }
-//
-//                String[] rowData = line.split("\t");
-//                int id = Integer.parseInt(rowData[0]);
-//
-//                if (refIds.contains(id)) {
-//                    refIds.remove(Integer.valueOf(id));
-//                    double length = Double.parseDouble(rowData[1]);
-//                    int labels = Integer.parseInt(rowData[2]);
-//                    double density = (labels / length) * 100000;
-//
-//                    List<Object> data = new ArrayList<>(Arrays.asList(id, length, labels, density));
-//
-//                    summaryData.add(data);
-//                }
-//            }
-//
-//            br.close();
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return summaryData;
-//    }
+    /**
+     * Reads CMAP input file and parses it into a <code>HashMap</code> object
+     *
+     * @param filename cmap file path to parse
+     * @return contigs hashmap of cmap data
+     */
     public static LinkedHashMap cmapToHashMap(String filename) {
         String line;
         String fields[];

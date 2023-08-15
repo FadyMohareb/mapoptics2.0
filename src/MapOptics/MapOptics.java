@@ -40,7 +40,9 @@ import java.util.List;
 import java.util.*;
 import startScreen.startScreen;
 
-/*
+/**
+ * Frame of the application
+ * 
  * @author Josie
  */
 public class MapOptics extends JFrame {
@@ -76,6 +78,9 @@ public class MapOptics extends JFrame {
     //Exit button
     private javax.swing.JButton exitVerifyAssembly;
 
+    /**
+     * Constructor
+     */
     public MapOptics() {
         System.setProperty("sun.java2d.opengl", "true");
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);

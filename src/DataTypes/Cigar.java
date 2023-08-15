@@ -4,15 +4,15 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Parse and save cigar content
+ * 
+ * @author Anisha
+ */
 public class Cigar {
 
-    /**
-     * Class containing cigar string data
-     *
-     * @author Anisha
-     */
-
     private final String hitEnum;
+    // List of parsed cigar strings
     public final List<String> parsedCigar;
     private List<String> revCompCigar;
     private Map<Integer, String> cigRefSites;
@@ -21,7 +21,7 @@ public class Cigar {
     private final Map<Double, String> cigQryPos;
 
     /**
-     * Class constructor
+     * Class constructor with hitEnum
      *
      * @param hitEnum Input string from XMAP file
      */

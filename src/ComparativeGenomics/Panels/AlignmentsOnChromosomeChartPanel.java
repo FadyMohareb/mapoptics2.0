@@ -19,10 +19,11 @@ import org.knowm.xchart.CategoryChartBuilder;
 import org.knowm.xchart.style.Styler;
 
 /**
- *
- * @author franpeters Plot the number of alignments found per each cmap ID of
+ * Plots the number of alignments found per each cmap ID of
  * the query genome accross a chromosome from the reference genome using XChart.
  * The chart style can be changed by the user.
+ * 
+ * @author franpeters
  */
 public class AlignmentsOnChromosomeChartPanel extends JPanel {
 
@@ -41,13 +42,13 @@ public class AlignmentsOnChromosomeChartPanel extends JPanel {
     HashMap<Integer, Number> qryIDCount = new HashMap();
 
     /**
-     * Constructor of the class
+     * Constructor
      */
     public AlignmentsOnChromosomeChartPanel() {
     }
 
     /**
-     * o Plot the counts of each query map ID on a chromosome.
+     * Plots the counts of each query map ID on a chromosome.
      *
      * @param chr Chromosome to analyse and for which maps are displayed
      */
@@ -90,6 +91,10 @@ public class AlignmentsOnChromosomeChartPanel extends JPanel {
         }
     }
 
+    /**
+     * Repaint this panel
+     * @param g graphical device
+     */
     @Override
     public void paint(Graphics g) {
         super.paint(g);
@@ -104,7 +109,7 @@ public class AlignmentsOnChromosomeChartPanel extends JPanel {
     }
 
     /**
-     * Set style of the plots
+     * Sets style of the plots
      * @param style Style chosen by the user
      */
     public void setStyle(Styler.ChartTheme style) {

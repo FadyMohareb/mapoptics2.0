@@ -39,10 +39,11 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- *
- * @author marie Manage creation and retrieval of information from server Json
+ * Manages creation and retrieval of information from server Json
  * files. Encryption or decryption of the Json, getting or saving jobs or
  * servers in those files.
+ * 
+ * @author Marie Schmit
  */
 public class JsonFiles {
 
@@ -55,9 +56,20 @@ public class JsonFiles {
     private String strKey = new String();
     private String currentUser = new String();
 
+    /**
+     * Constructor
+     */
     public JsonFiles() {
     }
 
+    /**
+     * Initialisation of access: compare the given password to the encrypted password saved in the user's
+     * file, to verify its validity and give access to encrypted JSON files.
+     * 
+     * @param user MapOptics username
+     * @param password MapOptics password
+     * @return false if access is denied, true if not
+     */
     private boolean accessInitialisation(String user, String password) {
         this.strKey = password;
         this.currentUser = user;
@@ -155,31 +167,32 @@ public class JsonFiles {
         } catch (IOException ex) {
             Logger.getLogger(runMapOptics.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         return false;
     }
 
     /**
-     * Set the key that is used for the encryption / decryption of JSON file set
+     * Sets the key that is used for the encryption / decryption of JSON file set
      * the user name to access the right file
      *
-     * @param password
-     * @return boolean indicating if the password is correct or not
+     * @param user MapOptics username
+     * @param password MapOptics password (encryption key provided by the user)
+     * @return boolean indicating if the password is correct (true) or not (false)
      */
     public boolean setAccess(String user, String password) {
         return (this.accessInitialisation(user, password));
     }
 
-//Constructor creates and encrypt the json files
-// Add saveJobJson
-// saveServerJson
-//serversFromJson
-//JobsFromJson
     /**
-     * Save jobs information from a list of Job objects to the json file
+     * Saves jobs information from a list of Job objects to the json file
      * "jobs.json" saved in the folder "serverInfo"
+     * Sensitive information like the password of the job's server are encrypted using the 
+     * encryption key provided by the user (which it the user's MapOPtics password).
+     * Before encryption, the padding character is changed from "=" to "*"
+     * to avoid any confusion with the "=" by default written in a JSON file.
+     * "*" character was chosen because it does not exist in Base 64 format, the format of the
+     * encrypted message: it cannot be confused with a part of the encrypted message.
      *
-     * @param jobs List of Job objects
+     * @param jobs list of Job objects
      */
     public void saveJobJson(List<Job> jobs) {
         try {
@@ -238,10 +251,16 @@ public class JsonFiles {
     }
 
     /**
-     * Save jobs information from a list of Job objects to the json file
-     * "jobs.json" saved in the folder "serverInfo"
+     * Saves jobs information from a list of Job objects to the json file
+     * "jobs.json" saved in the folder "serverInfo".
+     * Server's sensitive data like their password, host IP addresses or username are encrypted in the JSON,
+     * using the user's encryption key which is its chosen MapOPtics password.
+     * Before encryption, the padding character is changed from "=" to "*"
+     * to avoid any confusion with the "=" by default written in a JSON file.
+     * "*" character was chosen because it does not exist in Base 64 format, the format of the
+     * encrypted message: it cannot be confused with a part of the encrypted message.
      *
-     * @param serversList List of servers objects
+     * @param serversList list of servers objects
      */
     public void saveServerJson(List<ExternalServer> serversList) {
         try {
@@ -286,9 +305,11 @@ public class JsonFiles {
     }
 
     /**
-     * Get the server information saved in the file servers.json
+     * Gets the server's information, saved in the file servers.json
+     * Before decryption of sensitive information, padding characters "*" are
+     * changed back to "=".
      *
-     * @param array list
+     * @param serversList list of servers
      * @return List of servers from json file
      */
     private void serversFromJson(List<ExternalServer> serversList) {
@@ -301,7 +322,6 @@ public class JsonFiles {
             // convert JSON file to map
             Map<?, ?> map = gson.fromJson(reader, Map.class
             );
-//    ArrayList array = new ArrayList();
             // print map entries
             if (map == null) {
             } else {
@@ -352,8 +372,10 @@ public class JsonFiles {
     }
 
     /**
+     * Gets the servers from this servers json file
+     * 
      * @param serversList list of servers
-     * @return List of servers saved in the json file
+     * @return list of servers saved in this json file
      */
     public List<ExternalServer> getServersFromJson(List<ExternalServer> serversList) {
         serversFromJson(serversList);
@@ -361,8 +383,10 @@ public class JsonFiles {
     }
 
     /**
-     * @param jobsRunningList List of Job object, jobs that are running
-     * @return List of servers saved in the json file
+     * Gets jobs saved in this jobs json file
+     * 
+     * @param jobsRunningList list of <code>Job</code> object, jobs that are running
+     * @return list of servers saved in the json file
      */
     public List<Job> getJobsFromJson(List<Job> jobsRunningList) {
         jobsFromJson(jobsRunningList);
@@ -370,9 +394,10 @@ public class JsonFiles {
     }
 
     /**
-     * Read the jobs from the jobs.json file
+     * Reads the jobs from the jobs.json file.
+     * The json is splitted to extract jobs information. Sensitive information are decrypted.
      *
-     * @param jobsRunningList
+     * @param jobsRunningList list of running jobs
      */
     private void jobsFromJson(List<Job> jobsRunningList) {
         this.jobsRunning = jobsRunningList;
@@ -451,7 +476,6 @@ public class JsonFiles {
                 // close reader
                 reader.close();
             }
-            //jobTableAdd(this.jobsRunning);
         } catch (JsonIOException | JsonSyntaxException | IOException ex) {
             System.out.println("JSON reader not created " + ex);
             ex.getCause();
@@ -459,12 +483,11 @@ public class JsonFiles {
     }
 
     /**
-     * Encrypt a message.
-     *
-     * @author marie
-     * @param message
-     * @param keyBytes
-     * @return encryptedMessage
+     * Encrypts a message.
+     * 
+     * @param message message in clear
+     * @param keyBytes public encryption key in bytes
+     * @return encryptedMessage encrypted message
      * @throws InvalidKeyException
      * @throws NoSuchPaddingException
      * @throws NoSuchAlgorithmException
@@ -487,12 +510,11 @@ public class JsonFiles {
     }
 
     /**
-     * Decrypt a crypted message.
+     * Decrypts an encrypted message.
      *
-     * @author marie
-     * @param cryptedMessage
-     * @param publicKey
-     * @return
+     * @param cryptedMessage encrypted message
+     * @param publicKey public encryption key in bytes
+     * @return decrypted message, in clear
      * @throws NoSuchPaddingException
      * @throws NoSuchAligorithmException
      * @throws InvalidKeyException

@@ -39,18 +39,18 @@ import javax.imageio.ImageIO;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
+ * Displays the alignments of a query for a chromosome.
+ * Provides rudimentary insertion and deletion indication,
+ * through presence of green (insertion) or red (deletion) rectangles below the query rectangle.
+ * Enables a focus on specific ranges or the reference genome.
+ * If genes are within the range of the query, an interactive gene track is also shown,
+ * which can reveal a pop-up to display more metadata about the gene,
+ * as well as options to query two databases using this gene name.
+ * 
  * @author franpeters
  */
-public class QueryPanel extends javax.swing.JPanel implements MouseListener, MouseMotionListener {
 
-    /**
-     * Creates new form QueryPanel this panel will view the alignments of a
-     * query for a chromosome. will need to show the chr with the bands then the
-     * sites on the chr with matching sites the same colour then the gene
-     * annotation as well
-     *
-     */
+public class QueryPanel extends javax.swing.JPanel implements MouseListener, MouseMotionListener {
     private Xmap xmap;
     private Chromosome chr = null;
     private String refOrganism;
@@ -87,6 +87,9 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
     private Integer draggedShape = null;
     private Gene selectedGene;
 
+    /**
+     * Constructor
+     */
     public QueryPanel() {
         this.setBackground(Color.white);
         this.addMouseListener(this);
@@ -94,21 +97,35 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
         initComponents();
     }
 
+    /**
+     * Sets reference organism
+     * 
+     * @param org Reference organism name, including the genus name (ex: Homo sapiens)
+     */
     public void setRefOrg(String org) {
         this.refOrganism = org;
     }
 
+    /**
+     * Sets xmap
+     * 
+     * @param xmap smap data
+     */
     public void setXmap(Xmap xmap) {
         this.xmap = xmap;
     }
 
+    /**
+     * Sets the chromosome of the reference genome selected by the user
+     * 
+     * @param chr chromosome data
+     */
     public void setChr(Chromosome chr) {
         //Reset th array list
         reset();
         if (chr != null) {
             this.chr = chr;
             findSites();
-
         } else {
             System.out.println("Query panel chr is null");
         }
@@ -117,9 +134,12 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
         qryWidth = w.doubleValue() - (2 * startX);
     }
 
+    /**
+     * Finds sites on the reference chromosome that are within the query range chosen by the user
+     */
     public void findSites() {
         relSize = qryWidth / this.size;
-//        get the sites within the range and record where they should be drawn on the panel in relsites relpos hashmap
+        // get the sites within the range and record where they should be drawn on the panel in relsites relpos hashmap
         for (HashMap.Entry<Integer, Site> entry : this.chr.getRefSites().entrySet()) {
             Site site = entry.getValue(); // Digestion site
             Double position = site.getPosition();
@@ -128,17 +148,13 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
                 // Calculate relative position of the reference
                 Double relPosRef = ((site.getPosition() - start) * relSize) + startX.doubleValue();
                 this.refSitesRelPos.put(site.getSiteID(), relPosRef); // Save relative position into a hashmap, the key is the site ID
-//                    System.out.println("REF "+ site.getSiteID()+ " "+ relPosRef +" "+ chr.getCmapID());
-//                    System.out.println(site.getSiteID()+" "+ site.getPosition()+ " " + relPosRef);
                 if (site.isMatch()) { // Other sites matche ie have the same ID in XMAP file
                     for (HashMap.Entry<Integer, ArrayList<Match>> matches : site.getMatches().entrySet()) {
                         if (matches.getValue().size() == 1) {
-//                                only add sites that have been matched to this xmapID once
+                            //only add sites that have been matched to this xmapID once
                             if (!this.xmapPositions.containsKey(matches.getKey())) {
                                 this.xmapPositions.put(matches.getKey(), site);
-//                                System.out.println(matches.getKey()+ " xmap iD " + site.getSiteID()+ " site id");
                             }
-
                         }
                     }
                 }
@@ -161,7 +177,6 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
                         .getRefSite().getPosition();
                 Double sizeDiffPx = (site.getPosition() - mapFirstSite) * relSize;
                 relFirstPosRef = sitePosPx - sizeDiffPx;
-
             }
             if (!map.getOri()) {
                 Double mapLastSite = map.returnAlignments()
@@ -201,6 +216,12 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
         this.repaint();
     }
 
+    /**
+     * Changes the range of the chromosome to query and visualise on this panel
+     * 
+     * @param start chromosome start position
+     * @param end chromosome end position
+     */
     public void setRange(Integer start, Integer end) {
 //        reset the arraylists
         reset();
@@ -219,6 +240,11 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
         findSites();
     }
 
+    /**
+     * Draws the reference chromosomes' sites that are within the range set by the user
+     * 
+     * @param g graphical device
+     */
     private void drawQuery(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setFont(chrFont);
@@ -233,16 +259,10 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
                 Integer siteID = entry.getKey();
                 Double relPosRef = entry.getValue();
                 Site site = this.chr.getRefSites().get(siteID);
-//                if(!site.isMatch()){
                 g2d.setColor(Color.black);
-//                }  
-//                if (site.isMatch()){
-//                    g2d.setColor(Color.blue);
-//                }
                 Shape r = new Line2D.Double(relPosRef, 70, relPosRef, 120);
                 g2d.draw(r);
             }
-
             drawScaleBar(g2d, ref);
             drawGenes(this.chr.getAnnotations(), g2d);
             drawAlignments(g2d);
@@ -250,24 +270,28 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
         }
     }
 
+    /**
+     * Draws the alignments using <code>QueryShape</code> objects
+     * 
+     * @param g2d graphical device
+     */
     private void drawAlignments(Graphics2D g2d) {
         Integer count = 0;
         for (QueryShape s : alignShapes) {
-//          Set the colour
+            // Set the colour
             Color colour = setAlignmentColour(count);
             s.setRectColour(Color.LIGHT_GRAY);
             s.drawRect(g2d);
             count += 1;
         }
-//        try{QueryShape s = alignShapes.get(0);
-//        s.setRectColour(Color.LIGHT_GRAY);
-//            s.drawRect(g2d);
-////            count +=1;   
-//        }catch(IndexOutOfBoundsException ex){
-//            System.out.println("no alignments");
-//        }
     }
 
+    /**
+     * Draws the genes located within the range using <code>MapOpticsRectangle</code> objects
+     * 
+     * @param genes genes to draw
+     * @param g2d graphical device
+     */
     private void drawGenes(ArrayList<Gene> genes, Graphics2D g2d) {
         if (genes != null) {
             for (Gene gene : genes) {
@@ -297,22 +321,24 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
                         g2d.draw(geneShape);
                         g2d.setStroke(new BasicStroke(1));
                     }
-
                     if (!gene.getSelected()) {
                         g2d.setColor(Color.DARK_GRAY);
                         g2d.draw(geneShape);
                     }
-
                     count++;
                 }
             }
         }
     }
 
+    /**
+     * Draw all the indels events that are associated with the chromosome that occurs within the query range of the <code>JPanel</code>
+     * 
+     * @param g2d graphicla device
+     */
     private void drawIndels(Graphics2D g2d) {
         for (Indel indel : indels) {
             Double indelStart = (indel.getStart() - start) * relSize + startX;
-//            System.out.println("indel start: " + indel.getStart()+ " x pos" + indelStart + " relSize "+ relSize);
             Double indelSize = indel.getSize() * relSize;
             if (indel.getType().equals("Insertion")) {
                 g2d.setColor(Color.green);
@@ -326,6 +352,12 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
         }
     }
 
+    /**
+     * Draws the scale bar on this panel
+     * 
+     * @param g2d graphical device
+     * @param refRect reference rectangle
+     */
     private void drawScaleBar(Graphics2D g2d, MapOpticsRectangle refRect) {
         g2d.setColor(Color.black);
         g2d.drawLine((int) refRect.getMinX(), startY, (int) (refRect.getMinX() + refRect.getWidth()), startY);
@@ -340,7 +372,6 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
             s = "0";
         } else {
             s = String.format("%.2f", (double) start / 1000);
-
         }
         e = String.format("%.2f", (double) end / 1000);
         g2d.drawString(s + " kb", (int) (refRect.getMinX() - g2d.getFontMetrics().stringWidth(s + " kb") / 2), startY + 15);
@@ -355,6 +386,12 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
         }
     }
 
+    /**
+     * Sets alignments color, to indicate the presence of an alignment to the query genome
+     * 
+     * @param Int alignment number
+     * @return color of alignment
+     */
     private Color setAlignmentColour(Integer Int) {
         Color[] colours = {Color.decode("#3792ff"), Color.decode("#20cdf5"), Color.decode("#8ef2f4"), Color.decode("#f179a7"), Color.decode("#fcc5f1")};
         Integer number = colours.length;
@@ -375,6 +412,14 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
         }
     }
 
+    /**
+     * Draws text on the center of this panel
+     * 
+     * @param g2d graphical device
+     * @param string text to display
+     * @param width this panels width
+     * @param height this panels height
+     */
     private void drawTextCentre(Graphics2D g2d, String string,
             Integer width, Integer height) {
         int stringWidth = (int) g2d.getFontMetrics().getStringBounds(string, g2d).getWidth();
@@ -385,22 +430,46 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
         g2d.drawString(string, horizontalCenter, verticalCenter);
     }
 
+    /**
+     * Gets start of the query
+     * 
+     * @return start
+     */
     public Integer getStart() {
         return this.start;
     }
 
+    /**
+     * Gets end of the query
+     * 
+     * @return end
+     */
     public Integer getEnd() {
         return this.end;
     }
 
+    /**
+     * Gets size of the query
+     * 
+     * @return query size
+     */
     public Integer getRange() {
         return this.size;
     }
 
+    /**
+     * Gets genes within the range
+     * @return array list of genes
+     */
     public ArrayList<Gene> getGenes() {
         return this.genesInRange;
     }
 
+    /**
+     * Sets the corresponding gene's <code>MapOpticsRectamgle</code> object to have a red border
+     * 
+     * @param gene selected gene to highlight
+     */
     public void highlightGene(Gene gene) {
         System.out.println(gene.getName() + " highlighted");
         for (Gene g : this.genesInRange) {
@@ -411,6 +480,9 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
         repaint();
     }
 
+    /**
+     * Clears all red borders of <code>Gene</code> objects in this panel
+     */
     public void clearHighlightedGenes() {
         for (Gene g : this.genesInRange) {
             g.setSelected(false);
@@ -418,6 +490,11 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
         repaint();
     }
 
+    /**
+     * Repaints components
+     * 
+     * @param g graphical device
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);

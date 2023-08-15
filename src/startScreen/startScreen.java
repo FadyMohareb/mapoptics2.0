@@ -16,7 +16,7 @@ import java.nio.file.Paths;
 import javax.swing.JOptionPane;
 
 /**
- *
+ * First screen displayed when opening MapOptics.
  * @author franpeters
  */
 public class startScreen extends javax.swing.JFrame {

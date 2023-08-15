@@ -8,7 +8,8 @@ import java.io.File;
 import javax.imageio.ImageIO;
 
 /**
- *
+ * Displays all the chromosomes of the reference.
+ * 
  * @author franpeters
  */
 public class GenomePanel extends javax.swing.JPanel {
@@ -23,11 +24,22 @@ public class GenomePanel extends javax.swing.JPanel {
         initComponents();
     }
 
+    /**
+     * Sets alignments of this genome 
+     * 
+     * @param align alignment
+     * @param type alignment type
+     */
     public void setAlignment(Alignment align, String type) {
         this.alignment = align;
         this.type = type;
     }
 
+    /**
+     * Draws one rectangle per chromosome
+     * 
+     * @param g graphical device
+     */
     void drawRectangles(Graphics g) {
         if (alignment == null) {
         } else {
@@ -37,19 +49,27 @@ public class GenomePanel extends javax.swing.JPanel {
             if ("reference".equals(this.type)) {
                 this.alignment.getRefGenome().getKaryotype().drawChromosomes(g2d, w, h);
             }
-//         if("query".equals(this.type)){
-//              this.alignment.getQryGenome().getKaryotype().drawChromosomes(g2d, w, h);
-//         }
-
         }
     }
 
+    /**
+     * Repaint this panel
+     * 
+     * @param g graphical device
+     */
     @Override
     public void paint(Graphics g) {
         super.paint(g);
         drawRectangles(g);
     }
 
+    /**
+     * Saves an image of this panel
+     * 
+     * @param name image name
+     * @param type image type
+     * @param location file directory
+     */
     public void saveImage(String name, String type, String location) {
         BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = image.createGraphics();

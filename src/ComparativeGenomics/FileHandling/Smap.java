@@ -22,13 +22,14 @@ import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author marie Read and parse SV detection outputs from FaNDOM or RefAligner.
- * The parsed file can either be .txt format, or SMAP format. The format of SMAP
- * is described here:
+ * Read and parse SV detection outputs from FaNDOM or RefAligner. The parsed
+ * file can either be .txt format, or SMAP format. The format of SMAP is
+ * described here:
  * https://bionanogenomics.com/wp-content/uploads/2017/03/30041-SMAP-File-Format-Specification-Sheet.pdf
  * The expected format of txt input is described here:
  * https://github.com/jluebeck/FaNDOM/tree/master
+ *
+ * @author Marie Schmit
  */
 public class Smap {
 
@@ -72,10 +73,10 @@ public class Smap {
     }
 
     /**
-     * Read and parse files in .txt format, They are output from FaNDOM. The
+     * Reads and parses files in .txt format. They are output from FaNDOM. The
      * result of this parsing is saved in the class SVFandom.
      *
-     * @param filepath
+     * @param filepath path of text file
      */
     private void readSVtxt(String filepath) {
         if (validateSVtxt(filepath)) {
@@ -102,7 +103,7 @@ public class Smap {
                         String direction2 = rowData[5];
                         String type = rowData[6];
                         int[] id = new int[rowData[7].split(",").length];
-                        for (int i = 0; i < rowData[7].split(",").length; i++){
+                        for (int i = 0; i < rowData[7].split(",").length; i++) {
                             id[i] = Integer.valueOf(rowData[7].split(",")[i]);
                         }
                         int numSupports = Integer.valueOf(rowData[8]);
@@ -123,10 +124,10 @@ public class Smap {
     }
 
     /**
-     * Validate input file which is in text format, FaNDOM output.
+     * Validates input file which is in text format, FaNDOM output.
      *
      * @param filepath Path to the file to validate
-     * @return boolean indicating if the file is valid
+     * @return boolean indicating if the file is valid (true_ or not (false)
      */
     private boolean validateSVtxt(String filePath) {
         if (Files.exists(Paths.get(filePath))) {
@@ -158,7 +159,7 @@ public class Smap {
     }
 
     /**
-     * Detect SV if input file is a text file following the format of those
+     * Detects SV if input file is a text file following the format of those
      * produced by FaNDOM
      */
     private void sortTxtSV() {
@@ -172,7 +173,8 @@ public class Smap {
     }
 
     /**
-     * Read and parse SMAP input file.
+     * Reads and parses SMAP input file.
+     *
      * @param filepath Path to SMAP file
      */
     private void readSmap(String filepath) {
@@ -190,7 +192,7 @@ public class Smap {
                     String chrPattern = "#";
                     Pattern c = Pattern.compile(chrPattern);
                     Matcher checkHeader = c.matcher(row);
-                    
+
                     if (!checkHeader.find()) {
                         // Parse data
                         String[] rowData = row.split("\t");
@@ -200,7 +202,7 @@ public class Smap {
                         int refID2 = Integer.valueOf(rowData[3]);
                         int qryStart = (int) Double.parseDouble(rowData[4]);
                         int qryEnd = (int) Double.parseDouble(rowData[5]);
-                        int refStart = (int) Double.parseDouble(rowData[6]); 
+                        int refStart = (int) Double.parseDouble(rowData[6]);
                         int refEnd = (int) Double.parseDouble(rowData[7]);
                         int confidence = (int) Double.parseDouble(rowData[8]);
                         String type = rowData[9];
@@ -221,18 +223,18 @@ public class Smap {
                         double SVsize = Double.parseDouble(rowData[24]);
                         double SVfreq = Double.parseDouble(rowData[25]);
                         String orientation = rowData[26];
-                        
-                        System.out.println("SMAP 223 " + " " + smapID  + " " +  qryID  + " " +  refID1  + " " +  refID2 + " " + qryStart + " " + 
-                                qryEnd + " " + refStart + " " + refEnd + " " + confidence + " " + type + " " + xmapID1 + " " + xmapID2 + " " + linkID + " " + 
-                                qryStartIdx + " " + qryEndIdx + " " + refStartIdx + " " + refEndIdx + " " + zygosity + " " + genotype + " " +genotypeGroup + " " + 
-                                rawConfidence + " " + rawConfidenceLeft + " " + rawConfidenceRight + " " + rawConfidenceCenter + " " + 
-                                SVsize + " " + SVfreq + " " + orientation);
+
+                        System.out.println("SMAP 223 " + " " + smapID + " " + qryID + " " + refID1 + " " + refID2 + " " + qryStart + " "
+                                + qryEnd + " " + refStart + " " + refEnd + " " + confidence + " " + type + " " + xmapID1 + " " + xmapID2 + " " + linkID + " "
+                                + qryStartIdx + " " + qryEndIdx + " " + refStartIdx + " " + refEndIdx + " " + zygosity + " " + genotype + " " + genotypeGroup + " "
+                                + rawConfidence + " " + rawConfidenceLeft + " " + rawConfidenceRight + " " + rawConfidenceCenter + " "
+                                + SVsize + " " + SVfreq + " " + orientation);
 
                         // Create SVRefAligner instance to store resulting data
-                        SVRefAligner svOjbect = new SVRefAligner(smapID, qryID, refID1, refID2, qryStart, 
-                                qryEnd, refStart, refEnd, confidence, type, xmapID1, xmapID2, linkID, 
-                                qryStartIdx, qryEndIdx, refStartIdx, refEndIdx, zygosity, genotype,genotypeGroup, 
-                                rawConfidence, rawConfidenceLeft, rawConfidenceRight, rawConfidenceCenter, 
+                        SVRefAligner svOjbect = new SVRefAligner(smapID, qryID, refID1, refID2, qryStart,
+                                qryEnd, refStart, refEnd, confidence, type, xmapID1, xmapID2, linkID,
+                                qryStartIdx, qryEndIdx, refStartIdx, refEndIdx, zygosity, genotype, genotypeGroup,
+                                rawConfidence, rawConfidenceLeft, rawConfidenceRight, rawConfidenceCenter,
                                 SVsize, SVfreq, orientation);
                         smapSVList.add(svOjbect);
                     }
@@ -244,10 +246,10 @@ public class Smap {
     }
 
     /**
-     * Validate file format (SMAP) and check that the file is not empty.
+     * Validates file format (SMAP) and check that the file is not empty.
      *
-     * @param filePath
-     * @return Validation result (true if file is non empty SMAP)
+     * @param filePath smap file path
+     * @return validation result (true if file is non empty SMAP)
      */
     private boolean validateSmap(String filePath) {
         if (Files.exists(Paths.get(filePath))) {
@@ -277,9 +279,9 @@ public class Smap {
         }
         return false;
     }
-    
+
     /**
-     * Detect SV if input file is a text file following the SMAP format
+     * Detects SV if input file is a text file following the SMAP format
      */
     private void sortSmapSV() {
         for (int i = 0; i < this.smapSVList.size(); i++) {
@@ -292,20 +294,26 @@ public class Smap {
     }
 
     /**
-     * @return File format: SMAP or txt
+     * Gets smap format
+     * 
+     * @return file format: SMAP or txt
      */
     public boolean getSmapFormat() {
         return this.smapFormat;
     }
 
     /**
+     * Get translocations from FaNDOM text file output
+     * 
      * @return list of SVFandom objects having possible translocations
      */
     public ArrayList<SVFandom> getTxtTransloc() {
         return this.possibleTxtTranslocations;
     }
-    
+
     /**
+     * Gets translocations from RefAligner smap output
+     * 
      * @return list of SVRefAlignerobjects having possible translocations
      */
     public ArrayList<SVRefAligner> getSmapTransloc() {

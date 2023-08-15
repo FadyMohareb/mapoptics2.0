@@ -23,11 +23,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 
 /**
- *
- * @author franpeters Class to allow SSH connection to an external server. SSH
- * allows execution of commands, running of scripts run_job.sh and
- * calc_best_enz.sh as well as file uploading and downloading using STFP. The
- * externalJAR Jsch is used to add in external server connection.
+ * Enables SSH connection to an external server, commands execution, creation of Docker container,
+ * running of scripts run_job.sh and calc_best_enz.sh as well as file uploading and downloading using STFP. 
+ * The externalJAR <code>Jsch</code> is used to add in external server connection.
+ * All files which are downloaded from an external server are saved to a directory called "download"
+ * within the MapOptics directory. The <code>Jsch</code> session is used to log into the external server.
+ * The session object is used to create a channel which enables functionalities such as file transfer or 
+ * commands execution.
+ * 
+ * @author franpeters
+ * @author Marie Schmit
  */
 public class SSH {
 
@@ -52,15 +57,16 @@ public class SSH {
     InputStream in;
 
     /**
-     *
+     * Constructor
      */
     public SSH() {
         this.monitor = new ProgressMonitor();
     }
 
     /**
-     *
-     * @param job
+     * Constructor with job data
+     * 
+     * @param job job 
      */
     public SSH(Job job) {
         this.job = job;
@@ -69,9 +75,10 @@ public class SSH {
     }
 
     /**
-     *
-     * @param server
-     * @param bar
+     * Constructor with external server and progress bar
+     * 
+     * @param server external server of the session
+     * @param bar progress bar indicating the percentage of files uploaded to the server
      */
     public SSH(ExternalServer server, JProgressBar bar) {
         this.monitor = new ProgressMonitor();
@@ -80,8 +87,9 @@ public class SSH {
     }
 
     /**
-     *
-     * @param server
+     * Constructor with external server data
+     * 
+     * @param server external server
      */
     public SSH(ExternalServer server) {
         this.monitor = new ProgressMonitor();
@@ -89,28 +97,28 @@ public class SSH {
     }
 
     /**
-     *
-     * @param bar the JProgressBar to add the ProgressMonitor object tracking
-     * the file upload progress to
+     * Sets the <code>JProgressBar</code> to add the ProgressMonitor object tracking the file
+     * upload progress to
+     * 
+     * @param bar <code>JProgressBar</code> tracking file upload
      */
     public void setProgressBar(JProgressBar bar) {
         this.monitor = new ProgressMonitor(bar);
     }
 
     /**
-     *
-     * @param server the ExternalServer object by which to connect to and
-     * execute remote commands to
+     * Sets external server to which to connect to and execute remote commands
+     * 
+     * @param server external server to which connection will be established
      */
     public void setServer(ExternalServer server) {
         this.server = server;
-
     }
 
     /**
-     *
-     * @return he ExternalServer object and return a true response if this has
-     * been successful
+     * Connects to the external server by opening an ssh session
+     * 
+     * @return boolean indicating if the connection to the external server has been successful
      */
     public boolean connectServer() {
         try {
@@ -133,52 +141,54 @@ public class SSH {
     }
 
     /**
-     * Get the sftp channel.
+     * Gets the sftp channel.
      *
-     * @return the ChannelSftp object
+     * @return <code>ChannelSftp</code> object
      */
     public ChannelSftp getChannel() {
         return this.sftpChannel;
     }
 
     /**
-     * Get the boolean indicating if the server is connected via SSH or not.
+     * Gets the boolean indicating if the server is connected via SSH or not.
      *
-     * @return the connection boolean
+     * @return boolean describing the connection (true for successfull connection)
      */
     public Boolean getConnection() {
         return this.connection;
     }
 
     /**
-     * o
+     * Sets username of this external server
      *
-     * @param user username of the ExternalServer
+     * @param user username of this external server
      */
     public void setUser(String user) {
         this.server.setUser(user);
     }
 
     /**
-     *
-     * @param password password of the ExternalServer
+     * Sets password of this external server
+     * 
+     * @param password password of this external server
      */
     public void setPass(String password) {
         this.server.setPassword(password);
     }
 
     /**
-     *
-     * @param host host of the ExternalServer
+     * Sets host of the external server
+     * 
+     * @param host host of this ExternalServer
      */
     public void setHost(String host) {
         this.server.setHost(host);
     }
 
     /**
-     *
-     * @return disconnect from the ExternalServer session and return true if
-     * this has been successful and false if not
+     * Disconnects server ssh and sftp channels
+     * 
+     * @return true if the disconnection has been successful, false if not
      */
     public Boolean disconnectServer() {
         if (!this.execChannel.isClosed() && !this.execChannel.isConnected()) {
@@ -198,9 +208,10 @@ public class SSH {
     }
 
     /**
-     *
-     * @param cmd execute a given command on the ExternalServer
-     * @return the ExternalServer’s console output as an ArrayList
+     * Executes a given command on the external server
+     * 
+     * @param cmd command to execute
+     * @return external server’s console output as an ArrayList
      */
     public ArrayList executeCmd(String cmd) {
         String line;
@@ -229,9 +240,11 @@ public class SSH {
 
     /**
      *
-     * @param dir make a directory on the ExternalServer, This is used when
-     * creating the directories associated with a new alignment job within
-     * MapOptics
+     * Creates a new directory on the external server.
+     * This is used when creating the directories associated with a 
+     * new alignment job within MapOptics
+     * 
+     * @param dir name of the directory to create
      * @return true if successful and false if not
      */
     public Boolean mkDir(String dir) {
@@ -250,11 +263,11 @@ public class SSH {
     }
 
     /**
-     * Run a container using the Docker image mapoptics_docker_server. The name
-     * of the container is the name of the job. The job folder is a volume
+     * Runs a container using the Docker image marieschmit/mapoptics_docker_server:ubuntuv16. 
+     * The name of the container is the name of the job. The job folder is a volume
      * mounted in the container.
      *
-     * @param jobname
+     * @param jobname name of the job
      */
     public void runContainer(String jobname) {
         String dir = this.server.getWorkingDir();
@@ -267,9 +280,11 @@ public class SSH {
     }
 
     /**
-     *
-     * @param file File to upload to ExternalServer
-     * @param dir Directory on the ExternalServer to upload the file to
+     * Uploads a file to the server and indicates its upload progress
+     * on a progression bar (which can take the values 0 or 100)
+     * 
+     * @param file file to upload to ExternalServer
+     * @param dir directory on the external servre to which the file will be uploaded
      * @param bar JProgressBar to monitor the file transfer progress
      * @return true if successful and false if not
      */
@@ -307,10 +322,12 @@ public class SSH {
     }
 
     /**
-     *
-     * @param job Job to query the log file of
-     * @return the contents of the file with each line an element in an
-     * ArrayList
+     * Queries log file to get the progresses of a job launched in the external server.
+     * The log.txt file is generated while a job is running, it indicates which steps were run
+     * (for instance "Complete" or "Aligning data"_
+     * 
+     * @param job job from which log report is extracted
+     * @return contents of the log file, with each line as an element in an ArrayList
      */
     public ArrayList queryLogFile(Job job) {
         connectServer();
@@ -323,9 +340,13 @@ public class SSH {
     }
 
     /**
-     *
-     * @param job begin an alignment job on the ExternalServer using the
-     * run_job.sh script
+     * Runs a job, which includes reference and query fasta files digestion with restriction enzyme,
+     * producing cmap outputs. Then, alignment of both cmap outputs in an xmap file with either FaNDOM or RefALigner (two aligners).
+     * Then, identification of SVs in the xmap output with one of the aligners. 
+     * A docker container is started with the Docker image previously ran.
+     * The script "run_job.sh" is executed inside this container.
+     * 
+     * @param job job containing the data necessary to the execution of the process
      */
     public void runJob(Job job) {
         connectServer();
@@ -349,10 +370,15 @@ public class SSH {
     }
 
     /**
-     *
-     * @param job run the calc_best_enz.sh script on the ExternalServer with the
-     * @param query (boolean) indicates if the calculation must be ran on query
-     * or on reference reference file of the given job
+     * Calculates restriction enzymes density scores.
+     * Starts the Docker container already ran for the job. Inside this container,
+     * execute the script "calc_best_enz.sh", which digest either the reference or query file
+     * with all the existing restriction enzyme and calculate their resulting densities,
+     * stored in an output file.
+     * 
+     * @param job job containing data necessary to run the process
+     * @param query boolean, indicates if the calculation must be ran on query (true)
+     * or on reference reference file (false) of the given job
      */
     public void runCalcBestEnz(Job job, boolean query) {
         connectServer();
@@ -360,10 +386,9 @@ public class SSH {
         String ref = job.getRef();
         String qry = job.getQry();
         String dir = job.getServer().getWorkingDir();
-
         String align = job.getPipeline();
-
         String cmd = new String();
+        
         // Run the script either on query or reference file
         if (query) {
             cmd = "cd " + dir
@@ -387,9 +412,12 @@ public class SSH {
     }
 
     /**
-     *
-     * @param job download all the results of an alignment job to analyse and
-     * visualise using CompGenView
+     * Downloads job results and display them on <code>CompGenView</code> panel.
+     * Results folder is downloaded in a local "download" folder. It contains the produced cmap, xmap and
+     * karyotype file, as well as the output of SV detection. Before downloading the results,
+     * the state of the job (saved in log.txt file in the external server) is verify: it must be complete.
+     * 
+     * @param job job for which results are downloaded and displayed
      * @throws SftpException
      */
     public void downloadJobResults(Job job) throws SftpException {
@@ -416,10 +444,10 @@ public class SSH {
     }
 
     /**
-     *
-     * @param job download all the results of an alignment job to analyse and
-     * visualise using CompGenStart
-     * @throws SftpException
+     * Download results of best enzyme calculation and visualise them using COmpGenView,
+     * on a dedicated panel.
+     * 
+     * @param job job data on which the density scores are calculated
      */
     public void downloadEnzResults(Job job) throws SftpException {
         String jobName = job.getName();
@@ -445,9 +473,9 @@ public class SSH {
     }
 
     /**
-     * Indicates if the chanel is still connected
+     * Indicates if the channel is still connected
      *
-     * @return boolean
+     * @return true if it is connected, false if not
      */
     public boolean isChannelConnected() {
         return this.channel.isConnected();
@@ -456,7 +484,7 @@ public class SSH {
     /**
      * Indicates if the sftp chanel is still connected
      *
-     * @return boolean
+     * @return true if it is connected, false if not
      */
     public boolean isSftpChannelConnected() {
         return this.sftpChannel.isConnected();

@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 /**
+ * Combines the CmapData, XmapData, annotations (gene), structural variants and
+ * context of the chromosome within a genom
  *
  * @author franpeters
  */
@@ -17,10 +19,10 @@ public class Chromosome {
     private String name = "";
     private final CmapData refCmapMap; //this contains all of the site information related to that chromosome
     private ArrayList<XmapData> xmapMaps = new ArrayList(); //this contains all of the alignments that have been matched to this CmapData
-    
+
     //to link the XmapData obj to its corresponding CmapData obj.
     // The key is the cmap ID, the value is the corresponding cmap object
-    private LinkedHashMap<Integer, CmapData> qryCmapMaps = new LinkedHashMap(); 
+    private LinkedHashMap<Integer, CmapData> qryCmapMaps = new LinkedHashMap();
     private Sequence sequence;
     private ArrayList<Indel> indels = new ArrayList();
     private Double size;
@@ -34,6 +36,7 @@ public class Chromosome {
 
     /**
      * Constructor of class Chromosome
+     *
      * @param name Chromosome name
      * @param cmap Cmap data for the considered chromosome
      * @param relsize Relative size of the chromosome
@@ -50,8 +53,10 @@ public class Chromosome {
     }
 
     /**
-     * Set new alignment
-     * @param map ArrayList of XmapData (corresponding to one line of an XMAP file)
+     * Sets new alignment: adds the alignment file to the chromosome object
+     *
+     * @param map ArrayList of XmapData (corresponding to one line of an XMAP
+     * file)
      * @param qryCmap CMAP data of the query
      */
     public void setAlignment(ArrayList<XmapData> map, Cmap qryCmap) {
@@ -66,19 +71,22 @@ public class Chromosome {
             CmapData qryCmapMap = qryCmap.getCmapByID(align.getQryID());
 //            save to hashmap
             qryCmapMaps.put(align.getQryID(), qryCmapMap);
-        }  
+        }
     }
-    
-    /** 
-     * Add a translocation to the list of translocations in the chromosomes
+
+    /**
+     * Adds identified translocation to the array list of translocations in the
+     * chromosomes
+     *
      * @param transloc New translocation
      */
-    public void addTranslocation(Translocation transloc){
+    public void addTranslocation(Translocation transloc) {
         this.translocations.add(transloc);
     }
 
     /**
-     * Get number of indels in chromosome
+     * Gets number of indels in chromosome
+     *
      * @return Number of indels
      */
     public Integer getNumIndels() {
@@ -86,7 +94,8 @@ public class Chromosome {
     }
 
     /**
-     * Get number of inversions in chromosome
+     * Gets number of inversions in chromosome
+     *
      * @return Number of inversions
      */
     public Integer getNumInversions() {
@@ -94,15 +103,17 @@ public class Chromosome {
     }
 
     /**
-     * Get number of translocations in chromosome
-     * @return  Translocations number
+     * Gets the number of translocations in chromosome
+     *
+     * @return Translocations number
      */
     public Integer getNumTranslocations() {
         return this.translocations.size();
     }
 
     /**
-     * Get number of duplications in chromosome
+     * Gets number of duplications in chromosome
+     *
      * @return duplication number
      */
     public Integer getNumDuplications() {
@@ -110,49 +121,94 @@ public class Chromosome {
     }
 
     /**
-     * Get chromosome size
+     * Gets chromosome size
+     *
      * @return size chromosome size
      */
     public Double getSize() {
         return this.size;
     }
 
-    /** 
-     * Get cmap ID associated with the chromosome
+    /**
+     * Gets cmap ID associated with the chromosome
+     *
      * @return refCmapMap CMAP ID associated with the chromosome
      */
     public Integer getCmapID() {
         return this.refCmapMap.getID();
     }
 
+    /**
+     * Gets the CmapData associated with this chromosome
+     *
+     * @return refCmapMap reference cmap map
+     */
     public CmapData getRefCmapData() {
         return this.refCmapMap;
     }
 
+    /**
+     * Gets the hashmap containing all the sites within this chromosome, with the
+     * key being the site ID and the value being the site object
+     *
+     * @return refSites hashmap of sites
+     */
     public HashMap<Integer, Site> getRefSites() {
         return this.refSites;
     }
 
+    /**
+     * Gets a query CmapData object by ID
+     *
+     * @param ID id of query Cmap
+     *
+     * @return qryCmapMaps corresponding query cmap object
+     */
     public CmapData getQryCmapsByID(Integer ID) {
         return this.qryCmapMaps.get(ID);
     }
 
+    /**
+     * Gets all of the CmapData objects associated with this query Cmap
+     *
+     * @return qryCmapsMaps query cmap maps
+     */
     public LinkedHashMap<Integer, CmapData> getQryCmaps() {
         return this.qryCmapMaps;
     }
 
+    /**
+     * Get the names of the chromosome
+     *
+     * @return name chromosome name
+     */
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Get all the indels of this chromosome
+     *
+     * @return chromosome's indels
+     */
     public ArrayList<Indel> getIndels() {
         return this.indels;
     }
 
+    /**
+     * Access a specific sequence from the sequences HashMap by sequence size
+     *
+     * @return sequence sequence of chromosomes
+     */
     public Sequence getSequence() {
         return this.sequence;
     }
 
+    /**
+     * GC% in windows across this chromosome
+     *
+     * @return array array of GC%
+     */
     public ArrayList<Double> getGCAcrossSequence() {
         ArrayList<Double> array = new ArrayList();
         String str = this.sequence.getSeq();
@@ -166,6 +222,12 @@ public class Chromosome {
         return array;
     }
 
+    /**
+     * Calculates GC% of the sequence associated with this chromosome
+     *
+     * @param str sequence associated with this chromosome
+     * @return gcCount GC%
+     */
     private Integer calculateGC(String str) {
         Integer gcCount = 0;
         char[] seq = str.toCharArray();
@@ -178,14 +240,27 @@ public class Chromosome {
 
     }
 
+    /**
+     * Gets all the alignments to this chromosome
+     *
+     * @return xmapMaps alignments
+     */
     public ArrayList<XmapData> getAlignments() {
         return this.xmapMaps;
     }
 
+    /**
+     * Gets all <code>Gene</code> objects added to this <code>Chromosome</code>
+     *
+     * @return features genes
+     */
     public ArrayList<Gene> getAnnotations() {
         return this.features;
     }
 
+    /**
+     * Annotate <code>Indel</code> objects with <code>Gene</code>
+     */
     public void annotateIndels() {
         if (!this.indels.isEmpty()) {
             for (Indel indel : this.indels) {
@@ -240,25 +315,27 @@ public class Chromosome {
     }
 
     /**
-     * Add duplication object to the arrayList
-     * @param dup 
+     * Add duplication object to the <code>ArrayList</code>
+     *
+     * @param dup duplication to add to this chromosome
      */
     public void addDuplication(Duplication dup) {
         this.duplications.add(dup);
     }
 
     /**
-     * Add inversion object to the arrayList
-     * @param inversion 
+     * Add inversion object to the <code>ArrayList</code>
+     *
+     * @param inversion inversion to add to this chromosome
      */
     public void addInversion(Inversion inversion) {
         this.inversions.add(inversion);
     }
 
-
     /**
-     * Add Indel object to the arrayList
-     * @param indel 
+     * Add <code>Indel</code> object to the arrayList
+     *
+     * @param indel to add to this chromosome
      */
     public void addIndel(Indel indel) {
         this.indels.add(indel);

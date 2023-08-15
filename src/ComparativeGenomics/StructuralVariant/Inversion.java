@@ -1,6 +1,7 @@
 package ComparativeGenomics.StructuralVariant;
 /**
- *
+ * Stores inversion data
+ * 
  * @author franpeters
  */
 public class Inversion {

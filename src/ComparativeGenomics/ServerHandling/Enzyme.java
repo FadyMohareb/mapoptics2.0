@@ -5,8 +5,10 @@ package ComparativeGenomics.ServerHandling;
 import java.util.HashMap;
 
 /**
- *
- * @author franpeters, marieschmit
+ * Stores enzyme information such as name and restriction sites.
+ * 
+ * @author franpeters
+ * @author Marie Schmit
  */
 public class Enzyme {
 
@@ -14,10 +16,10 @@ public class Enzyme {
     private String site;
 
     /**
-     * Create an enzyme using only one string Search through hashmaps to get the
-     * corresponding site or name
+     * Create an enzyme using only one string searched through hashmaps to get
+     * the corresponding site or name
      *
-     * @param motif
+     * @param motif pattern of the enzyme
      */
     public Enzyme(String motif) {
         motif = motif.toUpperCase();
@@ -50,23 +52,49 @@ public class Enzyme {
         }
     }
 
+    /**
+     * Constructor with name and site
+     * 
+     * @param name enzyme name
+     * @param site enzyme site
+     */
     public Enzyme(String name, String site) {
         this.name = name;
         this.site = site;
     }
 
+    /**
+     * Sets this enzymes name
+     * 
+     * @param name enzyme name
+     */
     public void setName(String name) {
         this.name = name;
     }
-
+    
+    /**
+     * Sets this enzymes site
+     * 
+     * @param site enzyme site
+     */
     public void setSite(String site) {
         this.site = site;
     }
 
+    /**
+     * Gets this enzymes name
+     * 
+     * @return enzymes name
+     */
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Gets this enzymes site
+     * 
+     * @return enzymes site
+     */
     public String getSite() {
         return this.site;
     }

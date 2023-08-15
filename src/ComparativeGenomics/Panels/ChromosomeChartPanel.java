@@ -15,10 +15,10 @@ import org.knowm.xchart.style.Styler;
 import org.knowm.xchart.style.Styler.ChartTheme;
 
 /**
- *
- * @author franpeters Plot the number of each different type of SV event per
- * chromosome within the reference genome using XChart. The chart style can be
- * changed by the user.
+ * Plots the number of each different type of SV event per chromosome within the reference genome using XChart. 
+ * The chart style can be changed by the user.
+ * 
+ * @author franpeters
  */
 public class ChromosomeChartPanel extends JPanel {
 
@@ -32,10 +32,18 @@ public class ChromosomeChartPanel extends JPanel {
             .title("Structural Variants Detected By Chromosome").xAxisTitle("Chromosome").yAxisTitle("SV Count")
             .theme(this.style).build();
 
+    /**
+    * Constructor
+    */
     public ChromosomeChartPanel() {
 
     }
 
+    /**
+     * Plots genome on chromosome panel
+     * 
+     * @param genome genome to plot
+     */
     public void plotGenome(Genome genome) {
         this.chart = new CategoryChartBuilder()
             .width(this.getWidth()).height(this.getHeight())
@@ -92,6 +100,11 @@ public class ChromosomeChartPanel extends JPanel {
     }
 
     @Override
+    /**
+     * Repaints this panel.
+     * 
+     * @param g graphical device
+     */
     public void paint(Graphics g) {
         super.paint(g);
         if (drawChart) {
@@ -100,6 +113,11 @@ public class ChromosomeChartPanel extends JPanel {
         }
     }
 
+    /**
+     * Sets plot style
+     * 
+     * @param style chosen plot style
+     */
     public void setStyle(ChartTheme style) {
         this.style = style;
         repaint();
