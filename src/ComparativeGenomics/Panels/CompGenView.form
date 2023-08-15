@@ -170,7 +170,7 @@
             <Property name="text" type="java.lang.String" value="File"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="exitProgram">
+            <MenuItem class="javax.swing.JMenuItem" name="closeWindow">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Ctrl+W"/>
@@ -178,10 +178,10 @@
                 <Property name="text" type="java.lang.String" value="Close Window"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exitProgramActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="closeWindowActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
+            <MenuItem class="javax.swing.JMenuItem" name="ExitProgram">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Ctrl+Q"/>
@@ -189,7 +189,15 @@
                 <Property name="text" type="java.lang.String" value="Exit Program"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem1ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ExitProgramActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="chooseSMAP">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Choose SV map"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chooseSMAPActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>
@@ -376,7 +384,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jSplitPane1" max="32767" attributes="0"/>
+                      <Component id="jSplitPane1" pref="1340" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -514,7 +522,7 @@
                               <Layout>
                                 <DimensionLayout dim="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <EmptySpace min="0" pref="898" max="32767" attributes="0"/>
+                                      <EmptySpace min="0" pref="993" max="32767" attributes="0"/>
                                   </Group>
                                 </DimensionLayout>
                                 <DimensionLayout dim="1">
@@ -525,6 +533,9 @@
                               </Layout>
                             </Container>
                             <Container class="ComparativeGenomics.Panels.AlignmentsPerChromosomeChartPanel" name="alignmentsPerChromosomeChartPanel1">
+                              <Properties>
+                                <Property name="inheritsPopupMenu" type="boolean" value="true"/>
+                              </Properties>
                               <Constraints>
                                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
                                   <JTabbedPaneConstraints tabName="Alignments Per Chromosome">
@@ -536,7 +547,7 @@
                               <Layout>
                                 <DimensionLayout dim="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <EmptySpace min="0" pref="898" max="32767" attributes="0"/>
+                                      <EmptySpace min="0" pref="993" max="32767" attributes="0"/>
                                   </Group>
                                 </DimensionLayout>
                                 <DimensionLayout dim="1">
@@ -562,17 +573,36 @@
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="circosPanel1" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="jScrollPane1" pref="408" max="32767" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="jScrollPane1" pref="503" max="32767" attributes="0"/>
+                                              <Group type="102" attributes="0">
+                                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                                  <Component id="pageNumber" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                                  <Component id="previousTranslocPage" min="-2" max="-2" attributes="0"/>
+                                                  <EmptySpace max="-2" attributes="0"/>
+                                                  <Component id="nextTranslocPage" min="-2" max="-2" attributes="0"/>
+                                              </Group>
+                                          </Group>
                                           <EmptySpace max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                                 </DimensionLayout>
                                 <DimensionLayout dim="1">
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" alignment="1" attributes="0">
+                                      <Group type="102" alignment="0" attributes="0">
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="1" attributes="0">
-                                              <Component id="jScrollPane1" pref="392" max="32767" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Group type="102" attributes="0">
+                                                  <Component id="jScrollPane1" min="-2" pref="351" max="-2" attributes="0"/>
+                                                  <EmptySpace max="-2" attributes="0"/>
+                                                  <Group type="103" groupAlignment="3" attributes="0">
+                                                      <Component id="nextTranslocPage" alignment="3" min="-2" max="-2" attributes="0"/>
+                                                      <Component id="previousTranslocPage" alignment="3" min="-2" max="-2" attributes="0"/>
+                                                      <Component id="pageNumber" alignment="3" min="-2" max="-2" attributes="0"/>
+                                                  </Group>
+                                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                              </Group>
                                               <Component id="circosPanel1" max="32767" attributes="0"/>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
@@ -617,6 +647,33 @@
                                     </Component>
                                   </SubComponents>
                                 </Container>
+                                <Component class="javax.swing.JButton" name="nextTranslocPage">
+                                  <Properties>
+                                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                                      <Font name="Segoe UI" size="12" style="1"/>
+                                    </Property>
+                                    <Property name="text" type="java.lang.String" value="&gt;"/>
+                                  </Properties>
+                                  <Events>
+                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nextTranslocPageActionPerformed"/>
+                                  </Events>
+                                </Component>
+                                <Component class="javax.swing.JButton" name="previousTranslocPage">
+                                  <Properties>
+                                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                                      <Font name="Segoe UI" size="12" style="1"/>
+                                    </Property>
+                                    <Property name="text" type="java.lang.String" value="&lt;"/>
+                                  </Properties>
+                                  <Events>
+                                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="previousTranslocPageActionPerformed"/>
+                                  </Events>
+                                </Component>
+                                <Component class="javax.swing.JLabel" name="pageNumber">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="Page 0"/>
+                                  </Properties>
+                                </Component>
                               </SubComponents>
                             </Container>
                           </SubComponents>
@@ -846,7 +903,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jSplitPane2" max="32767" attributes="0"/>
+                      <Component id="jSplitPane2" pref="721" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -877,7 +934,7 @@
                                       <Component id="jLabel13" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="chrLabel" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace pref="941" max="32767" attributes="0"/>
+                                      <EmptySpace pref="1036" max="32767" attributes="0"/>
                                       <Component id="clearChrAlignmentHighlighted" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Component id="chromosomePanel1" alignment="0" max="32767" attributes="0"/>
@@ -951,14 +1008,14 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane4" alignment="1" pref="1243" max="32767" attributes="0"/>
+                          <Component id="jScrollPane4" alignment="1" pref="1338" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jScrollPane4" pref="376" max="32767" attributes="0"/>
+                              <Component id="jScrollPane4" pref="389" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -1033,7 +1090,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jTabbedPane2" pref="919" max="32767" attributes="0"/>
+                          <Component id="jTabbedPane2" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel21" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
@@ -1048,7 +1105,7 @@
                           <Component id="jPanel24" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="jTabbedPane2" pref="0" max="32767" attributes="0"/>
+                              <Component id="jTabbedPane2" min="-2" pref="456" max="-2" attributes="0"/>
                               <Component id="jPanel21" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace pref="50" max="32767" attributes="0"/>
@@ -1070,7 +1127,7 @@
                                       <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="chrLabel2" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="0" pref="1068" max="32767" attributes="0"/>
+                                      <EmptySpace min="0" pref="1163" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
@@ -1141,7 +1198,7 @@
                                       <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                                       <Component id="queryChrSize" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="0" pref="91" max="32767" attributes="0"/>
+                                      <EmptySpace min="0" pref="140" max="32767" attributes="0"/>
                                   </Group>
                                   <Group type="102" attributes="0">
                                       <Group type="103" groupAlignment="0" attributes="0">
@@ -1214,7 +1271,7 @@
                               </Group>
                               <Group type="102" alignment="1" attributes="0">
                                   <Component id="jLabel15" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace pref="29" max="32767" attributes="0"/>
+                                  <EmptySpace pref="78" max="32767" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
                                       <Group type="102" attributes="0">
@@ -1411,7 +1468,13 @@
                         </Component>
                       </SubComponents>
                     </Container>
-                    <Container class="javax.swing.JPanel" name="jPanel10">
+                    <Container class="ComparativeGenomics.Panels.AlignmentsOnChromosomeChartPanel" name="alignmentsOnChromosomeChartPanel1">
+                      <Properties>
+                        <Property name="inheritsPopupMenu" type="boolean" value="true"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[948, 334]"/>
+                        </Property>
+                      </Properties>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
                           <JTabbedPaneConstraints tabName="Alignments">
@@ -1423,35 +1486,15 @@
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="alignmentsOnChromosomeChartPanel1" alignment="0" max="32767" attributes="0"/>
+                              <EmptySpace min="0" pref="948" max="32767" attributes="0"/>
                           </Group>
                         </DimensionLayout>
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="alignmentsOnChromosomeChartPanel1" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                              </Group>
+                              <EmptySpace min="0" pref="402" max="32767" attributes="0"/>
                           </Group>
                         </DimensionLayout>
                       </Layout>
-                      <SubComponents>
-                        <Container class="ComparativeGenomics.Panels.AlignmentsOnChromosomeChartPanel" name="alignmentsOnChromosomeChartPanel1">
-
-                          <Layout>
-                            <DimensionLayout dim="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <EmptySpace min="0" pref="909" max="32767" attributes="0"/>
-                              </Group>
-                            </DimensionLayout>
-                            <DimensionLayout dim="1">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <EmptySpace min="0" pref="296" max="32767" attributes="0"/>
-                              </Group>
-                            </DimensionLayout>
-                          </Layout>
-                        </Container>
-                      </SubComponents>
                     </Container>
                     <Container class="javax.swing.JScrollPane" name="jScrollPane7">
                       <AuxValues>

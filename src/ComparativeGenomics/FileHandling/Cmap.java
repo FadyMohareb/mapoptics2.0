@@ -191,6 +191,7 @@ public class Cmap {
                     }
                 }
             } catch (FileNotFoundException ex) {
+                System.out.println(ex);
             } finally {
                 if (inputStream != null) {
                     try {

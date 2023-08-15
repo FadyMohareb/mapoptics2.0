@@ -140,7 +140,6 @@ public class CompGenStart extends javax.swing.JFrame {
         refalignerPipeline = new javax.swing.JRadioButton();
         fandomPipeline = new javax.swing.JRadioButton();
         runCalcBestEnzyme = new javax.swing.JButton();
-        Btn_modifAlignParam = new javax.swing.JButton();
         calculateQuery = new javax.swing.JRadioButton();
         calculateReference = new javax.swing.JRadioButton();
         bnt_help = new javax.swing.JButton();
@@ -549,13 +548,6 @@ public class CompGenStart extends javax.swing.JFrame {
             }
         });
 
-        Btn_modifAlignParam.setText("Modify Alignment Parameters");
-        Btn_modifAlignParam.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Btn_modifAlignParamActionPerformed(evt);
-            }
-        });
-
         btnGroupCalcEnzyme.add(calculateQuery);
         calculateQuery.setSelected(true);
         calculateQuery.setText("Query");
@@ -580,9 +572,7 @@ public class CompGenStart extends javax.swing.JFrame {
                         .addGap(13, 13, 13)
                         .addComponent(refalignerPipeline)
                         .addGap(18, 18, 18)
-                        .addComponent(fandomPipeline)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(Btn_modifAlignParam))
+                        .addComponent(fandomPipeline))
                     .addGroup(settingsPanelLayout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -595,7 +585,7 @@ public class CompGenStart extends javax.swing.JFrame {
                         .addComponent(calculateQuery)
                         .addGap(18, 18, 18)
                         .addComponent(calculateReference)))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         settingsPanelLayout.setVerticalGroup(
             settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -616,16 +606,10 @@ public class CompGenStart extends javax.swing.JFrame {
                     .addComponent(refalignerPipeline)
                     .addComponent(fandomPipeline))
                 .addContainerGap(28, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, settingsPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(Btn_modifAlignParam)
-                .addContainerGap())
         );
 
         chooseEnzyme.setEnabled(false);
         runCalcBestEnzyme.setEnabled(false);
-        // The button is only visible once server and files are chosen
-        Btn_modifAlignParam.setEnabled(false);
 
         bnt_help.setText("Help");
         bnt_help.addActionListener(new java.awt.event.ActionListener() {
@@ -782,7 +766,6 @@ public class CompGenStart extends javax.swing.JFrame {
 
         refURLDialog.setBounds(new java.awt.Rectangle(500, 500, 401, 35));
         refURLDialog.setMinimumSize(new java.awt.Dimension(381, 60));
-        refURLDialog.setPreferredSize(new java.awt.Dimension(385, 60));
         refURLDialog.setSize(new java.awt.Dimension(385, 60));
 
         jLabel21.setText("Reference URL:");
@@ -1135,7 +1118,6 @@ public class CompGenStart extends javax.swing.JFrame {
         qryURLDialog.setTitle("Query File from URL");
         qryURLDialog.setBounds(new java.awt.Rectangle(500, 500, 397, 35));
         qryURLDialog.setMinimumSize(new java.awt.Dimension(401, 60));
-        qryURLDialog.setPreferredSize(new java.awt.Dimension(401, 60));
         qryURLDialog.setSize(new java.awt.Dimension(401, 60));
 
         jLabel10.setText("File URL:");
@@ -1556,6 +1538,10 @@ public class CompGenStart extends javax.swing.JFrame {
             "      the button <b>Upload</b> is available. The same goes for the selection \n" +
             "      of an Annotation file (either gff3 or gtf), in <b>File, Reference \n" +
             "      Genome, Reference annotation file</b>.\n\n" +
+            "      Query annotation file is not necessary.\n\n" +
+            "      Query file can be in CMAP format. If the input query file contains information about \n" +
+            "      its in silico digestion enzyme, the same enzyme will be used to digest the reference.\n"+
+            "      the buttons <b>Calculate enzyme</b> or <b>Choose enzyme</b> will not be available.\n\n" +
             "    <br></p>\n" +
             "    <h3>\n" +
             "      Set alignment parameters\n" +
@@ -1564,8 +1550,11 @@ public class CompGenStart extends javax.swing.JFrame {
             "      The <b>Settings</b> section is available once the query and reference \n" +
             "      genome are both selected. You can either <b>Choose</b> or <b>Calculate</b> \n" +
             "      the optimise Nickase Enzymes to use for the <i>in silico</i> digestion \n" +
-            "      of your file. Then, choose your aligner: <b>RefAligner</b> or <bfandom>. \n" +
-            "      Click <b>Modify Alignment Parameters</b> to customise your alignmenet \n" +
+            "      of your file. With the option <b>Reference</b> or <b>Query</b>, \n" +
+            "      choose if the enzyme density scores are calculated on the reference \n" +
+            "      or on the query. \n" +
+            "      Then, choose your aligner: <b>RefAligner</b> or <bfandom>. \n" +
+            "      Click <b>Modify Alignment Parameters</b> to customise your alignment \n" +
             "      parameters.\n" +
             "    <br></p>\n" +
             "    <h3>\n" +
@@ -2009,13 +1998,14 @@ public class CompGenStart extends javax.swing.JFrame {
             if (enzyme == null || enzyme.equals("unknown")) {
                 JOptionPane.showMessageDialog(null, "Unknown enzyme in cmap file. The chosen enzyme should be the same as in the cmap",
                         "Unkown enzyme", JOptionPane.ERROR_MESSAGE);
+                this.qryCmapEnzyme = "";
+            } else {
+                this.qryCmapEnzyme = enzyme;
+                this.tempSelectedEnzyme = new Enzyme(enzyme);
+                this.selectedEnzyme = this.tempSelectedEnzyme;
+                setEnzymeLabel.setText(this.tempSelectedEnzyme.getName());
+                this.newJob.setEnzyme(this.tempSelectedEnzyme);
             }
-            this.qryCmapEnzyme = enzyme;
-            this.tempSelectedEnzyme = new Enzyme(enzyme);
-            this.selectedEnzyme = this.tempSelectedEnzyme;
-            System.out.println("1997 name " + this.tempSelectedEnzyme.getName() + " " + this.tempSelectedEnzyme.getSite());
-            setEnzymeLabel.setText(this.tempSelectedEnzyme.getName());
-            this.newJob.setEnzyme(this.tempSelectedEnzyme);
         } else {
             this.qryCmapEnzyme = "";
         }
@@ -2093,12 +2083,12 @@ public class CompGenStart extends javax.swing.JFrame {
         this.channel.mkDir(jobName + "/Files/Reference/");
         this.channel.mkDir(jobName + "/Files/Query/");
         this.channel.mkDir(jobName + "/Files/Results/");
-        
+
         this.startJobButton.setText("Start Job: " + jobName);
         this.uploadFileRef.setEnabled(true);
         this.uploadQryGenome.setEnabled(true);
         this.newJob.setName(jobName);
-        
+
         // Run container for job
         this.channel.runContainer(jobName);
     }//GEN-LAST:event_setJobNameActionPerformed
@@ -2169,7 +2159,7 @@ public class CompGenStart extends javax.swing.JFrame {
         else {
             if (!qryFromURL) {
                 String dir = jobName + "/Files/Query/" + queryFile;
-                System.out.println("file transfer of query file");
+                System.out.println("File transfer of query file");
                 this.channel.uploadFile(queryFilePath, dir, queryProgressBar);
             } else {
                 String cmd = "cd mapoptics/jobs/" + this.jobName + "/Files/Query; wget " + this.queryFilePath;
@@ -2179,7 +2169,6 @@ public class CompGenStart extends javax.swing.JFrame {
             }
             this.qryAdded = true;
             this.newJob.setQryFile(queryFile);
-            System.out.println("CompGenStart 2174 file from job " + queryFile);
             if ((this.refAdded && this.qryAdded) && this.qryCmapEnzyme.equals("")) {
                 chooseEnzyme.setEnabled(true);
                 runCalcBestEnzyme.setEnabled(true);
@@ -2445,14 +2434,15 @@ public class CompGenStart extends javax.swing.JFrame {
                         //            Connect to the server of the user selectedjob
                         System.out.println("Connection to server " + this.selectedJob.getServer().getName());
                         this.channel.setServer(this.selectedJob.getServer());
-                        this.channel.connectServer();
-                        this.filesDownloading.setVisible(true);
-                        this.jobDownloadingName.setText(this.selectedJob.getName());
-                        this.channel.downloadJobResults(this.selectedJob);
-                        this.filesDownloading.setVisible(false);
-                        this.setVisible(false);
-                        CompGenView viewResults = new CompGenView();
-                        viewResults.setJob(this.selectedJob);
+                        boolean connected = this.channel.connectServer();
+                        if (connected) {
+                            this.filesDownloading.setVisible(true);
+                            this.jobDownloadingName.setText(this.selectedJob.getName());
+                            this.channel.downloadJobResults(this.selectedJob);
+                            this.filesDownloading.setVisible(false);
+                            CompGenView viewResults = new CompGenView();
+                            viewResults.setJob(this.selectedJob);
+                        }
                     } catch (SftpException ex) {
                         Logger.getLogger(CompGenStart.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -2631,10 +2621,6 @@ public class CompGenStart extends javax.swing.JFrame {
         // Display help pane
         helpPane.setVisible(true);
     }//GEN-LAST:event_bnt_helpActionPerformed
-
-    private void Btn_modifAlignParamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_modifAlignParamActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_Btn_modifAlignParamActionPerformed
 
     private void exitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitBtnActionPerformed
         // Close help panel
@@ -2828,7 +2814,6 @@ public class CompGenStart extends javax.swing.JFrame {
             String splitURL[] = FileURL.split("/");
             int lenSplit = splitURL.length;
             String fileName = splitURL[lenSplit - 1]; //Arays are 0 indexed
-            System.out.println("CompGenStart line 2806 " + fileName);
             return fileName;
         } catch (MalformedURLException e) {
             System.out.println(e);
@@ -3185,20 +3170,25 @@ public class CompGenStart extends javax.swing.JFrame {
 //          Connect to the server of the user selectedjob
         this.channel.setServer(job.getServer());
 
-        this.channel.connectServer();
-        ArrayList<String> result = this.channel.queryLogFile(this.selectedJob);
-        for (String s : result) {
-            System.out.println("Refresh status result (CompGenStart): " + s);
-        }
-        if (result.isEmpty()) {
-            System.out.println("Log file was not found or empty.");
+        boolean connected = this.channel.connectServer();
+        if (connected) {
+            ArrayList<String> result = this.channel.queryLogFile(this.selectedJob);
+            for (String s : result) {
+                System.out.println("Refresh status result (CompGenStart): " + s);
+            }
+            if (result.isEmpty()) {
+                System.out.println("Log file was not found or empty.");
+                job.setStatus("Failed");
+                return false;
+            } else {
+                // get the latest update from the log file
+                String latestStatus = result.get(result.size() - 1).split(": ")[1];
+                job.setStatus(latestStatus);
+                return true;
+            }
+        } else {
             job.setStatus("Failed");
             return false;
-        } else {
-            // get the latest update from the log file
-            String latestStatus = result.get(result.size() - 1).split(": ")[1];
-            job.setStatus(latestStatus);
-            return true;
         }
     }
 
@@ -3222,7 +3212,6 @@ public class CompGenStart extends javax.swing.JFrame {
         uploadQryGenome.setEnabled(false);
         chooseEnzyme.setEnabled(false);
         runCalcBestEnzyme.setEnabled(false);
-        Btn_modifAlignParam.setEnabled(false);
         // Clear variables
         qryCmapEnzyme = "";
         refAdded = false;
@@ -3246,7 +3235,6 @@ public class CompGenStart extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Btn_modifAlignParam;
     private javax.swing.JLabel LblEnzyme;
     private javax.swing.JButton addNewServer;
     private javax.swing.JMenuItem addServerMenu;

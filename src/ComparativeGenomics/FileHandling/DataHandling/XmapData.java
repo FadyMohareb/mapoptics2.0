@@ -41,6 +41,11 @@ public class XmapData {
     private Double lastRefPos = 0.0;
     private Double lastQryPos = 0.0;
 
+    // The key is the QryContigID, the value is its corresponding RefContigID
+    //private HashMap<Integer, ArrayList<Integer>> qryToRefID = new HashMap();
+    // The key is the RefContigID, the value is its corresponding QryContigID
+    //private HashMap<Integer, ArrayList<Integer>> refToQryID = new HashMap();
+
     /**
      *
      * @param id Xmap ID
@@ -74,7 +79,40 @@ public class XmapData {
         this.qryLen = qryl;
         this.refLen = refl;
         this.align = align;
+
+        /*
+        // Add values to HashMap of query IDs mapped to Reference
+        if (qryToRefID.get(qryCmapID) != null) {
+            ArrayList<Integer> refIDs = qryToRefID.get(qryCmapID);
+            refIDs.add(refCmapID);
+            this.qryToRefID.put(qryCmapID, refIDs);
+        } else {
+            ArrayList<Integer> refIDs = new ArrayList<>();
+            refIDs.add(refCmapID);
+            this.qryToRefID.put(qryCmapID, refIDs);
+        }
+        
+        // Add values to Hashmap of reference IDs mapped to query
+        if (refToQryID.get(refCmapID) != null) {
+            ArrayList<Integer> qryIDs = refToQryID.get(refCmapID);
+            qryIDs.add(qryCmapID);
+            this.refToQryID.put(refCmapID, qryIDs);
+        } else {
+            ArrayList<Integer> qryIDs = new ArrayList<>();
+            qryIDs.add(qryCmapID);
+            this.refToQryID.put(qryCmapID, qryIDs);
+        }
+        */
     }
+/*
+    public HashMap<Integer, ArrayList<Integer>> getQryToRefID() {
+        return this.qryToRefID;
+    }
+
+    public HashMap<Integer, ArrayList<Integer>> getRefToQryID() {
+        return this.refToQryID;
+    }
+*/
 
     public Integer getID() {
         return this.ID;

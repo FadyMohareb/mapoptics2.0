@@ -18,13 +18,14 @@ import org.knowm.xchart.style.Styler;
 
 /**
  *
- * @author franpeters
- * Plot the number of alignments per each chromosome within the reference genome using XChart.
- * The chart style can be changed by the user.
+ * @author franpeters Plot the number of alignments per each chromosome within
+ * the reference genome using XChart. The chart style can be changed by the
+ * user.
  */
 public class AlignmentsPerChromosomeChartPanel extends JPanel {
- boolean drawChart = false;
-    HashMap<String,Double> siteDensities;
+
+    boolean drawChart = false;
+    HashMap<String, Double> siteDensities;
     Styler.ChartTheme style = Styler.ChartTheme.GGPlot2;
     Genome genome;
     // Create Chart
@@ -32,41 +33,55 @@ public class AlignmentsPerChromosomeChartPanel extends JPanel {
             .width(this.getWidth()).height(this.getHeight())
             .title("Number of Alignments per Chromosome").xAxisTitle("Chromosome").yAxisTitle("Alignment Count")
             .theme(this.style).build();
-    
-    public AlignmentsPerChromosomeChartPanel(){
-        
-        
+
+    public AlignmentsPerChromosomeChartPanel() {
+
     }
-    
-    public void plotGenome(Genome genome){
-        drawChart=true;
+
+    public void plotGenome(Genome genome) {
+        this.drawChart = true;
 //        this.genome=genome;
         ArrayList<Number> numAlignments = new ArrayList();
         ArrayList<String> chrNames = new ArrayList();
-        for (Chromosome chr: genome.getChromosomes().values()){
+        for (Chromosome chr : genome.getChromosomes().values()) {
             numAlignments.add(chr.getAlignments().size());
             chrNames.add(chr.getName());
         }
-        try{
-        chart.addSeries("Alignments", chrNames, numAlignments);
-        chart.getStyler().setXAxisLabelRotation(45);
-        chart.getStyler().setChartTitleVisible(true);
-        repaint();}
-        catch (java.lang.IllegalArgumentException ex) {
+        try {
+            chart.addSeries("Alignments", chrNames, numAlignments);
+            chart.getStyler().setXAxisLabelRotation(45);
+            chart.getStyler().setChartTitleVisible(true);
+            repaint();
+        } catch (java.lang.IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(null, "A problem occured while plotting alignments. The plot will not be complete",
                     "Alignments display problem!", JOptionPane.ERROR_MESSAGE);
         }
     }
-@Override
+    
+    /**
+     * Reset the panel
+     * @param g 
+     */
+    public void reset(){
+        this.drawChart = false;
+        this.style = Styler.ChartTheme.GGPlot2;
+        this.chart = new CategoryChartBuilder()
+            .width(this.getWidth()).height(this.getHeight())
+            .title("Number of Alignments per Chromosome").xAxisTitle("Chromosome").yAxisTitle("Alignment Count")
+            .theme(this.style).build();
+    }
+
+    @Override
     public void paint(Graphics g) {
         super.paint(g);
-        if(drawChart){
-        Graphics2D g2d = (Graphics2D) g;
-        chart.paint(g2d,this.getWidth(),this.getHeight());
+        if (this.drawChart) {
+            Graphics2D g2d = (Graphics2D) g;
+            chart.paint(g2d, this.getWidth(), this.getHeight());
         }
     }
-    public void setStyle(Styler.ChartTheme style){
-        this.style=style;
+
+    public void setStyle(Styler.ChartTheme style) {
+        this.style = style;
         repaint();
     }
 }

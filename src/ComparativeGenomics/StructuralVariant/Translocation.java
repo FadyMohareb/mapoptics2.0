@@ -21,6 +21,8 @@ public class Translocation {
     private XmapData xmap2;
     private Integer length;
     private ArrayList<Gene> features;
+    //private Integer refPos1;
+    //private Integer refPos2;
 
     private Integer refID1;
     private Integer refID2;
@@ -34,9 +36,25 @@ public class Translocation {
         this.xmap2 = xmap2;
         this.refChr1 = refChr1;
         this.refChr2 = refChr2;
-//        compareMatchingSites();
     }
 
+    public Translocation(Integer qryID, Chromosome refChr1, Chromosome refChr2) {
+        this.qryID = qryID;
+        this.refChr1 = refChr1;
+        this.refChr2 = refChr2;
+    }
+
+    /**
+     * @param values from FaNDOM .txt output file
+     * @return
+     */
+    /*
+    public Translocation(Chromosome refChr1, Chromosome refChr2) {
+        this.refChr1 = refChr1;
+        this.refChr2 = refChr2;
+//        compareMatchingSites();
+    }
+     */
     public String getRefChr1Name() {
         if (this.refChr1 != null) {
             return this.refChr1.getName();

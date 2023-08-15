@@ -115,7 +115,6 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
         w = this.getWidth();
         h = this.getHeight();
         qryWidth = w.doubleValue() - (2 * startX);
-        //System.out.println("Query Width " + qryWidth);
     }
 
     public void findSites() {
@@ -221,7 +220,6 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
     }
 
     private void drawQuery(Graphics g) {
-        //System.out.println("relSize: " + relSize + "start: " + start + "end " + end + "size: " + size);
         Graphics2D g2d = (Graphics2D) g;
         g2d.setFont(chrFont);
         if (chr == null) {
@@ -454,6 +452,8 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
 
         geneDialog.setBounds(new java.awt.Rectangle(300, 300, 283, 120));
         geneDialog.setLocation(new java.awt.Point(300, 300));
+        geneDialog.setMinimumSize(new java.awt.Dimension(249, 160));
+        geneDialog.setPreferredSize(new java.awt.Dimension(249, 165));
 
         jLabel1.setText("Gene Name:");
 
@@ -510,8 +510,7 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
                     .addComponent(geneSource)
                     .addGroup(geneDialogLayout.createSequentialGroup()
                         .addGap(19, 19, 19)
-                        .addComponent(queryDBButton)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(queryDBButton))))
         );
         geneDialogLayout.setVerticalGroup(
             geneDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -535,7 +534,7 @@ public class QueryPanel extends javax.swing.JPanel implements MouseListener, Mou
                     .addComponent(queryDBButton)
                     .addComponent(clinVarButton)
                     .addComponent(dbVarButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
 
         databaseResult.setTitle("DB Result");

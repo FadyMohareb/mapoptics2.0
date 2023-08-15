@@ -44,7 +44,6 @@ public class Genome {
     }
 
     private void setChromosomes() {
-
         HashMap<Double, String> chrs = this.karyotype.getInfo();
 //       iterate through every chr in the karyotype
         Iterator<Map.Entry<Double, String>> entries = chrs.entrySet().iterator();

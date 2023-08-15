@@ -4,9 +4,13 @@ import ComparativeGenomics.FileHandling.DataHandling.CmapData;
 import ComparativeGenomics.FileHandling.DataHandling.XmapData;
 import ComparativeGenomics.StructuralVariant.Duplication;
 import ComparativeGenomics.FileHandling.DataHandling.Pair;
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -18,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -40,7 +45,7 @@ public class Xmap {
 //   this is to check if there have been any translocation events. 
     //i.e. one query map mapping to more than one ref cmap i.e. chromosome!
     private HashMap<Integer, ArrayList<XmapData>> queryMapsToRef = new HashMap();
-    //where key is the query map ID and values are the refmap IDs
+    //where key is the query map ID and values are the corresponding xmap map
     private Cmap refCmap;
     private Cmap qryCmap;
     private Integer indelTotal = 0;
@@ -48,7 +53,7 @@ public class Xmap {
     private HashMap<Integer, ArrayList<XmapData>> potentialTranslocations = new HashMap();
     private HashMap<Integer, XmapData> allXmaps = new HashMap();
 
-    private boolean isValid = true; //Check if the file is valide, ie in xmap format and not empty
+    private boolean isValid = true; //Check if the file is valid, ie in xmap format and not empty
 
     public Xmap(String filepath) {
         this.filepath = filepath;
@@ -158,7 +163,7 @@ public class Xmap {
                     }
                 }
             } catch (FileNotFoundException ex) {
-
+                System.out.println(ex);
             } finally {
                 if (inputStream != null) {
                     try {
@@ -183,7 +188,6 @@ public class Xmap {
                     sc.close();
                 }
             }
-
         }
     }
 
@@ -192,9 +196,46 @@ public class Xmap {
      * @param filepath of file to be validated
      * @return true if valid and false if not
      */
-    private boolean ValidateXMAP(String filepath) {
-//        need to add in code here to check the xmap file!
-        return true;
+    private boolean ValidateXMAP(String filePath) {
+        if (filePath.endsWith(".xmap")) {
+            if (Files.exists(Paths.get(filePath))) {
+                try {
+                    BufferedReader br = new BufferedReader(new FileReader(filePath));
+                    String line;
+
+                    while ((line = br.readLine()) != null && line.startsWith("#")) {
+                        if (line.toLowerCase().contains("xmap file version")) {
+                            return true;
+                        }
+                    }
+                    br.close();
+
+                    // Show error message if wrong format
+                    JOptionPane.showMessageDialog(null,
+                            "Error loading XMAP file."
+                            + "\n\nInvalid format!",
+                            "XMAP input error",
+                            JOptionPane.ERROR_MESSAGE);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                //Show error message if no file found
+                JOptionPane.showMessageDialog(null,
+                        "Error loading XMAP file."
+                        + "\n\nFile does not exist!",
+                        "XMAP input error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            //Show error message if wrong file type
+            JOptionPane.showMessageDialog(null,
+                    "Error loading XMAP file."
+                    + "\n\nInvalid file type!",
+                    "XMAP input error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+        return false;
     }
 
     /**
@@ -261,13 +302,27 @@ public class Xmap {
     public String getVersion() {
         return this.version;
     }
-    
+
     /**
      * Return the validity of the file
      * @return boolean is valid
      */
     public boolean getValidity(){
         return this.isValid;
+    }
+    
+    /**
+     * Return a Hashmap of all maps (values) corresponding to a refContigID (key) in the XMAP
+     */
+    public HashMap<Integer, ArrayList<XmapData>> getXmapByRef(){
+        return xmap;
+    }
+    
+    /**
+     * Return a Hashmap of all maps (values) corresponding to a qryContigID (key) in the XMAP
+     */
+    public HashMap<Integer, ArrayList<XmapData>> getXmapByQry(){
+        return queryMapsToRef;
     }
 
     /**

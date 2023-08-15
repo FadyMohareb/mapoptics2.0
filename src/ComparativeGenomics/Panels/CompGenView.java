@@ -7,6 +7,7 @@ import ComparativeGenomics.FileHandling.DataHandling.Genome;
 import ComparativeGenomics.FileHandling.DataHandling.Chromosome;
 import ComparativeGenomics.ServerHandling.*;
 import ComparativeGenomics.FileHandling.*;
+import ComparativeGenomics.FileHandling.DataHandling.Pair;
 import ComparativeGenomics.StructuralVariant.*;
 import com.opencsv.CSVWriter;
 import com.qoppa.pdfWriter.PDFDocument;
@@ -21,7 +22,10 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JFileChooser;
@@ -56,6 +60,16 @@ public class CompGenView extends javax.swing.JFrame {
 //    private Fasta qryFasta;
     private Annot refAnnot;
 //    private Annot qryAnnot;
+    private Smap smap;
+
+    // Maximal number of translocations that can be displayed at a time
+    // on the circos plot and table of translocations
+    final int MAX_TRANSLOCATION = 10000;
+
+    //Translocations page number
+    private int translocPage = 0;
+
+    private String localSMAP; // Path of file containing SV data
 
     /**
      * Creates new form GenomeView
@@ -139,6 +153,8 @@ public class CompGenView extends javax.swing.JFrame {
     /**
      * Check if all the entered files contained data before calling the
      * "populate data" function
+     *
+     * @author Marie Schmit
      */
     private void checkData() {
         String errorMessage = "";
@@ -166,6 +182,7 @@ public class CompGenView extends javax.swing.JFrame {
                     errorMessage,
                     "Error while displaying data",
                     JOptionPane.ERROR_MESSAGE);
+            this.parsingDialog.setVisible(false);
         } else {
             populateData();
         }
@@ -192,7 +209,6 @@ public class CompGenView extends javax.swing.JFrame {
         this.alignmentsPerChromosomeChartPanel1.plotGenome(refGenome);
         this.queryPanel1.setRefOrg(this.refGenome.getName());
         this.queryPanel1.setXmap(this.alignment.getXmap());
-        this.circosPanel1.setKaryotype(refKary, this.alignment);
 
         DefaultTableModel chrTable = (DefaultTableModel) this.chromosomeTable.getModel();
         this.chromosomeTable.setAutoCreateRowSorter(true);
@@ -209,25 +225,66 @@ public class CompGenView extends javax.swing.JFrame {
             chrTable.addRow(chrData);
         }
 
+        // Read and display translocations
+        if (this.alignment.getTranslocations().size() > MAX_TRANSLOCATION) {
+            displayTranslocations(0, MAX_TRANSLOCATION);
+        } else {
+            displayTranslocations(0, this.alignment.getTranslocations().size());
+            this.previousTranslocPage.setEnabled(false);
+            this.nextTranslocPage.setEnabled(false);
+        }
+
         this.parsingDialog.setVisible(false);
         this.setVisible(true);
+    }
 
+    /**
+     * Draw circos plot for current karyotype and alignments. Display
+     * translocations in translocation table.
+     *
+     * @author Marie Schmit
+     * @param fromIndex, toIndex Indexes of start and end of extracted
+     * translocations
+     */
+    private void displayTranslocations(int fromIndex, int toIndex) {
+        pageNumber.setText("Page " + this.translocPage);
+
+        // Draw circos plot
+        this.circosPanel1.setKaryotype(refKary, this.alignment, fromIndex, toIndex);
+
+        // Add translocations to translocation table
         DefaultTableModel transTableModel = (DefaultTableModel) this.translocationTable.getModel();
         this.translocationTable.setAutoCreateRowSorter(true);
-//         First clear the chromosomes JTable of any previous data
         transTableModel.setRowCount(0);
         transTableModel.setColumnCount(0);
 
         String[] columnNamesTrans = {"Chromosome 1", "Chromosome 2"};
         transTableModel.setColumnIdentifiers(columnNamesTrans); //Set the column names of this table
+        // Check that the translocation is not already in the table
+        Set<String[]> setPairs = new HashSet<String[]>();
 
-        for (Translocation t : this.alignment.getTranslocations()) {
+        // Extract a sublist of translocations
+        ArrayList<Translocation> subListTransloc = this.alignment.getLocalisedTranslocations(fromIndex, toIndex);
 
+        for (Translocation t : subListTransloc) {
             String[] tData = {t.getRefChr1Name(), t.getRefChr2Name()};
-            transTableModel.addRow(tData);
+            boolean addTranslocation = true;
+            // Check if translocation already exists
+            for (String[] set : setPairs) {
+                if (set[0] != null && set[1] != null) {
+                    if (set[0].equals(t.getRefChr1Name())
+                            && set[1].equals(t.getRefChr2Name())) {
+                        addTranslocation = false;
+                    }
+                }
+            }
+            if (addTranslocation) {
+                transTableModel.addRow(tData);
+            }
+
+            // Add translocation to set
+            setPairs.add(tData);
         }
-        this.parsingDialog.setVisible(false);
-        this.setVisible(true);
     }
 
     /**
@@ -263,6 +320,9 @@ public class CompGenView extends javax.swing.JFrame {
         circosPanel1 = new ComparativeGenomics.Panels.CircosPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         translocationTable = new javax.swing.JTable();
+        nextTranslocPage = new javax.swing.JButton();
+        previousTranslocPage = new javax.swing.JButton();
+        pageNumber = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -313,14 +373,14 @@ public class CompGenView extends javax.swing.JFrame {
         jTabbedPane2 = new javax.swing.JTabbedPane();
         jScrollPane6 = new javax.swing.JScrollPane();
         variantTable = new javax.swing.JTable();
-        jPanel10 = new javax.swing.JPanel();
         alignmentsOnChromosomeChartPanel1 = new ComparativeGenomics.Panels.AlignmentsOnChromosomeChartPanel();
         jScrollPane7 = new javax.swing.JScrollPane();
         geneTable = new javax.swing.JTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        exitProgram = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        closeWindow = new javax.swing.JMenuItem();
+        ExitProgram = new javax.swing.JMenuItem();
+        chooseSMAP = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
         exportAlignmentsTable = new javax.swing.JMenuItem();
@@ -484,7 +544,7 @@ public class CompGenView extends javax.swing.JFrame {
         chromosomeChartPanel1.setLayout(chromosomeChartPanel1Layout);
         chromosomeChartPanel1Layout.setHorizontalGroup(
             chromosomeChartPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 898, Short.MAX_VALUE)
+            .addGap(0, 993, Short.MAX_VALUE)
         );
         chromosomeChartPanel1Layout.setVerticalGroup(
             chromosomeChartPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -493,11 +553,13 @@ public class CompGenView extends javax.swing.JFrame {
 
         jTabbedPane3.addTab("SVs Across Genome", chromosomeChartPanel1);
 
+        alignmentsPerChromosomeChartPanel1.setInheritsPopupMenu(true);
+
         javax.swing.GroupLayout alignmentsPerChromosomeChartPanel1Layout = new javax.swing.GroupLayout(alignmentsPerChromosomeChartPanel1);
         alignmentsPerChromosomeChartPanel1.setLayout(alignmentsPerChromosomeChartPanel1Layout);
         alignmentsPerChromosomeChartPanel1Layout.setHorizontalGroup(
             alignmentsPerChromosomeChartPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 898, Short.MAX_VALUE)
+            .addGap(0, 993, Short.MAX_VALUE)
         );
         alignmentsPerChromosomeChartPanel1Layout.setVerticalGroup(
             alignmentsPerChromosomeChartPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -530,6 +592,24 @@ public class CompGenView extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(translocationTable);
 
+        nextTranslocPage.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        nextTranslocPage.setText(">");
+        nextTranslocPage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nextTranslocPageActionPerformed(evt);
+            }
+        });
+
+        previousTranslocPage.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        previousTranslocPage.setText("<");
+        previousTranslocPage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                previousTranslocPageActionPerformed(evt);
+            }
+        });
+
+        pageNumber.setText("Page 0");
+
         javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
         jPanel14.setLayout(jPanel14Layout);
         jPanel14Layout.setHorizontalGroup(
@@ -538,15 +618,30 @@ public class CompGenView extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(circosPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
+                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 503, Short.MAX_VALUE)
+                    .addGroup(jPanel14Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(pageNumber)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(previousTranslocPage)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(nextTranslocPage)))
                 .addContainerGap())
         );
         jPanel14Layout.setVerticalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
+            .addGroup(jPanel14Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 392, Short.MAX_VALUE)
+                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel14Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(nextTranslocPage)
+                            .addComponent(previousTranslocPage)
+                            .addComponent(pageNumber))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(circosPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -712,7 +807,7 @@ public class CompGenView extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSplitPane1))
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1340, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -760,7 +855,7 @@ public class CompGenView extends javax.swing.JFrame {
                         .addComponent(jLabel13)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(chrLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 941, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1036, Short.MAX_VALUE)
                         .addComponent(clearChrAlignmentHighlighted))
                     .addComponent(chromosomePanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -806,13 +901,13 @@ public class CompGenView extends javax.swing.JFrame {
         jLayeredPane4.setLayout(jLayeredPane4Layout);
         jLayeredPane4Layout.setHorizontalGroup(
             jLayeredPane4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1243, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1338, Short.MAX_VALUE)
         );
         jLayeredPane4Layout.setVerticalGroup(
             jLayeredPane4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jLayeredPane4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 567, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -830,7 +925,7 @@ public class CompGenView extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSplitPane2))
+                .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 899, Short.MAX_VALUE))
         );
 
         genomeViewTabPane.addTab("Chromosome View", jPanel3);
@@ -862,7 +957,7 @@ public class CompGenView extends javax.swing.JFrame {
                         .addComponent(jLabel12)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(chrLabel2)
-                        .addGap(0, 1068, Short.MAX_VALUE)))
+                        .addGap(0, 1163, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel24Layout.setVerticalGroup(
@@ -937,7 +1032,7 @@ public class CompGenView extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel23Layout.createSequentialGroup()
                 .addComponent(jLabel15)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
                 .addGroup(jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel10)
                     .addGroup(jPanel23Layout.createSequentialGroup()
@@ -1015,7 +1110,7 @@ public class CompGenView extends javax.swing.JFrame {
                         .addComponent(jLabel14)
                         .addGap(12, 12, 12)
                         .addComponent(queryChrSize)
-                        .addGap(0, 91, Short.MAX_VALUE))
+                        .addGap(0, 140, Short.MAX_VALUE))
                     .addGroup(jPanel21Layout.createSequentialGroup()
                         .addGroup(jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel23, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1057,31 +1152,21 @@ public class CompGenView extends javax.swing.JFrame {
 
         jTabbedPane2.addTab("Indels", jScrollPane6);
 
+        alignmentsOnChromosomeChartPanel1.setInheritsPopupMenu(true);
+        alignmentsOnChromosomeChartPanel1.setPreferredSize(new java.awt.Dimension(948, 334));
+
         javax.swing.GroupLayout alignmentsOnChromosomeChartPanel1Layout = new javax.swing.GroupLayout(alignmentsOnChromosomeChartPanel1);
         alignmentsOnChromosomeChartPanel1.setLayout(alignmentsOnChromosomeChartPanel1Layout);
         alignmentsOnChromosomeChartPanel1Layout.setHorizontalGroup(
             alignmentsOnChromosomeChartPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 909, Short.MAX_VALUE)
+            .addGap(0, 948, Short.MAX_VALUE)
         );
         alignmentsOnChromosomeChartPanel1Layout.setVerticalGroup(
             alignmentsOnChromosomeChartPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 296, Short.MAX_VALUE)
+            .addGap(0, 402, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
-        jPanel10.setLayout(jPanel10Layout);
-        jPanel10Layout.setHorizontalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(alignmentsOnChromosomeChartPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        jPanel10Layout.setVerticalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addComponent(alignmentsOnChromosomeChartPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-
-        jTabbedPane2.addTab("Alignments", jPanel10);
+        jTabbedPane2.addTab("Alignments", alignmentsOnChromosomeChartPanel1);
 
         geneTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -1113,7 +1198,7 @@ public class CompGenView extends javax.swing.JFrame {
             jLayeredPane6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jLayeredPane6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 919, Short.MAX_VALUE)
+                .addComponent(jTabbedPane2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -1126,7 +1211,7 @@ public class CompGenView extends javax.swing.JFrame {
                 .addComponent(jPanel24, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jLayeredPane6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(50, Short.MAX_VALUE))
         );
@@ -1151,23 +1236,31 @@ public class CompGenView extends javax.swing.JFrame {
 
         jMenu1.setText("File");
 
-        exitProgram.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        exitProgram.setText("Close Window");
-        exitProgram.addActionListener(new java.awt.event.ActionListener() {
+        closeWindow.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        closeWindow.setText("Close Window");
+        closeWindow.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                exitProgramActionPerformed(evt);
+                closeWindowActionPerformed(evt);
             }
         });
-        jMenu1.add(exitProgram);
+        jMenu1.add(closeWindow);
 
-        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        jMenuItem1.setText("Exit Program");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        ExitProgram.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        ExitProgram.setText("Exit Program");
+        ExitProgram.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                ExitProgramActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem1);
+        jMenu1.add(ExitProgram);
+
+        chooseSMAP.setText("Choose SV map");
+        chooseSMAP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chooseSMAPActionPerformed(evt);
+            }
+        });
+        jMenu1.add(chooseSMAP);
 
         jMenuBar1.add(jMenu1);
 
@@ -1295,17 +1388,17 @@ public class CompGenView extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void exitProgramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitProgramActionPerformed
+    private void closeWindowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeWindowActionPerformed
         //CompGenStart compGenPanel = new CompGenStart();
         //compGenPanel.authentificationPane.setVisible(true);
         this.setVisible(false);
         //CompGenStart view = new CompGenStart();
         //view.setVisible(true);
-    }//GEN-LAST:event_exitProgramActionPerformed
+    }//GEN-LAST:event_closeWindowActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void ExitProgramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitProgramActionPerformed
         System.exit(0);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_ExitProgramActionPerformed
 
     private void exportChrViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportChrViewActionPerformed
         exportImage(this.chromosomePanel1);
@@ -1379,7 +1472,17 @@ public class CompGenView extends javax.swing.JFrame {
 
     private void updateRangeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateRangeButtonActionPerformed
 
-        this.queryPanel1.setRange(Integer.valueOf(this.queryStart.getText()), Integer.valueOf(this.queryEnd.getText()));
+        String textQryStart = this.queryStart.getText();
+        String textQryEnd = this.queryEnd.getText();
+
+        if (textQryStart.contains(".")) {
+            textQryStart = new String(textQryStart.replace(".", "").replaceFirst("\\.0*$", ""));
+        }
+        if (textQryEnd.contains(".")) {
+            textQryEnd = new String(textQryEnd.replace(".", "").replaceFirst("\\.0*$", ""));
+        }
+
+        this.queryPanel1.setRange(Integer.parseInt(textQryStart), Integer.parseInt(textQryEnd));
 
         this.geneTable.setAutoCreateRowSorter(true);
         DefaultTableModel geneTableModel = (DefaultTableModel) this.geneTable.getModel();
@@ -1437,7 +1540,7 @@ public class CompGenView extends javax.swing.JFrame {
                         JOptionPane.ERROR_MESSAGE);
             }
         } catch (NullPointerException e) {
-            System.out.println("Map for row " + row + " is null :(");
+            System.out.println("Map for row " + row + " is null");
         }
     }//GEN-LAST:event_chrAlignTableMousePressed
 
@@ -1464,6 +1567,70 @@ public class CompGenView extends javax.swing.JFrame {
             changePlotStyles("xchart");
         }
     }//GEN-LAST:event_setChartStyleActionPerformed
+
+    private void chooseSMAPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseSMAPActionPerformed
+        // Choose file containing info on SV
+        FileDialog fileDialog = new FileDialog(this, "Choose SV file", FileDialog.LOAD);
+        fileDialog.setFile("*.smap;*.txt");
+        fileDialog.setVisible(true);
+
+        this.localSMAP = fileDialog.getDirectory() + fileDialog.getFile();
+
+        // Parse input SV file
+        this.smap = new Smap(fileDialog.getDirectory() + fileDialog.getFile());
+
+        //Detect translocations
+        if (this.smap.getSmapFormat()) {
+            // Detect translocations from SMAP file
+            this.alignment.detectSmapTranslocations(this.smap);
+        } else {
+            // Detect translocations from text file
+            this.alignment.detectTxtTranslocations(this.smap);
+        }
+        
+        this.chromosomeChartPanel1.plotGenome(refGenome);
+
+        // Display translocations on circos plot and translocations table
+        // Read and display translocations
+        if (this.alignment.getTranslocations().size() > MAX_TRANSLOCATION) {
+            displayTranslocations(0, MAX_TRANSLOCATION);
+        } else {
+            displayTranslocations(0, this.alignment.getTranslocations().size());
+            this.previousTranslocPage.setEnabled(false);
+            this.nextTranslocPage.setEnabled(false);
+        }
+    }//GEN-LAST:event_chooseSMAPActionPerformed
+
+    private void nextTranslocPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextTranslocPageActionPerformed
+        if (this.translocPage < this.alignment.getTranslocations().size() / MAX_TRANSLOCATION) {
+            this.translocPage += 1;
+            int fromIndex = translocPage * MAX_TRANSLOCATION;
+            int toIndex = (1 + translocPage) * MAX_TRANSLOCATION;
+            if (toIndex > this.alignment.getTranslocations().size()) {
+                toIndex = this.alignment.getTranslocations().size();
+            }
+            displayTranslocations(fromIndex, toIndex);
+            previousTranslocPage.setEnabled(true);
+        } else {
+            nextTranslocPage.setEnabled(false);
+        }
+    }//GEN-LAST:event_nextTranslocPageActionPerformed
+
+    private void previousTranslocPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previousTranslocPageActionPerformed
+        if (this.translocPage > 0) {
+            this.translocPage -= 1;
+            int fromIndex = translocPage * MAX_TRANSLOCATION;
+            int toIndex = (1 + translocPage) * MAX_TRANSLOCATION;
+            if (toIndex > this.alignment.getTranslocations().size()) {
+                toIndex = this.alignment.getTranslocations().size();
+            }
+            displayTranslocations(fromIndex, toIndex);
+            nextTranslocPage.setEnabled(true);
+        } else {
+            previousTranslocPage.setEnabled(false);
+        }
+    }//GEN-LAST:event_previousTranslocPageActionPerformed
+
     private void changePlotStyles(String style) {
         if ("ggplot".equals(style)) {
             this.alignmentsOnChromosomeChartPanel1.setStyle(Styler.ChartTheme.GGPlot2);
@@ -1493,14 +1660,15 @@ public class CompGenView extends javax.swing.JFrame {
 
     private void chooseChromosome(Integer x) {
         genes.clear();
-//       this.alignmentsOnChromosomeChartPanel1 = new AlignmentsOnChromosomeChartPanel();
-//       this.alignmentsPerChromosomeChartPanel1 = new AlignmentsPerChromosomeChartPanel();
+
+        //this.alignmentsOnChromosomeChartPanel1 = new AlignmentsOnChromosomeChartPanel();
+        this.alignmentsPerChromosomeChartPanel1 = new AlignmentsPerChromosomeChartPanel();
         this.chromosomeChartPanel1 = new ChromosomeChartPanel();
 
         currentChr = this.alignment.getRefGenome().getChromosomes().get(x);
 
         if (currentChr != null) {
-//            this.alignmentsOnChromosomeChartPanel1.plotCounts(currentChr);
+            this.alignmentsOnChromosomeChartPanel1.plotCounts(currentChr);
             chrLabel.setText(currentChr.getName());
             chrLabel2.setText(currentChr.getName());
             this.queryPanel1.setChr(currentChr);
@@ -1634,9 +1802,7 @@ public class CompGenView extends javax.swing.JFrame {
                     for (int i = 0; i < saveTable.getRowCount(); i++) {
                         // Nest for loops to take values from table and add to CSV file
                         for (int j = 0; j < saveTable.getColumnCount(); j++) {
-
                             qryOut[j] = saveTable.getValueAt(i, j).toString();
-
                         }
 
                         tableContents.writeNext(qryOut);
@@ -1686,7 +1852,6 @@ public class CompGenView extends javax.swing.JFrame {
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Error saving image to pdf file", "Error", JOptionPane.ERROR_MESSAGE);
             }
-
         } else {
             JOptionPane.showMessageDialog(null, "No filename given", "Invalid input", JOptionPane.ERROR_MESSAGE);
         }
@@ -1694,12 +1859,14 @@ public class CompGenView extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem ExitProgram;
     private javax.swing.JLabel alignerLabel;
     private ComparativeGenomics.Panels.AlignmentsOnChromosomeChartPanel alignmentsOnChromosomeChartPanel1;
     private ComparativeGenomics.Panels.AlignmentsPerChromosomeChartPanel alignmentsPerChromosomeChartPanel1;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JMenuItem changePlotStyle;
     private javax.swing.JDialog changePlotStyleDialog;
+    private javax.swing.JMenuItem chooseSMAP;
     private javax.swing.JTable chrAlignTable;
     private javax.swing.JLabel chrLabel;
     private javax.swing.JLabel chrLabel2;
@@ -1708,9 +1875,9 @@ public class CompGenView extends javax.swing.JFrame {
     private javax.swing.JTable chromosomeTable;
     private ComparativeGenomics.Panels.CircosPanel circosPanel1;
     private javax.swing.JButton clearChrAlignmentHighlighted;
+    private javax.swing.JMenuItem closeWindow;
     private javax.swing.JButton decreaseRange;
     private javax.swing.JLabel enzymeLabel;
-    private javax.swing.JMenuItem exitProgram;
     private javax.swing.JMenuItem exportAlignmentsTable;
     private javax.swing.JMenuItem exportChrView;
     private javax.swing.JMenuItem exportCircos;
@@ -1749,9 +1916,7 @@ public class CompGenView extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu7;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel2;
@@ -1777,7 +1942,10 @@ public class CompGenView extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane3;
     private javax.swing.JLabel jobNameLabel;
     private javax.swing.JRadioButton matlabButton;
+    private javax.swing.JButton nextTranslocPage;
+    private javax.swing.JLabel pageNumber;
     private javax.swing.JDialog parsingDialog;
+    private javax.swing.JButton previousTranslocPage;
     private javax.swing.JLabel qrySpeciesLabel;
     private javax.swing.JLabel queryChrSize;
     private javax.swing.JTextField queryEnd;
