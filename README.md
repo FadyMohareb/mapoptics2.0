@@ -14,7 +14,7 @@ git clone https://github.com/franpeters/mapoptics
 cd mapoptics/dist/
 java -jar MapOptics.jar
 ```
-If you wish to utilise the alignment pipeline:
+To use the alignment pipeline:
 
 Pull the Docker image from DockerHub in an external server: 
 ```
