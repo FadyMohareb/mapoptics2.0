@@ -1,4 +1,4 @@
-
+ubuntu16v6#
 
 # MapOptics
 MapOptics is a lightweight cross-platform tool that enables the user to visualise and interact with the alignment of Bionano optical mapping data and can be used for in depth exploration of hybrid scaffolding alignments.
@@ -19,6 +19,20 @@ If you wish to utilise the alignment pipeline:
 Pull the Docker image from DockerHub in an external server: 
 ```
 sudo docker pull marieschmit/mapoptics_docker_server:ubuntu16v6
+```
+
+Gives docker sudo rights so MapOptics will have the rights to start and run Docker containers:
+
+```
+sudo usermod -aG docker $USER
+```
+
+#### 2. Server setup
+
+To set up the server, first pull MapOptics image from DockerHub:
+
+```
+sudo docker pull marieschmit/mapoptics_docker_server
 ```
 
 ## Start Screen
