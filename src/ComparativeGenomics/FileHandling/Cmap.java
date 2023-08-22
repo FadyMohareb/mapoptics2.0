@@ -19,11 +19,10 @@ import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author franpeters Stores all of the contiguous maps contained within the
- * cmap file the data are stored into hashmaps to allow for efficient access The
- * class constructor takes on only one argument, a string containing the
- * filepath of the cmap file to be loaded into mapoptics
+ * Stores all of the contiguous maps contained within the
+ * cmap file the data are stored into hashmaps to allow for efficient access.
+ * 
+ * @author franpeters
  *
  */
 public class Cmap {
@@ -43,8 +42,9 @@ public class Cmap {
     private boolean isValid = true;
 
     /**
+     * Reads and parses cmap file
      *
-     * @param filepath Filepath Cmap file to be read
+     * @param filepath filepath of the cmap file to be loaded into mapoptics
      */
     public Cmap(String filepath) {
         this.filepath = filepath;
@@ -53,7 +53,7 @@ public class Cmap {
     }
 
     /**
-     * Returns the data of a contig of a given size from the Cmap, for use when
+     * Returns the data of a contig of a given size from this Cmap, for use when
      * assigning a chromosome name using the Karyotype file.
      *
      * @param x size of cmap contig to access
@@ -64,7 +64,7 @@ public class Cmap {
     }
 
     /**
-     * o	Returns the data of a contig of a given ID from the Cmap, for use when
+     * Returns the data of a contig of a given ID from this Cmap, for use when
      * accessing CmapData for an Xmap file.
      *
      * @param x ID of cmap contig to access
@@ -75,14 +75,16 @@ public class Cmap {
     }
 
     /**
-     *
-     * @return all Cmap contig ids within the CMAP file as an ArrayList
+     * Gets all the contigs ids within this cmap file
+     * 
+     * @return all Cmap contig ids as an ArrayList
      */
     public ArrayList<Integer> getCmapIDs() {
         return this.cmapIDs;
     }
 
     /**
+     * Gets this cmap file version
      *
      * @return File version
      */
@@ -91,7 +93,8 @@ public class Cmap {
     }
 
     /**
-     *
+     * Gets digestion enzyme used to digest this cmap file
+     * 
      * @return Digestion enzyme used to make the cmap file
      */
     public String getNickase() {
@@ -99,7 +102,8 @@ public class Cmap {
     }
 
     /**
-     *
+     * Gets number of contigs contained within this cmap
+     * 
      * @return Number of contigs contained within the cmap, should correspond
      * with number of chromosomes
      */
@@ -108,15 +112,17 @@ public class Cmap {
     }
 
     /**
-     *
-     * @return File name of the cmap
+     * Gets this cmap file name
+     * 
+     * @return File name of this cmap
      */
     public String getFileName() {
         return this.filename;
     }
 
     /**
-     *
+     * Gets genome size
+     * 
      * @return
      */
     public Double getGenomeSize() {
@@ -124,6 +130,7 @@ public class Cmap {
     }
 
     /**
+     * Checks cmap validity (file is in cmap format, exists, is not null)
      * @return boolean indicating if CMAP file read is vailid
      */
     public boolean getValidity() {

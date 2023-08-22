@@ -1,0 +1,1 @@
+#Header	Chrom1	RefPos1	Direction1	Chrom2	RefPos2	Directio2	Type	Ids	NumSupports	GeneInterupt	GeneFusion

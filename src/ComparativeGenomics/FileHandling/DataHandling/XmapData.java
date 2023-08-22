@@ -13,9 +13,10 @@ import java.util.HashMap;
 import java.util.Objects;
 
 /**
- *
- * @author franpeters Stores the data for each individual alignment identified
+ * Stores the data for each individual alignment identified
  * as the XMAP file. All of the aligned sites are stored as a Pair.
+ * 
+ * @author franpeters
  */
 public class XmapData {
 
@@ -47,7 +48,9 @@ public class XmapData {
     //private HashMap<Integer, ArrayList<Integer>> refToQryID = new HashMap();
 
     /**
-     *
+     * Constructor with xmap and cmap IDs, query and reference start and end position,
+     * and all the values detailed in xmap file
+     * 
      * @param id Xmap ID
      * @param qryid Query cmap ID
      * @param refid Reference cmap ID
@@ -80,111 +83,158 @@ public class XmapData {
         this.refLen = refl;
         this.align = align;
 
-        /*
-        // Add values to HashMap of query IDs mapped to Reference
-        if (qryToRefID.get(qryCmapID) != null) {
-            ArrayList<Integer> refIDs = qryToRefID.get(qryCmapID);
-            refIDs.add(refCmapID);
-            this.qryToRefID.put(qryCmapID, refIDs);
-        } else {
-            ArrayList<Integer> refIDs = new ArrayList<>();
-            refIDs.add(refCmapID);
-            this.qryToRefID.put(qryCmapID, refIDs);
-        }
-        
-        // Add values to Hashmap of reference IDs mapped to query
-        if (refToQryID.get(refCmapID) != null) {
-            ArrayList<Integer> qryIDs = refToQryID.get(refCmapID);
-            qryIDs.add(qryCmapID);
-            this.refToQryID.put(refCmapID, qryIDs);
-        } else {
-            ArrayList<Integer> qryIDs = new ArrayList<>();
-            qryIDs.add(qryCmapID);
-            this.refToQryID.put(qryCmapID, qryIDs);
-        }
-        */
-    }
-/*
-    public HashMap<Integer, ArrayList<Integer>> getQryToRefID() {
-        return this.qryToRefID;
     }
 
-    public HashMap<Integer, ArrayList<Integer>> getRefToQryID() {
-        return this.refToQryID;
-    }
-*/
-
+    /**
+     * Gets this xmap id
+     * 
+     * @return xmap id
+     */
     public Integer getID() {
         return this.ID;
     }
 
+    /**
+     * Gets this xmap query id
+     * 
+     * @return query cmap id
+     */
     public Integer getQryID() {
         return this.qryCmapID;
     }
 
+    /**
+     * Gets this xmap reference id
+     * 
+     * @return reference cmap id
+     */
     public Integer getRefID() {
         return this.refCmapID;
     }
 
+    /**
+     * Gets this xmap orientation data
+     * 
+     * @return orientation
+     */
     public boolean getOri() {
         return this.orientation;
     }
 
+    /**
+     * Gets this xmap confidence data
+     * @return confidence
+     */
     public Double getConfidence() {
         return this.confidence;
     }
 
+    /**
+     * Gets this xmap hit enum data
+     * @return hitenum
+     */
     public String getHitEnum() {
         return this.hitEnum;
     }
 
+    /**
+     * Gets this xmap query length data
+     * @return query length
+     */
     public Double getQryLen() {
         return this.qryLen;
     }
 
+    /**
+     * Gets this xmap reference length data
+     * @return reference length
+     */
     public Double getRefLen() {
         return this.refLen;
     }
 
+    /**
+     * Gets this xmap alignments pair
+     * @return alignments
+     */
     public ArrayList<Pair> returnAlignments() {
         return this.align;
     }
 
+    /**
+     * Gets this xmap first match
+     * 
+     * @return pair of first alignment
+     */
     public Pair returnFirstMatch() {
         return this.align.get(0);
     }
 
+    /**
+     * Gets this xmap last match
+     * 
+     * @return pair of last alignment
+     */
     public Pair returnLastMatch() {
         return this.align.get(this.align.size() - 1);
     }
 
+    /**
+     * Gets this xmap indels
+     * 
+     * @return list of indels
+     */
     public ArrayList<Indel> getIndels() {
         return this.indels;
     }
 
+    /**
+     * Gets number of indels
+     * 
+     * @return size of indels
+     */
     public Integer numIndels() {
         return this.indels.size();
     }
 
+    /**
+     * Gets query start
+     * 
+     * @return query start
+     */
     public Double getQryStart() {
         return this.qryStart;
     }
 
+    /**
+     * Gets query end
+     * 
+     * @return query end
+     */
     public Double getQryEnd() {
         return this.qryEnd;
     }
 
+    /**
+     * Gets reference start
+     * 
+     * @return reference start
+     */
     public Double getRefStart() {
         return this.refStart;
     }
 
+    /**
+     * Gets reference end
+     * 
+     * @return reference end
+     */
     public Double getRefEnd() {
         return this.refEnd;
     }
 
     /**
-     *
-     * o Gets data of each site to detect indel.
+     * Gets data of each site to detect indel.
      *
      * @param ref Data from Cmap reference
      * @param qry Data from Cmap query
@@ -200,6 +250,16 @@ public class XmapData {
         }
     }
 
+    /**
+     * Detect inversion and deletion events
+     * 
+     * @param refSite reference site
+     * @param qrySite query site
+     * @param minIndelSize minimum indel size
+     * @param refID reference ID
+     * @param qryID query ID
+     * @return array list of detected indels
+     */
     private ArrayList<Indel> detectIndel(Site refSite, Site qrySite, Integer minIndelSize, Integer refID, Integer qryID) {
         ArrayList<Indel> foundIndels = new ArrayList();
 

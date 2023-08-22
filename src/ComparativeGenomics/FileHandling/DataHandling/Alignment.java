@@ -19,8 +19,10 @@ import ComparativeGenomics.StructuralVariant.Inversion;
 import java.util.Objects;
 
 /**
+ * Stores the alignment files produced by the job.
  *
- * @author franpeters Stores the alignment files produced by the job
+ * @author franpeters
+ * @author Marie Schmit
  */
 public final class Alignment {
 
@@ -32,16 +34,17 @@ public final class Alignment {
     private ArrayList<Integer> refCmapIDs = new ArrayList();
     private ArrayList<Translocation> translocations = new ArrayList();
 
-//    SV detection settings (Can be altered by user)
+    // SV detection settings (Can be altered by user)
     Integer distance = 30000;
     Integer minIndelSize = 500;
     Integer duplicationMin = 2;
 
     /**
+     * Sets alignment with its genome, query cmap and xmap
      *
-     * @param refGenome
-     * @param qryGenome
-     * @param xmap
+     * @param refGenome reference genome
+     * @param qryCmap query cmap
+     * @param xmap xmap
      */
     public Alignment(Genome refGenome, Cmap qryCmap, Xmap xmap) {
         this.refGenome = refGenome;
@@ -58,7 +61,7 @@ public final class Alignment {
                 // that have the same ID as the considered xmap
                 CmapData r = this.cmapRef.getCmapByID(map.getRefID());
                 CmapData q = this.cmapQry.getCmapByID(map.getQryID());
-//              populate the Pair objects with Site objects
+                // Populate the Pair objects with Site objects
                 if (q != null & r != null) {
                     for (Pair pair : map.returnAlignments()) {
                         Integer refID = pair.getRef();
@@ -76,50 +79,68 @@ public final class Alignment {
         setAlignments();
         for (Chromosome chr : this.refGenome.getChromosomes().values()) {
 
-//            detect inversions
+            // detect inversions
             for (XmapData xmap1 : chr.getAlignments()) {
                 Integer id = xmap1.getID();
                 for (XmapData xmap2 : this.xmap.getAllXmaps().values()) {
-//                    check not comparing to itself
+                    //check not comparing to itself
                     if (!Objects.equals(xmap2.getID(), id) & Objects.equals(xmap1.getRefID(), xmap2.getRefID())) {
-//                        detect duplications
-//                        detectDuplications(xmap1,xmap2,duplicationMin);
+//  detect duplications
+//  detectDuplications(xmap1,xmap2,duplicationMin);
                     }
                 }
             }
         }
         detectTranslocations();
-
     }
 
+    /**
+     * Gets reference genome name
+     * 
+     * @return reference genome name
+     */
     public String getRefGenomeName() {
         return this.refGenome.getName();
     }
 
+    /**
+     * Gets xmap
+     * 
+     * @return xmap
+     */
     public Xmap getXmap() {
         return this.xmap;
     }
 
+    /**
+     * gets query cmap
+     * 
+     * @return query cmap
+     */
     public Cmap getCmapQry() {
         return this.cmapQry;
     }
 
+    /**
+     * Gets reference cmap data
+     * 
+     * @return reference cmap
+     */
     public Cmap getCmapRef() {
         return this.cmapRef;
     }
 
     /**
-     * Assigns each chromosome in a genome a cmap file with all the digestion
+     * Assigns each chromosome in a genome to a cmap file with all the digestion
      * sites corresponding to that chromosome
      */
     private void setAlignments() {
-//       where a refcmapid refers to a chromosome as each cmap refers to one chromosome
+        // Where a refcmapid refers to a chromosome as each cmap refers to one chromosome
         for (int i = 0; i < this.refCmapIDs.size(); i++) {
-//            cmapID = chromosome
             Integer cmapID = this.refCmapIDs.get(i);
-//            this accesses all of the alignments related to that cmap ID
+            // This accesses all of the alignments related to that cmap ID
             if (this.xmap.getXmap().containsKey(cmapID)) {
-//                these are all the qry cmap matches to the ref cmap
+                // These are all the qry cmap matches to the ref cmap
                 ArrayList<XmapData> chrAlignments = this.xmap.getXmap().get(cmapID);
                 if (this.refGenome.getChromosomes().get(cmapID) != null) {
                     this.refGenome.getChromosomes().get(cmapID).setAlignment(chrAlignments, cmapQry);
@@ -128,10 +149,20 @@ public final class Alignment {
         }
     }
 
+    /**
+     * Gets reference genome data
+     * 
+     * @return reference genome
+     */
     public Genome getRefGenome() {
         return this.refGenome;
     }
 
+    /** 
+     * Gets translocations data
+     * 
+     * @return array list of translocations
+     */
     public ArrayList<Translocation> getTranslocations() {
         return this.translocations;
     }
@@ -140,18 +171,21 @@ public final class Alignment {
      * Get translocations according to their position's in the array list of
      * translocation
      *
-     * @author Marie Schmit
      * @return ArrayList of translocations
-     * @param int fromIndex, int toIndex: First and second indexes of
-     * translocations
+     * @param fromIndex first index of translocations sublist
+     * @param toIndex last index of trasnlocations sublist
      */
     public ArrayList<Translocation> getLocalisedTranslocations(int fromIndex, int toIndex) {
         ArrayList<Translocation> subListTransloc = new ArrayList<Translocation>(this.translocations.subList(fromIndex, toIndex));
         return subListTransloc;
     }
 
+    /**
+     * Detect translocations from list of possible translocations from XMAP, and save them in
+     * this alignment list of translocations
+     */
     public void detectTranslocations() {
-//        making translocation objects
+        // Making translocation objects
         for (Map.Entry<Integer, ArrayList<XmapData>> entry : this.xmap.getPotentialTranslocations().entrySet()) {
             Integer key = entry.getKey();
             ArrayList<XmapData> value = entry.getValue();
@@ -196,8 +230,7 @@ public final class Alignment {
      * Detect translocations among the ones detected in SV.txt file, that
      * results from FaNDOM SV detection.
      *
-     * @author marie schmit
-     * @param smap
+     * @param smap smap containing SVs data
      */
     public void detectTxtTranslocations(Smap smap) {
         for (int i = 0; i < smap.getTxtTransloc().size(); i++) {
@@ -222,8 +255,7 @@ public final class Alignment {
      * Detect inter chromosomal translocations from SMAP file resulting from
      * RefAligner translocation detection
      *
-     * @author marie schmit
-     * @param smap
+     * @param smap smap containing SVs data
      */
     public void detectSmapTranslocations(Smap smap) {
         for (int i = 0; i < smap.getSmapTransloc().size(); i++) {
@@ -244,38 +276,4 @@ public final class Alignment {
             }
         }
     }
-
-//   private ArrayList<Duplication> detectDuplications(XmapData xmap1, XmapData xmap2, int duplicationMin) {
-//        ArrayList<Duplication> duplications =  new ArrayList();
-//        ArrayList<Site> duplicatedSites = new ArrayList();
-//        ArrayList<Pair> pairs1 = xmap1.returnAlignments();
-//        ArrayList<Pair> pairs2 = xmap2.returnAlignments();
-//        if (Objects.equals(xmap1.getRefID(), xmap2.getRefID())){
-//            int pairsSize1 = pairs1.size();
-//            int pairsSize2 = pairs2.size();
-//            for (int x = 0; x < pairsSize1; x++) {
-//                Pair pair1 = pairs1.get(x);
-//                for (int y = 0; y < pairsSize2; y++) {
-//                    Pair pair2 = pairs2.get(y);
-//                    if (!Objects.equals(pair1.getRef(), pair2.getRef())) {
-//                        pair1.getRefSite().setDuplicated(true);
-//                        duplicatedSites.add(pair1.getRefSite());
-//                    }
-//                }
-//            }
-//            if (duplicatedSites.size() > duplicationMin) {
-//                Duplication dup = new Duplication(xmap1.getRefID(), duplicatedSites);
-//                duplications.add(dup);
-//            }
-//        }
-//        if (duplications.isEmpty()){
-//            return null;
-//        }else{
-//            return duplications; 
-//        }
-//    }
-//
-//    public void setDuplicationMin(int i) {
-//        this.duplicationMin = i;
-//    }
 }

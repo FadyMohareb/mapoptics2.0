@@ -18,6 +18,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
+ * Stores the gene entries from a GTF or GFFF file via the <code>Annot</code>
+ * object. Handles querying the ClinVar and dbVar databases. The Entrez E-Utils
+ * API is sued to query the database using the external <code>Gson</code> and
+ * <code>Json</code> packages.
+ *
+ * Information on the E-Utils API can be found here:
+ * https://www.ncbi.nlm.nih.gov/books/NBK25500
  *
  * @author franpeters
  */
@@ -35,10 +42,23 @@ public class Gene {
     private String dbVarResult;
     private boolean selected = false;
 
+    /**
+     * Constructor
+     */
     public Gene() {
 
     }
 
+    /**
+     * Constructor with chromosome, type, source, start and end, information
+     *
+     * @param chr chromosome name
+     * @param type type
+     * @param source source
+     * @param start start position
+     * @param end end position
+     * @param info supplementary information
+     */
     public Gene(String chr, String type, String source, Double start, Double end, String info) {
         this.chr = chr;
         this.type = type;
@@ -50,7 +70,8 @@ public class Gene {
     }
 
     /**
-     * Split the information from the last column of the gff Save the gene name
+     * Splits the information from the last column of the annotation file. Saves
+     * the gene name
      */
     private void splitInfo() {
         String[] infoSplit = this.info.split(";");
@@ -61,12 +82,11 @@ public class Gene {
             Matcher checkChr = Pattern.compile("gene_name|gene_id|ID").matcher(str);
             if (checkChr.find()) {
                 // gff information are separated by "="
-                if (Pattern.compile("=").matcher(str).find()){
+                if (Pattern.compile("=").matcher(str).find()) {
                     String[] geneNameArr = str.split("=");
                     // gff files are separated by "=" but gtf by "   "
                     this.name = geneNameArr[geneNameArr.length - 1];
-                }
-                else if (Pattern.compile("\t").matcher(str).find()){
+                } else if (Pattern.compile("\t").matcher(str).find()) {
                     // gtf information are separated by "  "
                     String[] geneNameArr = str.split("\t");
                     // gff files are separated by "=" but gtf by "   "
@@ -76,43 +96,90 @@ public class Gene {
         }
     }
 
+    /**
+     * Sets selection to indicate if this gene was selected or nots
+     * @param bool selection value (true or false)
+     */
     public void setSelected(boolean bool) {
         this.selected = bool;
     }
 
+    /**
+     * Gets the name of the chromosome corresponding to this gene
+     * @return chromosome name
+     */
     public String getChr() {
         return this.chr;
     }
 
+    /**
+     * Gets the name of this gene
+     * @return gene name
+     */
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Gets the start position of this gene
+     * @return start
+     */
     public Double getStart() {
         return this.start;
     }
 
+    /**
+     * Gets the end position of this gene
+     * @return end
+     */
     public Double getEnd() {
         return this.end;
     }
 
+    /**
+     * Gets supplementary information on this gene
+     * @return information
+     */
     public String getInfo() {
         return this.info;
     }
 
+    /**
+     * Gets this gene type
+     * @return gene type
+     */
     public String getType() {
         return this.type;
     }
 
+    /**
+     * Gets this gene source
+     * @return source
+     */
     public String getSource() {
         return this.source;
     }
 
+    /**
+     * Gets this gene selection information
+     * @return boolean, is selected (true or false)
+     */
     public boolean getSelected() {
         return this.selected;
     }
-//    need to make a method to split the info column into useable data.
 
+    /**
+     * Queries either clinvar or dbVar database using the Entrez E-utils API. First the 
+     * <code>esearch</code> command is used to find entry IDs associated with this gene in the 
+     * chosen database. Then using the response from this request, a new query 
+     * using the <code>esummary</code> command is used to access any associated structural 
+     * variant IDs and clinical significance. if the server response with error code 414 
+     * the entry IDs are split into chunks of 10 .
+     * 
+     * @param database database to query, either clinVar or DBvar
+     * @param organism organism
+     * @return database results
+     */
     public ArrayList<ArrayList<String>> queryDB(String database, String organism) {
         ArrayList<ArrayList<String>> results = new ArrayList();
         ArrayList<String> uids = new ArrayList();
@@ -171,11 +238,17 @@ public class Gene {
                 }
 
             }
-
         }
         return results;
     }
 
+    /**
+     * Sends request to an API using <code>HTTPURLCOnnection</code> and <code>BufferedReader</code>
+     * to read the response code
+     * 
+     * @param query query to database
+     * @return response code
+     */
     private String sendRequest(String query) {
         String json = "";
         try {
@@ -206,6 +279,13 @@ public class Gene {
 
     }
 
+    /**
+     * Parses the result of the <code>esummary</code> API request for a dbVar query using the 
+     * <code>Json</code> package
+
+     * @param res result of API
+     * @return parsed result
+     */
     private ArrayList<String> parseDBVarResult(String res) {
         ArrayList<String> r = new ArrayList();
         JSONObject jsonObject2 = new JSONObject(res);
@@ -213,16 +293,21 @@ public class Gene {
         JSONArray uidsObj = result.getJSONArray("uids");
         List<Object> uidsList = uidsObj.toList();
         for (Object o : uidsList) {
-
             JSONObject uidsRes = result.getJSONObject(o.toString());
             r.add(o.toString());
             r.add(uidsRes.get("sv").toString());
             r.add(uidsRes.get("dbvarclinicalsignificancelist").toString());
-
         }
         return r;
     }
 
+    /**
+     * Parses the result of the <code>esummary</code> API request for a ClinVar query, 
+     * using the <code>Json</code> package
+     * 
+     * @param res result of API
+     * @return parsed result
+     */
     private ArrayList<String> parseClinVarResult(String res) {
         ArrayList<String> r = new ArrayList();
         JSONObject jsonObject2 = new JSONObject(res);
@@ -235,7 +320,6 @@ public class Gene {
             r.add(o.toString());
             r.add(uidsRes.get("accession").toString());
             r.add(clinSig.get("description").toString());
-
         }
         return r;
     }

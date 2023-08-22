@@ -24,26 +24,25 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 /**
- *
- * @author franpeters Extends javax.swing.JPanel which draws all of the XmapData
+ * Extends javax.swing.JPanel which draws all of the XmapData
  * objects corresponding to a chosen Chromosome. Each alignment is drawn using
  * an alternating colour.
+ * 
+ * @author franpeters 
  */
 public class ChromosomePanel extends javax.swing.JPanel implements MouseListener, MouseMotionListener {
-//  for saving required data to visualise
 
     private Chromosome chr;
     private Cmap qryCmap;
     private boolean chrAdded = false;
-//    private Alignment comp = null;
 
-//    for saving mouse values
+    // for saving mouse values
     int dx;
     int dy;
     private Point point;
-    public boolean pressed = false;
+    public boolean pressed = false; // was mouse pressed?
 
-//    for drawing
+    // for drawing
     XmapShape alignShape;
     private Integer w;
     private Integer h;
@@ -71,18 +70,19 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
     }
 
     /**
-     *
-     * @param cmap Set the query Cmap data
+     * Sets the query Cmap data
+     * 
+     * @param cmap query cmap data
      */
     public void setQueryCmap(Cmap cmap) {
         this.qryCmap = cmap;
     }
 
     /**
-     * o Sets the chromosome of the reference genome which has been selected by
+     * Sets the chromosome of the reference genome which has been selected by
      * the user.
      *
-     * @param chr set the Chromosome to view
+     * @param chr the Chromosome to view
      */
     public void setChr(Chromosome chr) {
 
@@ -107,8 +107,9 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
     }
 
     /**
-     *
-     * @param map Add in alignment information
+     * Add alignment information
+     * 
+     * @param map alignment information
      */
     public void addAlignment(XmapData map) {
         alignment = true;
@@ -152,7 +153,7 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
     /**
      * Draw the chromosome
      *
-     * @param g To set the Graphics device
+     * @param g <code>Graphics</code> device
      */
     private void drawChromosome(Graphics g) {
 
@@ -182,9 +183,9 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
     }
 
     /**
-     * Draw all the alignements
+     * Draw all the alignments
      *
-     * @param g2d To set the Graphics2D device
+     * @param g2d <code>Graphics2D</code> device
      */
     private void drawAlignments(Graphics2D g2d) {
         Integer count = 0;
@@ -201,9 +202,9 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
      * Sets the colour of a rectangle to indicate presence of an alignment to
      * the query genome.
      *
-     * @param Int Number of the alignment, to determine which colour is accessed
+     * @param Int number of the alignment, to determine which colour is accessed
      * from the array
-     * @return Colour of the alignment at that index
+     * @return colour of the alignment at that index
      */
     private Color setAlignmentColour(Integer Int) {
         Color[] colours = {Color.decode("#3792ff"), Color.decode("#20cdf5"), Color.decode("#8ef2f4"), Color.decode("#f179a7"), Color.decode("#fcc5f1")};
@@ -225,8 +226,9 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
     }
 
     /**
-     *
-     * @param g2d To set the Graphics2D device
+     * Draw text on the center of the panel
+     * 
+     * @param g2d <code>Graphics2D</code> device
      * @param string String to draw in the centre
      * @param width Width of area to draw in the centre of
      * @param height Height of area to draw in the centre of
@@ -241,6 +243,12 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
         g2d.drawString(string, horizontalCenter, verticalCenter);
     }
 
+    /**
+     * Draw scale bar
+     * 
+     * @param g2d <code>Graphics2D</code> device
+     * @param refRect Reference rectangle
+     */
     private void drawScaleBar(Graphics2D g2d, MapOpticsRectangle refRect) {
 
         g2d.drawLine((int) refRect.getMinX(), startY, (int) (refRect.getMinX() + refRect.getWidth()), startY);
@@ -264,8 +272,9 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
     }
 
     /**
-     *
-     * @param g To access the Graphics device
+     * Repaint the chromosome on the graphics device
+     * 
+     * @param g <code>Graphics</code> device
      */
     @Override
     public void paint(Graphics g) {
@@ -273,12 +282,17 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
         drawChromosome(g);
     }
 
+    /**
+     * Draws scale bar
+     * 
+     * @param g Graphic on which scale bar is drawn
+     */
     public void drawScaleBar(Graphics g) {
 
     }
 
     /**
-     * o Select alignment
+     * Select alignment
      *
      * @param xmapID Identifier of the xmap corresponding to the selected
      * chromosome
@@ -294,6 +308,9 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
         repaint();
     }
 
+    /**
+     * Clears selected alignments
+     */
     public void clearSelection() {
         for (XmapShape shape : alignShapes) {
             shape.setSelected(false);
@@ -302,8 +319,8 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
     }
 
     /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
+     * Called from within the constructor to initialize the form.
+     * o WARNING: Do NOT modify this code. The content of this method is always
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
@@ -375,6 +392,10 @@ public class ChromosomePanel extends javax.swing.JPanel implements MouseListener
     // End of variables declaration//GEN-END:variables
 
     @Override
+    /**
+     * Sets actions when mouse is clicked
+     * @Override
+     */
     public void mouseClicked(MouseEvent e) {
 //        System.out.println("clicked");
 //       if (alignment) {

@@ -36,30 +36,28 @@ import javax.swing.table.DefaultTableModel;
 import org.knowm.xchart.style.Styler;
 
 /**
- *
+ * Panel on which alignments of two genomes using optical mapping data are displayed.
+ * Provides methods to download the data from MapOptics.
+ * 
  * @author franpeters
+ * @author Marie Schmit
  */
 public class CompGenView extends javax.swing.JFrame {
 
     private Alignment alignment;
     private Genome refGenome;
-//     private Genome qryGenome;
     private Cmap qryCmap;
     private Chromosome currentChr;
     private ArrayList<Indel> indels = new ArrayList();
     private ArrayList<Gene> genes = new ArrayList();
     private Job job;
     private String refGenomeName;
-//    private String qryGenomeName;
     private Cmap cmapRef;
     private Cmap cmapQry;
     private Karyotype refKary;
-//    private Karyotype qryKary;
     private Xmap xmap;
     private Fasta refFasta;
-//    private Fasta qryFasta;
     private Annot refAnnot;
-//    private Annot qryAnnot;
     private Smap smap;
 
     // Maximal number of translocations that can be displayed at a time
@@ -80,15 +78,15 @@ public class CompGenView extends javax.swing.JFrame {
     }
 
     /**
-     * Method for loading a local alignment jobs' results
+     * Loads a local alignment jobs' results
      *
-     * @param refOrg
-     * @param cmapref
-     * @param cmapqry
-     * @param refkary
-     * @param xmapfile
-     * @param reffasta
-     * @param refannot
+     * @param refOrg reference organism
+     * @param cmapref reference cmap file path
+     * @param cmapqry query cmap file path
+     * @param refkary reference karyotype file path
+     * @param xmapfile xmap file path
+     * @param reffasta reference fasta file path
+     * @param refannot reference annotation file path
      */
     public void setData(String refOrg, String cmapref, String cmapqry,
             String refkary, String xmapfile, String reffasta,
@@ -116,6 +114,11 @@ public class CompGenView extends javax.swing.JFrame {
         checkData();
     }
 
+    /**
+     * Sets job data
+     * 
+     * @param j job
+     */
     public void setJob(Job j) {
         this.job = j;
         this.parsingDialog.setVisible(true);
@@ -151,10 +154,8 @@ public class CompGenView extends javax.swing.JFrame {
     }
 
     /**
-     * Check if all the entered files contained data before calling the
+     * Checks if all the entered files contained data before calling the
      * "populate data" function
-     *
-     * @author Marie Schmit
      */
     private void checkData() {
         String errorMessage = "";
@@ -188,6 +189,9 @@ public class CompGenView extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Extracts data from given files and populates this panel values with it.
+     */
     private void populateData() {
         xmap.setRefCmap(cmapRef);
         xmap.setQryCmap(cmapQry);
@@ -239,12 +243,11 @@ public class CompGenView extends javax.swing.JFrame {
     }
 
     /**
-     * Draw circos plot for current karyotype and alignments. Display
+     * Draws circos plot for current karyotype and alignments. Display
      * translocations in translocation table.
      *
-     * @author Marie Schmit
-     * @param fromIndex, toIndex Indexes of start and end of extracted
-     * translocations
+     * @param fromIndex index of start of displayed translocations
+     * @param toIndex index of end of displayed translocations
      */
     private void displayTranslocations(int fromIndex, int toIndex) {
         pageNumber.setText("Page " + this.translocPage);

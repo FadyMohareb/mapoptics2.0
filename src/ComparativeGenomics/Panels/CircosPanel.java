@@ -18,10 +18,12 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- *
- * @author franpeters Draws the chromosome making up the genome in a circle.
+ * Draws the chromosome making up the genome in a circle.
  * Indicates any detected translocation events using the MapOpticsArcs and
  * Curve2D objects.
+ *
+ * @author franpeters
+ * @author Marie Schmit 
  */
 public class CircosPanel extends javax.swing.JPanel implements MouseListener, MouseMotionListener {
 
@@ -34,12 +36,18 @@ public class CircosPanel extends javax.swing.JPanel implements MouseListener, Mo
     HashMap<String, MapOpticsArc> arcs = new HashMap();
 
     /**
-     * Creates new form CircosPanel
+     * Creates new CircosPanel
      */
     public CircosPanel() {
         initComponents();
     }
 
+    /**
+     * Sets chromosomes that make up the reference genome displayed on the circos plot
+     * 
+     * @param kary chromosomes of the reference genome karyotype
+     * @param comp alignment
+     */
     public void setKaryotype(Karyotype kary, Alignment comp) {
         this.karyotype = kary;
         this.chrSizes = this.karyotype.getChrRelativeStarts();
@@ -51,13 +59,15 @@ public class CircosPanel extends javax.swing.JPanel implements MouseListener, Mo
     }
     
     /**
-     * Set karyotype and translocations from given indexes
+     * Sets karyotype and translocations from given indexes.
+     * Extract a sublist of translocations from the alignments translocations,
+     * to display only a part of the translocations
+     * on the circos plot and translocations table.
      * 
-     * @author Marie Schmit
-     * @param kary
-     * @param comp
-     * @param fromIndex
-     * @param toIndex 
+     * @param kary Karyotype
+     * @param comp Alignment object
+     * @param fromIndex Index of the beginning of the translocatione extracted sublist
+     * @param toIndex Index of the end of the translocations extracted sublist
      */
     public void setKaryotype(Karyotype kary, Alignment comp, int fromIndex, int toIndex) {
         this.karyotype = kary;
@@ -71,7 +81,8 @@ public class CircosPanel extends javax.swing.JPanel implements MouseListener, Mo
 
     /**
      * Draw circos plot
-     * @param g 
+     * 
+     * @param g graphic on which the circos plot should be drawn
      */
     private void drawCircos(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
@@ -112,6 +123,14 @@ public class CircosPanel extends javax.swing.JPanel implements MouseListener, Mo
         }
     }
 
+    /**
+     * Calculates the sum of the angles between the elements making up the circos plot
+     * 
+     * @param list list of angles
+     * @param lower first angle of the list, for which the sum is calculated
+     * @param upper last angle of the list for which the sum is calculated
+     * @return sum sum of angles
+     */
     public Double sumAngles(List<Double> list, Integer lower, Integer upper) {
         Double sum = 0.0;
         for (int i = lower; i < upper; i++) {
@@ -120,11 +139,20 @@ public class CircosPanel extends javax.swing.JPanel implements MouseListener, Mo
         return sum;
     }
 
+    /**
+     * Draw chromosomes from the karyotype of this circos panel.
+     * 
+     * @param listAngles angles between the different chromosomes drawn on this circos plot
+     * @param x x-coordinate of the upper-left corner of this arc
+     * @param y y-coordinate of the upper-left corner of this arc
+     * @param start starting angle of this arc in degrees
+     * @param size angular extend of this arc in degrees
+     */
     public void drawChrs(List<Double> listAngles, List<String> names, Graphics2D g2d, Integer start, Integer size, Integer x, Integer y) {
 
-        //          Draw the chromosomes in descending order
+        // Draw the chromosomes in descending order
         for (int i = listAngles.size() - 1; i >= 0; i--) {
-//                  Alternate the colours
+            // Alternate the colours
             if (i % 2 == 0) {
                 g2d.setColor(Color.gray);
             } else {
@@ -132,7 +160,7 @@ public class CircosPanel extends javax.swing.JPanel implements MouseListener, Mo
             }
             MapOpticsArc arc = new MapOpticsArc(x, y, size, size, start, -(sumAngles(listAngles, 0, i + 1)), names.get(i));
             Shape arcShape = arc;
-            //                    centre pount of arc
+            // Centre pount of arc
             double cx = x + (size * 0.5);
             double cy = y + (size * 0.5);
 //                    middle angle of arc
@@ -164,6 +192,11 @@ public class CircosPanel extends javax.swing.JPanel implements MouseListener, Mo
         }
     }
 
+    /**
+     * Draws arcs on the circos plot between two chromosomes sharing a translocation.
+     * 
+     * @param g graphical device
+     */
     private void drawTranslocations(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         for (Translocation t : translocations) {
@@ -186,6 +219,11 @@ public class CircosPanel extends javax.swing.JPanel implements MouseListener, Mo
     }
 
     @Override
+    /**
+     * Repaint this circos panel
+     * 
+     * @param g graphic device
+     */
     public void paint(Graphics g) {
         super.paint(g);
         drawCircos(g);

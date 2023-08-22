@@ -25,14 +25,15 @@ import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author franpeters Verifies file format, parse and save the contents of an
- * XMAP file. Scanner is used to read through the contents of the file in a
- * memory efficient manner. The data is stored into HashMap data structures
- * using XmapData (see 3.2.10 for more information on this class) and Pair (see
- * 3.2.7) objects. XmapData stores information regarding each Xmap ID within the
- * file. This class assumes the file follows the criteria laid out here
+ * Verifies file format, parse and save the contents of an XMAP file. Scanner is
+ * used to read through the contents of the file in a memory efficient manner.
+ * The data is stored into HashMap data structures using XmapData (see 3.2.10
+ * for more information on this class) and Pair (see 3.2.7) objects. XmapData
+ * stores information regarding each Xmap ID within the file. This class assumes
+ * the file follows the criteria laid out here
  * https://bionanogenomics.com/wp-content/uploads/2017/03/30040-XMAP-FileFormat-Specification-Sheet.pdf
+ *
+ * @author franpeters
  */
 public class Xmap {
 
@@ -55,6 +56,11 @@ public class Xmap {
 
     private boolean isValid = true; //Check if the file is valid, ie in xmap format and not empty
 
+    /**
+     * Constructor with xmap file path
+     *
+     * @param filepath path to xmap file
+     */
     public Xmap(String filepath) {
         this.filepath = filepath;
         readXmap();
@@ -76,7 +82,7 @@ public class Xmap {
     }
 
     /**
-     * o	parse the Xmap file using Scanner to read each line in a memory
+     * Parses the Xmap file using Scanner to read each line in a memory
      * efficient manner. Each line that is not a header line is read into an
      * XmapData object except the Alignment field of the file which is split
      * into an ArrayList and each site ‘pair’ (i.e. (1,2) where the first
@@ -192,8 +198,9 @@ public class Xmap {
     }
 
     /**
-     *
-     * @param filepath of file to be validated
+     * Verifies xmap file format
+     * 
+     * @param filepath path of file to be validated
      * @return true if valid and false if not
      */
     private boolean ValidateXMAP(String filePath) {
@@ -239,116 +246,131 @@ public class Xmap {
     }
 
     /**
-     *
-     * @return
+     * Gets xmap
+     * 
+     * @return hashmap of xmap. The key is the xmap id, the value is an array llist of xmap data corresponding
+     * to the id
      */
     public HashMap<Integer, ArrayList<XmapData>> getXmap() {
         return this.xmap;
     }
 
     /**
-     *
-     * @return
+     * Gets queries mapped to reference
+     * 
+     * @return a hashmap, the key is the reference cmap ID and the value
+     * is all the alignments related to that reference ID
      */
     public HashMap<Integer, ArrayList<XmapData>> getQueriesMappedToRef() {
         return this.queryMapsToRef;
     }
 
     /**
-     *
-     * @param map
+     * Sets the query cmap object
+     * 
+     * @param map query cmap
      */
     public void setQryCmap(Cmap map) {
         this.qryCmap = map;
     }
-    
 
     /**
-     *
-     * @param map
+     * Sets the reference cmap object
+     * 
+     * @param map reference cmap
      */
     public void setRefCmap(Cmap map) {
         this.refCmap = map;
     }
 
     /**
-     *
-     * @return Cmap object corresponding to the query genome
+     * Gets query cmap
+     * 
+     * @return Cmap object corresponding to this query genome
      */
     public Cmap getQryCmap() {
         return this.qryCmap;
     }
 
     /**
-     *
-     * @return
+     * Gets reference cmap
+     * 
+     * @return Cmap object corresponding to this query genome
      */
     public Cmap getRefCmap() {
         return this.refCmap;
     }
 
     /**
-     *
-     * @return
+     * Labels channels of this xmap file
+     * 
+     * @return label channels
      */
     public String getLabelChannels() {
         return this.labelChannels;
     }
 
     /**
-     *
-     * @return
+     * Gets version of this xmap file
+     * 
+     * @return this version
      */
     public String getVersion() {
         return this.version;
     }
 
     /**
-     * Return the validity of the file
-     * @return boolean is valid
+     * Returns the validity of the file
+     *
+     * @return boolean true if it is valid, false if not
      */
-    public boolean getValidity(){
+    public boolean getValidity() {
         return this.isValid;
     }
-    
+
     /**
-     * Return a Hashmap of all maps (values) corresponding to a refContigID (key) in the XMAP
+     * Returns a Hashmap of all maps (values) corresponding to a reference contig ID (key) in the XMAP
+     * 
+     * @return maps of a reference contig id
      */
-    public HashMap<Integer, ArrayList<XmapData>> getXmapByRef(){
+    public HashMap<Integer, ArrayList<XmapData>> getXmapByRef() {
         return xmap;
     }
-    
+
     /**
-     * Return a Hashmap of all maps (values) corresponding to a qryContigID (key) in the XMAP
+     * Returns a Hashmap of all maps (values) corresponding to a query contig ID (key) in the XMAP
+     * 
+     * @return maps of a query contig ID
      */
-    public HashMap<Integer, ArrayList<XmapData>> getXmapByQry(){
+    public HashMap<Integer, ArrayList<XmapData>> getXmapByQry() {
         return queryMapsToRef;
     }
 
     /**
-     *
-     * @return
+     * Gets all xmap from this file
+     * 
+     * @return all xmaps
      */
     public HashMap<Integer, XmapData> getAllXmaps() {
         return this.allXmaps;
     }
 
     /**
-     *
-     * @param xmapID
-     * @return
+     * Gets xmap by their IDs
+     * 
+     * @param xmapID ID of the fetched xmap
+     * @return xmap
      */
     public XmapData getXmapByXmapID(Integer xmapID) {
         return this.allXmaps.get(xmapID);
     }
 
     /**
-     *
-     * o Detect any potential insertion or deletions by comparing the size of
+     * Detects any potential insertion or deletions by comparing the size of
      * the ref and query lengths for each XmapData and checking if the
      * difference is above the minimum size of the indel SV
      *
-     * @param minIndelSize
+     * @param minIndelSize minimum detected insertion or deletion size
      */
     public void detectSVs(Integer minIndelSize) {
         int count = 0;
@@ -371,8 +393,9 @@ public class Xmap {
     }
 
     /**
-     *
-     * @return
+     * Gets potential translocations
+     * 
+     * @return list of translocations
      */
     public HashMap<Integer, ArrayList<XmapData>> getPotentialTranslocations() {
         return this.potentialTranslocations;

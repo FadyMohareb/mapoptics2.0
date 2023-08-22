@@ -16,7 +16,7 @@ import java.nio.file.Paths;
 import javax.swing.JOptionPane;
 
 /**
- *
+ * First screen displayed when opening MapOptics.
  * @author franpeters
  */
 public class startScreen extends javax.swing.JFrame {
@@ -143,7 +143,7 @@ public class startScreen extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("MapOptics 3.0");
+        setTitle("MapOptics 2.0");
         setBackground(new java.awt.Color(255, 255, 255));
 
         exitButton.setText("Exit");
@@ -217,7 +217,7 @@ public class startScreen extends javax.swing.JFrame {
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/cranfield.png"))); // NOI18N
 
-        jLabel4.setText("V 3.0.0");
+        jLabel4.setText("V 2.0.0");
 
         jButton1.setText("Help");
         jButton1.addActionListener(new java.awt.event.ActionListener() {

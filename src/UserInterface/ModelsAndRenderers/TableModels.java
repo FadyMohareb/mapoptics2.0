@@ -8,7 +8,8 @@ package UserInterface.ModelsAndRenderers;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
+ * Models of tables
+ * 
  * @author Josie
  */
 public class TableModels {

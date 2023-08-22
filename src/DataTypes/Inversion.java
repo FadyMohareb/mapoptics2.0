@@ -35,8 +35,11 @@ public class Inversion extends SV {
         qryLabels = new ArrayList<>();
 
     }
-    // For MEDIUM-SIZED inversion
-    // identify reverse CIGAR
+    
+    /**
+     * For medium sized inversions, identifies reversed CIGAR
+     * @param cigar CIGAR string
+     */
     public static void setRevCompCigar(Cigar cigar) {
         parsedCigar = cigar.parseHitEnum();
         revCompCigar = cigar.reverseComplement(parsedCigar);
@@ -47,8 +50,16 @@ public class Inversion extends SV {
         return revPalindromes;
     }
 
-    // Match the distance sites between adjacent label sites on ref and
-    // those between adjacent labels on the reversed query
+    /**
+     * Matches the distance sites between adjacent label sites on ref and
+     * those between adjacent labels on the reversed query
+     * 
+     * @param revPalindrome reversed palindrome
+     * @param mappedCigar cigar
+     * @param qryAlignments query alignments
+     * @param refSites reference sites
+     * @param qrySites query sites
+     */
     public static void getSites(String revPalindrome, Map<Integer, List<Integer>> mappedCigar,
                                     Map<Integer, List<Integer>> qryAlignments,
                                     Map<Integer, Double> refSites, Map<Integer, Double> qrySites) {
@@ -75,18 +86,18 @@ public class Inversion extends SV {
 
     }
 
+    /**
+     * Gets distances
+     */
     public static void getDistances() {
         // get distances
         // traverse in the forward direction on the reference labels
         // traverse on the reverse direction on the query labels
     }
 
-
-
-    // quality control:
-    // at least 10 supporting molecules
-    // min 4 label sites in inverted region
-
+    /**
+     * Sets type of indel to inversion
+     */
     @Override
     public void setType() {
         this.type = "Inversion";

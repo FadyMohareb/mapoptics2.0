@@ -16,12 +16,14 @@ import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author franpeters Class verify file format, parse and save the contents of a
+ * Verifies file format, parse and save the contents of a
  * GFF3 (General Feature File) or GTF (General Transfer Format) file. The data
  * is stored into a hashmap data structure using Gene objects.This class assumes
  * the file follows the criteria laid out here:
  * https://www.ensembl.org/info/website/upload/gff.html
+ * 
+ * @author franpeters
+ * @author Marie Schmit
  *
  */
 public class Annot {
@@ -33,24 +35,31 @@ public class Annot {
     private boolean isValid = false;
     private ArrayList<Gene> genes = new ArrayList();
 
+    /**
+     * Class constructor
+     * 
+     * @param filepath path of annotation file
+     */
     public Annot(String filepath) {
         this.filepath = filepath;
         readAnnotation();
 
     }
 
+    /**
+     * Class constructor with empty annotations
+     */
     public Annot() {
-
     }
 
     /**
-     * Read the annotation file using the file path of the file. Scanner is used
+     * Reads the annotation file using the file path of the file. Scanner is used
      * to parse each line in the file and a Gene object is made for each entry
      * that matches the type ‘gene’. See 3.2.4 for more information on the Gene
      * object.
      */
     private void readAnnotation() {
-//        first need to check the file version as it will change slightly what information is contained
+        // first  check the file version as it will change slightly what information is contained
         String[] directory = this.filepath.split("/");
 
         FileInputStream inputStream = null;
@@ -115,7 +124,6 @@ public class Annot {
                     }
                 }
             }
-//                chrAnnotations.put(chr,list);
 
             if (sc.ioException() != null) {
                 try {
@@ -128,7 +136,7 @@ public class Annot {
             System.out.println(ex);
         }
 
-//            Save the identified gene objects to arraylist to be accessed via chr name in the hashmap.
+        //Save the identified gene objects to arraylist to be accessed via chr name in the hashmap.
         for (Gene g : genes) {
             // Get the chromosome of each gene
             String c = g.getChr().toLowerCase();
@@ -148,10 +156,9 @@ public class Annot {
     }
 
     /**
-     * Validate the file is in the correct format
+     * Validates the file is in the correct format
      *
-     * @author marie
-     * @param filepath the filepath of the file to be validated
+     * @param filepath path of the file to be validated
      * @return true if file is valid and false if not
      */
     private boolean validateFile(String filePath) {
@@ -177,8 +184,9 @@ public class Annot {
     }
 
     /**
-     *
-     * @param filepath the filepath of the annotation file to be read
+     * Sets the filepath of the annotation file to be read
+     * 
+     * @param filepath path of the annotation file to be read
      */
     public void setFilepath(String filepath) {
         this.filepath = filepath;
@@ -186,8 +194,16 @@ public class Annot {
     }
 
     /**
-     *
-     * @param chr the chromosome name of the annotations to be accessed
+     * Accesses all of the Gene objects associated with that chromosome from the chrAnnotations HashMap.
+     * <p>
+     * Returns a HashMap that stores the contents of the annotation file whereby the key is the
+     * chromosome name and the contents an ArrayList of all the genes.
+     * Please note the chromosome name on the header of the Fasta file should
+     * be the same as the chromosome name format used here. For example, either chr1 or 1 or chr_1.
+     * The specific format does not matter if it is consistent between the annotation and fasta
+     * files for a genome. The query and reference genomes can use different formats.
+     * 
+     * @param chr chromosome name of the annotations to be accessed
      * @return Access all of the Gene objects associated with that chromosome
      * from the chrAnnotations HashMap
      */
@@ -196,16 +212,18 @@ public class Annot {
     }
 
     /**
-     *
-     * @param chr the chromosome name to count the number of annotations of
-     * @return the Integer value of the number of annotations
+     * Returns the number of genes for each chromosome
+     * 
+     * @param chr chromosome name to count the number of annotations of
+     * @return Integer value of the number of annotations
      */
     public Integer getNumFeaturesByChr(String chr) {
         return chrAnnotations.get(chr).size();
     }
 
     /**
-     *
+     * Gets genes of the annotation file
+     * 
      * @return all genes from the file regardless of the chromosome
      */
     public ArrayList<Gene> getGenes() {
@@ -213,8 +231,9 @@ public class Annot {
     }
     
     /**
-     * @return boolean indicating file validity
-     * A valid file exists, is in proper format and is not empty
+     * Indicates if A valid file exists, is in proper format and is not empty
+     * 
+     * @return isValid Boolean, indicating file validity
      */
     public boolean getValidity(){
         return this.isValid;

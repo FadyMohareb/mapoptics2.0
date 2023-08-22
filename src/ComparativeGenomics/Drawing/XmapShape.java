@@ -10,11 +10,12 @@ import java.util.HashMap;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author franpeters To draw the alignment to the panel like this: _________ |
+ * Draws the alignment to the panel like this: _________ |
  * | | | | | |-------| |-------| Where the lines to join the alignment are
  * anchored to the site positions on the reference and the query can be moved
- * about, with the alignment lines following
+ * about, with the alignment lines following.
+ * 
+ * @author franpeters
  */
 public class XmapShape {
 
@@ -41,6 +42,13 @@ public class XmapShape {
     private Integer xmapID;
     private Graphics2D g2d;
 
+    /**
+     * Constructor with xmap, cmap and relative positions
+     * @param xmap xmap data
+     * @param cmap cmap data
+     * @param relStart relative start position
+     * @param relEnd relative end position
+     */
     public XmapShape(XmapData xmap, CmapData cmap, Double relStart, Double relEnd) {
         this.cmap = cmap;
         this.xmap = xmap;
@@ -49,6 +57,10 @@ public class XmapShape {
         this.relRefEnd = relEnd;
     }
 
+    /**
+     * Draws all the graphics on the panel
+     * @param g2d graphical device
+     */
     public void drawAlignment(Graphics2D g2d) {
         this.g2d = g2d;
         try {
@@ -126,42 +138,82 @@ public class XmapShape {
         }
     }
 
+    /**
+     * Gets <code>MapOpticsRectangle</code>
+     * @return rectangle
+     */
     public MapOpticsRectangle getRect() {
         return this.rectangle;
     }
 
+    /**
+     * Sets colour of alignments lines
+     * @param colour colour
+     */
     public void setAlignColour(Color colour) {
         this.queryColour = colour;
     }
 
+    /**
+     * Sets colour of the rectangle
+     * @param colour 
+     */
     public void setQueryColour(Color colour) {
         this.queryColour = colour;
     }
 
+    /**
+     * Set colour of matched sites
+     * @param colour colour of matched sites
+     */
     public void setMatchedSiteColour(Color colour) {
         this.matchedSiteColour = colour;
     }
 
+    /**
+     * Sets colour of unmatched sites
+     * @param colour colour
+     */
     public void setUnmatchedSiteColour(Color colour) {
         this.unmatchedSiteColour = colour;
     }
 
+    /**
+     * Saves the change in value in the X axis for dragging the shape
+     * @param dX x coordinate
+     */
     public void setDeltaX(Double dX) {
         this.deltaX = dX;
     }
 
+    /**
+     * Saves the change in value in the Y axis for dragging the shape
+     * @param dY y coordinate
+     */
     public void setDeltaY(Double dY) {
         this.deltaY = dY;
     }
 
+    /**
+     * Sets if shape has been clicked on
+     * @param bool true if the shape was clicked on
+     */
     public void setSelected(boolean bool) {
         this.selected = bool;
     }
 
+    /**
+     * Sets if sites should be drawn
+     * @param bool true if they should be drawn
+     */
     public void drawSites(boolean bool) {
         this.sites = bool;
     }
 
+    /**
+     * Gets xmap id
+     * @return xmap id 
+     */
     public Integer getXmapID() {
         return this.xmapID;
     }

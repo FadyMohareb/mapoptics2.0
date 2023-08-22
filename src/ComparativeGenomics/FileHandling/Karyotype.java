@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
 /**
- * To parse the karyotype file generated from the reference genome produced by
+ * Parses the karyotype file generated from the reference genome produced by
  * the run_job.sh script using Samtools faidx into a space separated file with
  * the first column being the chromosome. Size and the second column being the
  * chromosome name, which has been extracted from the fasta file headers (see
@@ -37,12 +37,16 @@ public class Karyotype {
     private ArrayList<Double> relativeSizes = new ArrayList();
     private boolean isValid = true; //Indicates if given karyotype file is valid and not empty
 
+    /**
+     * Constructor with file path
+     * @param filepath 
+     */
     public Karyotype(String filepath) {
         readKaryotypeFile(filepath);
     }
 
     /**
-     *
+     * Gets number of chromosome in karyotype
      * @return number of chromosomes
      */
     public Integer getNumChrs() {
@@ -50,7 +54,7 @@ public class Karyotype {
     }
 
     /**
-     *
+     * Gets list of size of chromosomes in karyotype
      * @return the size of each chromosome
      */
     public ArrayList<Double> getChrSizes() {
@@ -58,7 +62,7 @@ public class Karyotype {
     }
 
     /**
-     *
+     * Gets names of chromosomes in karyotype
      * @return return the name of each chromosome
      */
     public ArrayList<String> getChrNames() {
@@ -66,7 +70,7 @@ public class Karyotype {
     }
 
     /**
-     *
+     * Gets chromosomes sizes and names
      * @return the HashMap of the chromosome sizes, names
      */
     public HashMap<Double, String> getInfo() {
@@ -74,15 +78,15 @@ public class Karyotype {
     }
 
     /**
-     *
-     * @return the relative size of each chromosome
+     * Gets chromosomes relative start
+     * @return the relative start of each chromosome
      */
     public ArrayList<Double> getChrRelativeStarts() {
         return this.relativeStarts;
     }
 
     /**
-     *
+     * Gets chromosomes sites
      * @return return the sizes of the chromosomes for drawing the circos plot
      */
     public ArrayList<Double> getChrSizesCircos() {
@@ -95,7 +99,7 @@ public class Karyotype {
     }
 
     /**
-     *
+     * Draws chromosomes on circos plot
      * @param g2d Graphics2D device to use
      * @param w width of JPanel
      * @param h height of JPanel
@@ -119,7 +123,6 @@ public class Karyotype {
         g2d.drawString(String.valueOf("0"), lastStart.intValue(), (startY + height + 30));
         Integer x;
         for (x = 0; x < numChrs; x++) {
-//            System.out.println(lastStart+" start positions");
             String chr = String.valueOf(x + 1);
             if (x < 22) {
                 chr = String.valueOf(x + 1);
@@ -153,12 +156,12 @@ public class Karyotype {
     }
 
     /**
-     * o	read the karyotype file using scanner to parse each line in the
+     * Reads the karyotype file using scanner to parse each line in the
      * Karyotype file in a memory efficient manner. Each line is split and the
      * data is saved into ArrayLists and a HashMap. The genome size is also
      * calculated as the file is parsed.
      *
-     * @param filepath of the file to be parsed
+     * @param filepath path of the file to be parsed
      */
     private void readKaryotypeFile(String filepath) {
         String[] directory = filepath.split("/");
@@ -201,14 +204,14 @@ public class Karyotype {
     }
 
     /**
-     * Method to draw a Graphcis2D object at a given angle. Source:
+     * Draws a Graphcis2D object at a given angle. Source:
      * https://stackoverflow.com/questions/10083913/how-to-rotate-text-with-graphics2d-in-java
      *
-     * @param g2d
-     * @param x
-     * @param y
-     * @param angle
-     * @param text
+     * @param g2d graphical device
+     * @param x x coordinate
+     * @param y y coordinate
+     * @param angle angle value
+     * @param text text to display
      */
     private static void drawRotate(Graphics2D g2d, double x, double y, int angle, String text) {
         g2d.translate((float) x, (float) y);
@@ -219,9 +222,10 @@ public class Karyotype {
     }
 
     /**
-     * @return The boolean indicating if the karyotype file is valid or not An
-     * invalid file is a file with extension different than ".txt", or empty, or
+     * Indicates file validity.
+     * An invalid file is a file with extension different than ".txt", or empty, or
      * that could not be read
+     * @return The boolean indicating if the karyotype file is valid or not
      */
     public boolean getValidity() {
         return this.isValid;

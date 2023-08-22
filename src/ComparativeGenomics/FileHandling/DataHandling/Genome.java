@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
+ * Stores all the metadata for example species of the genome,
+ * amd group the files related to the genome. For instance Fasta and Karyotype files.
  *
  * @author franpeters
  */
@@ -24,6 +26,14 @@ public class Genome {
     private Integer numChrs = 0;
     private Integer i;
 
+    /**
+     * Constructor with name, cmap, karyotype, fasta and annotation file information
+     * @param name genome name
+     * @param cmap reference cmap file
+     * @param kary karyotype file content
+     * @param fasta fasta file content
+     * @param annot annottaion file content
+     */
     public Genome(String name, Cmap cmap, Karyotype kary, Fasta fasta, Annot annot) {
         this.genomeName = name;
         this.cmap = cmap;
@@ -36,13 +46,18 @@ public class Genome {
     }
 
     /**
-     *
-     * @return Return the cmap ids corresponding to this genome
+     * Gets the IDs of the cmaps of this genome
+     * 
+     * @return  cmap ids corresponding to this genome
      */
     public ArrayList<Integer> getCmapIDs() {
         return this.cmap.getCmapIDs();
     }
 
+    /**
+     * Sets all the chromosomes of this genome. Chromosome names are extracted from the karyotype file.
+     * Chromosome size, saved in the karyotype, are used to map the chromosome name to its contig id in the cmap.
+     */
     private void setChromosomes() {
         HashMap<Double, String> chrs = this.karyotype.getInfo();
 //       iterate through every chr in the karyotype
@@ -62,30 +77,53 @@ public class Genome {
                 Chromosome chr = new Chromosome(chrName, map, relSize, sequence, chrGenes);
                 chromosomes.put(map.getID(), chr);
             }
-
         }
     }
 
+    /**
+     * Gets all the chromosomes of this genome
+     * @return list of chromosomes
+     */
     public HashMap<Integer, Chromosome> getChromosomes() {
         return this.chromosomes;
     }
 
+    /**
+     * Gets this genome name
+     * @return genome name
+     */
     public String getName() {
         return this.genomeName;
     }
 
+    /**
+     * Gets the number of chromosomes in this genome
+     * @return number of chromosomes
+     */
     public Integer getNumChrs() {
         return this.numChrs;
     }
 
+    /**
+     * Gets the cmap corresponding to this genome
+     * @return cmap
+     */
     public Cmap getCmap() {
         return this.cmap;
     }
 
+    /**
+     * Gets the karyotype corresponding to this genome
+     * @return karyotype
+     */
     public Karyotype getKaryotype() {
         return this.karyotype;
     }
 
+    /**
+     * Gets annotations for this genome
+     * @return annotation data
+     */
     public Annot getAnnot() {
         return this.annot;
     }

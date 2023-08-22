@@ -43,13 +43,14 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 /**
+ * Provides the GUI and methods to start an alignment Job on an ExternalServer.
  *
- * @author franpeters Provides the GUI and methods to start an alignment Job on
- * an ExternalServer.
+ * @author franpeters
+ * @author Marie Schmit
  */
 public class CompGenStart extends javax.swing.JFrame {
 
-    //        Start a new job object when the window is opened.
+    // Start a new job object when the window is opened.
     private Job newJob = new Job();
     private Job selectedJob;
     private List<Job> jobsRunning = new ArrayList<>();
@@ -2768,6 +2769,12 @@ public class CompGenStart extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_qrySpeciesActionPerformed
 
+    /**
+     * Checks if enzyme name from enzyme text field is empty
+     *
+     * @param field text field containing enzyme name
+     * @return name enzyme name
+     */
     public String checkEnzymeName(JTextField field) {
         String name = field.getText();
         if (name.equals("")) {
@@ -2779,6 +2786,12 @@ public class CompGenStart extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Checks if enzyme site is empty.
+     *
+     * @param field text field containing enzyme site
+     * @return site enzyme pattern
+     */
     public String checkEnzymeSite(JTextField field) {
         String site = field.getText();
         if (site.length() == 1) {
@@ -2790,6 +2803,13 @@ public class CompGenStart extends javax.swing.JFrame {
         return site;
     }
 
+    /**
+     * Check if a digestion site is valid, ie only contains nucleotides (A, T,
+     * C, G)
+     *
+     * @param dna digestion site pattern
+     * @return boolean validity of digestion site
+     */
     public boolean checkSite(String dna) {
         for (int i = 0; i < dna.length(); i++) {
             if (dna.charAt(i) != 'A' && dna.charAt(i) != 'T' && dna.charAt(i) != 'C' && dna.charAt(i) != 'G' && dna.charAt(i) != '^') {
@@ -2799,14 +2819,24 @@ public class CompGenStart extends javax.swing.JFrame {
         return true;
     }
 
+    /**
+     * Gets server name
+     *
+     * @return name server name
+     */
     String getDefault() {
         ExternalServer server = (ExternalServer) servers.get(0);
         String name = server.getName();
         return name;
     }
 
+    /**
+     * Verifies URL pattern and extracts file name from URL.
+     *
+     * @param FileURL url
+     * @return file name
+     */
     String extractFileURL(String FileURL) {
-        //String filename = Paths.get(URL).getFileName().toString();
         try {
             URL u = new URL(FileURL); // Check for URL
             u.toURI();
@@ -2828,8 +2858,15 @@ public class CompGenStart extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Verifies IP adress: IP addresses follow the format
+     * "number.number.number.number"
+     *
+     * @param address
+     * @return boolean validity of IP adress
+     */
     private boolean checkIPAddress(String address) {
-        //      check if the ip address provided is null
+        // Check if the ip address provided is null
         if (address == null) {
             return false;
         }
@@ -2840,161 +2877,75 @@ public class CompGenStart extends javax.swing.JFrame {
         return m.matches();
     }
 
+    /**
+     * Checks working directory
+     *
+     * @param dir directory path
+     * @return boolean directory validity
+     */
     private boolean checkWorkDir(String dir) {
-//        need to add in regex checking
+        // need to add in regex checking
         return true;
     }
 
-    /*
-    private void addServer(ExternalServer server) {
-        servers.add(server);
-//        serverList.setListData(Servers);
-    }*/
+    /**
+     * Adds job to this job table model
+     *
+     * @param data list fo jobs to add to this table model
+     */
     private void jobTableAdd(List<Job> data) {
         this.jobsTableModel = new JobTableModel(data);
 
     }
 
-    /*
-    private void serversFromJson() {
-        try {
-            // create Gson instance
-            Gson gson = new Gson();
-
-            // create a reader
-            Reader reader = Files.newBufferedReader(Paths.get(System.getProperty("user.dir") + "\\serverInfo\\servers.json"));
-
-            // convert JSON file to map
-            Map<?, ?> map = gson.fromJson(reader, Map.class);
-//    ArrayList array = new ArrayList();
-            // print map entries
-            if (map == null) {
-            } else {
-                for (Map.Entry<?, ?> entry : map.entrySet()) {
-
-                    String[] value;
-                    value = entry.getValue().toString().split("=");
-
-//        Work out how many servers are present
-                    int numServers = (value.length) / 5;
-
-                    for (int s = 1; s <= numServers; s++) {
-
-//            messy but it works
-//            create server object
-                        ExternalServer serv = new ExternalServer(value[1 + 5 * (s - 1)].split(",")[0],
-                                value[2 + 5 * (s - 1)].split(",")[0],
-                                value[3 + 5 * (s - 1)].split(",")[0],
-                                value[4 + 5 * (s - 1)].split(",")[0],
-                                value[5 + 5 * (s - 1)].split(",")[0].replace("}", "").replaceAll("]", ""));
-
-//           Add job object to array
-                        this.servers.add(serv);
-                    }
-                }
-                // close reader
-                reader.close();
-            }
-        } catch (Exception ex) {
-            ex.getCause();
-        }
-    }
-
-    /*
-    * Read the jobs from the jobs.json file
-     */
- /*
-    private void jobsFromJson() {
-        this.jobsRunning.clear();
-        try {
-            // create Gson instance
-            Gson gson = new Gson();
-            // Get path
-            Path path = Paths.get("");
-            String pathDirectory = path.toAbsolutePath().toString();
-            // convert JSON file to map
-            try (
-                    // create a reader
-                    Reader reader = Files.newBufferedReader(Paths.get(pathDirectory + "\\serverInfo\\jobs.json"))) {
-                // convert JSON file to map
-                Map<?, ?> map = gson.fromJson(reader, Map.class);
-                // print map entries
-                if (map == null) {
-                } else {
-                    for (Map.Entry<?, ?> entry : map.entrySet()) {
-                        //System.out.println(entry.getValue().toString());
-                        String[] value = entry.getValue().toString().split("=");
-                        //        Work out how many jobs are present
-                        int numJobs = (value.length - 1) / 16;
-
-                        for (int j = 1; j <= numJobs; j++) {
-                            //            messy but it works
-                            //            create enyzme object
-
-                            // Create enzyme, get site and name from json file
-                            Enzyme enz = new Enzyme(value[9 + 16 * (j - 1)].split(",")[0],
-                                    value[10 + 16 * (j - 1)].split(",")[0]);
-
-                            //            create server object
-                            // Populate with name, user, host, pass, dir
-                            ExternalServer serv = new ExternalServer(value[2 + 16 * (j - 1)].split(",")[0],
-                                    value[3 + 16 * (j - 1)].split(",")[0],
-                                    value[4 + 16 * (j - 1)].split(",")[0],
-                                    value[5 + 16 * (j - 1)].split(",")[0],
-                                    value[6 + 16 * (j - 1)].split(",")[0]);
-
-                            //            create job object
-                            // Populate with name, query and reference fasta, status, ref and qry organism
-                            // Ref and query annotations
-                            Job job = new Job(serv,
-                                    value[1 + 16 * (j - 1)].split(",")[0],
-                                    value[8 + 16 * (j - 1)].split(",")[0],
-                                    value[7 + 16 * (j - 1)].split(",")[0],
-                                    enz,
-                                    value[11 + 16 * (j - 1)].split(",")[0],
-                                    value[12 + 16 * (j - 1)].split(",")[0],
-                                    value[14 + 16 * (j - 1)].split(",")[0],
-                                    value[13 + 16 * (j - 1)].split(",")[0],
-                                    value[15 + 16 * (j - 1)].split(",")[0],
-                                    value[16 + 16 * (j - 1)].split(",")[0].replace("}", "").replaceAll("]", ""));
-                            //           Add job object to array
-                            this.jobsRunning.add(job);
-
-                        }
-                    }
-                }
-                // close reader
-            }
-            jobTableAdd(this.jobsRunning);
-        } catch (JsonIOException | JsonSyntaxException | IOException ex) {
-            ex.getCause();
-        }
-
-    }
+    /**
+     * Table of servers extending <code>DefaultTableModel</code>
      */
     private static class ServTableModel extends DefaultTableModel {
 
         private List<ExternalServer> list = new ArrayList();
         private String[] columnNames = {"Name", "User", "Host", "Working Directory"};
 
+        /**
+         * Constructor with list of servers
+         *
+         * @param list list of external servers
+         */
         public ServTableModel(List<ExternalServer> list) {
             this.list = list;
         }
 
+        /**
+         * Constructor
+         */
         public ServTableModel() {
         }
 
         ;
+        /**
+         * Sets external servers data
+         * 
+         * @param list list of external servers
+         */
         public void setData(List<ExternalServer> list) {
             this.list = list;
         }
 
+        /**
+         * Gets a column name by index
+         * 
+         * @param columnIndex index of column for which the name is set
+         */
         @Override
-
         public String getColumnName(int columnIndex) {
             return columnNames[columnIndex];
         }
 
+        /**
+         * Gets number of rows
+         * 
+         * @return number of rows
+         */
         @Override
         public int getRowCount() {
             if (null == this.list) {
@@ -3003,11 +2954,23 @@ public class CompGenStart extends javax.swing.JFrame {
             return list.size();
         }
 
+        /**
+         * Gets number of columns
+         * 
+         * @return number of columns
+         */
         @Override
         public int getColumnCount() {
             return 4;
         }
 
+        /**
+         * Gets value at given column and row
+         * 
+         * @param rowIndex index of row of interest
+         * @param columnIndex index of column of interest
+         * @return value at given cell position
+         */
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
             ExternalServer serv = list.get(rowIndex);
@@ -3025,6 +2988,12 @@ public class CompGenStart extends javax.swing.JFrame {
             return null;
         }
 
+        /**
+         * Gets class of given column
+         * 
+         * @param columnIndex index of column of interest
+         * @return class of column of interest
+         */
         @Override
         public Class<?> getColumnClass(int columnIndex) {
             switch (columnIndex) {
@@ -3041,27 +3010,53 @@ public class CompGenStart extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Model of table of jobs
+     */
     public class JobTableModel extends DefaultTableModel {
 
         private List<Job> list = new ArrayList();
         private String[] columnNames = {"Name", "Server", "Pipeline", "Status", "Ref Species", "Qry Species"};
 
+        /**
+         * Constructor from list of jobs
+         * 
+         * @param list list of jobs
+         */
         public JobTableModel(List<Job> list) {
             this.list = list;
         }
 
+        /**
+         * Constructor
+         */
         public JobTableModel() {
         }
 
+        /**
+         * Sets data from list of jobs in the table
+         * 
+         * @param list list of jobs
+         */
         public void setData(List<Job> list) {
             this.list = list;
         }
 
+        /**
+         * Gets a column name by index
+         * 
+         * @param columnIndex index of column for which the name is set
+         */
         @Override
         public String getColumnName(int columnIndex) {
             return columnNames[columnIndex];
         }
 
+        /**
+         * Gets number of rows
+         * 
+         * @return number of rows
+         */
         @Override
         public int getRowCount() {
             if (null == this.list) {
@@ -3070,11 +3065,23 @@ public class CompGenStart extends javax.swing.JFrame {
             return list.size();
         }
 
+        /**
+         * Gets number of columns
+         * 
+         * @return number of columns
+         */
         @Override
         public int getColumnCount() {
             return 6;
         }
 
+        /**
+         * Gets value at given column and row
+         * 
+         * @param rowIndex index of row of interest
+         * @param columnIndex index of column of interest
+         * @return value at given cell position
+         */
         @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
             Job jobs = list.get(rowIndex);
@@ -3095,6 +3102,12 @@ public class CompGenStart extends javax.swing.JFrame {
             return null;
         }
 
+        /**
+         * Gets class of given column
+         * 
+         * @param columnIndex index of column of interest
+         * @return class of column of interest
+         */
         @Override
         public Class<?> getColumnClass(int columnIndex) {
             switch (columnIndex) {
@@ -3115,56 +3128,11 @@ public class CompGenStart extends javax.swing.JFrame {
         }
     }
 
-    /*
-    private void saveServerJson(List<ExternalServer> servers) {
-        try {
-            // Get path where json is saved
-            Path path = Paths.get("");
-            String pathDirectory = path.toAbsolutePath().toString();
-//            need to update this to a relative folder
-            JsonWriter writer = new JsonWriter(new FileWriter(pathDirectory + "\\serverInfo\\servers.json"));
-            writer.beginObject();
-            writer.name("data");
-            writer.beginArray();
-            for (ExternalServer s : servers) {
-                writer.beginObject();
-                writer.name("name").value(s.name);
-                writer.name("user").value(s.getUser());
-                writer.name("host").value(s.getHost());
-                writer.name("password").value(s.getPassword());
-                writer.name("dir").value(s.getWorkingDir());
-                writer.endObject();
-            }
-            writer.endArray();
-            writer.endObject();
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-     */
     /**
-     * private void saveJobJson(List<Job> jobs) { try { // Get current path Path
-     * path = Paths.get(""); String pathDirectory =
-     * path.toAbsolutePath().toString(); JsonWriter writer = new JsonWriter(new
-     * FileWriter(pathDirectory + "\\serverInfo\\jobs.json"));
-     * writer.beginObject(); writer.name("data"); writer.beginArray(); for (Job
-     * j : jobs) { ExternalServer s = j.getServer(); Enzyme e = j.getEnz();
-     * writer.beginObject(); writer.name("Job name").value(j.getName());
-     * writer.name("Server name").value(s.name); writer.name("Server
-     * user").value(s.getUser()); writer.name("Server host").value(s.getHost());
-     * writer.name("Server pass").value(s.getPassword()); writer.name("Server
-     * dir").value(s.getWorkingDir()); writer.name("qry").value(j.getQry());
-     * writer.name("ref").value(j.getRef()); writer.name("Enzyme
-     * name").value(e.getName()); writer.name("Enzyme site").value(e.getSite());
-     * writer.name("pipeline").value(j.getPipeline());
-     * writer.name("Status").value(j.getStatus()); writer.name("Ref
-     * Organism").value(j.getRefOrg()); writer.name("Qry
-     * Organism").value(j.getQryOrg()); writer.name("Ref
-     * Annotation").value(j.getRefAnnot()); writer.name("Qry
-     * Annotation").value(j.getQryAnnot()); writer.endObject(); }
-     * writer.endArray(); writer.endObject(); writer.close(); } catch
-     * (IOException e) { e.printStackTrace(); } }
+     * Refresh status of job in the table of jobs by querying the log file of the job
+     * on the external server
+     * @param job job to be refreshed
+     * @return boolean indicating if status was different than "Failed"
      */
     private Boolean refreshJobStatus(Job job) {
 //          Connect to the server of the user selectedjob
@@ -3192,6 +3160,9 @@ public class CompGenStart extends javax.swing.JFrame {
         }
     }
 
+    /**
+     * Clears all the text and data previously displayed or chosen in the panel where jobs are set.
+     */
     private void clearMakeCompGenJob() {
         // Clear all the text boxes
         userJobName.setText("");

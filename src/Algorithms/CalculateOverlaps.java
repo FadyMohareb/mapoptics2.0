@@ -4,11 +4,19 @@ import DataTypes.*;
 import java.awt.geom.Rectangle2D;
 import java.util.*;
 
-/*
+/**
+ * Calculates and saved query contigs which overlap in regions of their alignment.
+ * 
  * @author Josie
  */
 public class CalculateOverlaps {
 
+    /**
+     * Counts all overlapping regions class constructor
+     * 
+     * @param refMap reference cmap map
+     * @return counts number of overlaps
+     */
     public static Map<Integer, Integer> countAllOverlaps(Map<Integer, List<Double>> refMap) {
 
         Map <Integer, Integer> counts = new HashMap<>();
@@ -34,6 +42,11 @@ public class CalculateOverlaps {
         return counts;
     }
 
+    /**
+     * Count all overlapping regions
+     * @param regions list of overlapping regions
+     * @return overlaps number of overlapping regions
+     */
     public static Integer countAllOverlaps(List<Double> regions) {
 
         int overlaps = 0;
@@ -52,6 +65,12 @@ public class CalculateOverlaps {
         return overlaps;
     }
 
+    /**
+     * Get overlapping regions
+     * 
+     * @param ref reference cmap
+     * @return list of overlapping regions in the reference
+     */
     public static List<Double> getOverlapRegions(Reference ref) {
 
         List<Double> regions = ref.getRegions();
@@ -76,6 +95,14 @@ public class CalculateOverlaps {
         return overlapRegions;
     }
 
+    /**
+     * Count all overlapping regions
+     * 
+     * @param references reference contigs
+     * @param queries query contigs
+     * @return hashmap of number of overlaps, the key is the reference contig ID, 
+     * the value is the number of overlapping queries for this ID
+     */
     public static LinkedHashMap<String, Integer> countAllOverlaps(LinkedHashMap<String, RefContig> references,
                                                                   LinkedHashMap<String, QryContig> queries) {
         ArrayList<String> done = new ArrayList<>();
@@ -111,6 +138,13 @@ public class CalculateOverlaps {
         return numOverlaps;
     }
 
+    /**
+     * Calculates overlapping regions
+     * @param refId Reference id
+     * @param ref Reference contig
+     * @param queries Hashmap of query contigs and their ID
+     * @return overlap regions
+     */
     public static LinkedHashMap<String, Rectangle2D[]> calculateRefOverlap(String refId, RefContig ref,
                                                                            LinkedHashMap<String, QryContig> queries) {
         LinkedHashMap<String, Rectangle2D[]> overlapRegions = new LinkedHashMap<>();
@@ -141,6 +175,14 @@ public class CalculateOverlaps {
         return overlapRegions;
     }
 
+    /**
+     * Calculate rectangle of region overlap
+     * 
+     * @param qry1 first query contig
+     * @param qry2 second query contig
+     * @param ref reference contig
+     * @return rectangle of overlapping region
+     */
     private static Rectangle2D[] calculateRegionOverlap(QryContig qry1, QryContig qry2, RefContig ref) {
         Rectangle2D[] regionOverlaps = new Rectangle2D[3];
         double qry1start = qry1.getRefAlignStart();
@@ -195,6 +237,14 @@ public class CalculateOverlaps {
         return regionOverlaps;
     }
 
+    /**
+     * Calculates region overlapping with the query
+     * 
+     * @param qry query contig
+     * @param ref reference contig
+     * @param refRegionOverlap reference region of overlap
+     * @return rectangle of overlapped query
+     */
     private static Rectangle2D calculateQryOverlap(QryContig qry, RefContig ref, Rectangle2D refRegionOverlap) {
         Rectangle2D overlap ;
 

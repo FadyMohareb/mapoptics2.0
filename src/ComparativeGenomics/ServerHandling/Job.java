@@ -1,11 +1,10 @@
 package ComparativeGenomics.ServerHandling;
 
 /**
- *
- * @author franpeters The purpose of this class is to save all of the
- * information of a submitted job allowing the data to be downloaded from the
- * server it was run on and display the results for the user.
- *
+ * Saves all information related to a submitted job, allowing the data to be downloaded from 
+ * the server it was run on, and displaying the results.
+ * 
+ * @author franpeters
  */
 public class Job {
 
@@ -22,7 +21,9 @@ public class Job {
     private String qryAnnot;
 
     /**
-     *
+     * Constructor with server, job name, reference and query file names, 
+     * enzyme, pipeline, status, organisms and annotations files
+     * 
      * @param server the ExternalServer used to run this alignment job
      * @param name name of the job
      * @param ref reference genome file path
@@ -55,30 +56,33 @@ public class Job {
     }
 
     /**
-     *
+     * Constructor
      */
     public Job() {
     }
 
     /**
-     *
-     * @param name set the name of the job
+     * Sets name of this job
+     * 
+     * @param name job name
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     *
-     * @param server set the ExternalServer of that the job is running on. To be
-     * used when querying the status of the job
+     * Sets external server on which this job is running. 
+     * This external server information is used when the status or results of this job are queried.
+     * 
+     * @param server external server on which this job is run
      */
     public void setServer(ExternalServer server) {
         this.server = server;
     }
 
     /**
-     *
+     * Sets this job reference fasta file
+     * 
      * @param file set the reference file path
      */
     public void setRefFile(String file) {
@@ -86,7 +90,8 @@ public class Job {
     }
 
     /**
-     *
+     * Sets this job reference query file
+     * 
      * @param file set the query file path
      */
     public void setQryFile(String file) {
@@ -94,35 +99,38 @@ public class Job {
     }
 
     /**
-     *
-     * @param enzyme set the Enzyme object used to digest the reference and
-     * query fasta files
+     * Sets this job restriction enzyme, which digests either the reference or query
+     * 
+     * @param enzyme restriction enzyme for this job
      */
     public void setEnzyme(Enzyme enzyme) {
         this.enzyme = enzyme;
     }
 
     /**
-     *
-     * @param pipeline set which alignment algorithm is to be used with this job
+     * Sets the pipeline, indicating which alignment algorithm (FaNDOM or RefAligner)
+     * is used to run this job
+     * 
+     * @param pipeline alignment algorithm
      */
     public void setPipeline(String pipeline) {
         this.pipeline = pipeline;
     }
 
     /**
-     *
-     * @param status set the latest status of the job from querying the log file
-     * associated with the job
+     * Sets the status of this job, saved in the external server in a log file.
+     * 
+     * @param status latest status of this job
      */
     public void setStatus(String status) {
         this.status = status;
     }
 
     /**
-     *
-     * @param org set the reference species, including the genus name i.e. Homo
-     * sapiens. For use when querying databases
+     * Sets the reference organism of this job.
+     * The organism name is used when querying the database of SVs.
+     * 
+     * @param org reference species, including the genus name i.e. Homo sapiens
      */
     public void setRefOrg(String org) {
         this.refOrganism = org;
@@ -130,33 +138,35 @@ public class Job {
 
     /**
      *
-     * @param org Set the query species, including the genus name i.e. Homo
-     * sapiens. For use when querying databases
+     * Sets the query organism name.
+     * The organism name is used when querying the database of SVs.
+
+     * @param org query species, including the genus name i.e. Homo sapiens
      */
     public void setQryOrg(String org) {
         this.qryOrganism = org;
     }
 
     /**
-     *
-     * @param annot Set the filepath of the reference GTF or GFF file for the
-     * reference genome
+     * Sets the reference annotation file for this job
+     * 
+     * @param annot filepath of the reference GTF or GFF file for the reference genome
      */
     public void setRefAnnot(String annot) {
         this.refAnnot = annot;
     }
 
     /**
-     *
-     * @param annot Set the filepath of the reference GTF or GFF file for the
-     * query genome
+     * Sets query annotation file for this job
+     * 
+     * @param annot filepath of the reference GTF or GFF file for the query genome
      */
     public void setQryAnnot(String annot) {
         this.qryAnnot = annot;
     }
 
     /**
-     *
+     * Gets job status
      * @return get status of the job
      */
     public String getStatus() {
@@ -164,80 +174,90 @@ public class Job {
     }
 
     /**
-     *
-     * @return get the name of the job
+     * Gets this jobs name
+     * 
+     * @return name of the job
      */
     public String getName() {
         return this.name;
     }
 
     /**
-     *
-     * @return get the ExternalServer of the job
+     * Get the information of the server on which this job is run
+     * 
+     * @return external server
      */
     public ExternalServer getServer() {
         return this.server;
     }
 
     /**
-     *
-     * @return get the alignment algorithm used by the job
+     * Gets the alignment algorithm used to execute this job
+     * 
+     * @return alignment algorithm
      */
     public String getPipeline() {
         return this.pipeline;
     }
 
     /**
-     *
-     * @return get the reference genome file path
+     * Gets the reference genome file of this job
+     * 
+     * @return reference genome file path
      */
     public String getRef() {
         return this.refFile;
     }
 
     /**
-     *
-     * @return get the query genome file path
+     * Gets the query genome file path of this job
+     * 
+     * @return query genome file path
      */
     public String getQry() {
         return this.qryFile;
     }
 
     /**
-     *
-     * @return get the Enzyme used by the job
+     * Gets the restriction enzyme used in this job
+     * 
+     * @return restriction enzyme
      */
     public Enzyme getEnz() {
         return this.enzyme;
     }
 
     /**
-     *
-     * @return get the reference species
+     * Gets the reference species
+     * 
+     * @return reference species
      */
     public String getRefOrg() {
         return this.refOrganism;
     }
 
     /**
-     *
-     * @return get the query species
+     * Gets the query species
+     * 
+     * @return query species
      */
     public String getQryOrg() {
         return this.qryOrganism;
     }
 
     /**
-     *
-     * @return get the reference annotation file path
+     * Gets the reference annotation file path
+     * 
+     * @return reference annotation file path
      */
     public String getRefAnnot() {
         return this.refAnnot;
     }
 
     /**
-     *
-     * @return get the query annotation file path
+     * Gets the query annotation file path
+     * 
+     * @return query annotation file path
      */
     public String getQryAnnot() {
         return this.qryAnnot;
