@@ -1,0 +1,2 @@
+#Header	Chrom1	RefPos1	Direction1	Chrom2	RefPos2	Directio2	Type	Ids	NumSupports	GeneInterupt	GeneFusion
+7	476710.0	+	7	542969.0	+	duplication	9	1		False

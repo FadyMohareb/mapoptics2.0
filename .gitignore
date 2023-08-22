@@ -1,10 +1,8 @@
 build/
 serverInfo/
-Sample_Dataset/Human_k562/
-download/
-Sample_Dataset/
 vpproject/
 vpproject/MapOptics.vpp
 nbproject/
+Sample_Dataset/
 *.xml
 *.vpp
