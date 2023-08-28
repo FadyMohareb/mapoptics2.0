@@ -1,3 +1,0 @@
-#Header	Chrom1	RefPos1	Direction1	Chrom2	RefPos2	Directio2	Type	Ids	NumSupports	GeneInterupt	GeneFusion
-1	45000	+	5	15000	+	Unknown	5	1		False
-4	75000	+	11	45000	+	Unknown	11	1		False
