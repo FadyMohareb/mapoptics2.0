@@ -274,6 +274,10 @@ Various test datasets are provided. Simply launch Comparative Genomics and click
 
 Full user manual can be found in /UserGuide/Comparative Genomics User Manual.pdf
 
+# Technical documentation
+
+Java documentation can be found [here]([https://github.com/Marie-Schmit/mapoptics2.0/blob/master/dist/javadoc/index.html])
+
 ## How to Cite MapOptics:
 Burgin, J., Molitor, C., and Mohareb, F. (2018), ['MapOptics: A light-weight, cross-platform visualisation tool for optical mapping alignment'](https://academic.oup.com/bioinformatics/advance-article-abstract/doi/10.1093/bioinformatics/bty1013/5232997?redirectedFrom=fulltext), Bioinformatics.
 
