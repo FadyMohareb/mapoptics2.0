@@ -1,0 +1,8 @@
+build/
+serverInfo/
+vpproject/
+vpproject/MapOptics.vpp
+nbproject/
+Sample_Dataset/
+*.xml
+*.vpp

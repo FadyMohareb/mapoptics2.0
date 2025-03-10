@@ -8,57 +8,79 @@ import java.io.File;
 import javax.imageio.ImageIO;
 
 /**
- *
+ * Displays all the chromosomes of the reference.
+ * 
  * @author franpeters
  */
 public class GenomePanel extends javax.swing.JPanel {
+
     Alignment alignment = null;
     String type;
+
     /**
      * Creates new form GenomePanel
      */
-    public GenomePanel(){
-    initComponents();
+    public GenomePanel() {
+        initComponents();
     }
 
-    
-    public void setAlignment(Alignment align,String type){
-        this.alignment=align;
-        this.type=type;
+    /**
+     * Sets alignments of this genome 
+     * 
+     * @param align alignment
+     * @param type alignment type
+     */
+    public void setAlignment(Alignment align, String type) {
+        this.alignment = align;
+        this.type = type;
     }
 
+    /**
+     * Draws one rectangle per chromosome
+     * 
+     * @param g graphical device
+     */
     void drawRectangles(Graphics g) {
-        if (alignment ==null){
-        }else{
-        Graphics2D g2d = (Graphics2D) g;
-        Integer w = (this.getWidth()-10);
-        Integer h = (this.getHeight()-100);
-        if("reference".equals(this.type)){
-             this.alignment.getRefGenome().getKaryotype().drawChromosomes(g2d, w, h);
-        }
-//         if("query".equals(this.type)){
-//              this.alignment.getQryGenome().getKaryotype().drawChromosomes(g2d, w, h);
-//         }
-       
+        if (alignment == null) {
+        } else {
+            Graphics2D g2d = (Graphics2D) g;
+            Integer w = (this.getWidth() - 10);
+            Integer h = (this.getHeight() - 100);
+            if ("reference".equals(this.type)) {
+                this.alignment.getRefGenome().getKaryotype().drawChromosomes(g2d, w, h);
+            }
         }
     }
-    
+
+    /**
+     * Repaint this panel
+     * 
+     * @param g graphical device
+     */
     @Override
     public void paint(Graphics g) {
         super.paint(g);
         drawRectangles(g);
     }
 
-    public void saveImage(String name,String type, String location) {
-		BufferedImage image = new BufferedImage(getWidth(),getHeight(), BufferedImage.TYPE_INT_RGB);
-		Graphics2D g2d = image.createGraphics();
-		printAll(g2d);
-		try{
-			ImageIO.write(image, type, new File(location+name+"."+type));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    /**
+     * Saves an image of this panel
+     * 
+     * @param name image name
+     * @param type image type
+     * @param location file directory
+     */
+    public void saveImage(String name, String type, String location) {
+        BufferedImage image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = image.createGraphics();
+        printAll(g2d);
+        try {
+            ImageIO.write(image, type, new File(location + name + "." + type));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

@@ -37,7 +37,7 @@ public class QueryView extends JPanel {
     private static final Stroke DOTTED = new BasicStroke(1, BasicStroke.CAP_BUTT,
             BasicStroke.JOIN_MITER, 1, new float[]{1, 2}, 2);
     private static int lowConf = 20;
-    private static int highConf = 40;
+    private static int highConf = 40; 
     private static int lowCov = 20;
     private static int highCov = 50;
     private static int lowQual = 20;

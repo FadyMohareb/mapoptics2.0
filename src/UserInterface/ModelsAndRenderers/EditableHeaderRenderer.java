@@ -58,6 +58,7 @@ public class EditableHeaderRenderer implements TableCellRenderer {
             this.editor = editor;
         }
 
+        
         public void setColumn(int column) {
             this.column = column;
         }

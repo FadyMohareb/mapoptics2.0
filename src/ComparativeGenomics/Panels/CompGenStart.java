@@ -4,7 +4,9 @@ import ComparativeGenomics.ServerHandling.Enzyme;
 import ComparativeGenomics.ServerHandling.ExternalServer;
 import ComparativeGenomics.ServerHandling.Job;
 import ComparativeGenomics.ServerHandling.SSH;
+import ComparativeGenomics.FileHandling.JsonFiles;
 import ComparativeGenomics.FileHandling.BestEnzyme;
+import FileHandling.CmapReader;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
@@ -17,6 +19,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -33,18 +38,23 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import org.apache.commons.io.FileUtils;
 import startScreen.startScreen;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
 
 /**
+ * Provides the GUI and methods to start an alignment Job on an ExternalServer.
  *
  * @author franpeters
+ * @author Marie Schmit
  */
-
 public class CompGenStart extends javax.swing.JFrame {
-    //        Start a new job object when the window is opened.
+
+    // Start a new job object when the window is opened.
     private Job newJob = new Job();
     private Job selectedJob;
     private List<Job> jobsRunning = new ArrayList<>();
-    private List<ExternalServer> servers = new ArrayList<>();;
+    private List<ExternalServer> servers = new ArrayList<>();
     private ExternalServer selectedServer;
     private ExternalServer tempSelectedServer;
     private String currentServer;
@@ -62,28 +72,29 @@ public class CompGenStart extends javax.swing.JFrame {
     private Boolean refAdded = false;
     private Boolean qryAdded = false;
     private DefaultTableModel enzymeTableModel;
+    private DefaultTableModel bestEnzymesTableModel;
     private Enzyme selectedEnzyme;
     private Enzyme tempSelectedEnzyme;
     private JobTableModel jobsTableModel = new JobTableModel();
     private ServTableModel servTableModel = new ServTableModel();
     private Boolean ref1FromURL = false;
     private Boolean qryFromURL = false;
-    
-    
-    
+    private JsonFiles manageJson = new JsonFiles();
+
     private String localrefcmap = "";
-    private String localqrycmap ="";
-    private String localxmap="";
-    private String localrefannot="";
-    private String localreffasta="";
-    private String localrefkary="";
-            
+    private String localqrycmap = "";
+    private String localxmap = "";
+    private String localrefannot = "";
+    private String localreffasta = "";
+    private String localrefkary = "";
+
+    private String qryCmapEnzyme = "";
+
     /**
      * Creates new form comparativeGenomics
      */
     public CompGenStart() {
-       
-            initComponents();
+        initComponents();
     }
 
     /**
@@ -122,7 +133,7 @@ public class CompGenStart extends javax.swing.JFrame {
         qrySpecies = new javax.swing.JTextField();
         jLabel33 = new javax.swing.JLabel();
         qryAnnotFileName = new javax.swing.JTextField();
-        jPanel3 = new javax.swing.JPanel();
+        settingsPanel = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         setEnzymeLabel = new javax.swing.JLabel();
         chooseEnzyme = new javax.swing.JButton();
@@ -130,11 +141,12 @@ public class CompGenStart extends javax.swing.JFrame {
         refalignerPipeline = new javax.swing.JRadioButton();
         fandomPipeline = new javax.swing.JRadioButton();
         runCalcBestEnzyme = new javax.swing.JButton();
-        jButton14 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        calculateQuery = new javax.swing.JRadioButton();
+        calculateReference = new javax.swing.JRadioButton();
+        bnt_help = new javax.swing.JButton();
         startJobButton = new javax.swing.JButton();
         sendQueryMenu = new javax.swing.JMenuBar();
-        jMenu2 = new javax.swing.JMenu();
+        textMenu = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
         refFromURL = new javax.swing.JMenuItem();
         uploadReference = new javax.swing.JMenuItem();
@@ -143,11 +155,11 @@ public class CompGenStart extends javax.swing.JFrame {
         downloadQueryURL = new javax.swing.JMenuItem();
         uploadQueryGenome = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
-        jMenu3 = new javax.swing.JMenu();
+        serverMenu = new javax.swing.JMenu();
         serverInfoButton = new javax.swing.JMenuItem();
         addServerMenu = new javax.swing.JMenuItem();
         chooseServerMenu = new javax.swing.JMenuItem();
-        jMenu7 = new javax.swing.JMenu();
+        enzymesMenu = new javax.swing.JMenu();
         browseEnzymes = new javax.swing.JMenuItem();
         refURLDialog = new javax.swing.JDialog();
         jLabel21 = new javax.swing.JLabel();
@@ -182,7 +194,7 @@ public class CompGenStart extends javax.swing.JFrame {
         selectServerDialog = new javax.swing.JDialog();
         chooseServerButton = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        serversFromJson();
+        this.servers = manageJson.getServersFromJson(this.servers);
         servTableModel.setData(this.servers);
         serverTable = new javax.swing.JTable();
         chosenServerLabel = new javax.swing.JLabel();
@@ -196,12 +208,12 @@ public class CompGenStart extends javax.swing.JFrame {
         queryURL = new javax.swing.JTextField();
         uploadQryURLButton = new javax.swing.JButton();
         uploadFiles = new javax.swing.JDialog();
-        jPanel9 = new javax.swing.JPanel();
+        refFilesPanel = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        refSpeciesTxtField = new javax.swing.JTextField();
         chooseLocalRefCmap = new javax.swing.JButton();
         chooseLocalRefAnnot = new javax.swing.JButton();
         chooseLocalRefKaryotype = new javax.swing.JButton();
@@ -210,27 +222,50 @@ public class CompGenStart extends javax.swing.JFrame {
         localRefKaryName = new javax.swing.JLabel();
         loadLocalAlignment = new javax.swing.JButton();
         closeLocalWindow = new javax.swing.JButton();
-        jPanel10 = new javax.swing.JPanel();
+        queryFilesPanel = new javax.swing.JPanel();
         jLabel28 = new javax.swing.JLabel();
         jLabel29 = new javax.swing.JLabel();
         chooseLocalQryCmap = new javax.swing.JButton();
         localSpecies = new javax.swing.JTextField();
         localQryCmapName = new javax.swing.JLabel();
-        jPanel11 = new javax.swing.JPanel();
+        alignmentPanel = new javax.swing.JPanel();
         jLabel30 = new javax.swing.JLabel();
         chooseLocalXmap = new javax.swing.JButton();
         localXmapName = new javax.swing.JLabel();
-        buttonGroup1 = new javax.swing.ButtonGroup();
+        btnGroupPipeline = new javax.swing.ButtonGroup();
         filesDownloading = new javax.swing.JDialog();
         jLabel1 = new javax.swing.JLabel();
         jobDownloadingName = new javax.swing.JLabel();
         bestEnzymeDialog = new javax.swing.JDialog();
-        jButton12 = new javax.swing.JButton();
+        selectBestEnz = new javax.swing.JButton();
         bestEnz = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
-        jButton13 = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
+        bestEnzymesTable = new javax.swing.JTable();
+        LblEnzyme = new javax.swing.JLabel();
+        helpPane = new javax.swing.JDialog();
+        exitBtn = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        helpHtmlPane = new javax.swing.JEditorPane();
+        waitPanel = new javax.swing.JDialog();
+        messageLabel = new javax.swing.JLabel();
+        authentificationPane = new javax.swing.JDialog();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel34 = new javax.swing.JLabel();
+        jLabel35 = new javax.swing.JLabel();
+        userLabel = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
+        infoLabel = new javax.swing.JLabel();
+        jLabel36 = new javax.swing.JLabel();
+        showAuthentPassword = new javax.swing.JCheckBox();
+        showConfirmPassword = new javax.swing.JCheckBox();
+        lengthPwd = new javax.swing.JLabel();
+        passwordLabel = new javax.swing.JPasswordField();
+        confirmLabel = new javax.swing.JPasswordField();
+        btnGroupCalcEnzyme = new javax.swing.ButtonGroup();
+        jPanel1 = new javax.swing.JPanel();
+        submittedJobPane = new javax.swing.JScrollPane();
         jobsTable = new javax.swing.JTable();
         openResults = new javax.swing.JButton();
         refreshJobsTable = new javax.swing.JButton();
@@ -247,6 +282,8 @@ public class CompGenStart extends javax.swing.JFrame {
 
         makeCompGenJob.setTitle("Send New Job");
         makeCompGenJob.setBounds(new java.awt.Rectangle(500, 500, 460, 500));
+        makeCompGenJob.setLocationByPlatform(true);
+        makeCompGenJob.setMinimumSize(new java.awt.Dimension(554, 662));
         makeCompGenJob.setName("New Job Frame"); // NOI18N
 
         serverPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Server"));
@@ -290,15 +327,14 @@ public class CompGenStart extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(serverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(serverPanelLayout.createSequentialGroup()
-                        .addComponent(userJobName)
-                        .addGap(18, 18, 18)
-                        .addComponent(setJobName)
-                        .addGap(9, 9, 9))
+                        .addComponent(userJobName, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(setJobName, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(serverPanelLayout.createSequentialGroup()
                         .addComponent(serverLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(connectServerToggle)
-                        .addContainerGap())))
+                        .addComponent(connectServerToggle)))
+                .addContainerGap())
         );
         serverPanelLayout.setVerticalGroup(
             serverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -313,7 +349,7 @@ public class CompGenStart extends javax.swing.JFrame {
                     .addComponent(jLabel12)
                     .addComponent(userJobName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(setJobName))
-                .addContainerGap(10, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         //define the automatically set server as the first one in the table
@@ -355,46 +391,34 @@ public class CompGenStart extends javax.swing.JFrame {
                     .addComponent(jLabel13)
                     .addComponent(refGenomeLabel))
                 .addGap(18, 18, 18)
-                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(sendRefGenomePanelLayout.createSequentialGroup()
-                        .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(refProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(refGenomeFile, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(uploadFileRef))
-                    .addGroup(sendRefGenomePanelLayout.createSequentialGroup()
-                        .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(refSpecies, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(refAnnotFileName, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(refSpecies, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(refGenomeFile, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(refProgressBar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(refAnnotFileName))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(uploadFileRef)
                 .addContainerGap())
         );
         sendRefGenomePanelLayout.setVerticalGroup(
             sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(sendRefGenomePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(sendRefGenomePanelLayout.createSequentialGroup()
-                        .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(sendRefGenomePanelLayout.createSequentialGroup()
-                                .addComponent(jLabel13)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel32)
-                                    .addComponent(refAnnotFileName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(sendRefGenomePanelLayout.createSequentialGroup()
-                                .addComponent(refSpecies, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(refGenomeFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(uploadFileRef)
-                                    .addComponent(refGenomeLabel))
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addContainerGap())
-                    .addGroup(sendRefGenomePanelLayout.createSequentialGroup()
-                        .addGap(58, 58, 58)
-                        .addComponent(refProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(38, Short.MAX_VALUE))))
+                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(refSpecies)
+                    .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(refGenomeFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(uploadFileRef)
+                    .addComponent(refGenomeLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(refProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel32)
+                    .addComponent(refAnnotFileName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         uploadFileRef.setEnabled(false);
@@ -415,9 +439,19 @@ public class CompGenStart extends javax.swing.JFrame {
 
         jLabel31.setText("Species:");
 
+        qrySpecies.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                qrySpeciesActionPerformed(evt);
+            }
+        });
+
         jLabel33.setText("Annotation File:");
 
-        qryAnnotFileName.setText("jTextField3");
+        qryAnnotFileName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                qryAnnotFileNameActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout sendQueryGenomePanelLayout = new javax.swing.GroupLayout(sendQueryGenomePanel);
         sendQueryGenomePanel.setLayout(sendQueryGenomePanelLayout);
@@ -427,30 +461,22 @@ public class CompGenStart extends javax.swing.JFrame {
                 .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
                         .addGap(47, 47, 47)
-                        .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(qryGenomeLabel)
-                            .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel31)
-                                .addGap(2, 2, 2))))
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel31))
                     .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(jLabel33)))
+                        .addGap(48, 48, 48)
+                        .addComponent(qryGenomeLabel))
+                    .addComponent(jLabel33, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(18, 18, 18)
-                .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
-                        .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(qrySpecies, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(queryProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(queryGenomeFileName, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(uploadQryGenome))
-                    .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
-                        .addComponent(qryAnnotFileName, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(qryAnnotFileName, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(queryGenomeFileName, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(queryProgressBar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(qrySpecies))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(uploadQryGenome)
+                .addGap(8, 8, 8))
         );
         sendQueryGenomePanelLayout.setVerticalGroup(
             sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -461,31 +487,30 @@ public class CompGenStart extends javax.swing.JFrame {
                             .addGap(5, 5, 5)
                             .addComponent(jLabel4))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sendQueryGenomePanelLayout.createSequentialGroup()
-                            .addComponent(jLabel31)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
-                            .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(qryGenomeLabel)
-                                .addComponent(uploadQryGenome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(jLabel31, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
+                            .addGap(23, 23, 23)))
                     .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
-                        .addComponent(qrySpecies, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(qrySpecies)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(queryGenomeFileName, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(9, 9, 9)
-                        .addComponent(queryProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(queryGenomeFileName, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(uploadQryGenome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(qryGenomeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
-                        .addComponent(jLabel33)
-                        .addGap(31, 31, 31))
-                    .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(qryAnnotFileName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGap(7, 7, 7)
+                        .addComponent(queryProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(7, 7, 7)
+                        .addComponent(qryAnnotFileName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sendQueryGenomePanelLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel33, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         uploadQryGenome.setEnabled(false);
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Settings"));
+        settingsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Settings"));
 
         jLabel3.setText("Nickase Enzyme:");
 
@@ -500,7 +525,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
         jLabel9.setText("Pipeline:");
 
-        buttonGroup1.add(refalignerPipeline);
+        btnGroupPipeline.add(refalignerPipeline);
         refalignerPipeline.setSelected(true);
         refalignerPipeline.setText("RefAligner");
         refalignerPipeline.addActionListener(new java.awt.event.ActionListener() {
@@ -509,8 +534,13 @@ public class CompGenStart extends javax.swing.JFrame {
             }
         });
 
-        buttonGroup1.add(fandomPipeline);
+        btnGroupPipeline.add(fandomPipeline);
         fandomPipeline.setText("FaNDOM");
+        fandomPipeline.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fandomPipelineActionPerformed(evt);
+            }
+        });
 
         runCalcBestEnzyme.setText("Calculate");
         runCalcBestEnzyme.addActionListener(new java.awt.event.ActionListener() {
@@ -519,59 +549,75 @@ public class CompGenStart extends javax.swing.JFrame {
             }
         });
 
-        jButton14.setText("Modify Alignment Parameters");
+        btnGroupCalcEnzyme.add(calculateQuery);
+        calculateQuery.setSelected(true);
+        calculateQuery.setText("Query");
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        btnGroupCalcEnzyme.add(calculateReference);
+        calculateReference.setText("Reference");
+        calculateReference.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                calculateReferenceActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout settingsPanelLayout = new javax.swing.GroupLayout(settingsPanel);
+        settingsPanel.setLayout(settingsPanelLayout);
+        settingsPanelLayout.setHorizontalGroup(
+            settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(settingsPanelLayout.createSequentialGroup()
                 .addGap(17, 17, 17)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel9))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
+                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(settingsPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel9)
+                        .addGap(13, 13, 13)
                         .addComponent(refalignerPipeline)
                         .addGap(18, 18, 18)
-                        .addComponent(fandomPipeline)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(setEnzymeLabel)
-                        .addGap(66, 66, 66)
-                        .addComponent(chooseEnzyme)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(runCalcBestEnzyme)
-                        .addContainerGap())))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton14)
-                .addContainerGap())
+                        .addComponent(fandomPipeline))
+                    .addGroup(settingsPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(setEnzymeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(runCalcBestEnzyme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(chooseEnzyme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addComponent(calculateQuery)
+                        .addGap(18, 18, 18)
+                        .addComponent(calculateReference)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+        settingsPanelLayout.setVerticalGroup(
+            settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, settingsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(setEnzymeLabel)
-                    .addComponent(chooseEnzyme)
-                    .addComponent(runCalcBestEnzyme))
+                    .addComponent(chooseEnzyme))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(runCalcBestEnzyme)
+                    .addComponent(calculateQuery)
+                    .addComponent(calculateReference))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(refalignerPipeline)
                     .addComponent(fandomPipeline))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton14)
-                .addContainerGap(8, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
 
         chooseEnzyme.setEnabled(false);
+        runCalcBestEnzyme.setEnabled(false);
 
-        jButton3.setText("Help");
+        bnt_help.setText("Help");
+        bnt_help.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bnt_helpActionPerformed(evt);
+            }
+        });
 
         startJobButton.setText("Start Job");
         startJobButton.addActionListener(new java.awt.event.ActionListener() {
@@ -580,7 +626,7 @@ public class CompGenStart extends javax.swing.JFrame {
             }
         });
 
-        jMenu2.setText("File");
+        textMenu.setText("File");
 
         jMenu4.setText("Reference Genome");
 
@@ -608,7 +654,7 @@ public class CompGenStart extends javax.swing.JFrame {
         });
         jMenu4.add(jMenuItem2);
 
-        jMenu2.add(jMenu4);
+        textMenu.add(jMenu4);
 
         jMenu5.setText("Query Genome");
 
@@ -620,7 +666,7 @@ public class CompGenStart extends javax.swing.JFrame {
         });
         jMenu5.add(downloadQueryURL);
 
-        uploadQueryGenome.setText("Upload Query Fasta File");
+        uploadQueryGenome.setText("Upload Query Fasta or Cmap File");
         uploadQueryGenome.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 uploadQueryGenomeActionPerformed(evt);
@@ -636,11 +682,11 @@ public class CompGenStart extends javax.swing.JFrame {
         });
         jMenu5.add(jMenuItem4);
 
-        jMenu2.add(jMenu5);
+        textMenu.add(jMenu5);
 
-        sendQueryMenu.add(jMenu2);
+        sendQueryMenu.add(textMenu);
 
-        jMenu3.setText("Server");
+        serverMenu.setText("Server");
 
         serverInfoButton.setText("Server Info");
         serverInfoButton.addActionListener(new java.awt.event.ActionListener() {
@@ -648,7 +694,7 @@ public class CompGenStart extends javax.swing.JFrame {
                 serverInfoButtonActionPerformed(evt);
             }
         });
-        jMenu3.add(serverInfoButton);
+        serverMenu.add(serverInfoButton);
 
         addServerMenu.setText("Add Server");
         addServerMenu.addActionListener(new java.awt.event.ActionListener() {
@@ -656,7 +702,7 @@ public class CompGenStart extends javax.swing.JFrame {
                 addServerMenuActionPerformed(evt);
             }
         });
-        jMenu3.add(addServerMenu);
+        serverMenu.add(addServerMenu);
 
         chooseServerMenu.setText("Choose Server");
         chooseServerMenu.addActionListener(new java.awt.event.ActionListener() {
@@ -664,11 +710,11 @@ public class CompGenStart extends javax.swing.JFrame {
                 chooseServerMenuActionPerformed(evt);
             }
         });
-        jMenu3.add(chooseServerMenu);
+        serverMenu.add(chooseServerMenu);
 
-        sendQueryMenu.add(jMenu3);
+        sendQueryMenu.add(serverMenu);
 
-        jMenu7.setText("Nickase Enzymes");
+        enzymesMenu.setText("Nickase Enzymes");
 
         browseEnzymes.setText("Browse Enzymes");
         browseEnzymes.addActionListener(new java.awt.event.ActionListener() {
@@ -676,9 +722,9 @@ public class CompGenStart extends javax.swing.JFrame {
                 browseEnzymesActionPerformed(evt);
             }
         });
-        jMenu7.add(browseEnzymes);
+        enzymesMenu.add(browseEnzymes);
 
-        sendQueryMenu.add(jMenu7);
+        sendQueryMenu.add(enzymesMenu);
 
         makeCompGenJob.setJMenuBar(sendQueryMenu);
 
@@ -690,40 +736,38 @@ public class CompGenStart extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(makeCompGenJobLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(sendRefGenomePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(sendQueryGenomePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(serverPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(makeCompGenJobLayout.createSequentialGroup()
-                        .addGroup(makeCompGenJobLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(sendQueryGenomePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(serverPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(makeCompGenJobLayout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addComponent(jButton3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(startJobButton)))
-                        .addContainerGap())))
+                        .addComponent(bnt_help)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(startJobButton)
+                        .addContainerGap())
+                    .addComponent(settingsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         makeCompGenJobLayout.setVerticalGroup(
             makeCompGenJobLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(makeCompGenJobLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(7, 7, 7)
                 .addComponent(serverPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sendRefGenomePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sendQueryGenomePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(sendQueryGenomePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(7, 7, 7)
+                .addComponent(settingsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(makeCompGenJobLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton3)
+                .addGroup(makeCompGenJobLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(bnt_help)
                     .addComponent(startJobButton))
-                .addContainerGap())
+                .addGap(7, 7, 7))
         );
 
         startJobButton.setEnabled(false);
 
         refURLDialog.setBounds(new java.awt.Rectangle(500, 500, 401, 35));
-        refURLDialog.setLocationByPlatform(true);
+        refURLDialog.setMinimumSize(new java.awt.Dimension(381, 60));
+        refURLDialog.setSize(new java.awt.Dimension(385, 60));
 
         jLabel21.setText("Reference URL:");
 
@@ -759,6 +803,8 @@ public class CompGenStart extends javax.swing.JFrame {
         );
 
         newServerDialog.setBounds(new java.awt.Rectangle(500, 500, 285, 268));
+        newServerDialog.setMinimumSize(new java.awt.Dimension(289, 270));
+        newServerDialog.setSize(new java.awt.Dimension(289, 270));
 
         jLabel8.setText("User Name:");
 
@@ -787,6 +833,7 @@ public class CompGenStart extends javax.swing.JFrame {
         });
 
         workingDirField.setText("mapoptics/jobs/");
+        workingDirField.setEnabled(false);
 
         showPass.setText("Show Password");
         showPass.addItemListener(new java.awt.event.ItemListener() {
@@ -806,6 +853,12 @@ public class CompGenStart extends javax.swing.JFrame {
         setNewAsServer.setText("Set As Server");
 
         jLabel22.setText("Server Name:");
+
+        serverPasswordField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                serverPasswordFieldActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout newServerDialogLayout = new javax.swing.GroupLayout(newServerDialog.getContentPane());
         newServerDialog.getContentPane().setLayout(newServerDialogLayout);
@@ -874,6 +927,8 @@ public class CompGenStart extends javax.swing.JFrame {
 
         currentServerDialog.setBounds(new java.awt.Rectangle(500, 500, 289, 266));
         currentServerDialog.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        currentServerDialog.setMinimumSize(new java.awt.Dimension(293, 239));
+        currentServerDialog.setSize(new java.awt.Dimension(293, 239));
 
         jLabel25.setText("Server Host:");
 
@@ -958,6 +1013,8 @@ public class CompGenStart extends javax.swing.JFrame {
 
         selectServerDialog.setTitle("Select Server");
         selectServerDialog.setBounds(new java.awt.Rectangle(500, 500, 397, 193));
+        selectServerDialog.setMinimumSize(new java.awt.Dimension(409, 210));
+        selectServerDialog.setSize(new java.awt.Dimension(409, 230));
 
         chooseServerButton.setText("Select");
         chooseServerButton.addActionListener(new java.awt.event.ActionListener() {
@@ -1004,6 +1061,8 @@ public class CompGenStart extends javax.swing.JFrame {
         );
 
         browseEnzymesDialog.setBounds(new java.awt.Rectangle(500, 500, 400, 281));
+        browseEnzymesDialog.setMinimumSize(new java.awt.Dimension(412, 184));
+        browseEnzymesDialog.setSize(new java.awt.Dimension(412, 184));
 
         enzymeTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -1059,6 +1118,8 @@ public class CompGenStart extends javax.swing.JFrame {
 
         qryURLDialog.setTitle("Query File from URL");
         qryURLDialog.setBounds(new java.awt.Rectangle(500, 500, 397, 35));
+        qryURLDialog.setMinimumSize(new java.awt.Dimension(401, 60));
+        qryURLDialog.setSize(new java.awt.Dimension(401, 60));
 
         jLabel10.setText("File URL:");
 
@@ -1097,8 +1158,10 @@ public class CompGenStart extends javax.swing.JFrame {
 
         uploadFiles.setTitle("Upload Alignment Files");
         uploadFiles.setBounds(new java.awt.Rectangle(300, 300, 397, 386));
+        uploadFiles.setMinimumSize(new java.awt.Dimension(414, 445));
+        uploadFiles.setSize(new java.awt.Dimension(414, 445));
 
-        jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder("Reference Files"));
+        refFilesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Reference Files"));
 
         jLabel16.setText("Species:");
 
@@ -1109,7 +1172,12 @@ public class CompGenStart extends javax.swing.JFrame {
 
         jLabel19.setText("Karyotype:");
 
-        jTextField1.setText("");
+        refSpeciesTxtField.setText("");
+        refSpeciesTxtField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refSpeciesTxtFieldActionPerformed(evt);
+            }
+        });
 
         chooseLocalRefCmap.setText("Upload");
         chooseLocalRefCmap.addActionListener(new java.awt.event.ActionListener() {
@@ -1138,58 +1206,57 @@ public class CompGenStart extends javax.swing.JFrame {
 
         localRefKaryName.setText("");
 
-        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
-        jPanel9.setLayout(jPanel9Layout);
-        jPanel9Layout.setHorizontalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
+        javax.swing.GroupLayout refFilesPanelLayout = new javax.swing.GroupLayout(refFilesPanel);
+        refFilesPanel.setLayout(refFilesPanelLayout);
+        refFilesPanelLayout.setHorizontalGroup(
+            refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(refFilesPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jLabel17)
-                        .addComponent(jLabel18)
-                        .addComponent(jLabel16))
+                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel17)
+                    .addComponent(jLabel18)
+                    .addComponent(jLabel16)
                     .addComponent(jLabel19))
-                .addGap(26, 26, 26)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel9Layout.createSequentialGroup()
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(refFilesPanelLayout.createSequentialGroup()
                         .addComponent(chooseLocalRefKaryotype)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(localRefKaryName))
-                    .addGroup(jPanel9Layout.createSequentialGroup()
+                    .addGroup(refFilesPanelLayout.createSequentialGroup()
                         .addComponent(chooseLocalRefCmap)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(localRefCmapName))
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel9Layout.createSequentialGroup()
+                    .addComponent(refSpeciesTxtField, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(refFilesPanelLayout.createSequentialGroup()
                         .addComponent(chooseLocalRefAnnot)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(localRefAnnotName)))
-                .addContainerGap(67, Short.MAX_VALUE))
+                .addContainerGap(245, Short.MAX_VALUE))
         );
-        jPanel9Layout.setVerticalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
+        refFilesPanelLayout.setVerticalGroup(
+            refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(refFilesPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel16)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(refSpeciesTxtField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel17)
                     .addComponent(chooseLocalRefCmap)
                     .addComponent(localRefCmapName))
                 .addGap(12, 12, 12)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel18)
                     .addComponent(chooseLocalRefAnnot)
                     .addComponent(localRefAnnotName))
                 .addGap(9, 9, 9)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel19)
                     .addComponent(chooseLocalRefKaryotype)
                     .addComponent(localRefKaryName))
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         loadLocalAlignment.setText("Load Data");
@@ -1206,7 +1273,7 @@ public class CompGenStart extends javax.swing.JFrame {
             }
         });
 
-        jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder("Query Files"));
+        queryFilesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Query Files"));
 
         jLabel28.setText("Species:");
 
@@ -1220,43 +1287,48 @@ public class CompGenStart extends javax.swing.JFrame {
         });
 
         localSpecies.setText("");
+        localSpecies.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                localSpeciesActionPerformed(evt);
+            }
+        });
 
         localQryCmapName.setText("");
 
-        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
-        jPanel10.setLayout(jPanel10Layout);
-        jPanel10Layout.setHorizontalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel29)
-                    .addComponent(jLabel28))
-                .addGap(32, 32, 32)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel10Layout.createSequentialGroup()
+        javax.swing.GroupLayout queryFilesPanelLayout = new javax.swing.GroupLayout(queryFilesPanel);
+        queryFilesPanel.setLayout(queryFilesPanelLayout);
+        queryFilesPanelLayout.setHorizontalGroup(
+            queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(queryFilesPanelLayout.createSequentialGroup()
+                .addGap(33, 33, 33)
+                .addGroup(queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel28)
+                    .addComponent(jLabel29))
+                .addGap(26, 26, 26)
+                .addGroup(queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(queryFilesPanelLayout.createSequentialGroup()
                         .addComponent(chooseLocalQryCmap)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(localQryCmapName))
                     .addComponent(localSpecies, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(67, Short.MAX_VALUE))
+                .addContainerGap(248, Short.MAX_VALUE))
         );
-        jPanel10Layout.setVerticalGroup(
-            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel10Layout.createSequentialGroup()
+        queryFilesPanelLayout.setVerticalGroup(
+            queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(queryFilesPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel28)
                     .addComponent(localSpecies, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel29)
                     .addComponent(chooseLocalQryCmap)
                     .addComponent(localQryCmapName))
                 .addContainerGap())
         );
 
-        jPanel11.setBorder(javax.swing.BorderFactory.createTitledBorder("Alignment"));
+        alignmentPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Alignment"));
 
         jLabel30.setText("Xmap:");
 
@@ -1269,24 +1341,24 @@ public class CompGenStart extends javax.swing.JFrame {
 
         localXmapName.setText("");
 
-        javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
-        jPanel11.setLayout(jPanel11Layout);
-        jPanel11Layout.setHorizontalGroup(
-            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel11Layout.createSequentialGroup()
-                .addGap(23, 23, 23)
+        javax.swing.GroupLayout alignmentPanelLayout = new javax.swing.GroupLayout(alignmentPanel);
+        alignmentPanel.setLayout(alignmentPanelLayout);
+        alignmentPanelLayout.setHorizontalGroup(
+            alignmentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(alignmentPanelLayout.createSequentialGroup()
+                .addGap(43, 43, 43)
                 .addComponent(jLabel30)
-                .addGap(41, 41, 41)
+                .addGap(18, 18, 18)
                 .addComponent(chooseLocalXmap)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(localXmapName)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel11Layout.setVerticalGroup(
-            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel11Layout.createSequentialGroup()
+        alignmentPanelLayout.setVerticalGroup(
+            alignmentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(alignmentPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(alignmentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel30)
                     .addComponent(chooseLocalXmap)
                     .addComponent(localXmapName))
@@ -1300,24 +1372,24 @@ public class CompGenStart extends javax.swing.JFrame {
             .addGroup(uploadFilesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(uploadFilesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(refFilesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, uploadFilesLayout.createSequentialGroup()
                         .addComponent(closeLocalWindow)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(loadLocalAlignment))
-                    .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(queryFilesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(alignmentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         uploadFilesLayout.setVerticalGroup(
             uploadFilesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, uploadFilesLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(refFilesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(queryFilesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(alignmentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(uploadFilesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(loadLocalAlignment)
@@ -1329,6 +1401,8 @@ public class CompGenStart extends javax.swing.JFrame {
         filesDownloading.setTitle("Files Downloading");
         filesDownloading.setBounds(new java.awt.Rectangle(500, 500, 300, 150));
         filesDownloading.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+        filesDownloading.setMinimumSize(new java.awt.Dimension(283, 149));
+        filesDownloading.setSize(new java.awt.Dimension(283, 149));
 
         jLabel1.setText("Downloading files for job:");
 
@@ -1357,14 +1431,32 @@ public class CompGenStart extends javax.swing.JFrame {
 
         bestEnzymeDialog.setTitle("Best Enzyme");
         bestEnzymeDialog.setBackground(new java.awt.Color(255, 255, 255));
+        bestEnzymeDialog.setMinimumSize(new java.awt.Dimension(384, 309));
+        bestEnzymeDialog.setSize(new java.awt.Dimension(384, 309));
 
-        jButton12.setText("Select");
-
-        bestEnz.setText("jLabel6");
+        selectBestEnz.setText("Select enzyme");
+        selectBestEnz.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectBestEnzActionPerformed(evt);
+            }
+        });
 
         jLabel20.setText("Best Enzyme:");
 
-        jButton13.setText("Save");
+        bestEnzymesTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][][] {
+            },
+            new String [] {
+                "Enzyme name", "Enzyme site", "Density"
+            }
+        ));
+        bestEnzymesTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                bestEnzymesTableMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(bestEnzymesTable);
+        this.bestEnzymesTableModel = (DefaultTableModel)bestEnzymesTable.getModel();
 
         javax.swing.GroupLayout bestEnzymeDialogLayout = new javax.swing.GroupLayout(bestEnzymeDialog.getContentPane());
         bestEnzymeDialog.getContentPane().setLayout(bestEnzymeDialogLayout);
@@ -1372,25 +1464,292 @@ public class CompGenStart extends javax.swing.JFrame {
             bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton13)
-                .addGap(34, 34, 34)
-                .addComponent(jLabel20)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bestEnz)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 93, Short.MAX_VALUE)
-                .addComponent(jButton12)
+                .addGroup(bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
+                        .addComponent(jLabel20)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(LblEnzyme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(76, 76, 76)
+                        .addComponent(bestEnz)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(selectBestEnz))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bestEnzymeDialogLayout.createSequentialGroup()
+                        .addGap(0, 1, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         bestEnzymeDialogLayout.setVerticalGroup(
             bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
-                .addContainerGap(271, Short.MAX_VALUE)
-                .addGroup(bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton12)
-                    .addComponent(bestEnz)
-                    .addComponent(jLabel20)
-                    .addComponent(jButton13))
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
+                        .addComponent(bestEnz)
+                        .addGap(0, 0, 0)
+                        .addComponent(LblEnzyme, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE))
+                    .addComponent(selectBestEnz)
+                    .addComponent(jLabel20, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE))
                 .addContainerGap())
+        );
+
+        helpPane.setMinimumSize(new java.awt.Dimension(497, 518));
+        helpPane.setSize(new java.awt.Dimension(500, 520));
+
+        exitBtn.setText("Exit");
+        exitBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitBtnActionPerformed(evt);
+            }
+        });
+
+        helpHtmlPane.setEditable(false);
+        helpHtmlPane.setContentType("text/html"); // NOI18N
+        helpHtmlPane.setText("<html>"+
+            "  <head>\n" +
+            "    <h1>" +
+            "      Perform alignment within MapOptics\n" +
+            "    </h1>\n" +
+            "    <h2>" +
+            "      Send new job to server\n" +
+            "    </h2>\n\n" +
+            " </head>" +
+            " <body>" +
+            "    <h3>" +
+            "      Select a server" +
+            "    </h3>\n" +
+            "    <p>\n" +
+            "      Select <b>Server</b> in the menu to either obtain information on a \n" +
+            "      server, add a new one or choose an existing one. The chosen server is \n" +
+            "      displayed on the main pane as <b>Selected server</b>. Once a server is \n" +
+            "      chosen, click the button <b>Connect</b> to establish the connexion. If \n" +
+            "      it is successful, other button <b>Set</b> will be available.\n\n" +
+            "    <br></p>\n" +
+            "    <h3>\n" +
+            "      Set a reference or a query file\n" +
+            "    </h3>" +
+            "    <p>\n" +
+            "      Write the name of the studied specie in the field <b>Species</b> for \n" +
+            "      either the reference or the query genome. Then, upload a fasta file by \n" +
+            "      selecting <b>File</b> in the menu, then <b>Reference genome</b> (or <b>Query \n" +
+            "      genome</b>), and choosing the method of your choice: either selection of \n" +
+            "      the file from URL: <b>Reference FASTA from URL</b> for from your local \n" +
+            "      file <b>Upload reference FASTA file</b>. Once a FASTA file is chosen, \n" +
+            "      the button <b>Upload</b> is available. The same goes for the selection \n" +
+            "      of an Annotation file (either gff3 or gtf), in <b>File, Reference \n" +
+            "      Genome, Reference annotation file</b>.\n\n" +
+            "      Query annotation file is not necessary.\n\n" +
+            "      Query file can be in CMAP format. If the input query file contains information about \n" +
+            "      its in silico digestion enzyme, the same enzyme will be used to digest the reference.\n"+
+            "      the buttons <b>Calculate enzyme</b> or <b>Choose enzyme</b> will not be available.\n\n" +
+            "    <br></p>\n" +
+            "    <h3>\n" +
+            "      Set alignment parameters\n" +
+            "    </h3>\n" +
+            "    <p>" +
+            "      The <b>Settings</b> section is available once the query and reference \n" +
+            "      genome are both selected. You can either <b>Choose</b> or <b>Calculate</b> \n" +
+            "      the optimise Nickase Enzymes to use for the <i>in silico</i> digestion \n" +
+            "      of your file. With the option <b>Reference</b> or <b>Query</b>, \n" +
+            "      choose if the enzyme density scores are calculated on the reference \n" +
+            "      or on the query. \n" +
+            "      Then, choose your aligner: <b>RefAligner</b> or <bfandom>. \n" +
+            "      Click <b>Modify Alignment Parameters</b> to customise your alignment \n" +
+            "      parameters.\n" +
+            "    <br></p>\n" +
+            "    <h3>\n" +
+            "      Start the job" +
+            "    </h3>\n" +
+            "    <p>\n" +
+            "      Click the button <b>Start Job</b> to start the job. Please note that \n" +
+            "      this button is only available once a server is connected, and once \n" +
+            "      reference and query genome are choosen, as well as a restriction enzyme." +
+            "    <br></p>\n" +
+            "  </body>\n" +
+            "</html>");
+        jScrollPane1.setViewportView(helpHtmlPane);
+
+        javax.swing.GroupLayout helpPaneLayout = new javax.swing.GroupLayout(helpPane.getContentPane());
+        helpPane.getContentPane().setLayout(helpPaneLayout);
+        helpPaneLayout.setHorizontalGroup(
+            helpPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, helpPaneLayout.createSequentialGroup()
+                .addContainerGap(224, Short.MAX_VALUE)
+                .addComponent(exitBtn)
+                .addContainerGap(225, Short.MAX_VALUE))
+            .addComponent(jScrollPane1)
+        );
+        helpPaneLayout.setVerticalGroup(
+            helpPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, helpPaneLayout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(exitBtn)
+                .addContainerGap())
+        );
+
+        waitPanel.setMinimumSize(new java.awt.Dimension(320, 190));
+        waitPanel.setSize(new java.awt.Dimension(320, 190));
+        waitPanel.setType(java.awt.Window.Type.POPUP);
+
+        messageLabel.setText("Please wait for the process execution");
+        messageLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
+        javax.swing.GroupLayout waitPanelLayout = new javax.swing.GroupLayout(waitPanel.getContentPane());
+        waitPanel.getContentPane().setLayout(waitPanelLayout);
+        waitPanelLayout.setHorizontalGroup(
+            waitPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(waitPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(messageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        waitPanelLayout.setVerticalGroup(
+            waitPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, waitPanelLayout.createSequentialGroup()
+                .addContainerGap(74, Short.MAX_VALUE)
+                .addComponent(messageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(68, 68, 68))
+        );
+
+        authentificationPane.setMinimumSize(new java.awt.Dimension(446, 332));
+
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel6.setText("Please enter or create your password and user name");
+
+        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel11.setText("to access the server functionalities");
+
+        jLabel34.setText("User name");
+
+        jLabel35.setText("Password");
+
+        jButton2.setText("Save");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        infoLabel.setText(" ");
+
+        jLabel36.setText("Confirm password");
+
+        showAuthentPassword.setText("Show Password");
+        showAuthentPassword.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                showAuthentPasswordItemStateChanged(evt);
+            }
+        });
+        showAuthentPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showAuthentPasswordActionPerformed(evt);
+            }
+        });
+
+        showConfirmPassword.setText("Show Password");
+        showConfirmPassword.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                showConfirmPasswordItemStateChanged(evt);
+            }
+        });
+        showConfirmPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                showConfirmPasswordActionPerformed(evt);
+            }
+        });
+
+        lengthPwd.setForeground(new java.awt.Color(255, 51, 51));
+        lengthPwd.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lengthPwd.setVisible(true);
+        lengthPwd.setText(" ");
+        lengthPwd.setToolTipText("");
+        lengthPwd.setPreferredSize(new java.awt.Dimension(4, 16));
+
+        passwordLabel.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                passwordLabelKeyReleased(evt);
+            }
+        });
+
+        confirmLabel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                confirmLabelActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout authentificationPaneLayout = new javax.swing.GroupLayout(authentificationPane.getContentPane());
+        authentificationPane.getContentPane().setLayout(authentificationPaneLayout);
+        authentificationPaneLayout.setHorizontalGroup(
+            authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(authentificationPaneLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(authentificationPaneLayout.createSequentialGroup()
+                        .addComponent(lengthPwd, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, Short.MAX_VALUE)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, authentificationPaneLayout.createSequentialGroup()
+                        .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(authentificationPaneLayout.createSequentialGroup()
+                                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel36)
+                                    .addComponent(jLabel34)
+                                    .addComponent(jLabel35))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(authentificationPaneLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(userLabel)
+                                    .addComponent(showAuthentPassword)
+                                    .addComponent(passwordLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)))
+                            .addGroup(authentificationPaneLayout.createSequentialGroup()
+                                .addGap(5, 5, 5)
+                                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(showConfirmPassword)
+                                    .addComponent(confirmLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addContainerGap())
+        );
+        authentificationPaneLayout.setVerticalGroup(
+            authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(authentificationPaneLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel11)
+                .addGap(44, 44, 44)
+                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel34)
+                    .addComponent(userLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel35)
+                    .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
+                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(infoLabel)
+                    .addComponent(showAuthentPassword))
+                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(authentificationPaneLayout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jLabel36))
+                    .addGroup(authentificationPaneLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(confirmLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(showConfirmPassword)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2)
+                    .addComponent(lengthPwd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -1405,10 +1764,13 @@ public class CompGenStart extends javax.swing.JFrame {
                 jobsTableMouseClicked(evt);
             }
         });
-        jScrollPane2.setViewportView(jobsTable);
-        jobsFromJson();
+        submittedJobPane.setViewportView(jobsTable);
+        /*this.jobsRunning.clear();
+        this.jobsRunning = manageJson.getJobsFromJson(this.jobsRunning);
+        jobTableAdd(this.jobsRunning);
         JobTableModel newModel = new JobTableModel(this.jobsRunning);
         jobsTable.setModel(newModel);
+        */
 
         openResults.setText("Open Results");
         openResults.addActionListener(new java.awt.event.ActionListener() {
@@ -1424,7 +1786,19 @@ public class CompGenStart extends javax.swing.JFrame {
             }
         });
 
-        selectedJobField.setText("");
+        //Display name of the selected job
+        String jobName;
+        if (this.selectedJob != null){
+            jobName = this.getName();
+        }else{
+            jobName = "";
+        }
+        selectedJobField.setText(jobName);
+        selectedJobField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectedJobFieldActionPerformed(evt);
+            }
+        });
 
         jLabel15.setText("Selected Job:");
 
@@ -1435,7 +1809,7 @@ public class CompGenStart extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2)
+                    .addComponent(submittedJobPane)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel15)
                         .addGap(18, 18, 18)
@@ -1450,7 +1824,7 @@ public class CompGenStart extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(submittedJobPane, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(openResults)
@@ -1534,7 +1908,7 @@ public class CompGenStart extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -1576,10 +1950,10 @@ public class CompGenStart extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-    
+
     private void newJobRefQueryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newJobRefQueryActionPerformed
+        clearMakeCompGenJob();
         makeCompGenJob.setVisible(true);
-        
     }//GEN-LAST:event_newJobRefQueryActionPerformed
 
     private void exitCompGenomicsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitCompGenomicsActionPerformed
@@ -1594,6 +1968,8 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void uploadReferenceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadReferenceActionPerformed
         FileDialog refGenome = new FileDialog(this, "Choose Reference Genome", FileDialog.LOAD);
+        // Filter to accept only fasta format
+        refGenome.setFile("*.fasta;*.fa;*.fna;*.cmap");
         refGenome.setVisible(true);
         this.referenceFile = refGenome.getFile();
         this.referenceFilePath = refGenome.getDirectory() + refGenome.getFile();
@@ -1606,25 +1982,48 @@ public class CompGenStart extends javax.swing.JFrame {
     }//GEN-LAST:event_downloadQueryURLActionPerformed
 
     private void uploadQueryGenomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadQueryGenomeActionPerformed
-        FileDialog queryGenome = new FileDialog(this, "Choose Reference Genome", FileDialog.LOAD);
+        FileDialog queryGenome = new FileDialog(this, "Choose query Genome", FileDialog.LOAD);
+        // Filter to accept only fasta or cmap format
+        queryGenome.setFile("*.fasta;*.fa;*.fna;*.cmap");
         queryGenome.setVisible(true);
         this.queryFile = queryGenome.getFile();
         this.queryFilePath = queryGenome.getDirectory() + queryGenome.getFile();
         queryGenomeFileName.setText(queryFile);
         this.qryFromURL = false;
+
+        CmapReader cmapReader = new CmapReader();
+        if (this.queryFilePath.endsWith(".cmap")) {
+            //If the file is a cmap, the enzyme chosen for in silico digestion must be
+            // the same as the query
+            String enzyme = cmapReader.getNickaseEnzyme(this.queryFilePath);
+            if (enzyme == null || enzyme.equals("unknown")) {
+                JOptionPane.showMessageDialog(null, "Unknown enzyme in cmap file. The chosen enzyme should be the same as in the cmap",
+                        "Unkown enzyme", JOptionPane.ERROR_MESSAGE);
+                this.qryCmapEnzyme = "";
+            } else {
+                this.qryCmapEnzyme = enzyme;
+                this.tempSelectedEnzyme = new Enzyme(enzyme);
+                this.selectedEnzyme = this.tempSelectedEnzyme;
+                setEnzymeLabel.setText(this.tempSelectedEnzyme.getName());
+                this.newJob.setEnzyme(this.tempSelectedEnzyme);
+            }
+        } else {
+            this.qryCmapEnzyme = "";
+        }
+
     }//GEN-LAST:event_uploadQueryGenomeActionPerformed
 
     private void serverInfoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverInfoButtonActionPerformed
-        if (this.selectedServer == null){
+        if (this.selectedServer == null) {
             JOptionPane.showMessageDialog(null, "No server has been selected! Please select a server",
-                "No Sever Selected", JOptionPane.ERROR_MESSAGE);
-
+                    "No Sever Selected", JOptionPane.ERROR_MESSAGE);
+        } else {
+            currentName.setText(selectedServer.name);
+            currentHost.setText(selectedServer.getHost());
+            currentPass.setText(selectedServer.getPassword());
+            currentDir.setText(selectedServer.getWorkingDir());
+            currentServerDialog.setVisible(true);
         }
-        currentName.setText(selectedServer.name);
-        currentHost.setText(selectedServer.getHost());
-        currentPass.setText(selectedServer.getPassword());
-        currentDir.setText(selectedServer.getWorkingDir());
-        currentServerDialog.setVisible(true);
     }//GEN-LAST:event_serverInfoButtonActionPerformed
 
     private void addServerMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addServerMenuActionPerformed
@@ -1632,27 +2031,43 @@ public class CompGenStart extends javax.swing.JFrame {
     }//GEN-LAST:event_addServerMenuActionPerformed
 
     private void chooseServerMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseServerMenuActionPerformed
+        // Retrieve servers from json file in case a server was added
+        this.servers = manageJson.getServersFromJson(this.servers);
         selectServerDialog.setVisible(true);
     }//GEN-LAST:event_chooseServerMenuActionPerformed
 
     private void browseEnzymesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseEnzymesActionPerformed
-        if (this.channel != null){
-
+        if (this.selectedServer == null) {
+            JOptionPane.showMessageDialog(null, "No server has been selected! Please select a server",
+                    "No Sever Selected", JOptionPane.ERROR_MESSAGE);
+        } else if (this.channel == null) {
+            // Error message if sftp channel does not exist
+            System.out.println("Channel is null!");
+            JOptionPane.showMessageDialog(null, "SSH channel does not exist. Please try to connect again.",
+                    "No SSH channel", JOptionPane.ERROR_MESSAGE);
+        } else if (!this.channel.getConnection()) {
+            // Error message if connection with sftp channel was not established
+            System.out.println("Channel is null!");
+            JOptionPane.showMessageDialog(null, "SSH channel does not exist. Please try to connect again.",
+                    "No SSH channel", JOptionPane.ERROR_MESSAGE);
+        } else if (this.channel != null) {
             //        need to get this to show in a jdialog
             // currently just want to get the command to work!
             Vector<String> columnNames = new Vector<String>();
             columnNames.add("Enzyme name");
             columnNames.add("Restriction Site");
             enzymeTableModel.setColumnIdentifiers(columnNames);
-            ArrayList<String> enzymes = this.channel.executeCmd("cd " +this.selectedServer.getWorkingDir()+"; awk -F ' ' '{print $0}' listEnzymes.txt");
+            ArrayList<String> enzymes = this.channel.executeCmd("cd " + this.selectedServer.getWorkingDir() + "; awk -F ' ' '{print $0}' listEnzymes.txt");
 
-            for (String enzymeLine:enzymes){
+            for (String enzymeLine : enzymes) {
                 String[] array = enzymeLine.split(" ");
                 enzymeTableModel.addRow(array);
             }
             browseEnzymesDialog.setVisible(true);
-        }else{
+        } else {
             System.out.println("Channel is null!");
+            JOptionPane.showMessageDialog(null, "SSH connection was not established. Please try to connect again.",
+                    "No SSH connection", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_browseEnzymesActionPerformed
 
@@ -1669,84 +2084,104 @@ public class CompGenStart extends javax.swing.JFrame {
         this.channel.mkDir(jobName + "/Files/Reference/");
         this.channel.mkDir(jobName + "/Files/Query/");
         this.channel.mkDir(jobName + "/Files/Results/");
+
         this.startJobButton.setText("Start Job: " + jobName);
         this.uploadFileRef.setEnabled(true);
         this.uploadQryGenome.setEnabled(true);
         this.newJob.setName(jobName);
+
+        // Run container for job
+        this.channel.runContainer(jobName);
     }//GEN-LAST:event_setJobNameActionPerformed
 
     private void connectServerToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectServerToggleActionPerformed
+        if (this.selectedServer == null) {
+            JOptionPane.showMessageDialog(null, "No server is selected. Please select a server to establish connection.",
+                    "No server selected", JOptionPane.ERROR_MESSAGE);
+        } else {
+            this.channel.setServer(this.selectedServer);
 
-        this.channel.setServer(this.selectedServer);
-        
-        if (this.channel.connectServer()){
-            connectServerToggle.setSelected(true);
-            setJobName.setEnabled(true);
-            connectServerToggle.setText("Connected");
-            connectServerToggle.setBackground(Color.green);
-            connectServerToggle.setForeground(Color.white);
-            //            Reset the new server panel (do this now in case server connection was unsuccessful post adding new server)
-            serverNameField.setText("");
-            userNameField.setText("");
-            hostAddressField.setText("");
-            serverPasswordField.setText("");
-            workingDirField.setText("mapoptics/jobs/");
-            newJob.setServer(this.selectedServer);
-//            to delete
-            startJobButton.setEnabled(true);
-        }else{
-            //            do not set button as toggled if connection is not succesfully established
-            connectServerToggle.setSelected(false);
+            if (this.channel.connectServer()) {
+                connectServerToggle.setSelected(true);
+                setJobName.setEnabled(true);
+                connectServerToggle.setText("Connected");
+                connectServerToggle.setBackground(Color.green);
+                connectServerToggle.setForeground(Color.white);
+                //            Reset the new server panel (do this now in case server connection was unsuccessful post adding new server)
+                serverNameField.setText("");
+                userNameField.setText("");
+                hostAddressField.setText("");
+                serverPasswordField.setText("");
+                workingDirField.setText("mapoptics/jobs/");
+                newJob.setServer(this.selectedServer);
+                //            to delete
+                //startJobButton.setEnabled(true);
+            } else {
+                //            do not set button as toggled if connection is not succesfully established
+                connectServerToggle.setSelected(false);
+            }
         }
-
     }//GEN-LAST:event_connectServerToggleActionPerformed
 
     private void uploadFileRefActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadFileRefActionPerformed
-          if ("".equals(jobName) | "Enter Job Name".equals(jobName)){
+        if ("".equals(jobName) | "Enter Job Name".equals(jobName)) {
             JOptionPane.showMessageDialog(null, "Enter a valid job name",
-                "Enter a valid job name", JOptionPane.PLAIN_MESSAGE);
+                    "Enter a valid job name", JOptionPane.PLAIN_MESSAGE);
         } //need to add in a check for current server connection!
-        else{
-            if (!ref1FromURL){
-                String dir = jobName+"/Files/Reference/"+this.referenceFile;
-                System.out.println("file transfer of reference file");
+        else {
+            if (!ref1FromURL) {
+                String dir = jobName + "/Files/Reference/" + this.referenceFile;
+                System.out.println("File transfer of reference file");
                 this.channel.uploadFile(referenceFilePath, dir, refProgressBar);
-            }else{
-                String cmd = "cd mapoptics/jobs/"+this.jobName+"/Files/Reference; wget " + this.referenceFilePath;
+            } else {
+                // URL was provided for reference file
+                String cmd = "cd mapoptics/jobs/" + this.jobName + "/Files/Reference; wget " + this.referenceFilePath;
                 this.channel.executeCmd(cmd);
+                refProgressBar.setValue(100);
             }
-            this.refAdded=true;
+            this.refAdded = true;
             this.newJob.setRefFile(referenceFile);
-            if (this.refAdded && this.qryAdded){
+            // Enable buttons
+            if ((this.refAdded && this.qryAdded) && this.qryCmapEnzyme.equals("")) {
                 chooseEnzyme.setEnabled(true);
+                runCalcBestEnzyme.setEnabled(true);
+            }
+            if ((this.refAdded && this.qryAdded) && (this.selectedEnzyme != null || !this.selectedEnzyme.getName().equals(""))) {
+                startJobButton.setEnabled(true);
             }
         }
     }//GEN-LAST:event_uploadFileRefActionPerformed
 
     private void uploadQryGenomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadQryGenomeActionPerformed
-        if ("".equals(jobName) | "Enter Job Name".equals(jobName)){
+        if ("".equals(jobName) | "Enter Job Name".equals(jobName)) {
             JOptionPane.showMessageDialog(null, "Enter a valid job name",
-                "Enter a valid job name", JOptionPane.PLAIN_MESSAGE);
+                    "Enter a valid job name", JOptionPane.PLAIN_MESSAGE);
         } //need to add in a check for current server connection!
-        else{
-            if (!qryFromURL){
-                String dir = jobName+"/Files/Query/"+queryFile;
-                System.out.println("file transfer of query file");
+        else {
+            if (!qryFromURL) {
+                String dir = jobName + "/Files/Query/" + queryFile;
+                System.out.println("File transfer of query file");
                 this.channel.uploadFile(queryFilePath, dir, queryProgressBar);
-            }else{
-                String cmd = "cd mapoptics/jobs/"+this.jobName+"/Files/Query; wget " + this.queryFilePath;
+            } else {
+                String cmd = "cd mapoptics/jobs/" + this.jobName + "/Files/Query; wget " + this.queryFilePath;
                 this.channel.executeCmd(cmd);
+                queryProgressBar.setValue(100);
+                this.qryAdded = true;
             }
-            this.qryAdded=true;
+            this.qryAdded = true;
             this.newJob.setQryFile(queryFile);
-            if (this.refAdded && this.qryAdded){
+            if ((this.refAdded && this.qryAdded) && this.qryCmapEnzyme.equals("")) {
                 chooseEnzyme.setEnabled(true);
+                runCalcBestEnzyme.setEnabled(true);
+            }
+            if ((this.refAdded && this.qryAdded) && this.selectedEnzyme != null) {
+                startJobButton.setEnabled(true);
             }
         }
     }//GEN-LAST:event_uploadQryGenomeActionPerformed
 
     private void chooseEnzymeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseEnzymeActionPerformed
-        if (this.channel != null){
+        if (this.channel != null) {
 //            Reset the table each time the window is launched
             enzymeTableModel.setColumnCount(0);
             enzymeTableModel.setRowCount(0);
@@ -1758,60 +2193,75 @@ public class CompGenStart extends javax.swing.JFrame {
             enzymeTableModel.setColumnIdentifiers(columnNames);
             ArrayList<String> enzymes = this.channel.executeCmd("cd mapoptics/Enzymes/; awk -F ' ' '{print $0}' listEnzymes.txt");
 
-            for (String enzymeLine:enzymes){
+            for (String enzymeLine : enzymes) {
                 String[] array = enzymeLine.split(" ");
                 enzymeTableModel.addRow(array);
             }
             browseEnzymesDialog.setVisible(true);
 
-        }else{
+        } else {
             System.out.println("Channel is null!");
         }
         this.newJob.setEnzyme(selectedEnzyme);
     }//GEN-LAST:event_chooseEnzymeActionPerformed
 
     private void startJobButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startJobButtonActionPerformed
-        this.newJob.setRefAnnot(this.referenceAnnotFilePath);
-        this.newJob.setQryAnnot(this.queryAnnotFilePath);
-        this.newJob.setRefOrg(this.refSpecies.getText());
-        this.newJob.setQryOrg(this.qrySpecies.getText());
-        
-        if(fandomPipeline.isSelected()){
-            this.newJob.setPipeline("fandom"); 
-        }
-        if(refalignerPipeline.isSelected()){
-            this.newJob.setPipeline("refaligner"); 
-        }
+        if (this.queryFile == null || this.queryFile.equals("")) {
+            JOptionPane.showMessageDialog(null, "The query file could not be find.",
+                    "File not found", JOptionPane.PLAIN_MESSAGE);
+        } else if (this.referenceFile == null || this.referenceFile.equals("")) {
+            JOptionPane.showMessageDialog(null, "The reference file could not be find.",
+                    "File not found", JOptionPane.PLAIN_MESSAGE);
+        } else {
+            this.newJob.setRefAnnot(this.referenceAnnotFilePath);
+            this.newJob.setQryAnnot(this.queryAnnotFilePath);
+            this.newJob.setRefOrg(this.refSpecies.getText());
+            this.newJob.setQryOrg(this.qrySpecies.getText());
+
+            if (fandomPipeline.isSelected()) {
+                this.newJob.setPipeline("fandom");
+            }
+            if (refalignerPipeline.isSelected()) {
+                this.newJob.setPipeline("refaligner");
+            }
 
 //        need to update this to query the log file!
-        this.newJob.setStatus("Started");        
-        this.jobsRunning.add(this.newJob);
+            this.newJob.setStatus("Started");
+            this.jobsRunning.add(this.newJob);
 //        Update the jobs JSON file
-        saveJobJson(this.jobsRunning);
+            manageJson.saveJobJson(this.jobsRunning);
 //        update the jobs table with the new job that has been created
-        JobTableModel newModel = new JobTableModel(this.jobsRunning);
-        jobsTable.setModel(newModel);
+            JobTableModel newModel = new JobTableModel(this.jobsRunning);
+            jobsTable.setModel(newModel);
+
 //        start a new job object ready for a new job to be made
-        //will eventually add in user parameters here
-        this.channel.runJob(this.newJob); //this sets the job as running on the server
-        this.newJob = new Job();
-        
-//        show the correct JFrames
-        makeCompGenJob.setVisible(false);
-        this.setVisible(true);
+            //will eventually add in user parameters here
+            this.channel.runJob(this.newJob); //this sets the job as running on the server
+            this.newJob = new Job();
+
 //        finally disconnect from the server
-        this.channel.disconnectServer();
+            this.channel.disconnectServer();
 //        clean slate for the channel object
-        this.channel = new SSH();
-        
+            this.channel = new SSH();
+
+            //Show the correct JFrames
+            makeCompGenJob.setVisible(false);
+            this.setVisible(true);
+        }
     }//GEN-LAST:event_startJobButtonActionPerformed
 
     private void saveRefURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveRefURLActionPerformed
         this.referenceFilePath = referenceURL.getText();
         String filename = extractFileURL(referenceFilePath);
-        refGenomeFile.setText(filename);
-        refURLDialog.setVisible(false);
-        this.ref1FromURL = true;
+        if (filename != null) {
+            referenceFile = filename;
+            refGenomeFile.setText(filename);
+            refURLDialog.setVisible(false);
+            this.ref1FromURL = true;
+        } else {
+            JOptionPane.showMessageDialog(null, "Reference file could not be downloaded properly from URL.",
+                    "Missing reference file", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_saveRefURLActionPerformed
 
     private void serverNameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverNameFieldActionPerformed
@@ -1828,70 +2278,68 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void addNewServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addNewServerActionPerformed
 
-            //    for adding a new server
-            String serverName;
-            String userName;
-            String hostName;
-            String serverPass;
-            String workDir;
-            //        Check server name is valid
-            
-            serverName = serverNameField.getText();
-            if (serverName != null){
-            } else {
-                JOptionPane.showMessageDialog(null, "Server name cannot be empty!",
-                        "Server Name Error", JOptionPane.ERROR_MESSAGE);
-            }
-            //        Check user name is valid
-            userName = userNameField.getText();
-            if (userName != null){
-            } else {
-                JOptionPane.showMessageDialog(null, "User name cannot be empty!",
-                        "User Name Error", JOptionPane.ERROR_MESSAGE);
-            }
-            //    Check the host name is valid
-            hostName = hostAddressField.getText();
-            if (checkIPAddress(hostName)!= true){
-                JOptionPane.showMessageDialog(null, "Host address is invalid",
-                        "Server Host Address Error", JOptionPane.ERROR_MESSAGE);
-            }else{
-            }
-            
-            //    Check the password is valid
-            serverPass = String.valueOf(serverPasswordField.getPassword());
-            if (serverPass == null){
-                JOptionPane.showMessageDialog(null, "Server password cannot be empty!",
-                        "Server Password Error", JOptionPane.ERROR_MESSAGE);
-            }else{
-            }
-            //    Check the working directory is valid if supplied
-            workDir = workingDirField.getText();
-            if (workDir != null){
-                
-            }
-            if (checkWorkDir(hostName)!= true){
-                JOptionPane.showMessageDialog(null, "Working directory supplied is invalid",
-                        "Working Directory Error", JOptionPane.ERROR_MESSAGE);
-            }else{
-            }
-            //     Once all these are checked the server can be added to the server hash map?
-            ExternalServer server = new ExternalServer(serverName, userName, hostName, serverPass, workDir);
-            addServer(server);
-            this.servers.add(server);
-            if (setNewAsServer.isSelected()){
-                this.selectedServer = server;
-                this.serverLabel.setText(server.getName());
-            }
-            saveServerJson(this.servers);
-            this.servTableModel.setData(this.servers);
-            newServerDialog.setVisible(false);
-        
+        //    for adding a new server
+        String serverName;
+        String userName;
+        String hostName;
+        String serverPass;
+        String workDir;
+        //        Check server name is valid
+
+        serverName = serverNameField.getText();
+        if (serverName != null) {
+        } else {
+            JOptionPane.showMessageDialog(null, "Server name cannot be empty!",
+                    "Server Name Error", JOptionPane.ERROR_MESSAGE);
+        }
+        //        Check user name is valid
+        userName = userNameField.getText();
+        if (userName != null) {
+        } else {
+            JOptionPane.showMessageDialog(null, "User name cannot be empty!",
+                    "User Name Error", JOptionPane.ERROR_MESSAGE);
+        }
+        //    Check the host name is valid
+        hostName = hostAddressField.getText();
+        if (checkIPAddress(hostName) != true) {
+            JOptionPane.showMessageDialog(null, "Host address is invalid",
+                    "Server Host Address Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+        }
+
+        //    Check the password is valid
+        serverPass = String.valueOf(serverPasswordField.getPassword());
+        if (serverPass == null) {
+            JOptionPane.showMessageDialog(null, "Server password cannot be empty!",
+                    "Server Password Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+        }
+        //    Check the working directory is valid if supplied
+        workDir = workingDirField.getText();
+        if (workDir != null) {
+
+        }
+        if (checkWorkDir(hostName) != true) {
+            JOptionPane.showMessageDialog(null, "Working directory supplied is invalid",
+                    "Working Directory Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+        }
+        //     Once all these are checked the server can be added to the server hash map?
+        ExternalServer server = new ExternalServer(serverName, userName, hostName, serverPass, workDir);
+        this.servers.add(server);
+        if (setNewAsServer.isSelected()) {
+            this.selectedServer = server;
+            this.serverLabel.setText(server.getName());
+        }
+        manageJson.saveServerJson(this.servers);
+        this.servTableModel.setData(this.servers);
+        newServerDialog.setVisible(false);
     }//GEN-LAST:event_addNewServerActionPerformed
-    
+
     private void showPassItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showPassItemStateChanged
-        if (evt.getStateChange() == 1){
+        if (evt.getStateChange() == 1) {
             serverPasswordField.setEchoChar('*');
-        } else{
+        } else {
             serverPasswordField.setEchoChar((char) 0);
         }
     }//GEN-LAST:event_showPassItemStateChanged
@@ -1910,7 +2358,7 @@ public class CompGenStart extends javax.swing.JFrame {
         this.selectedServer = this.tempSelectedServer;
 //        Update the label
         serverLabel.setText(this.selectedServer.getName());
-//        Clear and closethe choose server dialog
+//        Clear and close the choose server dialog
         chosenServerLabel.setText("");
         selectServerDialog.setVisible(false);
     }//GEN-LAST:event_chooseServerButtonActionPerformed
@@ -1920,71 +2368,84 @@ public class CompGenStart extends javax.swing.JFrame {
         String name = selectedRow.get(0);
         String site = selectedRow.get(1);
         chosenEnzymeLabel.setText(name);
-        tempSelectedEnzyme = new Enzyme(name,site);
+        tempSelectedEnzyme = new Enzyme(name, site);
     }//GEN-LAST:event_enzymeTableMouseClicked
 
     private void chooseEnzymeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseEnzymeButtonActionPerformed
-        if (this.tempSelectedEnzyme != null){
+        if (this.tempSelectedEnzyme != null) {
             this.selectedEnzyme = this.tempSelectedEnzyme;
             setEnzymeLabel.setText(this.selectedEnzyme.getName());
             this.newJob.setEnzyme(this.selectedEnzyme);
             this.browseEnzymesDialog.setVisible(false);
             this.startJobButton.setEnabled(true);
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, "You have not selected an enzyme, please select one from the table!",
-                "No enzyme selected", JOptionPane.ERROR_MESSAGE);
+                    "No enzyme selected", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_chooseEnzymeButtonActionPerformed
 
     private void refreshJobsTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshJobsTableActionPerformed
 //        need to query all the jobs in jobs running 
 //        then need to check the status of every job
-        if (this.selectedJob == null){
-            
-        }else{
+        if (this.selectedJob == null) {
+            JOptionPane.showMessageDialog(null, "Please select the job you want to refresh.",
+                    "No job selected", JOptionPane.ERROR_MESSAGE);
+        } else {
             refreshJobStatus(this.selectedJob);
+            if (!refreshJobStatus(this.selectedJob)) {
+                JOptionPane.showMessageDialog(null, "Job was not executed properly. Please launch job again.",
+                        "Job not executed", JOptionPane.ERROR_MESSAGE);
+            }
             JobTableModel newModel = new JobTableModel(this.jobsRunning);
             jobsTable.setModel(newModel);
+            // Save updated job in json file
+            manageJson.saveJobJson(this.jobsRunning);
         }
     }//GEN-LAST:event_refreshJobsTableActionPerformed
 
     private void openResultsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openResultsActionPerformed
-
-        if (this.selectedJob == null){
-            
-        }else{
+        if (this.selectedJob == null) {
+            JOptionPane.showMessageDialog(null, "Please select the job for which you want to see results.",
+                    "No job selected", JOptionPane.ERROR_MESSAGE);
+        } else {
 //            first check if the files have already been downloaded
-                System.getProperty("user.dir");
-                File dir = new File(System.getProperty("user.dir")+"/download/"+this.selectedJob.getName()+"/");
-                if (dir.exists() && dir.isDirectory()) {
-                    System.out.println("folder exists");
-                    this.setVisible(false);
-                    CompGenView viewResults = new CompGenView();
-                    viewResults.setJob(this.selectedJob);
-                }else{
+            System.getProperty("user.dir");
+
+            File dir = new File(System.getProperty("user.dir") + "/download/" + this.selectedJob.getName() + "/");
+            File qryFile = new File(System.getProperty("user.dir") + "/download/" + this.selectedJob.getQry());
+            File refFile = new File(System.getProperty("user.dir") + "/download/" + this.selectedJob.getRef());
+
+            // Check that directory and files inside exist
+            // because directory can be created by enzymes calculation
+            if ((dir.exists() && dir.isDirectory()) && (qryFile.exists() && refFile.exists())) {
+                System.out.println("Download folder exists");
+                this.setVisible(false);
+                CompGenView viewResults = new CompGenView();
+                viewResults.setJob(this.selectedJob);
+            } else {
 //            Then if not downloaded, check if the job has finished
-                    refreshJobStatus(this.selectedJob);
-                        Matcher checkStatus = Pattern.compile("Completed").matcher(this.selectedJob.getStatus());
-                        if (checkStatus.find() == false){
-                            JOptionPane.showMessageDialog(null, "The selected job has not finished. It is only at stage:" + this.selectedJob.getStatus(),
+                refreshJobStatus(this.selectedJob);
+                Matcher checkStatus = Pattern.compile("Completed").matcher(this.selectedJob.getStatus());
+                if (checkStatus.find() == false) {
+                    JOptionPane.showMessageDialog(null, "The selected job has not finished. It is only at stage:" + this.selectedJob.getStatus(),
                             "Results not ready!", JOptionPane.ERROR_MESSAGE);
-                    }
-    //                If the job has finished, download the results from the jobs' results folder.
-                    else{
-                        try {
-                            //            Connect to the server of the user selectedjob
-                            this.channel.setServer(this.selectedJob.getServer());
-                            this.channel.connectServer();
+                } //                If the job has finished, download the results from the jobs' results folder.
+                else {
+                    try {
+                        //            Connect to the server of the user selectedjob
+                        System.out.println("Connection to server " + this.selectedJob.getServer().getName());
+                        this.channel.setServer(this.selectedJob.getServer());
+                        boolean connected = this.channel.connectServer();
+                        if (connected) {
                             this.filesDownloading.setVisible(true);
                             this.jobDownloadingName.setText(this.selectedJob.getName());
                             this.channel.downloadJobResults(this.selectedJob);
                             this.filesDownloading.setVisible(false);
-                            this.setVisible(false);
                             CompGenView viewResults = new CompGenView();
                             viewResults.setJob(this.selectedJob);
-                        } 
-                        catch (SftpException ex) {
-                            Logger.getLogger(CompGenStart.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } catch (SftpException ex) {
+                        Logger.getLogger(CompGenStart.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -1992,8 +2453,8 @@ public class CompGenStart extends javax.swing.JFrame {
     }//GEN-LAST:event_openResultsActionPerformed
 
     private void jobsTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jobsTableMouseClicked
-        JTable source = (JTable)evt.getSource();
-        Integer index = source.rowAtPoint( evt.getPoint() );
+        JTable source = (JTable) evt.getSource();
+        Integer index = source.rowAtPoint(evt.getPoint());
         this.selectedJob = this.jobsRunning.get(index);
         this.selectedJobField.setText(this.selectedJob.getName());
     }//GEN-LAST:event_jobsTableMouseClicked
@@ -2007,53 +2468,52 @@ public class CompGenStart extends javax.swing.JFrame {
     private void uploadQryURLButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadQryURLButtonActionPerformed
         this.queryFilePath = queryURL.getText();
         String filename = extractFileURL(queryFilePath);
-        queryGenomeFileName.setText(filename);
-        qryURLDialog.setVisible(false);
-        this.qryFromURL = true;
+        if (filename != null) {
+            queryFile = filename;
+            queryGenomeFileName.setText(filename);
+            qryURLDialog.setVisible(false);
+            this.qryFromURL = true;
+        } else {
+            JOptionPane.showMessageDialog(null, "Query file could not be downloaded properly from URL.",
+                    "Missing query file", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_uploadQryURLButtonActionPerformed
 
     private void uploadPreAlignedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadPreAlignedActionPerformed
-       this.uploadFiles.setVisible(true);
+        this.uploadFiles.setVisible(true);
     }//GEN-LAST:event_uploadPreAlignedActionPerformed
 
     private void loadLocalAlignmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadLocalAlignmentActionPerformed
-        if ("".equals(this.localSpecies.getText())){
+        if ("".equals(this.refSpeciesTxtField.getText()) || this.refSpeciesTxtField.getText() == null) {
             JOptionPane.showMessageDialog(null, "Reference species cannot be empty",
-                "Error!", JOptionPane.ERROR_MESSAGE);
-        }
-        if ("".equals(this.localrefcmap)){
+                    "Missing specie!", JOptionPane.ERROR_MESSAGE);
+        } else if ("".equals(this.localrefcmap) || this.localRefCmapName.getText() == null) {
             JOptionPane.showMessageDialog(null, "Reference CMAP cannot be empty",
-                "Error!", JOptionPane.ERROR_MESSAGE);
-        }
-        if ("".equals(this.localqrycmap)){
+                    "Missing file!", JOptionPane.ERROR_MESSAGE);
+        } else if ("".equals(this.localrefkary) || this.localRefKaryName.getText() == null) {
+            JOptionPane.showMessageDialog(null, "Reference karyotype file cannot be empty",
+                    "Missing file!", JOptionPane.ERROR_MESSAGE);
+        } else if ("".equals(this.localSpecies.getText()) || this.localSpecies.getText() == null) {
+            JOptionPane.showMessageDialog(null, "Query species cannot be empty",
+                    "Missing specie!", JOptionPane.ERROR_MESSAGE);
+        } else if ("".equals(this.localqrycmap) || this.localQryCmapName.getText() == null) {
             JOptionPane.showMessageDialog(null, "Query CMAP cannot be empty",
-                "Error!", JOptionPane.ERROR_MESSAGE);
-        }
-        if ("".equals(this.localxmap)){
-            JOptionPane.showMessageDialog(null, "Reference species cannot be empty",
-                "Error!", JOptionPane.ERROR_MESSAGE);
-        }
-        if ("".equals(this.localrefannot)){
-            JOptionPane.showMessageDialog(null, "Reference species cannot be empty",
-                "Error!", JOptionPane.ERROR_MESSAGE);
-        }
-        if ("".equals(this.localreffasta)){
-            JOptionPane.showMessageDialog(null, "Reference species cannot be empty",
-                "Error!", JOptionPane.ERROR_MESSAGE);
-        }
-        if ("".equals(this.localrefkary)){
-            JOptionPane.showMessageDialog(null, "Reference species cannot be empty",
-                "Error!", JOptionPane.ERROR_MESSAGE);
-        }else{
-        CompGenView viewResults = new CompGenView();
-        viewResults.setData(this.localSpecies.getText(),this.localrefcmap,this.localqrycmap,
-                            this.localrefkary,this.localxmap,this.localreffasta,this.localrefannot);
-        viewResults.setVisible(true);
+                    "Missing file!", JOptionPane.ERROR_MESSAGE);
+        } else if ("".equals(this.localxmap) || this.localXmapName.getText() == null) {
+            JOptionPane.showMessageDialog(null, "XMAP file cannot be empty",
+                    "Missing file!", JOptionPane.ERROR_MESSAGE);
+        } else {
+            CompGenView viewResults = new CompGenView();
+            viewResults.setData(this.localSpecies.getText(), this.localrefcmap, this.localqrycmap,
+                    this.localrefkary, this.localxmap, this.localreffasta, this.localrefannot);
+            viewResults.setVisible(true);
         }
     }//GEN-LAST:event_loadLocalAlignmentActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         FileDialog refAnnotation = new FileDialog(this, "Choose Reference Annotation", FileDialog.LOAD);
+        // Filter to accept only gff or gtf format
+        refAnnotation.setFile("*.gff;*.gff3;*.gtf");
         refAnnotation.setVisible(true);
         this.referenceAnnot = refAnnotation.getFile();
         this.referenceAnnotFilePath = refAnnotation.getDirectory() + refAnnotation.getFile();
@@ -2066,25 +2526,54 @@ public class CompGenStart extends javax.swing.JFrame {
     }//GEN-LAST:event_refalignerPipelineActionPerformed
 
     private void runCalcBestEnzymeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runCalcBestEnzymeActionPerformed
-//            BestEnzyme result = new BestEnzyme("/Users/franpeters/Documents/MSc Thesis/MapOptics/download/Test2/compare_enzymes.txt");
-//            this.enzymeChart1.setData(result.getResult());
-//            this.bestEnzymeDialog.setVisible(true);
-//            this.bestEnz.setText(this.enzymeChart1.getBestEnz());
         try {
-            this.channel.runCalcBestEnz(this.newJob);
+            // Boolean indicating if the calculation of best enzyme is ran on query or on reference
+            boolean boolQuery = true;
+            if (calculateReference.isSelected()) {
+                boolQuery = false;
+            }
+
+            // Display panel with message
+            messageLabel.setText("Running best enzyme caculation...");
+            messageLabel.setVisible(true);
+            waitPanel.setVisible(true);
+            messageLabel.setVisible(true);
+            //Run the calc_best_enz.sh script on the ExternalServer
+            this.channel.runCalcBestEnz(this.newJob, boolQuery);
+            // Display message
+            messageLabel.setText("Downloading calculation results...");
+            messageLabel.setVisible(true);
+
+            // Download calculation results
             this.channel.downloadEnzResults(this.newJob);
-            BestEnzyme result = new BestEnzyme(System.getProperty("user.dir")+"/download/"+this.newJob.getName()+ File.separator + "compare_enzymes.txt");
-//            this.enzymeChart1.setData(result.getResult());
+
+            messageLabel.setText("Reading results and selecting best enzyme...");
+            messageLabel.setVisible(true);
+            // Array list of best enzymes
+            BestEnzyme result = new BestEnzyme(System.getProperty("user.dir") + File.separator + "download" + File.separator + this.newJob.getName() + File.separator + "compare_enzymes.txt");
+            // Ad enzymes and their density to table
+            for (int i = 0; i < result.getResult().size(); i++) {
+                bestEnzymesTableModel.addRow(result.getResult().get(i));
+            }
+
+            waitPanel.setVisible(false);
+
+            // Select enzyme with best density by default
+            tempSelectedEnzyme = result.getBestEnzyme();
+            LblEnzyme.setText(result.getBestEnzyme().getName());
             this.bestEnzymeDialog.setVisible(true);
-//            this.bestEnz.setText(this.enzymeChart1.getBestEnz());
+
         } catch (SftpException ex) {
+            waitPanel.setVisible(true);
+            messageLabel.setText("Connexion to server has failed");
             Logger.getLogger(CompGenStart.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
     }//GEN-LAST:event_runCalcBestEnzymeActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         FileDialog qryAnnotation = new FileDialog(this, "Choose Query Annotation", FileDialog.LOAD);
+        // Filter to accept only gff or gtf format
+        qryAnnotation.setFile("*.gff;*.gff3;*.gtf");
         qryAnnotation.setVisible(true);
         this.queryAnnot = qryAnnotation.getFile();
         this.queryAnnotFilePath = qryAnnotation.getDirectory() + qryAnnotation.getFile();
@@ -2094,6 +2583,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void chooseLocalRefCmapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseLocalRefCmapActionPerformed
         FileDialog fileDialog = new FileDialog(this, "Choose Reference Cmap", FileDialog.LOAD);
+        fileDialog.setFile("*.cmap");
         fileDialog.setVisible(true);
         this.localrefcmap = fileDialog.getDirectory() + fileDialog.getFile();
         this.localRefCmapName.setText(fileDialog.getFile());
@@ -2101,11 +2591,12 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void closeLocalWindowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeLocalWindowActionPerformed
         this.uploadFiles.setVisible(false);
-        
+
     }//GEN-LAST:event_closeLocalWindowActionPerformed
 
     private void chooseLocalRefAnnotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseLocalRefAnnotActionPerformed
         FileDialog fileDialog = new FileDialog(this, "Choose Reference GFF3/GTF", FileDialog.LOAD);
+        fileDialog.setFile("*.gff;*.gf33;*.gtf");
         fileDialog.setVisible(true);
         this.localrefannot = fileDialog.getDirectory() + fileDialog.getFile();
         this.localRefAnnotName.setText(fileDialog.getFile());
@@ -2113,407 +2604,623 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void chooseLocalRefKaryotypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseLocalRefKaryotypeActionPerformed
         FileDialog fileDialog = new FileDialog(this, "Choose Reference Karyotype", FileDialog.LOAD);
+        fileDialog.setFile("*.txt");
         fileDialog.setVisible(true);
         this.localrefkary = fileDialog.getDirectory() + fileDialog.getFile();
         this.localRefKaryName.setText(fileDialog.getFile());
     }//GEN-LAST:event_chooseLocalRefKaryotypeActionPerformed
 
+    private void chooseLocalXmapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseLocalXmapActionPerformed
+        FileDialog fileDialog = new FileDialog(this, "Choose Xmap", FileDialog.LOAD);
+        fileDialog.setFile("*.xmap");
+        fileDialog.setVisible(true);
+        this.localxmap = fileDialog.getDirectory() + fileDialog.getFile();
+        this.localXmapName.setText(fileDialog.getFile());
+    }//GEN-LAST:event_chooseLocalXmapActionPerformed
+
+    private void bnt_helpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bnt_helpActionPerformed
+        // Display help pane
+        helpPane.setVisible(true);
+    }//GEN-LAST:event_bnt_helpActionPerformed
+
+    private void exitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitBtnActionPerformed
+        // Close help panel
+        helpPane.setVisible(false);
+    }//GEN-LAST:event_exitBtnActionPerformed
+
+    private void selectedJobFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectedJobFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_selectedJobFieldActionPerformed
+
+    private void refSpeciesTxtFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refSpeciesTxtFieldActionPerformed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_refSpeciesTxtFieldActionPerformed
+
+    private void fandomPipelineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fandomPipelineActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_fandomPipelineActionPerformed
+
+    private void localSpeciesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_localSpeciesActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_localSpeciesActionPerformed
+
     private void chooseLocalQryCmapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseLocalQryCmapActionPerformed
         FileDialog fileDialog = new FileDialog(this, "Choose Query Cmap", FileDialog.LOAD);
+        fileDialog.setFile("*.cmap");
         fileDialog.setVisible(true);
         this.localqrycmap = fileDialog.getDirectory() + fileDialog.getFile();
         this.localQryCmapName.setText(fileDialog.getFile());
     }//GEN-LAST:event_chooseLocalQryCmapActionPerformed
 
-    private void chooseLocalXmapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseLocalXmapActionPerformed
-        FileDialog fileDialog = new FileDialog(this, "Choose Xmap", FileDialog.LOAD);
-        fileDialog.setVisible(true);
-        this.localxmap = fileDialog.getDirectory() + fileDialog.getFile();
-        this.localXmapName.setText(fileDialog.getFile());
-    }//GEN-LAST:event_chooseLocalXmapActionPerformed
-    
-    public String checkEnzymeName(JTextField field){
-        String name = field.getText();
-        if (name.equals("")){
-            JOptionPane.showMessageDialog(null, "New enzyme name cannot be empty!",
-                "New Enzyme Name Error", JOptionPane.ERROR_MESSAGE);
-            return "";
-        }else{
-            return name;
-        }   
-    }
-    
-    public String checkEnzymeSite(JTextField field){
-        String site = field.getText();
-        if (site.length() == 1){
-             JOptionPane.showMessageDialog(null, "New enzyme site cannot be this short!",
-                "New Enzyme Site Error", JOptionPane.ERROR_MESSAGE);
-             return "";
+    private void qryAnnotFileNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_qryAnnotFileNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_qryAnnotFileNameActionPerformed
+
+    private void bestEnzymesTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bestEnzymesTableMouseClicked
+        Vector<String> selectedRow = this.bestEnzymesTableModel.getDataVector().elementAt(bestEnzymesTable.convertRowIndexToModel(bestEnzymesTable.getSelectedRow()));
+        String name = selectedRow.get(0);
+        String site = selectedRow.get(1);
+        LblEnzyme.setText(name);
+        tempSelectedEnzyme = new Enzyme(name, site);
+    }//GEN-LAST:event_bestEnzymesTableMouseClicked
+
+    private void selectBestEnzActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectBestEnzActionPerformed
+        if (this.tempSelectedEnzyme != null) {
+            this.selectedEnzyme = this.tempSelectedEnzyme;
+            setEnzymeLabel.setText(this.selectedEnzyme.getName());
+            this.newJob.setEnzyme(this.selectedEnzyme);
+            this.browseEnzymesDialog.setVisible(false);
+            this.startJobButton.setEnabled(true);
+            bestEnzymeDialog.setVisible(false);
+        } else {
+            JOptionPane.showMessageDialog(null, "You have not selected an enzyme, please select one from the table!",
+                    "No enzyme selected", JOptionPane.ERROR_MESSAGE);
         }
-     
+    }//GEN-LAST:event_selectBestEnzActionPerformed
+
+    private void serverPasswordFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverPasswordFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_serverPasswordFieldActionPerformed
+
+    private void confirmLabelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmLabelActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_confirmLabelActionPerformed
+
+    private void showConfirmPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showConfirmPasswordActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_showConfirmPasswordActionPerformed
+
+    private void showConfirmPasswordItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showConfirmPasswordItemStateChanged
+        // Show password
+        if (evt.getStateChange() == 1) {
+            confirmLabel.setEchoChar((char) 0);
+        } else {
+            confirmLabel.setEchoChar('\u25cf');
+        }
+    }//GEN-LAST:event_showConfirmPasswordItemStateChanged
+
+    private void showAuthentPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showAuthentPasswordActionPerformed
+
+    }//GEN-LAST:event_showAuthentPasswordActionPerformed
+
+    private void showAuthentPasswordItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_showAuthentPasswordItemStateChanged
+        // Show password
+        if (evt.getStateChange() == 1) {
+            passwordLabel.setEchoChar((char) 0);
+        } else {
+            passwordLabel.setEchoChar('\u25cf');
+        }
+    }//GEN-LAST:event_showAuthentPasswordItemStateChanged
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        String confirmPwd = String.valueOf(confirmLabel.getPassword());
+        String inputPwd = String.valueOf(passwordLabel.getPassword());
+        // Initialisation of user files and password
+        if (confirmPwd.equals(inputPwd)) {
+            // PAssword and its confirmation are equal
+            if (inputPwd.length() == 16) {
+                // Password has the right length (16)
+                lengthPwd.setText("");
+                // Initialisation of files and password / check existing password
+                boolean correctPwd = this.manageJson.setAccess(userLabel.getText(), String.valueOf(passwordLabel.getPassword()));
+
+                if (correctPwd) {
+                    // Entered password is correct
+                    this.authentificationPane.setVisible(false);
+
+                    // Get jobs from job JSON to display them in the submitted jobs table
+                    this.jobsRunning.clear();
+                    this.jobsRunning = manageJson.getJobsFromJson(this.jobsRunning);
+                    jobTableAdd(this.jobsRunning);
+                    JobTableModel newModel = new JobTableModel(this.jobsRunning);
+                    jobsTable.setModel(newModel);
+
+                    this.setVisible(true);
+                } else {
+                    lengthPwd.setText("Incorrect password for existing user " + userLabel.getText());
+                    lengthPwd.setVisible(true);
+                }
+            } else {
+                lengthPwd.setText("Password length must be 16.");
+                lengthPwd.setVisible(true);
+            }
+        } else {
+            lengthPwd.setText("Password and confirmation do not match");
+            lengthPwd.setVisible(true);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void passwordLabelKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordLabelKeyReleased
+        String inputPwd = String.valueOf(passwordLabel.getPassword());
+        if (inputPwd.length() != 16) {
+            lengthPwd.setText("Password length is " + inputPwd.length() + " but must be 16.");
+            lengthPwd.setVisible(true);
+        } else {
+            lengthPwd.setText("");
+        }
+    }//GEN-LAST:event_passwordLabelKeyReleased
+
+    private void calculateReferenceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calculateReferenceActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_calculateReferenceActionPerformed
+
+    private void qrySpeciesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_qrySpeciesActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_qrySpeciesActionPerformed
+
+    /**
+     * Checks if enzyme name from enzyme text field is empty
+     *
+     * @param field text field containing enzyme name
+     * @return name enzyme name
+     */
+    public String checkEnzymeName(JTextField field) {
+        String name = field.getText();
+        if (name.equals("")) {
+            JOptionPane.showMessageDialog(null, "New enzyme name cannot be empty!",
+                    "New Enzyme Name Error", JOptionPane.ERROR_MESSAGE);
+            return "";
+        } else {
+            return name;
+        }
+    }
+
+    /**
+     * Checks if enzyme site is empty.
+     *
+     * @param field text field containing enzyme site
+     * @return site enzyme pattern
+     */
+    public String checkEnzymeSite(JTextField field) {
+        String site = field.getText();
+        if (site.length() == 1) {
+            JOptionPane.showMessageDialog(null, "New enzyme site cannot be this short!",
+                    "New Enzyme Site Error", JOptionPane.ERROR_MESSAGE);
+            return "";
+        }
+
         return site;
     }
-    
-    public boolean checkSite(String dna){
-        for (int i=0; i<dna.length(); i++){
-          if (dna.charAt(i)!='A' && dna.charAt(i)!='T' && dna.charAt(i)!='C' && dna.charAt(i)!='G' && dna.charAt(i)!='^' ){
-              return false;
-          }
+
+    /**
+     * Check if a digestion site is valid, ie only contains nucleotides (A, T,
+     * C, G)
+     *
+     * @param dna digestion site pattern
+     * @return boolean validity of digestion site
+     */
+    public boolean checkSite(String dna) {
+        for (int i = 0; i < dna.length(); i++) {
+            if (dna.charAt(i) != 'A' && dna.charAt(i) != 'T' && dna.charAt(i) != 'C' && dna.charAt(i) != 'G' && dna.charAt(i) != '^') {
+                return false;
+            }
         }
         return true;
     }
-    
-    String getDefault(){
+
+    /**
+     * Gets server name
+     *
+     * @return name server name
+     */
+    String getDefault() {
         ExternalServer server = (ExternalServer) servers.get(0);
         String name = server.getName();
         return name;
     }
-    
-    String extractFileURL(String URL){
-      String filename = Paths.get(URL).getFileName().toString();
-      return filename;
+
+    /**
+     * Verifies URL pattern and extracts file name from URL.
+     *
+     * @param FileURL url
+     * @return file name
+     */
+    String extractFileURL(String FileURL) {
+        try {
+            URL u = new URL(FileURL); // Check for URL
+            u.toURI();
+            // Get the name of the downloaded file
+            String splitURL[] = FileURL.split("/");
+            int lenSplit = splitURL.length;
+            String fileName = splitURL[lenSplit - 1]; //Arays are 0 indexed
+            return fileName;
+        } catch (MalformedURLException e) {
+            System.out.println(e);
+            JOptionPane.showMessageDialog(null, "File could not be downloaded, please check URL!",
+                    "URL not valid", JOptionPane.ERROR_MESSAGE);
+            return null;
+        } catch (URISyntaxException e) {
+            System.out.println(e);
+            JOptionPane.showMessageDialog(null, "File could not be downloaded, please check URL!",
+                    "URL not valid", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
     }
-    private boolean checkIPAddress(String address){
-        //      check if the ip address provided is null
-        if (address == null){
+
+    /**
+     * Verifies IP adress: IP addresses follow the format
+     * "number.number.number.number"
+     *
+     * @param address
+     * @return boolean validity of IP adress
+     */
+    private boolean checkIPAddress(String address) {
+        // Check if the ip address provided is null
+        if (address == null) {
             return false;
         }
-        String validNumbers = "(\\d{1,2}|(0|1)\\d{2}|2[0-4]\\d|25[0-5])";  
-        String regex = validNumbers + "\\."+ validNumbers + "\\." + validNumbers + "\\." + validNumbers;
+        String validNumbers = "(\\d{1,2}|(0|1)\\d{2}|2[0-4]\\d|25[0-5])";
+        String regex = validNumbers + "\\." + validNumbers + "\\." + validNumbers + "\\." + validNumbers;
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(address);
         return m.matches();
     }
-    
-    private boolean checkWorkDir(String dir){
-//        need to add in regex checking
+
+    /**
+     * Checks working directory
+     *
+     * @param dir directory path
+     * @return boolean directory validity
+     */
+    private boolean checkWorkDir(String dir) {
+        // need to add in regex checking
         return true;
     }
-    
-    private void addServer(ExternalServer server){
-        servers.add(server);
-//        serverList.setListData(Servers);
-    }
-  
-    private void jobTableAdd(List<Job> data){
+
+    /**
+     * Adds job to this job table model
+     *
+     * @param data list fo jobs to add to this table model
+     */
+    private void jobTableAdd(List<Job> data) {
         this.jobsTableModel = new JobTableModel(data);
 
     }
-    private void serversFromJson(){
-        try {
-    // create Gson instance
-    Gson gson = new Gson();
-    
-    // create a reader
-    Reader reader = Files.newBufferedReader(Paths.get(System.getProperty("user.dir")+"servers.json"));
 
-    // convert JSON file to map
-    Map<?, ?> map = gson.fromJson(reader, Map.class);
-//    ArrayList array = new ArrayList();
-    // print map entries
-    if (map == null){}else{
-    for (Map.Entry<?, ?> entry : map.entrySet()) {
-        
-        String[] value;
-        value = entry.getValue().toString().split("=");
+    /**
+     * Table of servers extending <code>DefaultTableModel</code>
+     */
+    private static class ServTableModel extends DefaultTableModel {
 
-//        Work out how many servers are present
-        int numServers = (value.length)/5;
-
-        for (int s=1;s<=numServers;s++){
-
-//            messy but it works
-
-//            create server object
-            ExternalServer serv = new ExternalServer(value[1+ 5*(s-1)].split(",")[0],
-                                                        value[2+ 5*(s-1)].split(",")[0],
-                                                        value[3+ 5*(s-1)].split(",")[0],
-                                                        value[4+ 5*(s-1)].split(",")[0],
-                                                        value[5+ 5*(s-1)].split(",")[0].replace("}","").replaceAll("]", ""));
-
-//           Add job object to array
-            this.servers.add(serv);           
-            }
-        }
-        // close reader
-        reader.close();
-                }
-            } catch (Exception ex) {
-            ex.getCause();
-        }
-    }
-    
-    private void jobsFromJson(){
-        this.jobsRunning.clear();
-        try {
-    // create Gson instance
-    Gson gson = new Gson();
-            // convert JSON file to map
-            try ( // create a reader
-                    Reader reader = Files.newBufferedReader(Paths.get("/Users/franpeters/Documents/MSc Thesis/MapOptics/jobs.json"))) {
-                // convert JSON file to map
-                Map<?, ?> map = gson.fromJson(reader, Map.class);
-
-                // print map entries
-                if (map == null) {
-                } else {
-                    for (Map.Entry<?, ?> entry : map.entrySet()) {
-                       
-                        String[] value = entry.getValue().toString().split("=");
-                        //        Work out how many jobs are present
-                        int numJobs = (value.length - 1)/16;
-                        
-                        for (int j=1;j<=numJobs;j++){
-                        //            System.out.println(j);
-                        //            messy but it works
-                        //            create enyzme object
-                        
-                        Enzyme enz = new Enzyme(value[9 + 16*(j-1)].split(",")[0],
-                                value[10 + 16*(j-1)].split(",")[0]);
-
-                        //            create server object
-                        ExternalServer serv = new ExternalServer(value[2+ 16*(j-1)].split(",")[0],
-                                value[3+ 16*(j-1)].split(",")[0],
-                                value[4+ 16*(j-1)].split(",")[0],
-                                value[5+ 16*(j-1)].split(",")[0],
-                                value[6+ 16*(j-1)].split(",")[0]);
-
-                        //            create job object
-                        Job job = new Job(serv,
-                                value[1+ 16*(j-1)].split(",")[0],
-                                value[8+ 16*(j-1)].split(",")[0],
-                                value[7+ 16*(j-1)].split(",")[0],
-                                enz,
-                                value[11+ 16*(j-1)].split(",")[0],
-                                value[12+ 16*(j-1)].split(",")[0],
-                                value[14+ 16*(j-1)].split(",")[0],
-                                value[13+ 16*(j-1)].split(",")[0],
-                                value[15+ 16*(j-1)].split(",")[0],
-                                value[16+ 16*(j-1)].split(",")[0].replace("}","").replaceAll("]", ""));
-                        //           Add job object to array
-                        this.jobsRunning.add(job);
-
-                        }}      }
-                                        // close reader
-                                    }
-                        jobTableAdd(this.jobsRunning);
-                        } catch (JsonIOException | JsonSyntaxException | IOException ex) {
-                            ex.getCause();
-                        }
-
-                            }
-
-    private static class ServTableModel extends DefaultTableModel{
         private List<ExternalServer> list = new ArrayList();
-    private String[] columnNames = {"Name", "User", "Host", "Working Directory"};
+        private String[] columnNames = {"Name", "User", "Host", "Working Directory"};
+
+        /**
+         * Constructor with list of servers
+         *
+         * @param list list of external servers
+         */
         public ServTableModel(List<ExternalServer> list) {
             this.list = list;
         }
-        public ServTableModel(){};
-        public void setData(List<ExternalServer> list){this.list=list;}
-        @Override
-    
-        public String getColumnName(int columnIndex){
-         return columnNames[columnIndex];
-    }
 
-    @Override     
-    public int getRowCount() {
-        if (null == this.list){
-            return 0;
+        /**
+         * Constructor
+         */
+        public ServTableModel() {
         }
-        return list.size();
+
+        ;
+        /**
+         * Sets external servers data
+         * 
+         * @param list list of external servers
+         */
+        public void setData(List<ExternalServer> list) {
+            this.list = list;
+        }
+
+        /**
+         * Gets a column name by index
+         * 
+         * @param columnIndex index of column for which the name is set
+         */
+        @Override
+        public String getColumnName(int columnIndex) {
+            return columnNames[columnIndex];
+        }
+
+        /**
+         * Gets number of rows
+         * 
+         * @return number of rows
+         */
+        @Override
+        public int getRowCount() {
+            if (null == this.list) {
+                return 0;
+            }
+            return list.size();
+        }
+
+        /**
+         * Gets number of columns
+         * 
+         * @return number of columns
+         */
+        @Override
+        public int getColumnCount() {
+            return 4;
+        }
+
+        /**
+         * Gets value at given column and row
+         * 
+         * @param rowIndex index of row of interest
+         * @param columnIndex index of column of interest
+         * @return value at given cell position
+         */
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            ExternalServer serv = list.get(rowIndex);
+            switch (columnIndex) {
+                case 0:
+                    return serv.name;
+                case 1:
+                    return serv.getUser();
+                case 2:
+                    return serv.getHost();
+                case 3:
+                    return serv.getWorkingDir();
+
+            }
+            return null;
+        }
+
+        /**
+         * Gets class of given column
+         * 
+         * @param columnIndex index of column of interest
+         * @return class of column of interest
+         */
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            switch (columnIndex) {
+                case 0:
+                    return String.class;
+                case 1:
+                    return String.class;
+                case 2:
+                    return String.class;
+                case 3:
+                    return String.class;
+            }
+            return null;
+        }
     }
 
-    @Override        
-    public int getColumnCount() {
-        return 4; 
-    }
-
-    @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
-        ExternalServer serv = list.get(rowIndex);
-        switch (columnIndex) {
-            case 0: 
-                return serv.name;
-            case 1:
-                return serv.getUser();
-            case 2:
-                return serv.getHost();
-            case 3:
-                return serv.getWorkingDir();
-            
-           }
-           return null;
-   }
-
-   @Override
-   public Class<?> getColumnClass(int columnIndex){
-          switch (columnIndex){
-             case 0:
-               return String.class;
-             case 1:
-               return String.class;
-             case 2:
-               return String.class;
-             case 3:
-               return String.class;
-             }
-             return null;
-      }
-    }
-
+    /**
+     * Model of table of jobs
+     */
     public class JobTableModel extends DefaultTableModel {
 
-    private List<Job> list = new ArrayList();
-    private String[] columnNames = {"Name", "Server", "Pipeline", "Status","Ref Species", "Qry Species"};
+        private List<Job> list = new ArrayList();
+        private String[] columnNames = {"Name", "Server", "Pipeline", "Status", "Ref Species", "Qry Species"};
 
-    public JobTableModel(List<Job> list){
-         this.list = list;
-    }
-    public JobTableModel(){}
-    public void setData(List<Job> list){this.list = list;}
-    @Override
-    public String getColumnName(int columnIndex){
-         return columnNames[columnIndex];
-    }
-
-    @Override     
-    public int getRowCount() {
-        if (null == this.list){
-            return 0;
+        /**
+         * Constructor from list of jobs
+         * 
+         * @param list list of jobs
+         */
+        public JobTableModel(List<Job> list) {
+            this.list = list;
         }
-        return list.size();
-    }
 
-    @Override        
-    public int getColumnCount() {
-        return 6; 
-    }
+        /**
+         * Constructor
+         */
+        public JobTableModel() {
+        }
 
-    @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
-        Job jobs = list.get(rowIndex);
-        switch (columnIndex) {
-            case 0: 
-                return jobs.getName();
-            case 1:
-                return jobs.getServer().name;
-            case 2:
-                return jobs.getPipeline();
-            case 3:
-                return jobs.getStatus();
-            case 4:
-                return jobs.getRefOrg();
-            case 5:
-                return jobs.getQryOrg();
-           }
-           return null;
-   }
+        /**
+         * Sets data from list of jobs in the table
+         * 
+         * @param list list of jobs
+         */
+        public void setData(List<Job> list) {
+            this.list = list;
+        }
 
-   @Override
-   public Class<?> getColumnClass(int columnIndex){
-          switch (columnIndex){
-             case 0:
-               return String.class;
-             case 1:
-               return String.class;
-             case 2:
-               return String.class;
-             case 3:
-               return String.class;
-             case 4:
-               return String.class;
-            case 5:
-               return String.class;
-             }
-             return null;
-      }
- }
-        private void saveServerJson(List<ExternalServer> servers){
-        try {
-//            need to update this to a relative folder
-            JsonWriter writer = new JsonWriter(new FileWriter("/Users/franpeters/Documents/MSc Thesis/MapOptics/servers.json"));
-            writer.beginObject();
-            writer.name("data");
-            writer.beginArray();
-            for (ExternalServer s : servers) {
-                writer.beginObject();
-                writer.name("name").value(s.name);
-                writer.name("user").value(s.getUser());
-                writer.name("host").value(s.getHost());
-                writer.name("password").value(s.getPassword());
-                writer.name("dir").value(s.getWorkingDir());
-                writer.endObject();
+        /**
+         * Gets a column name by index
+         * 
+         * @param columnIndex index of column for which the name is set
+         */
+        @Override
+        public String getColumnName(int columnIndex) {
+            return columnNames[columnIndex];
+        }
+
+        /**
+         * Gets number of rows
+         * 
+         * @return number of rows
+         */
+        @Override
+        public int getRowCount() {
+            if (null == this.list) {
+                return 0;
             }
-            writer.endArray();
-            writer.endObject();
-            writer.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            return list.size();
+        }
+
+        /**
+         * Gets number of columns
+         * 
+         * @return number of columns
+         */
+        @Override
+        public int getColumnCount() {
+            return 6;
+        }
+
+        /**
+         * Gets value at given column and row
+         * 
+         * @param rowIndex index of row of interest
+         * @param columnIndex index of column of interest
+         * @return value at given cell position
+         */
+        @Override
+        public Object getValueAt(int rowIndex, int columnIndex) {
+            Job jobs = list.get(rowIndex);
+            switch (columnIndex) {
+                case 0:
+                    return jobs.getName();
+                case 1:
+                    return jobs.getServer().name;
+                case 2:
+                    return jobs.getPipeline();
+                case 3:
+                    return jobs.getStatus();
+                case 4:
+                    return jobs.getRefOrg();
+                case 5:
+                    return jobs.getQryOrg();
+            }
+            return null;
+        }
+
+        /**
+         * Gets class of given column
+         * 
+         * @param columnIndex index of column of interest
+         * @return class of column of interest
+         */
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            switch (columnIndex) {
+                case 0:
+                    return String.class;
+                case 1:
+                    return String.class;
+                case 2:
+                    return String.class;
+                case 3:
+                    return String.class;
+                case 4:
+                    return String.class;
+                case 5:
+                    return String.class;
+            }
+            return null;
         }
     }
-        
-        private void saveJobJson(List<Job> jobs){
-        try {
- //            need to update this to a relative folder
-             JsonWriter writer = new JsonWriter(new FileWriter("/Users/franpeters/Documents/MSc Thesis/MapOptics/jobs.json"));
-             writer.beginObject();
-             writer.name("data");
-             writer.beginArray();
-             for (Job j : jobs) {
-                 ExternalServer s = j.getServer();
-                 Enzyme e = j.getEnz();
-                 writer.beginObject();
-                 writer.name("Job name").value(j.getName());
-                 writer.name("Server name").value(s.name);
-                 writer.name("Server user").value(s.getUser());
-                 writer.name("Server host").value(s.getHost());
-                 writer.name("Server pass").value(s.getPassword());
-                 writer.name("Server dir").value(s.getWorkingDir());
-                 writer.name("qry").value(j.getQry());
-                 writer.name("ref").value(j.getRef());
-                 writer.name("Enzyme name").value(e.getName());
-                 writer.name("Enzyme site").value(e.getSite());
-                 writer.name("pipeline").value(j.getPipeline());
-                 writer.name("Status").value(j.getStatus());
-                 writer.name("Ref Organism").value(j.getRefOrg());
-                 writer.name("Qry Organism").value(j.getQryOrg());
-                 writer.name("Ref Annotation").value(j.getRefAnnot());
-                 writer.name("Qry Annotation").value(j.getQryAnnot());
-                 writer.endObject();
-             }
-             writer.endArray();
-             writer.endObject();
-             writer.close();
-             } catch (IOException e) {
-                 e.printStackTrace();
-         }
-    }
-    private Boolean refreshJobStatus(Job job){
+
+    /**
+     * Refresh status of job in the table of jobs by querying the log file of the job
+     * on the external server
+     * @param job job to be refreshed
+     * @return boolean indicating if status was different than "Failed"
+     */
+    private Boolean refreshJobStatus(Job job) {
 //          Connect to the server of the user selectedjob
-            this.channel.setServer(job.getServer());
-            
-            this.channel.connectServer();
+        this.channel.setServer(job.getServer());
+
+        boolean connected = this.channel.connectServer();
+        if (connected) {
             ArrayList<String> result = this.channel.queryLogFile(this.selectedJob);
-            for (String s: result){
-                System.out.println("result: " + s);
+            for (String s : result) {
+                System.out.println("Refresh status result (CompGenStart): " + s);
             }
-            String latestStatus = result.get(result.size()-1).split(": ")[1]; //get the latest update from the file
-            System.out.println(latestStatus);
-            job.setStatus(latestStatus);
-            return true;
-    
-}
-        
+            if (result.isEmpty()) {
+                System.out.println("Log file was not found or empty.");
+                job.setStatus("Failed");
+                return false;
+            } else {
+                // get the latest update from the log file
+                String latestStatus = result.get(result.size() - 1).split(": ")[1];
+                job.setStatus(latestStatus);
+                return true;
+            }
+        } else {
+            job.setStatus("Failed");
+            return false;
+        }
+    }
+
+    /**
+     * Clears all the text and data previously displayed or chosen in the panel where jobs are set.
+     */
+    private void clearMakeCompGenJob() {
+        // Clear all the text boxes
+        userJobName.setText("");
+        refSpecies.setText("");
+        refAnnotFileName.setText("");
+        qrySpecies.setText("");
+        qryAnnotFileName.setText("");
+        setEnzymeLabel.setText("");
+        refProgressBar.setValue(0);
+        queryProgressBar.setValue(0);
+        serverLabel.setText("");
+        connectServerToggle.setBackground(Color.white);
+        connectServerToggle.setForeground(Color.black);
+        startJobButton.setEnabled(false);
+        // Unable buttons
+        setJobName.setEnabled(false);
+        uploadFileRef.setEnabled(false);
+        uploadQryGenome.setEnabled(false);
+        chooseEnzyme.setEnabled(false);
+        runCalcBestEnzyme.setEnabled(false);
+        // Clear variables
+        qryCmapEnzyme = "";
+        refAdded = false;
+        qryAdded = false;
+        ref1FromURL = false;
+        qryFromURL = false;
+        referenceFile = "";
+        referenceFilePath = "";
+        referenceAnnot = "";
+        referenceAnnotFilePath = "";
+        queryFile = "";
+        queryFilePath = "";
+        queryAnnot = "";
+        queryAnnotFilePath = "";
+        currentServer = "";
+
+        this.selectedJob = null;
+        this.selectedEnzyme = null;
+        this.tempSelectedEnzyme = null;
+        this.selectedServer = null;
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel LblEnzyme;
     private javax.swing.JButton addNewServer;
     private javax.swing.JMenuItem addServerMenu;
+    private javax.swing.JPanel alignmentPanel;
+    public javax.swing.JDialog authentificationPane;
     private javax.swing.JLabel bestEnz;
     private javax.swing.JDialog bestEnzymeDialog;
+    private javax.swing.JTable bestEnzymesTable;
+    private javax.swing.JButton bnt_help;
     private javax.swing.JMenuItem browseEnzymes;
     private javax.swing.JDialog browseEnzymesDialog;
-    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.ButtonGroup btnGroupCalcEnzyme;
+    private javax.swing.ButtonGroup btnGroupPipeline;
+    private javax.swing.JRadioButton calculateQuery;
+    private javax.swing.JRadioButton calculateReference;
     private javax.swing.JButton chooseEnzyme;
     private javax.swing.JButton chooseEnzymeButton;
     private javax.swing.JButton chooseLocalQryCmap;
@@ -2527,6 +3234,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JLabel chosenServerLabel;
     private javax.swing.JButton clearNewServerFields;
     private javax.swing.JButton closeLocalWindow;
+    private javax.swing.JPasswordField confirmLabel;
     private javax.swing.JToggleButton connectServerToggle;
     private javax.swing.JTextField currentDir;
     private javax.swing.JTextField currentHost;
@@ -2536,18 +3244,21 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JMenuItem downloadQueryURL;
     private javax.swing.JScrollPane enzymeScroll;
     private javax.swing.JTable enzymeTable;
+    private javax.swing.JMenu enzymesMenu;
+    private javax.swing.JButton exitBtn;
     private javax.swing.JButton exitCompGenomics;
     private javax.swing.JRadioButton fandomPipeline;
     private javax.swing.JDialog filesDownloading;
+    private javax.swing.JEditorPane helpHtmlPane;
+    private javax.swing.JDialog helpPane;
     private javax.swing.JTextField hostAddressField;
+    private javax.swing.JLabel infoLabel;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton12;
-    private javax.swing.JButton jButton13;
-    private javax.swing.JButton jButton14;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton2;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
@@ -2572,32 +3283,30 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
+    private javax.swing.JLabel jLabel34;
+    private javax.swing.JLabel jLabel35;
+    private javax.swing.JLabel jLabel36;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
-    private javax.swing.JMenu jMenu7;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel10;
-    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
-    private javax.swing.JPanel jPanel9;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel jobDownloadingName;
     private javax.swing.JTable jobsTable;
+    private javax.swing.JLabel lengthPwd;
     private javax.swing.JButton loadLocalAlignment;
     private javax.swing.JLabel localQryCmapName;
     private javax.swing.JLabel localRefAnnotName;
@@ -2606,28 +3315,34 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JTextField localSpecies;
     private javax.swing.JLabel localXmapName;
     private javax.swing.JFrame makeCompGenJob;
+    private javax.swing.JLabel messageLabel;
     private javax.swing.JButton newJobRefQuery;
     private javax.swing.JDialog newServerDialog;
     private javax.swing.JButton openResults;
+    private javax.swing.JPasswordField passwordLabel;
     private javax.swing.JTextField qryAnnotFileName;
     private javax.swing.JLabel qryGenomeLabel;
     private javax.swing.JTextField qrySpecies;
     private javax.swing.JDialog qryURLDialog;
+    private javax.swing.JPanel queryFilesPanel;
     private javax.swing.JTextField queryGenomeFileName;
     private javax.swing.JProgressBar queryProgressBar;
     private javax.swing.JTextField queryURL;
     private javax.swing.JTextField refAnnotFileName;
+    private javax.swing.JPanel refFilesPanel;
     private javax.swing.JMenuItem refFromURL;
     private javax.swing.JTextField refGenomeFile;
     private javax.swing.JLabel refGenomeLabel;
     private javax.swing.JProgressBar refProgressBar;
     private javax.swing.JTextField refSpecies;
+    private javax.swing.JTextField refSpeciesTxtField;
     private javax.swing.JDialog refURLDialog;
     private javax.swing.JRadioButton refalignerPipeline;
     private javax.swing.JTextField referenceURL;
     private javax.swing.JButton refreshJobsTable;
     private javax.swing.JButton runCalcBestEnzyme;
     private javax.swing.JButton saveRefURL;
+    private javax.swing.JButton selectBestEnz;
     private javax.swing.JDialog selectServerDialog;
     private javax.swing.JTextField selectedJobField;
     private javax.swing.JPanel sendQueryGenomePanel;
@@ -2635,6 +3350,7 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JPanel sendRefGenomePanel;
     private javax.swing.JMenuItem serverInfoButton;
     private javax.swing.JLabel serverLabel;
+    private javax.swing.JMenu serverMenu;
     private javax.swing.JTextField serverNameField;
     private javax.swing.JPanel serverPanel;
     private javax.swing.JPasswordField serverPasswordField;
@@ -2642,8 +3358,13 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JLabel setEnzymeLabel;
     private javax.swing.JButton setJobName;
     public javax.swing.JCheckBox setNewAsServer;
+    private javax.swing.JPanel settingsPanel;
+    private javax.swing.JCheckBox showAuthentPassword;
+    private javax.swing.JCheckBox showConfirmPassword;
     private javax.swing.JCheckBox showPass;
     private javax.swing.JButton startJobButton;
+    private javax.swing.JScrollPane submittedJobPane;
+    private javax.swing.JMenu textMenu;
     private javax.swing.JButton uploadFileRef;
     private javax.swing.JDialog uploadFiles;
     private javax.swing.JButton uploadPreAligned;
@@ -2652,7 +3373,9 @@ public class CompGenStart extends javax.swing.JFrame {
     private javax.swing.JMenuItem uploadQueryGenome;
     private javax.swing.JMenuItem uploadReference;
     private javax.swing.JTextField userJobName;
+    private javax.swing.JTextField userLabel;
     private javax.swing.JTextField userNameField;
+    private javax.swing.JDialog waitPanel;
     private javax.swing.JTextField workingDirField;
     // End of variables declaration//GEN-END:variables
 }

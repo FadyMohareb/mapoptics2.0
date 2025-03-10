@@ -6,6 +6,9 @@ import java.util.HashMap;
 
 /**
  *
+ * Store the information of a digestion site on a cmap contig
+ * Any match event associated with this site is stored in a HashMap
+ * The key is the xmap id, the value is an ArrayList of match objects
  * @author franpeters
  */
 public class Site {
@@ -55,8 +58,8 @@ public class Site {
     }
     /**
      * 
-     * @param qryID
-     * @return 
+     * @param xmapID
+     * @return The matches
      */
     public ArrayList<Match> getMatchesByXmapID(Integer xmapID){
         return this.matches.get(xmapID);
@@ -68,9 +71,8 @@ public class Site {
 
     
     /**
-     * 
-     * @param qryID
-     * @return 
+     * Have there been any sites matched to this site, return true if so and false if not
+     * @return boolean
      */
     public boolean isMatch(){
         if (this.matches.size()>1){

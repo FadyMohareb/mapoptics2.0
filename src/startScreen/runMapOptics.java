@@ -1,21 +1,25 @@
-
 package startScreen;
+
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
- *
+ * Contains main function to run MapOptics.
+ * 
  * @author franpeters
  */
 public class runMapOptics {
-     /**
+
+    /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
@@ -43,29 +47,17 @@ public class runMapOptics {
         //</editor-fold>
 
         /* Create and display the form */
-         try {
-            UIManager.setLookAndFeel( new FlatLightLaf() );
+        try {
+            UIManager.setLookAndFeel(new FlatLightLaf());
             UIManager.put("ProgressBar.selectionBackground", Color.black);
             UIManager.put("ProgressBar.selectionForeground", Color.white);
             UIManager.put("ProgressBar.foreground", new Color(8, 32, 128));
-            UIManager.put("JButton.setBackground",Color.CYAN);
+            UIManager.put("JButton.setBackground", Color.CYAN);
             startScreen screen = new startScreen();
             screen.setVisible(true);
-//            Make sure the json files for the josb and server objects to be saved between sessions still exist
-            File jobsJson = new File("/Users/franpeters/Documents/MSc Thesis/MapOptics/jobs.json");
-            if(!jobsJson.exists()){
-              jobsJson.createNewFile();
-            }
-            File servJson = new File("/Users/franpeters/Documents/MSc Thesis/MapOptics/servers.json");
-            if(!servJson.exists()){
-              servJson.createNewFile();
-            }
-             
-        } catch( UnsupportedLookAndFeelException ex ) {
-            System.err.println( "Failed to initialize LaF" );
-        } catch (IOException ex) {
-            Logger.getLogger(runMapOptics.class.getName()).log(Level.SEVERE, null, ex);
-        }       
+        } catch (UnsupportedLookAndFeelException ex) {
+            System.err.println("Failed to initialize LaF");
+        }
     }
-    
+
 }

@@ -11,12 +11,21 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-/*
+/**
+ * Validates and reads CMAP files
+ *
  * @author Josie
  */
 public class CmapReader {
 
-    public static boolean validateCmap (String filePath) {
+    /**
+     * Validate cmap file: check file format (correct extension, file containing
+     * cmap version)
+     *
+     * @param filePath path of cmap file
+     * @return boolean validation of the cmap file
+     */
+    public static boolean validateCmap(String filePath) {
 
         if (filePath.endsWith(".cmap")) {
             if (Files.exists(Paths.get(filePath))) {
@@ -34,8 +43,8 @@ public class CmapReader {
 
                     //Show error message if wrong format
                     JOptionPane.showMessageDialog(null,
-                            "Error loading CMAP file." +
-                                    "\n\nInvalid format!",
+                            "Error loading CMAP file."
+                            + "\n\nInvalid format!",
                             "Error",
                             JOptionPane.ERROR_MESSAGE);
 
@@ -45,16 +54,16 @@ public class CmapReader {
             } else {
                 //Show error message if no file found
                 JOptionPane.showMessageDialog(null,
-                        "Error loading CMAP file." +
-                                "\n\nFile does not exist!",
+                        "Error loading CMAP file."
+                        + "\n\nFile does not exist!",
                         "Error",
                         JOptionPane.ERROR_MESSAGE);
             }
         } else {
             //Show error message if wrong file type
             JOptionPane.showMessageDialog(null,
-                    "Error loading CMAP file." +
-                            "\n\nInvalid file type!",
+                    "Error loading CMAP file."
+                    + "\n\nInvalid file type!",
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -62,6 +71,15 @@ public class CmapReader {
         return false;
     }
 
+    /**
+     * Gets summary data. Summary data is displayed in
+     * <code>SummaryViewData</code>, containing queries and references
+     * <code>HashMap</code> where references are scaled relative to the summary
+     * view panel.
+     *
+     * @param cmapFile cmap file
+     * @param references map of references, the key is their ID
+     */
     public static void getSummaryData(File cmapFile, Map<Integer, Reference> references) {
 
         Set<Integer> unvisited = new HashSet<>(references.keySet());
@@ -82,6 +100,7 @@ public class CmapReader {
                 String[] rowData = line.split("\t");
                 int id = Integer.parseInt(rowData[0]);
 
+                // Get all the lines coresponding to the requested reference
                 if (references.containsKey(id)) {
                     Reference ref = references.get(id);
                     if (unvisited.contains(id)) {
@@ -108,7 +127,13 @@ public class CmapReader {
         }
     }
 
-    public static void getReferenceData(File qryFile, Map<Integer,Query> queries) {
+    /**
+     * Gets reference data.
+     *
+     * @param qryFile query file path
+     * @param queries map of queries, the key is the query contig ID
+     */
+    public static void getReferenceData(File qryFile, Map<Integer, Query> queries) {
 
         Set<Integer> unvisited = new HashSet<>(queries.keySet());
 
@@ -127,26 +152,27 @@ public class CmapReader {
 
                 String[] rowData = line.split("\t");
                 int channel = Integer.parseInt(rowData[4]);
-                if(channel!=0){
-                int id = Integer.parseInt(rowData[0]);
+                if (channel != 0) {
+                    int id = Integer.parseInt(rowData[0]);
 
-                if (queries.containsKey(id)) {
-                    Query qry = queries.get(id);
-                    if (unvisited.contains(id)) {
-                        unvisited.remove(id);
-                        qry.setLength(Double.parseDouble(rowData[1]));
-                        qry.setLabels(Integer.parseInt(rowData[2]));
+                    if (queries.containsKey(id)) {
+                        Query qry = queries.get(id);
+                        if (unvisited.contains(id)) {
+                            unvisited.remove(id);
+                            qry.setLength(Double.parseDouble(rowData[1]));
+                            qry.setLabels(Integer.parseInt(rowData[2]));
+                        }
+
+                        qry.addSite(Integer.parseInt(rowData[3]), Arrays.asList(
+                                Double.parseDouble(rowData[header.indexOf("Position")]),
+                                Double.parseDouble(rowData[header.indexOf("StdDev")]),
+                                Double.parseDouble(rowData[header.indexOf("Coverage")]),
+                                Double.parseDouble(rowData[header.indexOf("Occurrence")]),
+                                header.contains("ChimQuality")
+                                ? Double.parseDouble(rowData[header.indexOf("ChimQuality")]) : 0.0));
                     }
-
-                    qry.addSite(Integer.parseInt(rowData[3]), Arrays.asList(
-                            Double.parseDouble(rowData[header.indexOf("Position")]),
-                            Double.parseDouble(rowData[header.indexOf("StdDev")]),
-                            Double.parseDouble(rowData[header.indexOf("Coverage")]),
-                            Double.parseDouble(rowData[header.indexOf("Occurrence")]),
-                            header.contains("ChimQuality") ?
-                                    Double.parseDouble(rowData[header.indexOf("ChimQuality")]) : 0.0));
                 }
-            }}
+            }
 
             br.close();
 
@@ -155,43 +181,40 @@ public class CmapReader {
         }
     }
 
-//    public static List<List<Object>> getSummaryData(File cmapFile, List<Integer> refIds) {
-//
-//        List<List<Object>> summaryData = new ArrayList<>();
-//
-//        try {
-//            BufferedReader br = new BufferedReader(new FileReader(cmapFile));
-//            String line;
-//
-//            while ((line = br.readLine()) != null) {
-//                if (line.startsWith("#")) {
-//                    continue;
-//                }
-//
-//                String[] rowData = line.split("\t");
-//                int id = Integer.parseInt(rowData[0]);
-//
-//                if (refIds.contains(id)) {
-//                    refIds.remove(Integer.valueOf(id));
-//                    double length = Double.parseDouble(rowData[1]);
-//                    int labels = Integer.parseInt(rowData[2]);
-//                    double density = (labels / length) * 100000;
-//
-//                    List<Object> data = new ArrayList<>(Arrays.asList(id, length, labels, density));
-//
-//                    summaryData.add(data);
-//                }
-//            }
-//
-//            br.close();
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return summaryData;
-//    }
+    /**
+     * Extract nickase enzyme from file containing enzyme information.
+     *
+     * @param filePath path of file containing enzymes names and patterns
+     * @return enzyme motif
+     */
+    public String getNickaseEnzyme(String filePath) {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(filePath));
+            String line;
 
+            while ((line = br.readLine()) != null) {
+                if (line.startsWith("# Nickase Recognition Site 1:") || line.isEmpty()) {
+                    String enzymeLine = line;
+                    String enzyme = enzymeLine.split("[,;\t]")[1];
+                    System.out.println("ENZYME " + enzyme);
+                    br.close();
+                    return enzyme;
+                }
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return null;
+    }
+
+    /**
+     * Reads CMAP input file and parses it into a <code>HashMap</code> object
+     *
+     * @param filename cmap file path to parse
+     * @return contigs hashmap of cmap data
+     */
     public static LinkedHashMap cmapToHashMap(String filename) {
         String line;
         String fields[];
@@ -239,7 +262,6 @@ public class CmapReader {
                         chimQuality = fields[9];
                         labelInfo.setChimQuality(chimQuality);
                     }
-                    
 
                     // if the reference contig is the same, add to same arraylist
                     if (cmapId.equals(lastCmapId) || "".equals(lastCmapId)) {

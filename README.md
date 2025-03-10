@@ -1,27 +1,34 @@
-
-
 # MapOptics
 MapOptics is a lightweight cross-platform tool that enables the user to visualise and interact with the alignment of Bionano optical mapping data and can be used for in depth exploration of hybrid scaffolding alignments.
 
 # How to install MapOptics
 #### 1. Through the Java JAR executable:
-The easiest way to get started is to download the stable release [here](https://github.com/FadyMohareb/mapoptics/releases). Uncompres the zipped file and run the JAR executable directly.
+The easiest way to get started is to download the stable release [here](https://github.com/Marie-Schmit/mapoptics2.0). Uncompres the zipped file and run the JAR executable directly.
 
-Alternatively, you can clone the git repository:
+Alternatively, you can clone the git repository: 
 
 ```
 git clone https://github.com/franpeters/mapoptics
 cd mapoptics/dist/
 java -jar MapOptics.jar
 ```
-If you wish to utilise the alignment pipeline:
 
-Copy the contents of the 'Server_files' folder onto a Linux server.
+#### 2. Server setup
+
+To set up the server, first pull MapOptics image from DockerHub:
+```
+sudo docker pull marieschmit/mapoptics_docker_server:ubuntu16v6
+```
+
+Give Docker sudo access in the external server:
+```
+sudo usermod -aG docker $USERNAME
+```
 
 ## Start Screen
-![alt text](https://github.com/franpeters/MapOptics/blob/master/UserGuide/StartUp.png "Start Screen"
+![alt text](UserGuide/StartUp.png) "Start Screen"
 
-On start-up of MapOptics, a window will launch whereby you can choose to launch the ‘Verify Genome Assembly’ pipeline by clicking button A. To launch the ‘Perform Comparative Genomics’ pipeline click button B. Button C will show information about program and button D will launch a window showing this help document. Pressing button E will exit the program. 
+On start-up of MapOptics, a window will launch whereby you can choose to launch the ‘Verify Genome Assembly’ pipeline by clicking button A. To launch the ‘Perform Comparative Genomics’ pipeline click button B. Button D will launch a window showing this help document. Pressing button E will exit the program. 
 
 ## Verify Genome Assembly
 
@@ -48,7 +55,7 @@ Once maps have been loaded, click Run and the software should populate the table
 ----
 # Summary View
 Summary View provides a good overview for the user to navigate through the contigs of the reference dataset using the table on the left, to view the alignments and quality of the contigs on the right.
-![alt text](https://github.com/franpeters/MapOptics/blob/master/UserGuide/Fig1.png "Summary View")
+![alt text](UserGuide/Fig1.png "Summary View")
 
 (A)	The table of reference contigs should be populated when the maps are loaded. This includes information on the reference contig length, number of labels, label density (/100kb), number of query contigs aligned to the reference and number of query contigs which overlap in regions of their alignment. The table can be sorted in order of any of these fields. When a row of the table is selected, the information of that reference is displayed.
 
@@ -64,7 +71,7 @@ If a user wishes to explore the alignments of a reference contig in more detail,
 
 # Reference View
 Reference View gives the user more of an interactive view of the contig alignment with more information on aspects of their quality.
- ![alt text]( https://github.com/franpeters/MapOptics/blob/master/UserGuide/Fig2.png "Reference View")
+ ![alt text](UserGuide/Fig2.png "Reference View")
  
  
 (A)	The display generated for Reference View is similar to that of Summary View but is more interactive. Here, the user can drag the contigs and screen so as to centre the view as required.
@@ -80,7 +87,7 @@ If the user wishes to explore a single alignment between one reference and one q
 # Query View
 Query View shows the most in detail view of one alignment. Here the user can see a simplified view of one alignment and navigate through all the labels on the query contig.
 
-![alt text](https://github.com/franpeters/MapOptics/blob/master/UserGuide/Fig3.png "Query View")
+![alt text](UserGuide/Fig3.png "Query View")
 
 (A)	The display generated for Query View is not as interactive as Reference View. By default, the query contig is oriented positively and positioned to match the leftmost alignment. The display settings match those set in Reference View (e.g. label style).
 
@@ -120,49 +127,79 @@ Finally, the user must select which dataset the FASTA file is in regards to, the
 
 ## Comparative Genomics
 
-# Comparative Genomics Start
-![alt text]( https://github.com/franpeters/MapOptics/blob/master/UserGuide/compgenstart.png "CompGenStart")
+# User identification
+![alt text](UserGuide/useridentification.png "UserIdentification")
 
-Upon launching the comparative genomics pipeline a window showing will launch, with all previously submitted jobs to MapOptics shown in table A. By clicking on a row in the table the job name will appear in text field B. 
-To query the progress of the selected job, click on button C and the log.txt file corresponding to that job will be queried and the latest update will appear in table A. 
-To open the results into the Comparative Genomics View window click on button D. 
-To launch the window to begin performing alignment of two genomes within MapOptics click on button E, otherwise choose option F to upload files relating to a completed alignment of two genomes, see section 5 for information on required files and accepted file formats.
+A window for user identification will open. Here, enter your username and password. Those will be used to securely store and access servers sensitive information (for instance servers password) from one session to the other. On your first connection, choose your username and associated password. Please be careful to remember them later: they are not stored in MapOptics.
+
+The password must be 16 characters long. A message indicates if it size is not 16 characters (D). Type your username (A) password (B), then the confirmation (C) and save (E).
+
+
+# Comparative Genomics Start
+![alt text](UserGuide/compgenstart.png "CompGenStart")
+
+Upon launching the comparative genomics pipeline a window will open, with all previously submitted jobs to MapOptics shown in table A. By clicking on a row in the table, the job name will appear in text field B. 
+To query the progress of the selected job, click on button C and the log.txt file corresponding to that job will be queried and the latest update will appear in table A. The possible states of a job are the following:
+* Failed: The server could not be reached, or the job failed and its log file does not exist. In the first case, error messages will indicate a failed connection.
+* Start: The job was successfully started but no other step has finished.
+* Reference digested: The reference was successfully digested. This is the first step of each job.
+* Query digested: The query was successfully digested.
+* Aligning data using RefAligner or FaNDOM: Alignment is processed by the indicated aligner. It includes alignment and SV detection.
+* Complete: The job was successfully calculated, the results are available in Results folder. They can be downloaded and displayed in MapOptics with the button "Open results" (D).
+
+To open the results into the Comparative Genomics View window, click on button D. 
+To launch the window to begin performing alignment of two genomes within MapOptics, click on button E, otherwise choose option F to upload files relating to a completed alignment of two genomes. See section 5 for information on required files and accepted file formats.
 
 # New Alignment Job
-![alt text]( https://github.com/franpeters/MapOptics/blob/master/UserGuide/newjob.png "New Job")
+![alt text](UserGuide/newjob.png "New Job")
 
-To send a new alignment job six files are required alongside a job name, chosen digestion enzyme and pipeline. The send new job window (Figure 3) will be used to upload these files and submit the new job to the server. To upload files to a server, MapOptics must be connected to a sever. This is achieved using button D. The button will change to green if a connection is established successfully (Figure 3).
+To send a new alignment job, three files are required (a reference and query genome and a reference annotation file) alongside a job name, chosen digestion enzyme and pipeline. The query annotation file is not required. The "send new job" window will be used to upload those files and submit the new job to the server. To upload files to a server, MapOptics must be connected to a sever. This is achieved using button D. The button will change to green if a connection is established successfully (Figure 3). Added servers are saved from one session to another.
 
-Next a Job name must be selected. Note: a job name must not contain any numbers as the first character nor any spaces. The buttons J, N, Q and U will now become enabled and uploading the required files to the server can begin. 
+Then, a job name must be selected. Note: a job name must not contain any numbers as the first character, nor any spaces. The button F will then be enabled to set the jobs: new folders will be created for the job. Once jobs are set, buttons "Upload" (I, M) will be enabled to upload the choosen query and reference files.
 
-Next selection of restriction enzyme can occur, either using an enzyme chosen from a list of supported enzymes or an enzyme that has been analysed by MapOptics. Note: if using experimental cmap data for your query genome the chosen enzyme must match the enzyme used to generate this data else the alignment will not run.
+Those files can either be saved and locally selected, or uploaded via URL: those options are available in "File" (A). The reference file must be in FASTA format, while the query can be in CMAP or FASTA format. See section 5 for information on required files and accepted file formats.
 
-Once the digestion enzyme has been selected the alignment algorithm must be selected. MapOptics currently supports two algorithms, RefAligner and FaNDOM. Using the radio buttons (S) either one can be selected. 
+Once files are uploaded, selection of restriction enzyme can occur: either using an enzyme chosen from a list of supported enzymes (O) or an enzyme that has been analysed by MapOptics (P). In that case, the reference or query is digested by all the available enzymes and their restriction sites density is calculated and displayed on a new window. This allows to chose an enzyme based on its density scores. By default, the enzyme with the higher density score is selected when the window opens. The radio button (Q) indicates on which file (reference or query) the density scores must be calculated.
 
-Once the form has been completed, the alignment job can be executed on the server by clicking button U. This window will close, and you will return to the previous window.
+If the chosen query is in CMAP format, the enzyme used to digest the reference is by default the same as the one used to digest the query CMAP. In that case, enzyme selection section is not available. If the digestion enzyme of the query cannot be extracted from the CMAP, the selection section is available. A message will indicate this situation.
+**In that case, if using experimental CMAP data for your query genome, with no extracted enzyme from the CMAP, the chosen enzyme must match the enzyme used to generate this data. Else, the alignment will not run.**
+
+Once the digestion enzyme has been selected, the alignment algorithm must be selected. MapOptics currently supports two algorithms, RefAligner and FaNDOM. Using the radio buttons (R) either one can be selected.
+
+Once the form has been completed, the alignment job can be executed on the server by clicking button "Start" (T). This window will close, and you will return to the previous window.
+
+For further information, opens the "Help" section (button S).
 
 # Genome View
 
-![alt text]( https://github.com/franpeters/MapOptics/blob/master/UserGuide/compgenview.png "CompGenView")
+![alt text](UserGuide/compgenview.png "CompGenView")
 
-Genome view is divided into four main sections, A which lists information about the job the data was generated from, B contains a table with all the chromosomes contained within the reference genome, C which is a graphical representation of all the chromosomes within the reference genome and D which is a tabbed pane containing graphs of structural variants across the genome, number of alignments per chromosome and also a graphic of all the translocation events detected. 
+Genome view is divided into four main sections: A lists information about the job the data was generated from, B contains a table with all the chromosomes contained within the reference genome, C is a graphical representation of all the chromosomes within the reference genome and D is a tabbed pane containing graphs of structural variants across the genome, number of alignments per chromosome and also a graphic of all the translocation events detected. 
 
 The chromosomes in the chromosome table (C) can be clicked on, which will change the selected tab to ‘chromosome view’. The chromosome being viewed in query view will also be set to this selected chromosome. 
 
+# Translocations section
+
+![alt text](UserGuide/translocations.png "Translocations")
+
+Translocations identified in the alignment file are directly displayed on the translocation section. However, they can also be extracted from FaNDOM or RefAligner output, respectively SV.txt or SMAP file. To upload and display those results, choose "File, Upload Smap data" (A).
+
+Translocations are displayed on a circos plot (B) and on a table listing the chromosomes involved (C). If a dataset comports a very large number of translocations, they are splitted on different pages, which can be navigated through using the arrow buttons (D).
+
 # Chromosome View
-![alt text]( https://github.com/franpeters/MapOptics/blob/master/UserGuide/chromosomeview.png "Chromosomeview")
+![alt text](UserGuide/chromosomeview.png "Chromosomeview")
 
 Chromosome view shows all the different alignments across the whole chromosome in panel A. The chromosome is represented by the grey rectangle and a scale bar is drawn at the top of the panel for reference. Each alternating alignment is assigned a different colour to distinguish between different adjacent alignments. 
 
-An alignment which has a ’-‘ alignment will be indicated by the two alignment lines forming a ‘X’ shape. Those which have a’+’ alignment will be drawn perpendicularly to the chromosome rectangle. Using the table C, a user can click on an alignment to highlight its position. Finally, button B can be used to clear any previous highlighting.
+An alignment which has a ’-‘ alignment will be indicated by the two alignment lines forming a ‘X’ shape. Those which have a ’+’ alignment will be drawn perpendicularly to the chromosome rectangle. Using the table C, you can click on an alignment to highlight its position. Finally, button B can be used to clear any previous highlighting.
 
 # Query View
 
-![alt text]( https://github.com/franpeters/MapOptics/blob/master/UserGuide/queryview.png "Queryview")
+![alt text](UserGuide/queryview.png "Queryview")
 
-Query view (Figure 17) allows the user to zoom in on alignments within a query range given by the user. Information on how to change the range can be found in section 4.4.1. 
+Query view (Figure 17) allows to zoom in on alignments within a given query range. Information on how to change the range can be found in section 4.4.1. 
 
-The user is provided with an annotated view of the alignment to the chromosome of choice, which must be selected in genome view (Figure 15) prior to using this view. Track A shows locations of the annotations provided in the annotation file. 
+An annotated view of the alignment to the chromosome of choice is provided, which must be selected in genome view (Figure 15) prior to using this view. Track A shows locations of the annotations provided in the annotation file. 
 
 The reference chromosome is denotated by a grey rectangle (B), with sites that have been aligned to the reference drawn as a green line and those which have not been aligned a black line. Black lines are drawn to match query sites to reference sites (C). 
 
@@ -175,55 +212,71 @@ Additional information is provided in the tabs F, G and H, where tables containi
 
 MapOptics Comparative Genomics requires all files uploaded to follow strict criteria to minimise chance of errors occurring.
 
-Fasta
+**Fasta**
 
-The fasta file containing the genomes of the reference and query genomes must follow standard fasta format. Each chromosome of the genome must be one contiguous sequence and the header contain the chromosome name. 
+The fasta file containing the genomes of the reference and query genomes must follow standard fasta format. Each chromosome of the genome must be one contiguous sequence and the header contains the chromosome name. 
 
-Cmap
+**Cmap**
 
 All cmap files must follow the format laid out by Bionano genomics found here:
 https://bionanogenomics.com/wp-content/uploads/2017/03/30039-CMAP-File-Format-Specification-Sheet.pdf
 
-Xmap
+**Xmap**
 
 All xmap files must follow the format laid out by BioNano genomics found here:
 https://bionanogenomics.com/wp-content/uploads/2017/03/30040-XMAP-File-Format-Specification-Sheet.pdf
 
-Annotation
+**Annotation**
 
 MapOptics Comparative Genomics currently supports annotation files in GFF3 and GTF format.  Information about each can be found here:
 https://www.ensembl.org/info/website/upload/gff3.html
 
-Karyotype
+**Karyotype**
 
 The karyotype file used in MapOptics is a simple text file with two columns and no headers. The columns are space delimited. The first column is the length of the chromosome to one decimal place and the second column is the chromosome name, extracted from the fasta header. 
 
+**SV.txt**
+
+This file is FaNDOM SVs detection output. Its format is detailed here:
+https://www.youtube.com/watch?v=T8Pasp3Aa9M
+
+**SMAP **
+
+This file is RefAligner SVs detection output. All SMAP files must follow the format laid out by BioNano genomics found here:
+https://bionanogenomics.com/wp-content/uploads/2017/03/30041-SMAP-File-Format-Specification-Sheet.pdf
+
 # Server set-up
 
-In order for MapOptics to perform alignment a linux based server using either CentOS or Ubuntu is recommended. All files from the ‘Server_files’ directory must be uploaded to the server. 
+In order for MapOptics to perform alignment, a linux based server using either CentOS or Ubuntu is recommended. The Docker image marieschmit/mapoptics_docker_server:ubuntu16v6 must be pulled from DockerHub.
 
-Hardware requirements
+**Hardware requirements**
 
-At least 32GB of RAM and space to install required softwares  and also upload data is required. 
+At least 32GB of RAM and space to install required softwares and upload data is required. 
 
-Software requirements
+**Software requirements**
+
+The following software will be installed in the Docker image.
 
 Bionano solve package https://bionanogenomics.com/support/software-downloads/
 FaNDOM v 0.2 https://github.com/jluebeck/FaNDOM
 Samtools v 0.1.19-96b5f2294a https://github.com/samtools/samtools
 runBNG v 2.01 https://github.com/AppliedBioinformatics/runBNG
 
-Working directory
+**Working directory**
  
-Each server must have a dedicated working directory to save the files in the ‘Server_files” directory. It is within this directory that the data for each submitted job will be saved to. 
+Each server must have a dedicated working directory to save the jobs files, called "mapoptics/jobs". It is within this directory that the data for each submitted job will be saved. 
 
 # Test Files
 
-Two test datasets are provided, except for the GFF files. Simply launch Comparative Genomics and click on the dataset to load.
+Various test datasets are provided. Simply launch Comparative Genomics and click on the dataset to load.
 
 # User Manual
 
 Full user manual can be found in /UserGuide/Comparative Genomics User Manual.pdf
+
+# Technical documentation
+
+Java documentation can be found [here](https://github.com/Marie-Schmit/mapoptics2.0/blob/master/dist/javadoc/index.html)
 
 ## How to Cite MapOptics:
 Burgin, J., Molitor, C., and Mohareb, F. (2018), ['MapOptics: A light-weight, cross-platform visualisation tool for optical mapping alignment'](https://academic.oup.com/bioinformatics/advance-article-abstract/doi/10.1093/bioinformatics/bty1013/5232997?redirectedFrom=fulltext), Bioinformatics.

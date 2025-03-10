@@ -1,0 +1,14 @@
+Algorithms
+ComparativeGenomics.Drawing
+ComparativeGenomics.FileHandling
+ComparativeGenomics.FileHandling.DataHandling
+ComparativeGenomics.Panels
+ComparativeGenomics.ServerHandling
+ComparativeGenomics.StructuralVariant
+Datasets.Default
+Datasets.UserEdited
+DataTypes
+FileHandling
+MapOptics
+startScreen
+UserInterface.ModelsAndRenderers
