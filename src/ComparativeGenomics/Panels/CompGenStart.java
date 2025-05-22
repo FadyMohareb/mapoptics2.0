@@ -2587,6 +2587,10 @@ public class CompGenStart extends javax.swing.JFrame {
         fileDialog.setVisible(true);
         this.localrefcmap = fileDialog.getDirectory() + fileDialog.getFile();
         this.localRefCmapName.setText(fileDialog.getFile());
+
+        String fileName = fileDialog.getFile();
+
+        uploadFiles.setBounds(uploadFiles.getX(), uploadFiles.getY(), fileName.length() * 10, uploadFiles.getHeight());
     }//GEN-LAST:event_chooseLocalRefCmapActionPerformed
 
     private void closeLocalWindowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeLocalWindowActionPerformed
@@ -2608,6 +2612,9 @@ public class CompGenStart extends javax.swing.JFrame {
         fileDialog.setVisible(true);
         this.localrefkary = fileDialog.getDirectory() + fileDialog.getFile();
         this.localRefKaryName.setText(fileDialog.getFile());
+        String fileName = fileDialog.getFile();
+
+        uploadFiles.setBounds(uploadFiles.getX(), uploadFiles.getY(), fileName.length() * 10, uploadFiles.getHeight());
     }//GEN-LAST:event_chooseLocalRefKaryotypeActionPerformed
 
     private void chooseLocalXmapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseLocalXmapActionPerformed
@@ -2616,6 +2623,9 @@ public class CompGenStart extends javax.swing.JFrame {
         fileDialog.setVisible(true);
         this.localxmap = fileDialog.getDirectory() + fileDialog.getFile();
         this.localXmapName.setText(fileDialog.getFile());
+        String fileName = fileDialog.getFile();
+
+        uploadFiles.setBounds(uploadFiles.getX(), uploadFiles.getY(), fileName.length() * 10, uploadFiles.getHeight());
     }//GEN-LAST:event_chooseLocalXmapActionPerformed
 
     private void bnt_helpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bnt_helpActionPerformed
@@ -2651,6 +2661,10 @@ public class CompGenStart extends javax.swing.JFrame {
         fileDialog.setVisible(true);
         this.localqrycmap = fileDialog.getDirectory() + fileDialog.getFile();
         this.localQryCmapName.setText(fileDialog.getFile());
+        String fileName = fileDialog.getFile();
+
+        uploadFiles.setBounds(uploadFiles.getX(), uploadFiles.getY(), fileName.length() * 10, uploadFiles.getHeight());
+
     }//GEN-LAST:event_chooseLocalQryCmapActionPerformed
 
     private void qryAnnotFileNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_qryAnnotFileNameActionPerformed
