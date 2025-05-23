@@ -23,11 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
@@ -42,7 +38,7 @@ import javax.crypto.spec.SecretKeySpec;
  * Manages creation and retrieval of information from server Json
  * files. Encryption or decryption of the Json, getting or saving jobs or
  * servers in those files.
- * 
+ *
  * @author Marie Schmit
  */
 public class JsonFiles {
@@ -65,12 +61,16 @@ public class JsonFiles {
     /**
      * Initialisation of access: compare the given password to the encrypted password saved in the user's
      * file, to verify its validity and give access to encrypted JSON files.
-     * 
+     *
      * @param user MapOptics username
      * @param password MapOptics password
      * @return false if access is denied, true if not
      */
     private boolean accessInitialisation(String user, String password) {
+        if (password == null || password.isEmpty()) {
+            System.out.println("Error: Password cannot be null or empty");
+            return false;
+        }
         this.strKey = password;
         this.currentUser = user;
 
@@ -84,14 +84,14 @@ public class JsonFiles {
         this.authenticatePassword = pathDirectory + "\\serverInfo\\" + user + ".txt";
 
         try {
-//            Make sure the json files for the jobs and server objects to be saved between sessions still exist
+            // Make sure the json files for the jobs and server objects to be saved between sessions still exist
             File jobsJson = new File(this.jobsPath);
             if (!jobsJson.exists()) {
                 Files.createDirectories(Paths.get(pathDirectory + "\\serverInfo"));
                 jobsJson.createNewFile();
                 System.out.println("New file created: " + this.jobsPath);
             }
-            // Check that server file exist, create it if neededs
+            // Check that server file exist, create it if needed
             File servJson = new File(this.serverPath);
             if (!servJson.exists()) {
                 Files.createDirectories(Paths.get(pathDirectory + "\\serverInfo"));
@@ -100,74 +100,66 @@ public class JsonFiles {
             }
             // Check that file in which password is saved exists, create it if required
             File checkPassword = new File(this.authenticatePassword);
-            if (checkPassword.exists()) {
+            if (checkPassword.exists() && checkPassword.length() > 0) {
                 // Check that given password corresponds to key saved in the file
                 try {
                     // Get first line of the file
                     FileInputStream inputStream = new FileInputStream(this.authenticatePassword);
                     Scanner sc = new Scanner(inputStream, "UTF-8");
-                    while (sc.hasNextLine()) {
+                    if (sc.hasNextLine()) {
                         // Decrypt the line saved in the file and compare to password
-                        // to check if entered password is true
-                        try {
-                            String cryptedPwd = sc.nextLine();
-                            String savedKey = decrypt(cryptedPwd, strKey.getBytes());
-                            // Check that the encrypted word saved in the file corresponds to the entered password
-                            if (this.strKey.equals(savedKey)) {
-                                return true;
-                            } else {
-                                return false;
-                            }
-
-                        } catch (InvalidKeyException e) {
-                            System.out.println("Invalid key for encryption)");
-                            e.printStackTrace();
-                        } catch (NoSuchPaddingException e) {
-                            e.printStackTrace();
-                        } catch (NoSuchAlgorithmException e) {
-                            e.printStackTrace();
-                        } catch (BadPaddingException e) {
-                            e.printStackTrace();
-                        } catch (IllegalBlockSizeException e) {
-                            e.printStackTrace();
+                        String cryptedPwd = sc.nextLine();
+                        String savedKey = decrypt(cryptedPwd, strKey.getBytes());
+                        sc.close();
+                        if (savedKey == null) {
+                            System.out.println("Decryption failed: Returned null");
+                            return false;
                         }
+                        // Check that the encrypted word saved in the file corresponds to the entered password
+                        if (this.strKey.equals(savedKey)) {
+                            return true;
+                        } else {
+                            System.out.println("Password does not match stored key");
+                            return false;
+                        }
+                    } else {
+                        System.out.println("Password file is empty, treating as new user");
+                        sc.close();
+                        checkPassword.delete(); // Remove empty file
                     }
                 } catch (FileNotFoundException ex) {
-                    System.out.println(ex);
-                }
-            } else {
-                try {
-                    // Create the file and saved the encrypted password in it
-                    Files.createDirectories(Paths.get(pathDirectory + "\\serverInfo"));
-                    checkPassword.createNewFile();
-                    // Add encrypted password to file
-                    BufferedWriter writer = new BufferedWriter(new FileWriter(checkPassword, true));
-                    try {
-                        String encryptPwd = encrypt(this.strKey, this.strKey.getBytes());
-                        writer.write(encryptPwd);
-                        writer.close();
-                    } catch (InvalidKeyException e) {
-                        System.out.println("Invalid key for encryption)");
-                        e.printStackTrace();
-                    } catch (NoSuchPaddingException e) {
-                        e.printStackTrace();
-                    } catch (NoSuchAlgorithmException e) {
-                        e.printStackTrace();
-                    } catch (BadPaddingException e) {
-                        e.printStackTrace();
-                    } catch (IllegalBlockSizeException e) {
-                        e.printStackTrace();
-                    }
-                    System.out.println("New file created: " + this.authenticatePassword);
-                    return true;
-                } catch (IOException e) {
-                    System.out.println(e);
+                    System.out.println("Password file not found: " + ex);
+                    ex.printStackTrace();
+                    return false;
                 }
             }
+            // If file doesn't exist or is empty, create it for a new user
+            try {
+                Files.createDirectories(Paths.get(pathDirectory + "\\serverInfo"));
+                checkPassword.createNewFile();
+                // Add encrypted password to file
+                BufferedWriter writer = new BufferedWriter(new FileWriter(checkPassword, true));
+                String encryptPwd = encrypt(this.strKey, this.strKey.getBytes());
+                if (encryptPwd == null) {
+                    System.out.println("Error: Encryption returned null");
+                    writer.close();
+                    checkPassword.delete(); // Clean up empty file
+                    return false;
+                }
+                writer.write(encryptPwd);
+                writer.close();
+                System.out.println("New user file created: " + this.authenticatePassword);
+                return true;
+            } catch (IOException e) {
+                System.out.println("Error creating password file: " + e);
+                e.printStackTrace();
+                return false;
+            }
         } catch (IOException ex) {
+            System.out.println("General IO error: " + ex);
             Logger.getLogger(runMapOptics.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
-        return false;
     }
 
     /**
@@ -185,7 +177,7 @@ public class JsonFiles {
     /**
      * Saves jobs information from a list of Job objects to the json file
      * "jobs.json" saved in the folder "serverInfo"
-     * Sensitive information like the password of the job's server are encrypted using the 
+     * Sensitive information like the password of the job's server are encrypted using the
      * encryption key provided by the user (which it the user's MapOPtics password).
      * Before encryption, the padding character is changed from "=" to "*"
      * to avoid any confusion with the "=" by default written in a JSON file.
@@ -227,17 +219,6 @@ public class JsonFiles {
                     writer.name("Ref Annotation").value(j.getRefAnnot());
                     writer.name("Qry Annotation").value(j.getQryAnnot());
                     writer.endObject();
-                } catch (InvalidKeyException exeption) {
-                    System.out.println("Invalid key for encryption)");
-                    exeption.printStackTrace();
-                } catch (NoSuchPaddingException exeption) {
-                    exeption.printStackTrace();
-                } catch (NoSuchAlgorithmException exeption) {
-                    exeption.printStackTrace();
-                } catch (BadPaddingException exeption) {
-                    exeption.printStackTrace();
-                } catch (IllegalBlockSizeException exeption) {
-                    exeption.printStackTrace();
                 } catch (NullPointerException exeption) {
                     exeption.printStackTrace();
                 }
@@ -290,17 +271,6 @@ public class JsonFiles {
 
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            System.out.println("Invalid key for encryption)");
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
         }
     }
 
@@ -328,39 +298,26 @@ public class JsonFiles {
                 for (Map.Entry<?, ?> entry : map.entrySet()) {
                     String[] value;
                     value = entry.getValue().toString().split("=");
-                    // Once strings are split on "=", 
+                    // Once strings are split on "=",
                     // temporary padding characters "*" can be replaced by the normal ones "="
 
 //        Work out how many servers are present
                     int numServers = (value.length) / 5;
-                    try {
-                        for (int s = 1; s <= numServers; s++) {
+                    for (int s = 1; s <= numServers; s++) {
 //            create server object
-                            String servUser = decrypt(value[2 + 5 * (s - 1)].replace("*", "=").split(",")[0], strKey.getBytes());
-                            String servHost = decrypt(value[3 + 5 * (s - 1)].replace("*", "=").split(",")[0], strKey.getBytes());
-                            String servPassword = decrypt(value[4 + 5 * (s - 1)].replace("*", "=").split(",")[0], strKey.getBytes());
-                            String servDirectory = decrypt(value[5 + 5 * (s - 1)].replace("*", "=").split(",")[0].replace("}", "").replaceAll("]", ""), strKey.getBytes());
+                        String servUser = decrypt(value[2 + 5 * (s - 1)].replace("*", "=").split(",")[0], strKey.getBytes());
+                        String servHost = decrypt(value[3 + 5 * (s - 1)].replace("*", "=").split(",")[0], strKey.getBytes());
+                        String servPassword = decrypt(value[4 + 5 * (s - 1)].replace("*", "=").split(",")[0], strKey.getBytes());
+                        String servDirectory = decrypt(value[5 + 5 * (s - 1)].replace("*", "=").split(",")[0].replace("}", "").replaceAll("]", ""), strKey.getBytes());
 
-                            ExternalServer serv = new ExternalServer(
-                                    value[1 + 5 * (s - 1)].replace("*", "=").split(",")[0],
-                                    servUser,
-                                    servHost,
-                                    servPassword,
-                                    servDirectory);
+                        ExternalServer serv = new ExternalServer(
+                                value[1 + 5 * (s - 1)].replace("*", "=").split(",")[0],
+                                servUser,
+                                servHost,
+                                servPassword,
+                                servDirectory);
 //           Add server object to array
-                            servers.add(serv);
-                        }
-                    } catch (InvalidKeyException e) {
-                        System.out.println("Invalid key for encryption)");
-                        e.printStackTrace();
-                    } catch (NoSuchPaddingException e) {
-                        e.printStackTrace();
-                    } catch (NoSuchAlgorithmException e) {
-                        e.printStackTrace();
-                    } catch (BadPaddingException e) {
-                        e.printStackTrace();
-                    } catch (IllegalBlockSizeException e) {
-                        e.printStackTrace();
+                        servers.add(serv);
                     }
                 }
                 // close reader
@@ -373,7 +330,7 @@ public class JsonFiles {
 
     /**
      * Gets the servers from this servers json file
-     * 
+     *
      * @param serversList list of servers
      * @return list of servers saved in this json file
      */
@@ -384,7 +341,7 @@ public class JsonFiles {
 
     /**
      * Gets jobs saved in this jobs json file
-     * 
+     *
      * @param jobsRunningList list of <code>Job</code> object, jobs that are running
      * @return list of servers saved in the json file
      */
@@ -431,45 +388,28 @@ public class JsonFiles {
 
                             //            create server object
                             // Populate with name, user, host, pass, dir
-                            try {
-                                ExternalServer serv = new ExternalServer(
-                                        value[2 + 16 * (j - 1)].split(",")[0],
-                                        value[3 + 16 * (j - 1)].split(",")[0],
-                                        value[4 + 16 * (j - 1)].split(",")[0],
-                                        decrypt(value[5 + 16 * (j - 1)].replace("*", "=").split(",")[0], strKey.getBytes()),
-                                        value[6 + 16 * (j - 1)].split(",")[0]);
-                                //            create job object
-                                // Populate with name, query and reference fasta, status, ref and qry organism
-                                // Ref and query annotations
-                                Job job = new Job(serv,
-                                        value[1 + 16 * (j - 1)].split(",")[0],
-                                        value[8 + 16 * (j - 1)].split(",")[0],
-                                        value[7 + 16 * (j - 1)].split(",")[0],
-                                        enz,
-                                        value[11 + 16 * (j - 1)].split(",")[0],
-                                        value[12 + 16 * (j - 1)].split(",")[0],
-                                        value[14 + 16 * (j - 1)].split(",")[0],
-                                        value[13 + 16 * (j - 1)].split(",")[0],
-                                        value[15 + 16 * (j - 1)].split(",")[0],
-                                        value[16 + 16 * (j - 1)].split(",")[0].replace("}", "").replaceAll("]", ""));
-                                //           Add job object to array
-                                jobsRunning.add(job);
-                            } catch (InvalidKeyException e) {
-                                System.out.println("Invalid key for jobs decryption");
-                                e.printStackTrace();
-                            } catch (NoSuchPaddingException e) {
-                                System.out.println("Invalid padding while getting jobs");
-                                e.printStackTrace();
-                            } catch (NoSuchAlgorithmException e) {
-                                System.out.println("Invalid decryption algorithm for getting jobs");
-                                e.printStackTrace();
-                            } catch (BadPaddingException e) {
-                                System.out.println("Invalid padding while getting jobs");
-                                e.printStackTrace();
-                            } catch (IllegalBlockSizeException e) {
-                                System.out.println("Invalid block size while getting jobs");
-                                e.printStackTrace();
-                            }
+                            ExternalServer serv = new ExternalServer(
+                                    value[2 + 16 * (j - 1)].split(",")[0],
+                                    value[3 + 16 * (j - 1)].split(",")[0],
+                                    value[4 + 16 * (j - 1)].split(",")[0],
+                                    decrypt(value[5 + 16 * (j - 1)].replace("*", "=").split(",")[0], strKey.getBytes()),
+                                    value[6 + 16 * (j - 1)].split(",")[0]);
+                            //            create job object
+                            // Populate with name, query and reference fasta, status, ref and qry organism
+                            // Ref and query annotations
+                            Job job = new Job(serv,
+                                    value[1 + 16 * (j - 1)].split(",")[0],
+                                    value[8 + 16 * (j - 1)].split(",")[0],
+                                    value[7 + 16 * (j - 1)].split(",")[0],
+                                    enz,
+                                    value[11 + 16 * (j - 1)].split(",")[0],
+                                    value[12 + 16 * (j - 1)].split(",")[0],
+                                    value[14 + 16 * (j - 1)].split(",")[0],
+                                    value[13 + 16 * (j - 1)].split(",")[0],
+                                    value[15 + 16 * (j - 1)].split(",")[0],
+                                    value[16 + 16 * (j - 1)].split(",")[0].replace("}", "").replaceAll("]", ""));
+                            //           Add job object to array
+                            jobsRunning.add(job);
                         }
                     }
                 }
@@ -484,9 +424,7 @@ public class JsonFiles {
 
     /**
      * Encrypts a message.
-     * 
-     * @param message message in clear
-     * @param keyBytes public encryption key in bytes
+     *
      * @return encryptedMessage encrypted message
      * @throws InvalidKeyException
      * @throws NoSuchPaddingException
@@ -494,17 +432,20 @@ public class JsonFiles {
      * @throws BadPaddingException
      * @throws IllegalBlockSizeException
      */
-    private String encrypt(String message, byte[] publicKey)
-            throws InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException,
-            BadPaddingException, IllegalBlockSizeException {
+    private String encrypt(String data, byte[] key) {
         try {
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-            SecretKey secretKey = new SecretKeySpec(publicKey, "AES");
+            // Ensure key is 16 bytes for AES-128
+            byte[] adjustedKey = new byte[16];
+            Arrays.fill(adjustedKey, (byte) 0); // Fill with zeros
+            System.arraycopy(key, 0, adjustedKey, 0, Math.min(key.length, 16));
+
+            Cipher cipher = Cipher.getInstance("AES");
+            SecretKeySpec secretKey = new SecretKeySpec(adjustedKey, "AES");
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-            byte[] encryptedMessage = cipher.doFinal(message.getBytes());
-            return Base64.getEncoder().encodeToString(encryptedMessage);
-        } catch (Exception exc) {
-            System.out.println("Encryption failed " + exc);
+            byte[] encrypted = cipher.doFinal(data.getBytes());
+            return Base64.getEncoder().encodeToString(encrypted);
+        } catch (Exception e) {
+            System.out.println("Encryption failed: " + e);
             return null;
         }
     }
@@ -512,28 +453,27 @@ public class JsonFiles {
     /**
      * Decrypts an encrypted message.
      *
-     * @param cryptedMessage encrypted message
-     * @param publicKey public encryption key in bytes
+     * @param encryptedData encrypted message
      * @return decrypted message, in clear
      * @throws NoSuchPaddingException
-     * @throws NoSuchAligorithmException
      * @throws InvalidKeyException
      * @throws BadPaddingException
      * @throws IllegalBlockSizeException
      */
-    private String decrypt(String cryptedMessage, byte[] publicKey)
-            throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
-            BadPaddingException, IllegalBlockSizeException {
+    private String decrypt(String encryptedData, byte[] key) {
         try {
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-            SecretKey secretKey = new SecretKeySpec(publicKey, "AES");
+            // Ensure key is 16 bytes for AES-128
+            byte[] adjustedKey = new byte[16];
+            Arrays.fill(adjustedKey, (byte) 0); // Fill with zeros
+            System.arraycopy(key, 0, adjustedKey, 0, Math.min(key.length, 16));
+
+            Cipher cipher = Cipher.getInstance("AES");
+            SecretKeySpec secretKey = new SecretKeySpec(adjustedKey, "AES");
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
-            // Decode crypted message from base 64 to normal string
-            byte[] message = Base64.getDecoder().decode(cryptedMessage);
-            // Decypher message and convert it to string
-            return new String(cipher.doFinal(message));
-        } catch (Exception IllegalArgumentException) {
-            System.out.println("Decypher, illegal argument " + IllegalArgumentException);
+            byte[] decrypted = cipher.doFinal(Base64.getDecoder().decode(encryptedData));
+            return new String(decrypted);
+        } catch (Exception e) {
+            System.out.println("Decryption failed: " + e);
             return null;
         }
     }

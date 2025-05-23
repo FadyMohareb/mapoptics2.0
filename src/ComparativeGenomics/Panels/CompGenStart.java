@@ -318,38 +318,38 @@ public class CompGenStart extends javax.swing.JFrame {
         javax.swing.GroupLayout serverPanelLayout = new javax.swing.GroupLayout(serverPanel);
         serverPanel.setLayout(serverPanelLayout);
         serverPanelLayout.setHorizontalGroup(
-            serverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(serverPanelLayout.createSequentialGroup()
-                .addGap(11, 11, 11)
-                .addGroup(serverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel12)
-                    .addComponent(jLabel7))
-                .addGap(18, 18, 18)
-                .addGroup(serverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(serverPanelLayout.createSequentialGroup()
-                        .addComponent(userJobName, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(setJobName, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(serverPanelLayout.createSequentialGroup()
-                        .addComponent(serverLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(connectServerToggle)))
-                .addContainerGap())
+                serverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(serverPanelLayout.createSequentialGroup()
+                                .addGap(11, 11, 11)
+                                .addGroup(serverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jLabel12)
+                                        .addComponent(jLabel7))
+                                .addGap(18, 18, 18)
+                                .addGroup(serverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(serverPanelLayout.createSequentialGroup()
+                                                .addComponent(userJobName, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(setJobName, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(serverPanelLayout.createSequentialGroup()
+                                                .addComponent(serverLabel)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(connectServerToggle)))
+                                .addContainerGap())
         );
         serverPanelLayout.setVerticalGroup(
-            serverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(serverPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(serverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(serverLabel)
-                    .addComponent(connectServerToggle))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(serverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel12)
-                    .addComponent(userJobName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(setJobName))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                serverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(serverPanelLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(serverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel7)
+                                        .addComponent(serverLabel)
+                                        .addComponent(connectServerToggle))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(serverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel12)
+                                        .addComponent(userJobName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(setJobName))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         //define the automatically set server as the first one in the table
@@ -383,42 +383,42 @@ public class CompGenStart extends javax.swing.JFrame {
         javax.swing.GroupLayout sendRefGenomePanelLayout = new javax.swing.GroupLayout(sendRefGenomePanel);
         sendRefGenomePanel.setLayout(sendRefGenomePanelLayout);
         sendRefGenomePanelLayout.setHorizontalGroup(
-            sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(sendRefGenomePanelLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel32)
-                    .addComponent(jLabel13)
-                    .addComponent(refGenomeLabel))
-                .addGap(18, 18, 18)
-                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(refSpecies, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(refGenomeFile, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(refProgressBar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(refAnnotFileName))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(uploadFileRef)
-                .addContainerGap())
+                sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(sendRefGenomePanelLayout.createSequentialGroup()
+                                .addGap(20, 20, 20)
+                                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jLabel32)
+                                        .addComponent(jLabel13)
+                                        .addComponent(refGenomeLabel))
+                                .addGap(18, 18, 18)
+                                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(refSpecies, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(refGenomeFile, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(refProgressBar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(refAnnotFileName))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(uploadFileRef)
+                                .addContainerGap())
         );
         sendRefGenomePanelLayout.setVerticalGroup(
-            sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(sendRefGenomePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(refSpecies)
-                    .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(refGenomeFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(uploadFileRef)
-                    .addComponent(refGenomeLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(refProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel32)
-                    .addComponent(refAnnotFileName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(sendRefGenomePanelLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(refSpecies)
+                                        .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(refGenomeFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(uploadFileRef)
+                                        .addComponent(refGenomeLabel))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(refProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(sendRefGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel32)
+                                        .addComponent(refAnnotFileName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap())
         );
 
         uploadFileRef.setEnabled(false);
@@ -456,56 +456,56 @@ public class CompGenStart extends javax.swing.JFrame {
         javax.swing.GroupLayout sendQueryGenomePanelLayout = new javax.swing.GroupLayout(sendQueryGenomePanel);
         sendQueryGenomePanel.setLayout(sendQueryGenomePanelLayout);
         sendQueryGenomePanelLayout.setHorizontalGroup(
-            sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, sendQueryGenomePanelLayout.createSequentialGroup()
-                .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
-                        .addGap(47, 47, 47)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel31))
-                    .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
-                        .addGap(48, 48, 48)
-                        .addComponent(qryGenomeLabel))
-                    .addComponent(jLabel33, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(18, 18, 18)
-                .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(qryAnnotFileName, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(queryGenomeFileName, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(queryProgressBar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(qrySpecies))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(uploadQryGenome)
-                .addGap(8, 8, 8))
+                sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, sendQueryGenomePanelLayout.createSequentialGroup()
+                                .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
+                                                .addGap(47, 47, 47)
+                                                .addComponent(jLabel4)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jLabel31))
+                                        .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
+                                                .addGap(48, 48, 48)
+                                                .addComponent(qryGenomeLabel))
+                                        .addComponent(jLabel33, javax.swing.GroupLayout.Alignment.TRAILING))
+                                .addGap(18, 18, 18)
+                                .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(qryAnnotFileName, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(queryGenomeFileName, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(queryProgressBar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(qrySpecies))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(uploadQryGenome)
+                                .addGap(8, 8, 8))
         );
         sendQueryGenomePanelLayout.setVerticalGroup(
-            sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
-                .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
-                            .addGap(5, 5, 5)
-                            .addComponent(jLabel4))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sendQueryGenomePanelLayout.createSequentialGroup()
-                            .addComponent(jLabel31, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
-                            .addGap(23, 23, 23)))
-                    .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
-                        .addComponent(qrySpecies)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(queryGenomeFileName, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(uploadQryGenome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(qryGenomeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
-                        .addGap(7, 7, 7)
-                        .addComponent(queryProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(7, 7, 7)
-                        .addComponent(qryAnnotFileName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sendQueryGenomePanelLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel33, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
+                                                        .addGap(5, 5, 5)
+                                                        .addComponent(jLabel4))
+                                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sendQueryGenomePanelLayout.createSequentialGroup()
+                                                        .addComponent(jLabel31, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
+                                                        .addGap(23, 23, 23)))
+                                        .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
+                                                .addComponent(qrySpecies)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                        .addComponent(queryGenomeFileName, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(uploadQryGenome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(qryGenomeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGroup(sendQueryGenomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(sendQueryGenomePanelLayout.createSequentialGroup()
+                                                .addGap(7, 7, 7)
+                                                .addComponent(queryProgressBar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(7, 7, 7)
+                                                .addComponent(qryAnnotFileName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sendQueryGenomePanelLayout.createSequentialGroup()
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jLabel33, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         uploadQryGenome.setEnabled(false);
@@ -564,49 +564,49 @@ public class CompGenStart extends javax.swing.JFrame {
         javax.swing.GroupLayout settingsPanelLayout = new javax.swing.GroupLayout(settingsPanel);
         settingsPanel.setLayout(settingsPanelLayout);
         settingsPanelLayout.setHorizontalGroup(
-            settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(settingsPanelLayout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel9)
-                        .addGap(13, 13, 13)
-                        .addComponent(refalignerPipeline)
-                        .addGap(18, 18, 18)
-                        .addComponent(fandomPipeline))
-                    .addGroup(settingsPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(setEnzymeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(runCalcBestEnzyme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(chooseEnzyme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addComponent(calculateQuery)
-                        .addGap(18, 18, 18)
-                        .addComponent(calculateReference)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(settingsPanelLayout.createSequentialGroup()
+                                .addGap(17, 17, 17)
+                                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(settingsPanelLayout.createSequentialGroup()
+                                                .addComponent(jLabel9)
+                                                .addGap(13, 13, 13)
+                                                .addComponent(refalignerPipeline)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(fandomPipeline))
+                                        .addGroup(settingsPanelLayout.createSequentialGroup()
+                                                .addComponent(jLabel3)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(setEnzymeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                        .addComponent(runCalcBestEnzyme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(chooseEnzyme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                .addGap(18, 18, 18)
+                                                .addComponent(calculateQuery)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(calculateReference)))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         settingsPanelLayout.setVerticalGroup(
-            settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, settingsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(setEnzymeLabel)
-                    .addComponent(chooseEnzyme))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(runCalcBestEnzyme)
-                    .addComponent(calculateQuery)
-                    .addComponent(calculateReference))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9)
-                    .addComponent(refalignerPipeline)
-                    .addComponent(fandomPipeline))
-                .addContainerGap(28, Short.MAX_VALUE))
+                settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, settingsPanelLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel3)
+                                        .addComponent(setEnzymeLabel)
+                                        .addComponent(chooseEnzyme))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(runCalcBestEnzyme)
+                                        .addComponent(calculateQuery)
+                                        .addComponent(calculateReference))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(settingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel9)
+                                        .addComponent(refalignerPipeline)
+                                        .addComponent(fandomPipeline))
+                                .addContainerGap(28, Short.MAX_VALUE))
         );
 
         chooseEnzyme.setEnabled(false);
@@ -731,36 +731,36 @@ public class CompGenStart extends javax.swing.JFrame {
         javax.swing.GroupLayout makeCompGenJobLayout = new javax.swing.GroupLayout(makeCompGenJob.getContentPane());
         makeCompGenJob.getContentPane().setLayout(makeCompGenJobLayout);
         makeCompGenJobLayout.setHorizontalGroup(
-            makeCompGenJobLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(makeCompGenJobLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(makeCompGenJobLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(sendRefGenomePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(sendQueryGenomePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(serverPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(makeCompGenJobLayout.createSequentialGroup()
-                        .addComponent(bnt_help)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(startJobButton)
-                        .addContainerGap())
-                    .addComponent(settingsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                makeCompGenJobLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(makeCompGenJobLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(makeCompGenJobLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(sendRefGenomePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(sendQueryGenomePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(serverPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(makeCompGenJobLayout.createSequentialGroup()
+                                                .addComponent(bnt_help)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(startJobButton)
+                                                .addContainerGap())
+                                        .addComponent(settingsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         makeCompGenJobLayout.setVerticalGroup(
-            makeCompGenJobLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(makeCompGenJobLayout.createSequentialGroup()
-                .addGap(7, 7, 7)
-                .addComponent(serverPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sendRefGenomePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sendQueryGenomePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(7, 7, 7)
-                .addComponent(settingsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(makeCompGenJobLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(bnt_help)
-                    .addComponent(startJobButton))
-                .addGap(7, 7, 7))
+                makeCompGenJobLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(makeCompGenJobLayout.createSequentialGroup()
+                                .addGap(7, 7, 7)
+                                .addComponent(serverPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(sendRefGenomePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(sendQueryGenomePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(7, 7, 7)
+                                .addComponent(settingsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(makeCompGenJobLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(bnt_help)
+                                        .addComponent(startJobButton))
+                                .addGap(7, 7, 7))
         );
 
         startJobButton.setEnabled(false);
@@ -781,25 +781,25 @@ public class CompGenStart extends javax.swing.JFrame {
         javax.swing.GroupLayout refURLDialogLayout = new javax.swing.GroupLayout(refURLDialog.getContentPane());
         refURLDialog.getContentPane().setLayout(refURLDialogLayout);
         refURLDialogLayout.setHorizontalGroup(
-            refURLDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(refURLDialogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel21)
-                .addGap(18, 18, 18)
-                .addComponent(referenceURL, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(saveRefURL)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                refURLDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(refURLDialogLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel21)
+                                .addGap(18, 18, 18)
+                                .addComponent(referenceURL, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(saveRefURL)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         refURLDialogLayout.setVerticalGroup(
-            refURLDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(refURLDialogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(refURLDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel21)
-                    .addComponent(referenceURL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(saveRefURL))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                refURLDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(refURLDialogLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(refURLDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel21)
+                                        .addComponent(referenceURL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(saveRefURL))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         newServerDialog.setBounds(new java.awt.Rectangle(500, 500, 285, 268));
@@ -863,66 +863,66 @@ public class CompGenStart extends javax.swing.JFrame {
         javax.swing.GroupLayout newServerDialogLayout = new javax.swing.GroupLayout(newServerDialog.getContentPane());
         newServerDialog.getContentPane().setLayout(newServerDialogLayout);
         newServerDialogLayout.setHorizontalGroup(
-            newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(newServerDialogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(showPass)
-                    .addGroup(newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(newServerDialogLayout.createSequentialGroup()
-                            .addComponent(clearNewServerFields)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(setNewAsServer)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(addNewServer))
-                        .addGroup(newServerDialogLayout.createSequentialGroup()
-                            .addGroup(newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel23)
-                                .addComponent(jLabel22)
-                                .addComponent(jLabel5)
-                                .addComponent(jLabel24)
-                                .addComponent(jLabel8))
-                            .addGap(20, 20, 20)
-                            .addGroup(newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(userNameField, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
-                                .addComponent(workingDirField)
-                                .addComponent(serverNameField)
-                                .addComponent(serverPasswordField)
-                                .addComponent(hostAddressField)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap()
+                                .addGroup(newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(showPass)
+                                        .addGroup(newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addGroup(newServerDialogLayout.createSequentialGroup()
+                                                        .addComponent(clearNewServerFields)
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(setNewAsServer)
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                        .addComponent(addNewServer))
+                                                .addGroup(newServerDialogLayout.createSequentialGroup()
+                                                        .addGroup(newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                                .addComponent(jLabel23)
+                                                                .addComponent(jLabel22)
+                                                                .addComponent(jLabel5)
+                                                                .addComponent(jLabel24)
+                                                                .addComponent(jLabel8))
+                                                        .addGap(20, 20, 20)
+                                                        .addGroup(newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                .addComponent(userNameField, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
+                                                                .addComponent(workingDirField)
+                                                                .addComponent(serverNameField)
+                                                                .addComponent(serverPasswordField)
+                                                                .addComponent(hostAddressField)))))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         newServerDialogLayout.setVerticalGroup(
-            newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, newServerDialogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(serverNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel22))
-                .addGap(18, 18, 18)
-                .addGroup(newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(userNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8))
-                .addGap(18, 18, 18)
-                .addGroup(newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel23)
-                    .addComponent(hostAddressField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(serverPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel24))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(showPass)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(workingDirField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
-                .addGroup(newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(clearNewServerFields)
-                    .addGroup(newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(addNewServer)
-                        .addComponent(setNewAsServer)))
-                .addGap(14, 14, 14))
+                newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, newServerDialogLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(serverNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel22))
+                                .addGap(18, 18, 18)
+                                .addGroup(newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(userNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel8))
+                                .addGap(18, 18, 18)
+                                .addGroup(newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel23)
+                                        .addComponent(hostAddressField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(serverPasswordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel24))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(showPass)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(workingDirField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel5))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                                .addGroup(newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(clearNewServerFields)
+                                        .addGroup(newServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                .addComponent(addNewServer)
+                                                .addComponent(setNewAsServer)))
+                                .addGap(14, 14, 14))
         );
 
         currentServerDialog.setBounds(new java.awt.Rectangle(500, 500, 289, 266));
@@ -958,57 +958,57 @@ public class CompGenStart extends javax.swing.JFrame {
         javax.swing.GroupLayout currentServerDialogLayout = new javax.swing.GroupLayout(currentServerDialog.getContentPane());
         currentServerDialog.getContentPane().setLayout(currentServerDialogLayout);
         currentServerDialogLayout.setHorizontalGroup(
-            currentServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(currentServerDialogLayout.createSequentialGroup()
-                .addGroup(currentServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, currentServerDialogLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1))
-                    .addGroup(currentServerDialogLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(currentServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, currentServerDialogLayout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jCheckBox1))
-                            .addGroup(currentServerDialogLayout.createSequentialGroup()
-                                .addGroup(currentServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel26)
-                                    .addComponent(jLabel25)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel27))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(currentServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(currentName)
-                                    .addComponent(currentHost)
-                                    .addComponent(currentPass, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
-                                    .addComponent(currentDir))
-                                .addGap(0, 0, Short.MAX_VALUE)))))
-                .addContainerGap())
+                currentServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(currentServerDialogLayout.createSequentialGroup()
+                                .addGroup(currentServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, currentServerDialogLayout.createSequentialGroup()
+                                                .addGap(0, 0, Short.MAX_VALUE)
+                                                .addComponent(jButton1))
+                                        .addGroup(currentServerDialogLayout.createSequentialGroup()
+                                                .addContainerGap()
+                                                .addGroup(currentServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, currentServerDialogLayout.createSequentialGroup()
+                                                                .addGap(0, 0, Short.MAX_VALUE)
+                                                                .addComponent(jCheckBox1))
+                                                        .addGroup(currentServerDialogLayout.createSequentialGroup()
+                                                                .addGroup(currentServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                                        .addComponent(jLabel26)
+                                                                        .addComponent(jLabel25)
+                                                                        .addComponent(jLabel2)
+                                                                        .addComponent(jLabel27))
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                .addGroup(currentServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                                        .addComponent(currentName)
+                                                                        .addComponent(currentHost)
+                                                                        .addComponent(currentPass, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                                                                        .addComponent(currentDir))
+                                                                .addGap(0, 0, Short.MAX_VALUE)))))
+                                .addContainerGap())
         );
         currentServerDialogLayout.setVerticalGroup(
-            currentServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(currentServerDialogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(currentServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(currentName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(currentServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel25)
-                    .addComponent(currentHost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(currentServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel26)
-                    .addComponent(currentPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBox1)
-                .addGap(18, 18, 18)
-                .addGroup(currentServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel27)
-                    .addComponent(currentDir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jButton1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                currentServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(currentServerDialogLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(currentServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel2)
+                                        .addComponent(currentName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(currentServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel25)
+                                        .addComponent(currentHost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(currentServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel26)
+                                        .addComponent(currentPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jCheckBox1)
+                                .addGap(18, 18, 18)
+                                .addGroup(currentServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel27)
+                                        .addComponent(currentDir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton1)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         selectServerDialog.setTitle("Select Server");
@@ -1036,28 +1036,28 @@ public class CompGenStart extends javax.swing.JFrame {
         javax.swing.GroupLayout selectServerDialogLayout = new javax.swing.GroupLayout(selectServerDialog.getContentPane());
         selectServerDialog.getContentPane().setLayout(selectServerDialogLayout);
         selectServerDialogLayout.setHorizontalGroup(
-            selectServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(selectServerDialogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(selectServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, selectServerDialogLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(chosenServerLabel)
-                        .addGap(18, 18, 18)
-                        .addComponent(chooseServerButton)))
-                .addContainerGap())
+                selectServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(selectServerDialogLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(selectServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, selectServerDialogLayout.createSequentialGroup()
+                                                .addGap(0, 0, Short.MAX_VALUE)
+                                                .addComponent(chosenServerLabel)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(chooseServerButton)))
+                                .addContainerGap())
         );
         selectServerDialogLayout.setVerticalGroup(
-            selectServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(selectServerDialogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(selectServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(chooseServerButton)
-                    .addComponent(chosenServerLabel))
-                .addContainerGap())
+                selectServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(selectServerDialogLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(selectServerDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(chooseServerButton)
+                                        .addComponent(chosenServerLabel))
+                                .addContainerGap())
         );
 
         browseEnzymesDialog.setBounds(new java.awt.Rectangle(500, 500, 400, 281));
@@ -1065,12 +1065,12 @@ public class CompGenStart extends javax.swing.JFrame {
         browseEnzymesDialog.setSize(new java.awt.Dimension(412, 184));
 
         enzymeTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+                new Object [][] {
 
-            },
-            new String [] {
+                },
+                new String [] {
 
-            }
+                }
         ));
         enzymeTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1092,28 +1092,28 @@ public class CompGenStart extends javax.swing.JFrame {
         javax.swing.GroupLayout browseEnzymesDialogLayout = new javax.swing.GroupLayout(browseEnzymesDialog.getContentPane());
         browseEnzymesDialog.getContentPane().setLayout(browseEnzymesDialogLayout);
         browseEnzymesDialogLayout.setHorizontalGroup(
-            browseEnzymesDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(browseEnzymesDialogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(browseEnzymesDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(enzymeScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, browseEnzymesDialogLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(chosenEnzymeLabel)
-                        .addGap(18, 18, 18)
-                        .addComponent(chooseEnzymeButton)))
-                .addContainerGap())
+                browseEnzymesDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(browseEnzymesDialogLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(browseEnzymesDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(enzymeScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, browseEnzymesDialogLayout.createSequentialGroup()
+                                                .addGap(0, 0, Short.MAX_VALUE)
+                                                .addComponent(chosenEnzymeLabel)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(chooseEnzymeButton)))
+                                .addContainerGap())
         );
         browseEnzymesDialogLayout.setVerticalGroup(
-            browseEnzymesDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(browseEnzymesDialogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(enzymeScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(browseEnzymesDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(chooseEnzymeButton)
-                    .addComponent(chosenEnzymeLabel))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                browseEnzymesDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(browseEnzymesDialogLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(enzymeScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(browseEnzymesDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(chooseEnzymeButton)
+                                        .addComponent(chosenEnzymeLabel))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         qryURLDialog.setTitle("Query File from URL");
@@ -1135,25 +1135,25 @@ public class CompGenStart extends javax.swing.JFrame {
         javax.swing.GroupLayout qryURLDialogLayout = new javax.swing.GroupLayout(qryURLDialog.getContentPane());
         qryURLDialog.getContentPane().setLayout(qryURLDialogLayout);
         qryURLDialogLayout.setHorizontalGroup(
-            qryURLDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(qryURLDialogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel10)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(queryURL, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(uploadQryURLButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                qryURLDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(qryURLDialogLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel10)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(queryURL, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(uploadQryURLButton)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         qryURLDialogLayout.setVerticalGroup(
-            qryURLDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(qryURLDialogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(qryURLDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel10)
-                    .addComponent(queryURL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(uploadQryURLButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                qryURLDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(qryURLDialogLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(qryURLDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel10)
+                                        .addComponent(queryURL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(uploadQryURLButton))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         uploadFiles.setTitle("Upload Alignment Files");
@@ -1209,54 +1209,54 @@ public class CompGenStart extends javax.swing.JFrame {
         javax.swing.GroupLayout refFilesPanelLayout = new javax.swing.GroupLayout(refFilesPanel);
         refFilesPanel.setLayout(refFilesPanelLayout);
         refFilesPanelLayout.setHorizontalGroup(
-            refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(refFilesPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel17)
-                    .addComponent(jLabel18)
-                    .addComponent(jLabel16)
-                    .addComponent(jLabel19))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
-                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(refFilesPanelLayout.createSequentialGroup()
-                        .addComponent(chooseLocalRefKaryotype)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(localRefKaryName))
-                    .addGroup(refFilesPanelLayout.createSequentialGroup()
-                        .addComponent(chooseLocalRefCmap)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(localRefCmapName))
-                    .addComponent(refSpeciesTxtField, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(refFilesPanelLayout.createSequentialGroup()
-                        .addComponent(chooseLocalRefAnnot)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(localRefAnnotName)))
-                .addContainerGap(245, Short.MAX_VALUE))
+                refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(refFilesPanelLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jLabel17)
+                                        .addComponent(jLabel18)
+                                        .addComponent(jLabel16)
+                                        .addComponent(jLabel19))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(refFilesPanelLayout.createSequentialGroup()
+                                                .addComponent(chooseLocalRefKaryotype)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(localRefKaryName))
+                                        .addGroup(refFilesPanelLayout.createSequentialGroup()
+                                                .addComponent(chooseLocalRefCmap)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(localRefCmapName))
+                                        .addComponent(refSpeciesTxtField, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(refFilesPanelLayout.createSequentialGroup()
+                                                .addComponent(chooseLocalRefAnnot)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(localRefAnnotName)))
+                                .addContainerGap(245, Short.MAX_VALUE))
         );
         refFilesPanelLayout.setVerticalGroup(
-            refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(refFilesPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel16)
-                    .addComponent(refSpeciesTxtField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel17)
-                    .addComponent(chooseLocalRefCmap)
-                    .addComponent(localRefCmapName))
-                .addGap(12, 12, 12)
-                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel18)
-                    .addComponent(chooseLocalRefAnnot)
-                    .addComponent(localRefAnnotName))
-                .addGap(9, 9, 9)
-                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel19)
-                    .addComponent(chooseLocalRefKaryotype)
-                    .addComponent(localRefKaryName))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(refFilesPanelLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel16)
+                                        .addComponent(refSpeciesTxtField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel17)
+                                        .addComponent(chooseLocalRefCmap)
+                                        .addComponent(localRefCmapName))
+                                .addGap(12, 12, 12)
+                                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel18)
+                                        .addComponent(chooseLocalRefAnnot)
+                                        .addComponent(localRefAnnotName))
+                                .addGap(9, 9, 9)
+                                .addGroup(refFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel19)
+                                        .addComponent(chooseLocalRefKaryotype)
+                                        .addComponent(localRefKaryName))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         loadLocalAlignment.setText("Load Data");
@@ -1298,34 +1298,34 @@ public class CompGenStart extends javax.swing.JFrame {
         javax.swing.GroupLayout queryFilesPanelLayout = new javax.swing.GroupLayout(queryFilesPanel);
         queryFilesPanel.setLayout(queryFilesPanelLayout);
         queryFilesPanelLayout.setHorizontalGroup(
-            queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(queryFilesPanelLayout.createSequentialGroup()
-                .addGap(33, 33, 33)
-                .addGroup(queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel28)
-                    .addComponent(jLabel29))
-                .addGap(26, 26, 26)
-                .addGroup(queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(queryFilesPanelLayout.createSequentialGroup()
-                        .addComponent(chooseLocalQryCmap)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(localQryCmapName))
-                    .addComponent(localSpecies, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(248, Short.MAX_VALUE))
+                queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(queryFilesPanelLayout.createSequentialGroup()
+                                .addGap(33, 33, 33)
+                                .addGroup(queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jLabel28)
+                                        .addComponent(jLabel29))
+                                .addGap(26, 26, 26)
+                                .addGroup(queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(queryFilesPanelLayout.createSequentialGroup()
+                                                .addComponent(chooseLocalQryCmap)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(localQryCmapName))
+                                        .addComponent(localSpecies, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(248, Short.MAX_VALUE))
         );
         queryFilesPanelLayout.setVerticalGroup(
-            queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(queryFilesPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel28)
-                    .addComponent(localSpecies, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                .addGroup(queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel29)
-                    .addComponent(chooseLocalQryCmap)
-                    .addComponent(localQryCmapName))
-                .addContainerGap())
+                queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(queryFilesPanelLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel28)
+                                        .addComponent(localSpecies, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                                .addGroup(queryFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel29)
+                                        .addComponent(chooseLocalQryCmap)
+                                        .addComponent(localQryCmapName))
+                                .addContainerGap())
         );
 
         alignmentPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Alignment"));
@@ -1344,57 +1344,57 @@ public class CompGenStart extends javax.swing.JFrame {
         javax.swing.GroupLayout alignmentPanelLayout = new javax.swing.GroupLayout(alignmentPanel);
         alignmentPanel.setLayout(alignmentPanelLayout);
         alignmentPanelLayout.setHorizontalGroup(
-            alignmentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(alignmentPanelLayout.createSequentialGroup()
-                .addGap(43, 43, 43)
-                .addComponent(jLabel30)
-                .addGap(18, 18, 18)
-                .addComponent(chooseLocalXmap)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(localXmapName)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                alignmentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(alignmentPanelLayout.createSequentialGroup()
+                                .addGap(43, 43, 43)
+                                .addComponent(jLabel30)
+                                .addGap(18, 18, 18)
+                                .addComponent(chooseLocalXmap)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(localXmapName)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         alignmentPanelLayout.setVerticalGroup(
-            alignmentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(alignmentPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(alignmentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel30)
-                    .addComponent(chooseLocalXmap)
-                    .addComponent(localXmapName))
-                .addContainerGap(14, Short.MAX_VALUE))
+                alignmentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(alignmentPanelLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(alignmentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel30)
+                                        .addComponent(chooseLocalXmap)
+                                        .addComponent(localXmapName))
+                                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout uploadFilesLayout = new javax.swing.GroupLayout(uploadFiles.getContentPane());
         uploadFiles.getContentPane().setLayout(uploadFilesLayout);
         uploadFilesLayout.setHorizontalGroup(
-            uploadFilesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(uploadFilesLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(uploadFilesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(refFilesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, uploadFilesLayout.createSequentialGroup()
-                        .addComponent(closeLocalWindow)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(loadLocalAlignment))
-                    .addComponent(queryFilesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(alignmentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                uploadFilesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(uploadFilesLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(uploadFilesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(refFilesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, uploadFilesLayout.createSequentialGroup()
+                                                .addComponent(closeLocalWindow)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(loadLocalAlignment))
+                                        .addComponent(queryFilesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(alignmentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap())
         );
         uploadFilesLayout.setVerticalGroup(
-            uploadFilesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, uploadFilesLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(refFilesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(queryFilesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(alignmentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(uploadFilesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(loadLocalAlignment)
-                    .addComponent(closeLocalWindow))
-                .addGap(14, 14, 14))
+                uploadFilesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, uploadFilesLayout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(refFilesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(queryFilesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(alignmentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(uploadFilesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(loadLocalAlignment)
+                                        .addComponent(closeLocalWindow))
+                                .addGap(14, 14, 14))
         );
 
         filesDownloading.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -1411,22 +1411,22 @@ public class CompGenStart extends javax.swing.JFrame {
         javax.swing.GroupLayout filesDownloadingLayout = new javax.swing.GroupLayout(filesDownloading.getContentPane());
         filesDownloading.getContentPane().setLayout(filesDownloadingLayout);
         filesDownloadingLayout.setHorizontalGroup(
-            filesDownloadingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(filesDownloadingLayout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jobDownloadingName)
-                .addContainerGap(77, Short.MAX_VALUE))
+                filesDownloadingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(filesDownloadingLayout.createSequentialGroup()
+                                .addGap(21, 21, 21)
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jobDownloadingName)
+                                .addContainerGap(77, Short.MAX_VALUE))
         );
         filesDownloadingLayout.setVerticalGroup(
-            filesDownloadingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(filesDownloadingLayout.createSequentialGroup()
-                .addGap(67, 67, 67)
-                .addGroup(filesDownloadingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jobDownloadingName))
-                .addContainerGap(66, Short.MAX_VALUE))
+                filesDownloadingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(filesDownloadingLayout.createSequentialGroup()
+                                .addGap(67, 67, 67)
+                                .addGroup(filesDownloadingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel1)
+                                        .addComponent(jobDownloadingName))
+                                .addContainerGap(66, Short.MAX_VALUE))
         );
 
         bestEnzymeDialog.setTitle("Best Enzyme");
@@ -1444,11 +1444,11 @@ public class CompGenStart extends javax.swing.JFrame {
         jLabel20.setText("Best Enzyme:");
 
         bestEnzymesTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][][] {
-            },
-            new String [] {
-                "Enzyme name", "Enzyme site", "Density"
-            }
+                new Object [][][] {
+                },
+                new String [] {
+                        "Enzyme name", "Enzyme site", "Density"
+                }
         ));
         bestEnzymesTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1461,37 +1461,37 @@ public class CompGenStart extends javax.swing.JFrame {
         javax.swing.GroupLayout bestEnzymeDialogLayout = new javax.swing.GroupLayout(bestEnzymeDialog.getContentPane());
         bestEnzymeDialog.getContentPane().setLayout(bestEnzymeDialogLayout);
         bestEnzymeDialogLayout.setHorizontalGroup(
-            bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
-                        .addComponent(jLabel20)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(LblEnzyme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(76, 76, 76)
-                        .addComponent(bestEnz)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(selectBestEnz))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bestEnzymeDialogLayout.createSequentialGroup()
-                        .addGap(0, 1, Short.MAX_VALUE)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
+                                                .addComponent(jLabel20)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(LblEnzyme, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addGap(76, 76, 76)
+                                                .addComponent(bestEnz)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(selectBestEnz))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bestEnzymeDialogLayout.createSequentialGroup()
+                                                .addGap(0, 1, Short.MAX_VALUE)
+                                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap())
         );
         bestEnzymeDialogLayout.setVerticalGroup(
-            bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addGroup(bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
-                        .addComponent(bestEnz)
-                        .addGap(0, 0, 0)
-                        .addComponent(LblEnzyme, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE))
-                    .addComponent(selectBestEnz)
-                    .addComponent(jLabel20, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE))
-                .addContainerGap())
+                bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addGroup(bestEnzymeDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(bestEnzymeDialogLayout.createSequentialGroup()
+                                                .addComponent(bestEnz)
+                                                .addGap(0, 0, 0)
+                                                .addComponent(LblEnzyme, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE))
+                                        .addComponent(selectBestEnz)
+                                        .addComponent(jLabel20, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE))
+                                .addContainerGap())
         );
 
         helpPane.setMinimumSize(new java.awt.Dimension(497, 518));
@@ -1507,86 +1507,86 @@ public class CompGenStart extends javax.swing.JFrame {
         helpHtmlPane.setEditable(false);
         helpHtmlPane.setContentType("text/html"); // NOI18N
         helpHtmlPane.setText("<html>"+
-            "  <head>\n" +
-            "    <h1>" +
-            "      Perform alignment within MapOptics\n" +
-            "    </h1>\n" +
-            "    <h2>" +
-            "      Send new job to server\n" +
-            "    </h2>\n\n" +
-            " </head>" +
-            " <body>" +
-            "    <h3>" +
-            "      Select a server" +
-            "    </h3>\n" +
-            "    <p>\n" +
-            "      Select <b>Server</b> in the menu to either obtain information on a \n" +
-            "      server, add a new one or choose an existing one. The chosen server is \n" +
-            "      displayed on the main pane as <b>Selected server</b>. Once a server is \n" +
-            "      chosen, click the button <b>Connect</b> to establish the connexion. If \n" +
-            "      it is successful, other button <b>Set</b> will be available.\n\n" +
-            "    <br></p>\n" +
-            "    <h3>\n" +
-            "      Set a reference or a query file\n" +
-            "    </h3>" +
-            "    <p>\n" +
-            "      Write the name of the studied specie in the field <b>Species</b> for \n" +
-            "      either the reference or the query genome. Then, upload a fasta file by \n" +
-            "      selecting <b>File</b> in the menu, then <b>Reference genome</b> (or <b>Query \n" +
-            "      genome</b>), and choosing the method of your choice: either selection of \n" +
-            "      the file from URL: <b>Reference FASTA from URL</b> for from your local \n" +
-            "      file <b>Upload reference FASTA file</b>. Once a FASTA file is chosen, \n" +
-            "      the button <b>Upload</b> is available. The same goes for the selection \n" +
-            "      of an Annotation file (either gff3 or gtf), in <b>File, Reference \n" +
-            "      Genome, Reference annotation file</b>.\n\n" +
-            "      Query annotation file is not necessary.\n\n" +
-            "      Query file can be in CMAP format. If the input query file contains information about \n" +
-            "      its in silico digestion enzyme, the same enzyme will be used to digest the reference.\n"+
-            "      the buttons <b>Calculate enzyme</b> or <b>Choose enzyme</b> will not be available.\n\n" +
-            "    <br></p>\n" +
-            "    <h3>\n" +
-            "      Set alignment parameters\n" +
-            "    </h3>\n" +
-            "    <p>" +
-            "      The <b>Settings</b> section is available once the query and reference \n" +
-            "      genome are both selected. You can either <b>Choose</b> or <b>Calculate</b> \n" +
-            "      the optimise Nickase Enzymes to use for the <i>in silico</i> digestion \n" +
-            "      of your file. With the option <b>Reference</b> or <b>Query</b>, \n" +
-            "      choose if the enzyme density scores are calculated on the reference \n" +
-            "      or on the query. \n" +
-            "      Then, choose your aligner: <b>RefAligner</b> or <bfandom>. \n" +
-            "      Click <b>Modify Alignment Parameters</b> to customise your alignment \n" +
-            "      parameters.\n" +
-            "    <br></p>\n" +
-            "    <h3>\n" +
-            "      Start the job" +
-            "    </h3>\n" +
-            "    <p>\n" +
-            "      Click the button <b>Start Job</b> to start the job. Please note that \n" +
-            "      this button is only available once a server is connected, and once \n" +
-            "      reference and query genome are choosen, as well as a restriction enzyme." +
-            "    <br></p>\n" +
-            "  </body>\n" +
-            "</html>");
+                "  <head>\n" +
+                "    <h1>" +
+                "      Perform alignment within MapOptics\n" +
+                "    </h1>\n" +
+                "    <h2>" +
+                "      Send new job to server\n" +
+                "    </h2>\n\n" +
+                " </head>" +
+                " <body>" +
+                "    <h3>" +
+                "      Select a server" +
+                "    </h3>\n" +
+                "    <p>\n" +
+                "      Select <b>Server</b> in the menu to either obtain information on a \n" +
+                "      server, add a new one or choose an existing one. The chosen server is \n" +
+                "      displayed on the main pane as <b>Selected server</b>. Once a server is \n" +
+                "      chosen, click the button <b>Connect</b> to establish the connexion. If \n" +
+                "      it is successful, other button <b>Set</b> will be available.\n\n" +
+                "    <br></p>\n" +
+                "    <h3>\n" +
+                "      Set a reference or a query file\n" +
+                "    </h3>" +
+                "    <p>\n" +
+                "      Write the name of the studied specie in the field <b>Species</b> for \n" +
+                "      either the reference or the query genome. Then, upload a fasta file by \n" +
+                "      selecting <b>File</b> in the menu, then <b>Reference genome</b> (or <b>Query \n" +
+                "      genome</b>), and choosing the method of your choice: either selection of \n" +
+                "      the file from URL: <b>Reference FASTA from URL</b> for from your local \n" +
+                "      file <b>Upload reference FASTA file</b>. Once a FASTA file is chosen, \n" +
+                "      the button <b>Upload</b> is available. The same goes for the selection \n" +
+                "      of an Annotation file (either gff3 or gtf), in <b>File, Reference \n" +
+                "      Genome, Reference annotation file</b>.\n\n" +
+                "      Query annotation file is not necessary.\n\n" +
+                "      Query file can be in CMAP format. If the input query file contains information about \n" +
+                "      its in silico digestion enzyme, the same enzyme will be used to digest the reference.\n"+
+                "      the buttons <b>Calculate enzyme</b> or <b>Choose enzyme</b> will not be available.\n\n" +
+                "    <br></p>\n" +
+                "    <h3>\n" +
+                "      Set alignment parameters\n" +
+                "    </h3>\n" +
+                "    <p>" +
+                "      The <b>Settings</b> section is available once the query and reference \n" +
+                "      genome are both selected. You can either <b>Choose</b> or <b>Calculate</b> \n" +
+                "      the optimise Nickase Enzymes to use for the <i>in silico</i> digestion \n" +
+                "      of your file. With the option <b>Reference</b> or <b>Query</b>, \n" +
+                "      choose if the enzyme density scores are calculated on the reference \n" +
+                "      or on the query. \n" +
+                "      Then, choose your aligner: <b>RefAligner</b> or <bfandom>. \n" +
+                "      Click <b>Modify Alignment Parameters</b> to customise your alignment \n" +
+                "      parameters.\n" +
+                "    <br></p>\n" +
+                "    <h3>\n" +
+                "      Start the job" +
+                "    </h3>\n" +
+                "    <p>\n" +
+                "      Click the button <b>Start Job</b> to start the job. Please note that \n" +
+                "      this button is only available once a server is connected, and once \n" +
+                "      reference and query genome are choosen, as well as a restriction enzyme." +
+                "    <br></p>\n" +
+                "  </body>\n" +
+                "</html>");
         jScrollPane1.setViewportView(helpHtmlPane);
 
         javax.swing.GroupLayout helpPaneLayout = new javax.swing.GroupLayout(helpPane.getContentPane());
         helpPane.getContentPane().setLayout(helpPaneLayout);
         helpPaneLayout.setHorizontalGroup(
-            helpPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, helpPaneLayout.createSequentialGroup()
-                .addContainerGap(224, Short.MAX_VALUE)
-                .addComponent(exitBtn)
-                .addContainerGap(225, Short.MAX_VALUE))
-            .addComponent(jScrollPane1)
+                helpPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, helpPaneLayout.createSequentialGroup()
+                                .addContainerGap(224, Short.MAX_VALUE)
+                                .addComponent(exitBtn)
+                                .addContainerGap(225, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1)
         );
         helpPaneLayout.setVerticalGroup(
-            helpPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, helpPaneLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(exitBtn)
-                .addContainerGap())
+                helpPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, helpPaneLayout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(exitBtn)
+                                .addContainerGap())
         );
 
         waitPanel.setMinimumSize(new java.awt.Dimension(320, 190));
@@ -1599,18 +1599,18 @@ public class CompGenStart extends javax.swing.JFrame {
         javax.swing.GroupLayout waitPanelLayout = new javax.swing.GroupLayout(waitPanel.getContentPane());
         waitPanel.getContentPane().setLayout(waitPanelLayout);
         waitPanelLayout.setHorizontalGroup(
-            waitPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(waitPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(messageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
-                .addContainerGap())
+                waitPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(waitPanelLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(messageLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+                                .addContainerGap())
         );
         waitPanelLayout.setVerticalGroup(
-            waitPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, waitPanelLayout.createSequentialGroup()
-                .addContainerGap(74, Short.MAX_VALUE)
-                .addComponent(messageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(68, 68, 68))
+                waitPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, waitPanelLayout.createSequentialGroup()
+                                .addContainerGap(74, Short.MAX_VALUE)
+                                .addComponent(messageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(68, 68, 68))
         );
 
         authentificationPane.setMinimumSize(new java.awt.Dimension(446, 332));
@@ -1684,72 +1684,72 @@ public class CompGenStart extends javax.swing.JFrame {
         javax.swing.GroupLayout authentificationPaneLayout = new javax.swing.GroupLayout(authentificationPane.getContentPane());
         authentificationPane.getContentPane().setLayout(authentificationPaneLayout);
         authentificationPaneLayout.setHorizontalGroup(
-            authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(authentificationPaneLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(authentificationPaneLayout.createSequentialGroup()
-                        .addComponent(lengthPwd, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, Short.MAX_VALUE)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, authentificationPaneLayout.createSequentialGroup()
-                        .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(authentificationPaneLayout.createSequentialGroup()
+                authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(authentificationPaneLayout.createSequentialGroup()
+                                .addContainerGap()
                                 .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel36)
-                                    .addComponent(jLabel34)
-                                    .addComponent(jLabel35))
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(authentificationPaneLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(userLabel)
-                                    .addComponent(showAuthentPassword)
-                                    .addComponent(passwordLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)))
-                            .addGroup(authentificationPaneLayout.createSequentialGroup()
-                                .addGap(5, 5, 5)
-                                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(showConfirmPassword)
-                                    .addComponent(confirmLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addContainerGap())
+                                        .addGroup(authentificationPaneLayout.createSequentialGroup()
+                                                .addComponent(lengthPwd, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, Short.MAX_VALUE)
+                                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, authentificationPaneLayout.createSequentialGroup()
+                                                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addGroup(authentificationPaneLayout.createSequentialGroup()
+                                                                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                        .addComponent(jLabel36)
+                                                                        .addComponent(jLabel34)
+                                                                        .addComponent(jLabel35))
+                                                                .addGap(0, 0, Short.MAX_VALUE)))
+                                                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addGroup(authentificationPaneLayout.createSequentialGroup()
+                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                                        .addComponent(userLabel)
+                                                                        .addComponent(showAuthentPassword)
+                                                                        .addComponent(passwordLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)))
+                                                        .addGroup(authentificationPaneLayout.createSequentialGroup()
+                                                                .addGap(5, 5, 5)
+                                                                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                        .addComponent(showConfirmPassword)
+                                                                        .addComponent(confirmLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                .addContainerGap())
         );
         authentificationPaneLayout.setVerticalGroup(
-            authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(authentificationPaneLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel11)
-                .addGap(44, 44, 44)
-                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel34)
-                    .addComponent(userLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel35)
-                    .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(10, 10, 10)
-                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(infoLabel)
-                    .addComponent(showAuthentPassword))
-                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(authentificationPaneLayout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(jLabel36))
-                    .addGroup(authentificationPaneLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(confirmLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
-                .addComponent(showConfirmPassword)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
-                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(lengthPwd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(authentificationPaneLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel11)
+                                .addGap(44, 44, 44)
+                                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel34)
+                                        .addComponent(userLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel35)
+                                        .addComponent(passwordLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(10, 10, 10)
+                                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(infoLabel)
+                                        .addComponent(showAuthentPassword))
+                                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(authentificationPaneLayout.createSequentialGroup()
+                                                .addGap(21, 21, 21)
+                                                .addComponent(jLabel36))
+                                        .addGroup(authentificationPaneLayout.createSequentialGroup()
+                                                .addGap(18, 18, 18)
+                                                .addComponent(confirmLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(18, 18, 18)
+                                .addComponent(showConfirmPassword)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                                .addGroup(authentificationPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jButton2)
+                                        .addComponent(lengthPwd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -1805,33 +1805,33 @@ public class CompGenStart extends javax.swing.JFrame {
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(submittedJobPane)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel15)
-                        .addGap(18, 18, 18)
-                        .addComponent(selectedJobField)
-                        .addGap(18, 18, 18)
-                        .addComponent(refreshJobsTable)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(openResults)))
-                .addContainerGap())
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(submittedJobPane)
+                                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addComponent(jLabel15)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(selectedJobField)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(refreshJobsTable)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(openResults)))
+                                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(submittedJobPane, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(openResults)
-                    .addComponent(refreshJobsTable)
-                    .addComponent(selectedJobField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel15))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(submittedJobPane, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(openResults)
+                                        .addComponent(refreshJobsTable)
+                                        .addComponent(selectedJobField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel15))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Submit New Job"));
@@ -1848,18 +1848,18 @@ public class CompGenStart extends javax.swing.JFrame {
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGap(56, 56, 56)
-                .addComponent(newJobRefQuery)
-                .addContainerGap(90, Short.MAX_VALUE))
+                jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addGap(56, 56, 56)
+                                .addComponent(newJobRefQuery)
+                                .addContainerGap(90, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(newJobRefQuery)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(newJobRefQuery)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Upload Pre-Aligned .XMAP to MapOptics", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION));
@@ -1874,43 +1874,43 @@ public class CompGenStart extends javax.swing.JFrame {
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                .addContainerGap(74, Short.MAX_VALUE)
-                .addComponent(uploadPreAligned)
-                .addGap(44, 44, 44)
-                .addComponent(jLabel14)
-                .addGap(31, 31, 31))
+                jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                                .addContainerGap(74, Short.MAX_VALUE)
+                                .addComponent(uploadPreAligned)
+                                .addGap(44, 44, 44)
+                                .addComponent(jLabel14)
+                                .addGap(31, 31, 31))
         );
         jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(uploadPreAligned)
-                    .addComponent(jLabel14))
-                .addGap(12, 12, 12))
+                jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(uploadPreAligned)
+                                        .addComponent(jLabel14))
+                                .addGap(12, 12, 12))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap())
         );
 
         exitCompGenomics.setText("Exit");
@@ -1924,27 +1924,27 @@ public class CompGenStart extends javax.swing.JFrame {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(exitCompGenomics, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(exitCompGenomics, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(exitCompGenomics))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(exitCompGenomics))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -2713,36 +2713,38 @@ public class CompGenStart extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_showAuthentPasswordItemStateChanged
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-First:event_jButton2ActionPerformed
         String confirmPwd = String.valueOf(confirmLabel.getPassword());
         String inputPwd = String.valueOf(passwordLabel.getPassword());
         // Initialisation of user files and password
         if (confirmPwd.equals(inputPwd)) {
-            // PAssword and its confirmation are equal
-            if (inputPwd.length() == 16) {
-                // Password has the right length (16)
-                lengthPwd.setText("");
-                // Initialisation of files and password / check existing password
-                boolean correctPwd = this.manageJson.setAccess(userLabel.getText(), String.valueOf(passwordLabel.getPassword()));
+            // Password and its confirmation are equal
+            lengthPwd.setText("");
+            // Initialisation of files and password / check existing password
+            boolean correctPwd = this.manageJson.setAccess(userLabel.getText(), String.valueOf(passwordLabel.getPassword()));
 
-                if (correctPwd) {
-                    // Entered password is correct
-                    this.authentificationPane.setVisible(false);
+            if (correctPwd) {
+                // Entered password is correct
+                this.authentificationPane.setVisible(false);
 
-                    // Get jobs from job JSON to display them in the submitted jobs table
-                    this.jobsRunning.clear();
-                    this.jobsRunning = manageJson.getJobsFromJson(this.jobsRunning);
-                    jobTableAdd(this.jobsRunning);
-                    JobTableModel newModel = new JobTableModel(this.jobsRunning);
-                    jobsTable.setModel(newModel);
+                // Get jobs from job JSON to display them in the submitted jobs table
+                this.jobsRunning.clear();
+                this.jobsRunning = manageJson.getJobsFromJson(this.jobsRunning);
+                jobTableAdd(this.jobsRunning);
+                JobTableModel newModel = new JobTableModel(this.jobsRunning);
+                jobsTable.setModel(newModel);
 
-                    this.setVisible(true);
-                } else {
-                    lengthPwd.setText("Incorrect password for existing user " + userLabel.getText());
-                    lengthPwd.setVisible(true);
-                }
+                this.setVisible(true);
             } else {
-                lengthPwd.setText("Password length must be 16.");
+                // Check if user file exists to determine if it's a new or existing user
+                String pathDirectory = Paths.get("").toAbsolutePath().toString();
+                String userFile = pathDirectory + "\\serverInfo\\" + userLabel.getText() + ".txt";
+                File checkPassword = new File(userFile);
+                if (checkPassword.exists() && checkPassword.length() > 0) {
+                    lengthPwd.setText("Incorrect password for existing user " + userLabel.getText());
+                } else {
+                    lengthPwd.setText("Failed to initialize user " + userLabel.getText() + ". Password may be invalid for encryption.");
+                }
                 lengthPwd.setVisible(true);
             }
         } else {
@@ -2753,8 +2755,8 @@ public class CompGenStart extends javax.swing.JFrame {
 
     private void passwordLabelKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_passwordLabelKeyReleased
         String inputPwd = String.valueOf(passwordLabel.getPassword());
-        if (inputPwd.length() != 16) {
-            lengthPwd.setText("Password length is " + inputPwd.length() + " but must be 16.");
+        if (inputPwd.isEmpty()) {
+            lengthPwd.setText("Password must not be empty.");
             lengthPwd.setVisible(true);
         } else {
             lengthPwd.setText("");
@@ -2924,7 +2926,7 @@ public class CompGenStart extends javax.swing.JFrame {
         ;
         /**
          * Sets external servers data
-         * 
+         *
          * @param list list of external servers
          */
         public void setData(List<ExternalServer> list) {
@@ -2933,7 +2935,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
         /**
          * Gets a column name by index
-         * 
+         *
          * @param columnIndex index of column for which the name is set
          */
         @Override
@@ -2943,7 +2945,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
         /**
          * Gets number of rows
-         * 
+         *
          * @return number of rows
          */
         @Override
@@ -2956,7 +2958,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
         /**
          * Gets number of columns
-         * 
+         *
          * @return number of columns
          */
         @Override
@@ -2966,7 +2968,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
         /**
          * Gets value at given column and row
-         * 
+         *
          * @param rowIndex index of row of interest
          * @param columnIndex index of column of interest
          * @return value at given cell position
@@ -2990,7 +2992,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
         /**
          * Gets class of given column
-         * 
+         *
          * @param columnIndex index of column of interest
          * @return class of column of interest
          */
@@ -3020,7 +3022,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
         /**
          * Constructor from list of jobs
-         * 
+         *
          * @param list list of jobs
          */
         public JobTableModel(List<Job> list) {
@@ -3035,7 +3037,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
         /**
          * Sets data from list of jobs in the table
-         * 
+         *
          * @param list list of jobs
          */
         public void setData(List<Job> list) {
@@ -3044,7 +3046,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
         /**
          * Gets a column name by index
-         * 
+         *
          * @param columnIndex index of column for which the name is set
          */
         @Override
@@ -3054,7 +3056,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
         /**
          * Gets number of rows
-         * 
+         *
          * @return number of rows
          */
         @Override
@@ -3067,7 +3069,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
         /**
          * Gets number of columns
-         * 
+         *
          * @return number of columns
          */
         @Override
@@ -3077,7 +3079,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
         /**
          * Gets value at given column and row
-         * 
+         *
          * @param rowIndex index of row of interest
          * @param columnIndex index of column of interest
          * @return value at given cell position
@@ -3104,7 +3106,7 @@ public class CompGenStart extends javax.swing.JFrame {
 
         /**
          * Gets class of given column
-         * 
+         *
          * @param columnIndex index of column of interest
          * @return class of column of interest
          */
